@@ -226,7 +226,7 @@ export function withTiming<T extends any[], R>(
       return result;
     } catch (error) {
       const duration = Date.now() - start;
-      logger.error(`Operation failed: ${operation}`, error, { operation, duration });
+      logger.error(`Operation failed: ${operation}`, error instanceof Error ? error : new Error(String(error)), { operation, duration });
       throw error;
     }
   };

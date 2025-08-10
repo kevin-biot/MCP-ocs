@@ -191,7 +191,7 @@ export class ConfigValidator {
       await fs.writeFile(testFile, 'test');
       await fs.unlink(testFile);
     } catch (error) {
-      errors.push(`Memory directory not writable: ${jsonDir} - ${error.message}`);
+      errors.push(`Memory directory not writable: ${jsonDir} - ${error instanceof Error ? error.message : String(error)}`);
     }
   }
   

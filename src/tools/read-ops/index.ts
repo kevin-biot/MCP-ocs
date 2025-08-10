@@ -53,7 +53,7 @@ export class ReadOpsTools {
         fullName: 'oc_read_describe',
         domain: 'cluster',
         capabilities: [
-          { type: 'read', level: 'detailed', riskLevel: 'safe' }
+          { type: 'read', level: 'advanced', riskLevel: 'safe' }
         ],
         dependencies: [],
         contextRequirements: [],
@@ -88,7 +88,7 @@ export class ReadOpsTools {
         fullName: 'oc_read_logs',
         domain: 'cluster',
         capabilities: [
-          { type: 'read', level: 'detailed', riskLevel: 'safe' }
+          { type: 'read', level: 'advanced', riskLevel: 'safe' }
         ],
         dependencies: [],
         contextRequirements: [],
@@ -293,9 +293,9 @@ export class ReadOpsTools {
       results: results.map(r => ({
         similarity: r.similarity,
         relevance: r.relevance,
-        incidentId: r.memory.incidentId,
-        symptoms: r.memory.symptoms,
-        resolution: r.memory.resolution,
+        incidentId: 'incidentId' in r.memory ? r.memory.incidentId : '',
+        symptoms: 'symptoms' in r.memory ? r.memory.symptoms : [],
+        resolution: 'resolution' in r.memory ? r.memory.resolution : '',
         timestamp: r.memory.timestamp
       })),
       timestamp: new Date().toISOString()

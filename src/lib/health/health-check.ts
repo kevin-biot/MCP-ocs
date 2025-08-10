@@ -120,7 +120,7 @@ export class HealthCheckManager {
       // Simple check - if we can respond, we're alive
       return { alive: true };
     } catch (error) {
-      logger.error('Liveness probe failed', error);
+      logger.error('Liveness probe failed', error instanceof Error ? error : new Error(String(error)));
       return { alive: false };
     }
   }
@@ -150,8 +150,8 @@ export class HealthCheckManager {
       
       return { ready: true };
     } catch (error) {
-      logger.error('Readiness probe failed', error);
-      return { ready: false, reason: error.message };
+      logger.error('Readiness probe failed', error instanceof Error ? error : new Error(String(error)));
+      return { ready: false, reason: error instanceof Error ? error.message : String(error) };
     }
   }
 
@@ -194,7 +194,7 @@ export class HealthCheckManager {
       return {
         name: checkName,
         status: 'unhealthy',
-        message: `OpenShift connectivity failed: ${error.message}`,
+        message: `OpenShift connectivity failed: ${error instanceof Error ? error.message : String(error)}`,
         timestamp: new Date().toISOString(),
         duration
       };
@@ -237,7 +237,7 @@ export class HealthCheckManager {
       return {
         name: checkName,
         status: 'unhealthy',
-        message: `Memory system check failed: ${error.message}`,
+        message: `Memory system check failed: ${error instanceof Error ? error.message : String(error)}`,
         timestamp: new Date().toISOString(),
         duration
       };
@@ -268,7 +268,7 @@ export class HealthCheckManager {
       return {
         name: checkName,
         status: 'unhealthy',
-        message: `Workflow engine check failed: ${error.message}`,
+        message: `Workflow engine check failed: ${error instanceof Error ? error.message : String(error)}`,
         timestamp: new Date().toISOString(),
         duration
       };
@@ -296,7 +296,7 @@ export class HealthCheckManager {
       return {
         name: checkName,
         status: 'unhealthy',
-        message: `Configuration check failed: ${error.message}`,
+        message: `Configuration check failed: ${error instanceof Error ? error.message : String(error)}`,
         timestamp: new Date().toISOString(),
         duration
       };
@@ -351,7 +351,7 @@ export class HealthCheckManager {
       return {
         name: checkName,
         status: 'unhealthy',
-        message: `Filesystem check failed: ${error.message}`,
+        message: `Filesystem check failed: ${error instanceof Error ? error.message : String(error)}`,
         timestamp: new Date().toISOString(),
         duration
       };
@@ -406,7 +406,7 @@ export class HealthCheckManager {
       return {
         name: checkName,
         status: 'unhealthy',
-        message: `System resources check failed: ${error.message}`,
+        message: `System resources check failed: ${error instanceof Error ? error.message : String(error)}`,
         timestamp: new Date().toISOString(),
         duration
       };

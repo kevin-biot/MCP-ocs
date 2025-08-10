@@ -273,7 +273,7 @@ class MemoryGuidedWorkflow {
     if (symptoms.length === 0) return [];
     
     const results = await this.memoryManager.searchOperational(symptoms, 5);
-    return results.map(r => r.memory).filter(m => m.resolution);
+    return results.map(r => r.memory).filter(m => 'resolution' in m && m.resolution);
   }
   
   private identifyEvidenceGaps(session: WorkflowSession): any[] {
@@ -294,14 +294,15 @@ class MemoryGuidedWorkflow {
   }
   
   private suggestToolForEvidence(evidenceType: EvidenceType): string {
-    const suggestions = {
-      'symptoms': 'oc_get_pods',
-      'affected_resources': 'oc_describe_pod',
-      'logs': 'oc_get_logs',
-      'events': 'oc_get_events',
-      'similar_incidents': 'memory_search_operational'
+    const suggestions: Record<string, string> = {
+      symptoms: 'oc_diagnostic_cluster_health',
+      affected_resources: 'oc_read_get_pods',
+      logs: 'oc_read_logs',
+      events: 'oc_diagnostic_events',
+      similar_incidents: 'memory_search_operational',
+      pattern_analysis: 'oc_diagnostic_cluster_health'
     };
-    return suggestions[evidenceType] || 'oc_get_pods';
+    return suggestions[evidenceType as keyof typeof suggestions] || 'oc_get_pods';
   }
 }
 

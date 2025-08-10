@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # ChromaDB for integration tests
+  chromadb:
+    image: chromadb/chroma:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - ALLOW_RESET=TRUE
+      - IS_PERSISTENT=FALSE
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # MCP-ocs test runner
+  mcp-ocs-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      - NODE_ENV=test
+      - MCP_CHROMA_HOST=chromadb
+      - MCP_CHROMA_PORT=8000
+      - MCP_LOG_LEVEL=error
+      - MCP_MEMORY_DIR=./tests/tmp/memory
+    volumes:
+      - ./tests:/app/tests
+      - ./src:/app/src
+      - ./coverage:/app/coverage
+    depends_on:
+      chromadb:
+        condition: service_healthy
+    command: npm run test:integration
+
+  # Security testing with OWASP ZAP
+  zap:
+    image: owasp/zap2docker-stable
+    command: zap-baseline.py -t http://mcp-ocs-test:3000 -J zap-report.json
+    volumes:
+      - ./tests/security/reports:/zap/wrk/
+    depends_on:
+      - mcp-ocs-test
+    profiles:
+      - security
+
+  # Performance testing with K6
+  k6:
+    image: grafana/k6:latest
+    volumes:
+      - ./tests/performance:/scripts
+    command: run /scripts/load-test.js
+    environment:
+      - TARGET_URL=http://mcp-ocs-test:3000
+    depends_on:
+      - mcp-ocs-test
+    profiles:
+      - performance
+
+volumes:
+  test_data:

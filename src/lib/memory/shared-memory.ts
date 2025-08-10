@@ -282,14 +282,25 @@ class ChromaDBClient {
 
   async initialize(): Promise<void> {
     try {
-      // Try to connect to ChromaDB
-      // For now, we'll simulate this check
-      // In real implementation, use: await fetch(`http://${this.host}:${this.port}/api/v1/heartbeat`)
-      this.isAvailable = false; // Set to false until real ChromaDB integration
-      console.error(`ChromaDB connection attempted at ${this.host}:${this.port} - not available yet`);
+      // Try to connect to ChromaDB using v2 API
+      const response = await fetch(`http://${this.host}:${this.port}/api/v2/heartbeat`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        signal: AbortSignal.timeout(5000) // 5 second timeout
+      });
+      
+      if (response.ok) {
+        this.isAvailable = true;
+        console.error(`✅ ChromaDB connected successfully at ${this.host}:${this.port}`);
+      } else {
+        this.isAvailable = false;
+        console.error(`❌ ChromaDB responded with status ${response.status}`);
+      }
     } catch (error) {
       this.isAvailable = false;
-      console.error('ChromaDB not available, using JSON fallback');
+      console.error(`ChromaDB connection attempted at ${this.host}:${this.port} - not available yet`);
     }
   }
 

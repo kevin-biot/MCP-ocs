@@ -161,7 +161,8 @@ export class WriteOpsTools {
         incidentId: `write-op-failure-${sessionId}-${Date.now()}`,
         domain: 'cluster',
         timestamp: Date.now(),
-        symptoms: [`Write operation ${toolName} failed: ${error.message}`],
+        symptoms: [`Write operation ${toolName} failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
+        affectedResources: [],
         diagnosticSteps: [`Attempted ${toolName} with args: ${JSON.stringify(args, null, 2)}`],
         tags: ['write_operation', 'failure', toolName],
         environment: 'dev'
@@ -205,6 +206,7 @@ export class WriteOpsTools {
       timestamp: Date.now(),
       symptoms: ['Configuration applied successfully'],
       resolution: `Applied configuration to ${namespace || 'default'} namespace`,
+      affectedResources: [],
       diagnosticSteps: ['Validated configuration', 'Applied via oc apply'],
       tags: ['write_operation', 'config_apply', 'successful_resolution'],
       environment: 'dev'

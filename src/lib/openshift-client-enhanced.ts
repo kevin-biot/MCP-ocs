@@ -213,7 +213,14 @@ export class OpenShiftClient {
    * Build environment for oc command execution
    */
   private buildEnvironment(): Record<string, string> {
-    const env = { ...process.env };
+    const env: Record<string, string> = {};
+    
+    // Copy only defined environment variables
+    Object.keys(process.env).forEach(key => {
+      if (process.env[key]) {
+        env[key] = process.env[key]!;
+      }
+    });
     
     if (this.kubeconfig) {
       env.KUBECONFIG = this.kubeconfig;
@@ -260,24 +267,24 @@ export class OpenShiftClient {
       return result.stdout.trim();
     } catch (error) {
       const duration = Date.now() - startTime;
-      logger.error('OpenShift command failed', error, {
+      logger.error('OpenShift command failed', error instanceof Error ? error : new Error(String(error)), {
         operation: sanitizedArgs[0],
         duration,
-        exitCode: error.code,
+        exitCode: error instanceof Error && 'code' in error ? (error as any).code : undefined,
         // Truncate stderr for logging (avoid log pollution)
-        stderr: error.stderr?.substring(0, 200)
+        stderr: error instanceof Error && 'stderr' in error ? (error as any).stderr?.substring(0, 200) : undefined
       });
       
       // Provide user-friendly error messages
-      if (error.code === 'ETIMEDOUT') {
+      if (error instanceof Error && 'code' in error && (error as any).code === 'ETIMEDOUT') {
         throw new Error(`OpenShift operation timed out: ${sanitizedArgs[0]}`);
-      } else if (error.stderr?.includes('not found')) {
+      } else if (error instanceof Error && 'stderr' in error && (error as any).stderr?.includes('not found')) {
         throw new Error(`OpenShift resource not found: ${sanitizedArgs[0]}`);
-      } else if (error.stderr?.includes('Unauthorized')) {
+      } else if (error instanceof Error && 'stderr' in error && (error as any).stderr?.includes('Unauthorized')) {
         throw new Error(`OpenShift authentication failed: ${sanitizedArgs[0]}`);
       }
       
-      throw new Error(`OpenShift command failed: ${sanitizedArgs[0]} - ${error.message}`);
+      throw new Error(`OpenShift command failed: ${sanitizedArgs[0]} - ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -348,7 +355,7 @@ export class OpenShiftClient {
       
       return clusterInfo;
     } catch (error) {
-      logger.error('Failed to get cluster info', error);
+      logger.error('Failed to get cluster info', error instanceof Error ? error : new Error(String(error)));
       
       // Return minimal info if possible
       return {
@@ -402,7 +409,7 @@ export class OpenShiftClient {
       const output = await this.executeOcCommandWithResilience(['whoami', '--show-server']);
       return output.trim();
     } catch (error) {
-      logger.debug('Failed to get server URL', { error: error.message });
+      logger.debug('Failed to get server URL', { errorMsg: error instanceof Error ? error.message : String(error) });
       return 'unknown';
     }
   }
@@ -439,7 +446,7 @@ export class OpenShiftClient {
         node: pod.spec.nodeName
       }));
     } catch (error) {
-      logger.error('Failed to get pods', error, { namespace, selector });
+      logger.error('Failed to get pods', error instanceof Error ? error : new Error(String(error)), { namespace, selector });
       throw error;
     }
   }

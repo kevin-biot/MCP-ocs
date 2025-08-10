@@ -263,7 +263,7 @@ export class ToolRegistry {
   }
 
   private validateNamespaceConsistency(tool: ToolDefinition): void {
-    const expectedPrefix = TOOL_NAMESPACES[tool.namespace]?.prefix;
+    const expectedPrefix = TOOL_NAMESPACES[tool.namespace as keyof typeof TOOL_NAMESPACES]?.prefix;
     if (expectedPrefix && !tool.fullName.startsWith(expectedPrefix)) {
       throw new Error(`Tool ${tool.fullName} does not follow namespace prefix ${expectedPrefix}`);
     }
@@ -409,8 +409,11 @@ export class ToolNamespaceManager {
     
     // Check domain restrictions
     const contextRules = CONTEXT_FILTERING_RULES[context.contextType];
-    if (contextRules?.disabledDomains?.includes(tool.domain)) {
-      return false;
+    if (contextRules && 'disabledDomains' in contextRules) {
+      const disabledDomains = (contextRules as any).disabledDomains as string[];
+      if (disabledDomains?.includes(tool.domain)) {
+        return false;
+      }
     }
     
     return true;
@@ -433,9 +436,8 @@ export class ToolNamespaceManager {
     
     // Enable namespaces based on stream configuration
     streamConfig.enabledNamespaces.forEach(ns => {
-      if (!TOOL_NAMESPACES[ns]?.disabled) {
-        this.enabledNamespaces.add(ns);
-      }
+      // All tool namespaces are enabled by default
+      this.enabledNamespaces.add(ns);
     });
     
     console.error(`🔧 Initialized ${this.config.mode} stream with ${this.enabledNamespaces.size} namespaces`);
@@ -484,9 +486,8 @@ export class ToolNamespaceManager {
   private async configureRouterMode(context: OperationalContext): Promise<void> {
     // Router mode: Enable all available tools for orchestration
     Object.keys(TOOL_NAMESPACES).forEach(namespace => {
-      if (!TOOL_NAMESPACES[namespace]?.disabled) {
-        this.enabledNamespaces.add(namespace);
-      }
+      // All tool namespaces are enabled in router mode
+      this.enabledNamespaces.add(namespace);
     });
     
     console.error('🔧 Configured router mode with full tool access');
@@ -497,8 +498,8 @@ export class ToolNamespaceManager {
     if (!contextRules) return;
     
     // Disable domains marked as disabled
-    if (contextRules.disabledDomains) {
-      contextRules.disabledDomains.forEach(domain => {
+    if (contextRules && 'disabledDomains' in contextRules) {
+      (contextRules.disabledDomains as string[]).forEach((domain: string) => {
         const namespacesToDisable = Object.entries(TOOL_NAMESPACES)
           .filter(([_, config]) => config.domain === domain)
           .map(([namespace]) => namespace);

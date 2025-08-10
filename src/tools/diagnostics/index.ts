@@ -45,7 +45,7 @@ export class DiagnosticTools {
         fullName: 'oc_diagnostic_pod_health',
         domain: 'cluster',
         capabilities: [
-          { type: 'diagnostic', level: 'detailed', riskLevel: 'safe' }
+          { type: 'diagnostic', level: 'advanced', riskLevel: 'safe' }
         ],
         dependencies: [],
         contextRequirements: [],
@@ -107,7 +107,7 @@ export class DiagnosticTools {
         fullName: 'oc_diagnostic_events',
         domain: 'cluster',
         capabilities: [
-          { type: 'diagnostic', level: 'detailed', riskLevel: 'safe' }
+          { type: 'diagnostic', level: 'advanced', riskLevel: 'safe' }
         ],
         dependencies: [],
         contextRequirements: [],
@@ -171,7 +171,8 @@ export class DiagnosticTools {
         incidentId: `diagnostic-error-${sessionId}-${Date.now()}`,
         domain: 'system',
         timestamp: Date.now(),
-        symptoms: [`Diagnostic tool ${toolName} failed: ${error.message}`],
+        symptoms: [`Diagnostic tool ${toolName} failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
+        affectedResources: [],
         diagnosticSteps: [`Attempted ${toolName} with args: ${JSON.stringify(args)}`],
         tags: ['diagnostic_error', 'tool_failure', toolName],
         environment: 'dev'
@@ -205,6 +206,7 @@ export class DiagnosticTools {
       domain: 'cluster',
       timestamp: Date.now(),
       symptoms: [`Cluster health check completed`],
+      affectedResources: [],
       diagnosticSteps: ['Retrieved cluster info', 'Analyzed cluster status'],
       tags: ['cluster_health', 'diagnostic', 'routine_check'],
       environment: 'dev'
@@ -279,7 +281,7 @@ export class DiagnosticTools {
 
   private identifyEventPatterns(events: any[]): any[] {
     // Simple pattern identification
-    const patterns = [];
+    const patterns: any[] = [];
     const reasonCounts = new Map();
     
     events.forEach(event => {

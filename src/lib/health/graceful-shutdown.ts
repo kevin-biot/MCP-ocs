@@ -97,7 +97,7 @@ export class GracefulShutdown {
 
     } catch (error) {
       const shutdownDuration = Date.now() - shutdownStart;
-      logger.error('Graceful shutdown encountered errors', error, { 
+      logger.error('Graceful shutdown encountered errors', error instanceof Error ? error : new Error(String(error)), { 
         signal, 
         duration: shutdownDuration 
       });
@@ -128,7 +128,7 @@ export class GracefulShutdown {
 
     // Handle uncaught exceptions
     process.on('uncaughtException', (error) => {
-      logger.error('Uncaught exception - initiating emergency shutdown', error);
+      logger.error('Uncaught exception - initiating emergency shutdown', error instanceof Error ? error : new Error(String(error)));
       this.initiateShutdown('uncaughtException', 1);
     });
 
@@ -216,10 +216,10 @@ export class GracefulShutdown {
         const duration = Date.now() - handlerStart;
         
         if (handler.critical) {
-          logger.error(`Critical shutdown handler failed: ${handler.name}`, error, { duration });
+          logger.error(`Critical shutdown handler failed: ${handler.name}`, error instanceof Error ? error : new Error(String(error)), { duration });
           throw error; // Fail the entire shutdown process
         } else {
-          logger.warn(`Non-critical shutdown handler failed: ${handler.name}`, error, { duration });
+          logger.warn(`Non-critical shutdown handler failed: ${handler.name}: ${error instanceof Error ? error.message : String(error)}`);
           // Continue with other handlers
         }
       }
@@ -272,7 +272,7 @@ export class OperationTracker {
       logger.debug('Tracked operation completed successfully', { operationId, operationName });
       return result;
     } catch (error) {
-      logger.error('Tracked operation failed', error, { operationId, operationName });
+      logger.error('Tracked operation failed', error instanceof Error ? error : new Error(String(error)), { operationId, operationName });
       throw error;
     } finally {
       this.gracefulShutdown.completeOperation(operationId);

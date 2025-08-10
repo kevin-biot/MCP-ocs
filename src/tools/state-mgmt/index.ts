@@ -220,7 +220,7 @@ export class StateMgmtTools {
     const workflowStates = await this.workflowEngine.getActiveStates();
     
     // Find the specific session
-    const sessionState = workflowStates.sessions.find(s => s.sessionId === sessionId);
+    const sessionState = workflowStates.sessions.find((s: any) => s.sessionId === sessionId);
     
     const result = {
       sessionId,
@@ -246,7 +246,7 @@ export class StateMgmtTools {
     
     if (detailed) {
       // Add more detailed information
-      result.details = {
+      (result as any).details = {
         memoryBreakdown: {
           conversationMemory: `${stats.totalConversations} entries`,
           operationalMemory: `${stats.totalOperational} incidents`,
@@ -275,10 +275,10 @@ export class StateMgmtTools {
       results: results.map(r => ({
         similarity: r.similarity,
         relevance: r.relevance,
-        sessionId: r.memory.sessionId,
+        sessionId: 'sessionId' in r.memory ? r.memory.sessionId : '',
         domain: r.memory.domain,
-        userMessage: r.memory.userMessage,
-        assistantResponse: r.memory.assistantResponse,
+        userMessage: 'userMessage' in r.memory ? r.memory.userMessage : '',
+        assistantResponse: 'assistantResponse' in r.memory ? r.memory.assistantResponse : '',
         timestamp: r.memory.timestamp,
         tags: r.memory.tags
       })),

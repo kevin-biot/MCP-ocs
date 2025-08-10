@@ -67,7 +67,7 @@ export class OpenShiftClient {
       await this.executeOcCommand(['cluster-info'], { timeout: 10000 });
       console.error('✅ OpenShift connection validated');
     } catch (error) {
-      throw new Error(`Failed to connect to OpenShift cluster: ${error.message}`);
+      throw new Error(`Failed to connect to OpenShift cluster: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 

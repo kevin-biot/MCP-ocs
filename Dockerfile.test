@@ -1,0 +1,34 @@
+# Test Dockerfile for containerized testing
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install system dependencies for testing
+RUN apk add --no-cache \
+    curl \
+    git \
+    bash
+
+# Copy package files
+COPY package*.json ./
+COPY tsconfig*.json ./
+
+# Install dependencies including dev dependencies
+RUN npm ci
+
+# Copy source and test files
+COPY src/ ./src/
+COPY tests/ ./tests/
+
+# Build the application
+RUN npm run build
+
+# Create test directories
+RUN mkdir -p tests/tmp/memory tests/tmp/logs
+
+# Set test environment
+ENV NODE_ENV=test
+ENV MCP_LOG_LEVEL=error
+
+# Default command for testing
+CMD ["npm", "run", "test:ci"]

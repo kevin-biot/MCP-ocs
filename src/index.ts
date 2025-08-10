@@ -101,8 +101,14 @@ async function initialize(): Promise<void> {
     });
     
     // 6. Initialize and register tools
-    toolRegistry = new ToolRegistry(namespaceManager);
-    await registerAllTools();
+    // Create tool instances first
+    const diagnosticTools = new DiagnosticTools(openshiftClient, memoryManager);
+    const readOpsTools = new ReadOpsTools(openshiftClient, memoryManager);
+    const writeOpsTools = new WriteOpsTools(openshiftClient, memoryManager, workflowEngine);
+    const stateMgmtTools = new StateMgmtTools(memoryManager, workflowEngine);
+    
+    toolRegistry = new ToolRegistry(diagnosticTools, readOpsTools, writeOpsTools, stateMgmtTools);
+    // Tools are registered automatically in constructor
     
     console.error('✅ MCP-ocs initialized successfully');
     console.error(`📁 Memory system: ${memoryManager.isChromaAvailable() ? 'ChromaDB + JSON' : 'JSON fallback'}`);
@@ -115,36 +121,14 @@ async function initialize(): Promise<void> {
   }
 }
 
-/**
- * Register all tools with proper namespace management
- */
-async function registerAllTools(): Promise<void> {
-  // Diagnostic tools (always enabled)
-  const diagnosticTools = new DiagnosticTools(openshiftClient, memoryManager);
-  await toolRegistry.registerToolGroup('oc_diagnostics', diagnosticTools.getTools());
-  
-  // Read operations tools
-  const readOpsTools = new ReadOpsTools(openshiftClient, memoryManager);
-  await toolRegistry.registerToolGroup('oc_read', readOpsTools.getTools());
-  
-  // Write operations tools (workflow-controlled)
-  const writeOpsTools = new WriteOpsTools(openshiftClient, memoryManager, workflowEngine);
-  await toolRegistry.registerToolGroup('oc_write', writeOpsTools.getTools());
-  
-  // State management tools
-  const stateMgmtTools = new StateMgmtTools(memoryManager, workflowEngine);
-  await toolRegistry.registerToolGroup('oc_state', stateMgmtTools.getTools());
-  
-  console.error(`📋 Registered ${toolRegistry.getToolCount()} tools across ${toolRegistry.getGroupCount()} groups`);
-}
+// Tool registration now handled in ToolRegistry constructor
 
 /**
  * List available tools (filtered by namespace and context)
  */
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   try {
-    const currentContext = await workflowEngine.getCurrentContext();
-    const availableTools = await toolRegistry.getAvailableTools(currentContext);
+    const availableTools = toolRegistry.getAvailableTools();
     
     // Store tool listing in memory for analytics
     await memoryManager.storeOperational({
@@ -152,13 +136,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       domain: 'system',
       timestamp: Date.now(),
       symptoms: ['tool_discovery_request'],
+      affectedResources: [],
       diagnosticSteps: [`Listed ${availableTools.length} available tools`],
       tags: ['tool_discovery', 'system_health'],
       environment: configManager.get('environment', 'dev') as any
     });
     
     return {
-      tools: availableTools.map(tool => ({
+      tools: availableTools.map((tool: any) => ({
         name: tool.fullName,
         description: tool.description,
         inputSchema: tool.inputSchema
@@ -175,13 +160,15 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
  */
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name: toolName, arguments: args } = request.params;
-  const sessionId = args?.sessionId || `session-${Date.now()}`;
+  const sessionId: string = (args?.sessionId as string) || `session-${Date.now()}`;
   
   try {
     // 1. Workflow enforcement check (ADR-005)
     const workflowResponse = await workflowEngine.processToolRequest(sessionId, {
       name: toolName,
-      arguments: args
+      arguments: args,
+      timestamp: new Date(),
+      domain: 'cluster'
     });
     
     // 2. Handle workflow blocking/guidance
@@ -203,7 +190,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     
     // 4. Store conversation memory (ADR-003)
     await memoryManager.storeConversation({
-      sessionId,
+      sessionId: sessionId,
       domain: 'openshift',
       timestamp: Date.now(),
       userMessage: `Tool call: ${toolName}`,
@@ -231,7 +218,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       domain: 'system',
       timestamp: Date.now(),
       symptoms: [`Tool execution error: ${toolName}`],
-      rootCause: error.message,
+      rootCause: error instanceof Error ? error.message : 'Unknown error',
+      affectedResources: [],
       diagnosticSteps: [`Failed to execute ${toolName} with args: ${JSON.stringify(args)}`],
       tags: ['tool_error', 'system_issue', toolName],
       environment: configManager.get('environment', 'dev') as any
@@ -240,7 +228,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     return {
       content: [{
         type: "text",
-        text: `❌ Error executing ${toolName}: ${error.message}`
+        text: `❌ Error executing ${toolName}: ${error instanceof Error ? error.message : 'Unknown error'}`
       }],
       isError: true
     };
