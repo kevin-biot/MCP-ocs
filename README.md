@@ -1,343 +1,197 @@
 # MCP-ocs: OpenShift Container Platform Operations Server
 
-**A Model Context Protocol (MCP) server for structured OpenShift diagnostics, operations, and incident management.**
+A Model Context Protocol (MCP) server for OpenShift operations and diagnostics, implementing structured workflows and memory-guided troubleshooting.
 
-## 🎯 **Project Vision**
+## Architecture Implementation
 
-MCP-ocs transforms chaotic 4 AM troubleshooting into methodical, AI-assisted operations. Built for telco operators and enterprise teams running OpenShift, it prevents "random troubleshooting" and captures operational knowledge for continuous learning.
+This skeleton implements the complete architectural framework defined in the ADRs:
 
-### **Core Problems Solved**
-- ❌ **Panic-driven operations** → ✅ **Structured diagnostic workflows**
-- ❌ **Repeated incident resolution** → ✅ **Pattern recognition and knowledge reuse** 
-- ❌ **Tribal knowledge loss** → ✅ **Persistent operational memory**
-- ❌ **Random troubleshooting** → ✅ **Evidence-based problem solving**
+### ADR-001: OpenShift CLI Wrapper (Phase 1)
+- ✅ `OpenShiftClient` - Wraps `oc` commands for rapid development
+- ✅ Command sanitization and error handling
+- ✅ JSON parsing and type safety
+- 🔮 Future: Kubernetes API client migration (Phase 2)
 
-## 🏗️ **Architecture Overview**
+### ADR-003: Hybrid Memory System
+- ✅ `SharedMemoryManager` - ChromaDB + JSON fallback
+- ✅ Conversation and operational memory storage
+- ✅ Vector similarity search with graceful degradation
+- ✅ Auto-context extraction and tagging
+
+### ADR-004: Tool Namespace Management
+- ✅ `ToolNamespaceManager` - Context-aware tool filtering
+- ✅ Hierarchical namespace architecture (`oc_*`, `memory_*`, etc.)
+- ✅ Three-stream configuration (single/team/router modes)
+- ✅ Tool conflict prevention and domain isolation
+
+### ADR-005: Workflow State Machine
+- ✅ `WorkflowEngine` - Diagnostic state enforcement
+- ✅ Panic detection system (rapid-fire, bypassing diagnostics)
+- ✅ Evidence-based state transitions
+- ✅ Memory-guided workflow suggestions
+
+## Project Structure
 
 ```
-LLM Client (Claude/LM Studio/Qwen)
-         ↓
-    MCP Router (Smart Workflow Engine)
-    ├── Panic detection & prevention
-    ├── Diagnostic workflow enforcement  
-    ├── Cross-domain memory coordination
-    └── Context-aware tool presentation
-         ↓
-    MCP-ocs (OpenShift Operations)
-    ├── Read-only diagnostics (oc get, describe, logs)
-    ├── Write operations (oc apply, scale, restart) 
-    ├── Health checks & recommendations
-    └── Incident pattern recognition
-         ↓
-   Shared Memory System (ChromaDB + JSON)
-   ├── Operational incident database
-   ├── Cross-session conversation context
-   ├── Diagnostic workflow templates
-   └── Root cause analysis patterns
+src/
+├── index.ts                    # Main MCP server entry point
+├── lib/                        # Core architecture components
+│   ├── openshift-client.ts     # ADR-001: CLI wrapper
+│   ├── memory/
+│   │   └── shared-memory.ts    # ADR-003: Hybrid memory
+│   ├── tools/
+│   │   └── namespace-manager.ts # ADR-004: Tool namespacing
+│   ├── workflow/
+│   │   └── workflow-engine.ts  # ADR-005: State machine
+│   └── config/
+│       └── config-manager.ts   # Configuration management
+└── tools/                      # Tool implementations
+    ├── diagnostics/            # oc_diagnostic_* tools
+    ├── read-ops/               # oc_read_* tools
+    ├── write-ops/              # oc_write_* tools (workflow-controlled)
+    └── state-mgmt/             # memory_* and core_* tools
 ```
 
-## 🎯 **Target Market Evolution**
+## Key Features
 
-### **Phase 1: Telco OpenShift** (Current Focus)
-- Heavy OpenShift users with complex networking
-- Regulatory compliance requirements
-- 24/7 operations teams needing structured guidance
+### 🛡️ Panic Prevention (ADR-005)
+- Detects rapid-fire dangerous operations
+- Prevents bypassing diagnostic workflows
+- Provides calming intervention messages
+- Enforces evidence gathering before fixes
 
-### **Phase 2: Enterprise Mixed K8s**
-- Hybrid OpenShift + vanilla Kubernetes environments
-- Multi-cloud operations (EKS, GKE, AKS)
-- DevOps teams scaling operations
+### 🧠 Memory-Guided Operations (ADR-003)
+- Stores all conversations and incidents
+- Finds similar past incidents automatically  
+- Suggests next steps based on patterns
+- ChromaDB for vector search + JSON backup
 
-### **Phase 3: Universal Kubernetes**
-- Any CNCF-certified Kubernetes distribution
-- SMB to enterprise market expansion
-- Cloud-native operations standardization
+### 🔧 Context-Aware Tools (ADR-004)
+- Tools filtered by operational context
+- Namespace-based organization prevents confusion
+- Single/team/router mode configurations
+- Domain-specific tool prioritization
 
-## 🛠️ **Technical Implementation**
+### 📊 Structured Diagnostics (ADR-005)
+- State machine: gathering → analyzing → hypothesizing → testing → resolving
+- Evidence requirements for each state
+- Memory-guided workflow suggestions
+- Proper authorization for write operations
 
-### **Deployment Phases**
+## Tool Categories
 
-#### **Phase 1: Laptop Development** (Current)
-```
-Developer Laptop (macOS/Linux)
-├── MCP-ocs server (Node.js/TypeScript)
-├── `oc` CLI → OpenShift cluster (AWS/Azure/GCP)
-├── ChromaDB (local vector database)
-└── LLM client (Claude/LM Studio)
-```
+### Diagnostic Tools (`oc_diagnostic_*`)
+- `oc_diagnostic_cluster_health` - Overall cluster status
+- `oc_diagnostic_pod_health` - Pod health analysis
+- `oc_diagnostic_resource_usage` - Resource utilization
+- `oc_diagnostic_events` - Event pattern analysis
 
-#### **Phase 2: Containerized Deployment**
-```
-OpenShift Cluster
-├── MCP-ocs Pod (containerized server)
-│   ├── ServiceAccount with RBAC constraints
-│   ├── Network policies for security
-│   └── Resource limits and monitoring
-├── ChromaDB StatefulSet (persistent storage)
-└── Ingress/Route for LLM client access
-```
+### Read Operations (`oc_read_*`)
+- `oc_read_get_pods` - List pods with filtering
+- `oc_read_describe` - Detailed resource information
+- `oc_read_logs` - Container log retrieval
+- `memory_search_operational` - Find similar incidents
 
-#### **Phase 3: GitOps Integration**
-```
-GitOps Workflow
-├── Configuration as Code (Helm charts)
-├── ArgoCD for deployment automation  
-├── Policy enforcement (OPA/Gatekeeper)
-└── Multi-cluster federation
-```
+### Write Operations (`oc_write_*`) - Workflow Controlled
+- `oc_write_apply` - Apply configurations (requires resolving state)
+- `oc_write_scale` - Scale deployments (requires resolving state)
+- `oc_write_restart` - Restart deployments (requires resolving state)
 
-### **Platform Abstraction Strategy**
+### State Management (`memory_*`, `core_*`)
+- `memory_store_operational` - Store incident resolutions
+- `memory_search_conversations` - Search conversation history
+- `core_workflow_state` - Get workflow session state
+- `memory_get_stats` - Memory system statistics
 
-```typescript
-// Universal container platform interface
-interface ContainerPlatform {
-  getPods(): Promise<Pod[]>;
-  getNetworkResources(): Promise<NetworkResource[]>;
-  getSecurityContexts(): Promise<SecurityContext[]>;
-  getDiagnosticLogs(): Promise<LogEntry[]>;
-  checkHealth(): Promise<HealthStatus>;
-}
+## Configuration
 
-// Platform-specific implementations
-class OpenShiftPlatform implements ContainerPlatform {
-  // OpenShift-specific: Routes, ImageStreams, SCCs
-}
+The server supports multiple configuration sources:
 
-class KubernetesPlatform implements ContainerPlatform {
-  // Standard K8s: Ingress, Deployments, PSPs
-}
-```
+1. **Environment Variables**:
+   ```bash
+   MCP_TOOL_MODE=single                    # Tool mode (single/team/router)
+   MCP_CHROMA_HOST=127.0.0.1              # ChromaDB host
+   MCP_ENFORCEMENT=guidance                # Workflow enforcement level
+   KUBECONFIG=/path/to/kubeconfig         # OpenShift config
+   ```
 
-## 🔄 **Development Methodology**
+2. **Configuration Files**:
+   - `./config/mcp-ocs.json`
+   - `./mcp-ocs.config.json`
+   - `~/.mcp-ocs.json`
 
-### **Sprint-Based Development**
-- **Sprint Duration:** 1-2 days per feature
-- **Git Workflow:** Feature branches with immediate testing
-- **Test Environment:** Real AWS OpenShift cluster
-- **Definition of Done:** Works against production-like environment
+3. **Defaults**: Sensible defaults for development
 
-### **Sprint Roadmap**
+## Workflow States
 
-#### **Week 1: Foundation**
-- **Sprint 1.1:** Basic MCP server skeleton + health check
-- **Sprint 1.2:** First read-only tool (`oc_get_pods`)  
-- **Sprint 1.3:** Shared memory integration
+The system enforces a structured diagnostic workflow:
 
-#### **Week 2: Core Diagnostics**
-- **Sprint 2.1:** Pod diagnostics (`oc_describe_pod`, `oc_get_pod_logs`)
-- **Sprint 2.2:** Event analysis and correlation
-- **Sprint 2.3:** Health checking with actionable recommendations
+1. **Gathering** (30s minimum) - Collect symptoms and evidence
+2. **Analyzing** - Search memory for similar patterns  
+3. **Hypothesizing** - Form testable theories
+4. **Testing** - Validate hypotheses with targeted investigation
+5. **Resolving** - Apply approved solutions with proper authorization
 
-#### **Week 3: Router Intelligence**
-- **Sprint 3.1:** Basic router with tool aggregation
-- **Sprint 3.2:** Context-aware tool presentation  
-- **Sprint 3.3:** Panic detection and workflow enforcement
+Write operations are **blocked** until reaching the Resolving state with sufficient evidence.
 
-#### **Week 4: Write Operations & Safety**
-- **Sprint 4.1:** State management (cluster context, sessions)
-- **Sprint 4.2:** Write operations with approval workflows
-- **Sprint 4.3:** GitOps integration planning
+## Development Status
 
-## 🔒 **Safety & Security Framework**
+### ✅ Completed (Skeleton)
+- Complete architectural framework
+- All ADR implementations
+- Tool namespace management
+- Workflow state machine
+- Memory system (JSON fallback)
+- Basic tool implementations
+- Configuration management
 
-### **Environment Classification**
-```typescript
-ENVIRONMENT_CLASSES = {
-  "dev": { 
-    risk_level: "low", 
-    auto_apply: true,
-    approval_required: false
-  },
-  "test": { 
-    risk_level: "medium", 
-    auto_apply: true,
-    approval_required: false 
-  },
-  "staging": { 
-    risk_level: "high", 
-    auto_apply: false,
-    approval_required: true
-  },
-  "prod": { 
-    risk_level: "critical", 
-    auto_apply: false,
-    requires_senior_approval: true,
-    red_light_warnings: true
-  }
-}
-```
+### 🚧 Next Steps
+1. **ChromaDB Integration** - Replace placeholder with real ChromaDB client
+2. **Tool Execution** - Complete OpenShift client method implementations  
+3. **Evidence Extraction** - Auto-extract evidence from tool results
+4. **State Transitions** - Implement automatic state progression
+5. **Advanced Panic Detection** - Domain jumping, permission escalation
+6. **Testing** - Unit and integration tests
+7. **Documentation** - User guides and API documentation
 
-### **Red Light Scenarios** 
-Operations requiring senior approval + extensive audit:
-- Resource deletions in staging/production
-- Cross-namespace operations  
-- Large-scale changes (>10 pods affected)
-- Critical service modifications
-- Any production write operation during business hours
+## Quick Start
 
-### **Authentication Evolution**
-- **Phase 1:** Laptop kubeconfig + user credentials
-- **Phase 2:** ServiceAccount with least-privilege RBAC
-- **Phase 3:** User impersonation + per-operation attribution
-
-## 🧠 **Shared Memory Architecture**
-
-### **Memory Types**
-
-#### **Conversation Memory**
-```typescript
-interface ConversationMemory {
-  sessionId: string;
-  domain: string; // 'openshift', 'kubernetes', 'files'
-  userMessage: string;
-  assistantResponse: string;
-  context: string[]; // Auto-extracted technical terms
-  tags: string[]; // Categorization labels
-  timestamp: number;
-}
-```
-
-#### **Operational Memory**
-```typescript
-interface OperationalMemory {
-  incidentId: string;
-  domain: string;
-  symptoms: string[]; // Observable problems
-  rootCause?: string; // Determined cause
-  resolution?: string; // Applied solution
-  environment: 'dev' | 'test' | 'staging' | 'prod';
-  affectedResources: string[]; // Pods, services, etc.
-  diagnosticSteps: string[]; // Investigation process
-  tags: string[]; // Problem categorization
-}
-```
-
-### **Cross-Domain Learning**
-- **Pattern Recognition:** "This OpenShift Route issue is similar to previous Ingress problems"
-- **Knowledge Transfer:** Solutions from dev environment applicable to staging
-- **Incident Correlation:** Multiple related incidents grouped automatically
-- **Preventive Recommendations:** "Teams often see this after deploying configuration X"
-
-## 🛡️ **Operational Hardening**
-
-### **Panic Prevention System**
-```typescript
-enum DiagnosticState {
-  GATHERING = 'gathering',     // Only read operations allowed
-  ANALYZING = 'analyzing',     // Pattern matching against memory
-  HYPOTHESIZING = 'hypothesizing', // Guided evidence collection  
-  TESTING = 'testing',         // Targeted investigation tools
-  RESOLVING = 'resolving'      // Write operations unlocked with approval
-}
-```
-
-### **Workflow Enforcement**
-- **No fixes without evidence** - Diagnostic steps must be completed
-- **Structured investigation** - Follow proven troubleshooting templates
-- **Memory-guided decisions** - "Similar incidents were resolved by..."
-- **Approval gates** - Senior engineer sign-off for high-risk operations
-
-### **Audit Trail**
-- **Every operation logged** with user attribution and context
-- **Decision rationale captured** - Why this action was chosen
-- **Memory references** - Which past incidents influenced decisions
-- **Approval chains recorded** - Who authorized what operations
-
-## 📊 **Success Metrics**
-
-### **Operational KPIs**
-- **MTTR Reduction:** Time from incident detection to resolution
-- **Panic Prevention:** Reduction in destructive/random actions
-- **Knowledge Reuse:** % of incidents matched to existing patterns
-- **Workflow Compliance:** % of incidents following structured process
-
-### **Learning Metrics**  
-- **Memory Effectiveness:** Accuracy of similar incident matching
-- **Pattern Recognition:** Discovery of recurring operational issues
-- **Knowledge Transfer:** Cross-team learning and best practice sharing
-- **Preventive Impact:** Reduction in repeat incidents
-
-## 🚀 **Getting Started**
-
-### **Prerequisites**
-- Node.js 18+ 
-- OpenShift CLI (`oc`) configured with cluster access
-- ChromaDB server running locally or accessible endpoint
-- LLM client (Claude, LM Studio, or compatible MCP client)
-
-### **Quick Start**
 ```bash
-# Clone and install
-git clone [repository-url]
-cd MCP-ocs
+# Install dependencies
 npm install
 
-# Build shared memory library
-cd ../MCP-router/src/memory
+# Build the project
 npm run build
 
-# Start development server
-cd ../../MCP-ocs
+# Start the server
+npm start
+
+# Development mode with auto-rebuild
 npm run dev
-
-# Test against your cluster
-oc get pods # Verify cluster access
-npm test
 ```
 
-### **Development Setup**
-```bash
-# Start unified environment (from MCP-files directory)
-./start-unified.sh
+## Memory System Status
 
-# This starts:
-# - ChromaDB on port 8000
-# - MCP File Server on port 8080  
-# - All directories accessible
-# - Memory system initialized
+The memory system is ready with JSON fallback:
+- ✅ Conversation storage and retrieval
+- ✅ Operational incident storage  
+- ✅ Text-based similarity search
+- 🔮 ChromaDB vector search (placeholder ready)
+
+## Workflow Example
+
+```
+🔍 User: "Pod is failing, let me restart it"
+🛑 System: "Let's gather evidence first. What symptoms are you seeing?"
+
+📋 User: Uses oc_read_get_pods
+📊 System: Stores evidence, suggests checking logs
+
+📄 User: Uses oc_read_logs  
+🧠 System: Searches memory, finds similar incident patterns
+
+🎯 System: "This looks like incident INC-2023-45. Try scaling down first."
+✅ User: Uses oc_write_scale (now allowed in resolving state)
 ```
 
-## 🤝 **Contributing**
-
-### **Development Workflow**
-1. **Create feature branch:** `git checkout -b feature/sprint-name`
-2. **Develop incrementally:** Small commits with clear messages
-3. **Test against real cluster:** Validate with AWS OpenShift environment
-4. **Memory integration:** Store learnings and patterns
-5. **Pull request:** Code review and merge to main
-
-### **Sprint Guidelines**
-- **Maximum 2-day sprints** for rapid iteration
-- **Real cluster testing** required for completion
-- **Memory integration** in every feature
-- **Non-breaking changes** to existing functionality
-- **Documentation updated** with each sprint
-
-## 📝 **Documentation**
-
-- **[Architecture Decision Records](./docs/architecture/)** - Technical decisions and rationale *(Coming Soon)*
-- **[API Documentation](./docs/api/)** - Tool interfaces and schemas *(Coming Soon)*
-- **[Workflow Guides](./docs/workflows/)** - Diagnostic procedures and templates *(Coming Soon)*
-- **[Deployment Guide](./docs/deployment/)** - Installation and configuration *(Coming Soon)*
-
-## 🔗 **Related Projects**
-
-- **[MCP-files](https://github.com/kevin-biot/MCP-files)** - File system operations and shared memory foundation
-- **[MCP-router](https://github.com/kevin-biot/MCP-router)** - Smart routing and workflow orchestration
-- **[Shared Memory Library](https://github.com/kevin-biot/MCP-router/tree/main/src/memory)** - Cross-domain memory management
-
-## 📄 **License**
-
-MIT License - See [LICENSE](./LICENSE) for details
-
-## 📞 **Support**
-
-- **Issues:** GitHub Issues for bug reports and feature requests
-- **Discussions:** GitHub Discussions for architecture and usage questions  
-- **Documentation:** Comprehensive guides in `/docs` directory
-
----
-
-**Built for operations teams who refuse to accept 4 AM chaos as normal.** 🌟
-
-*Transform your OpenShift operations from reactive firefighting to proactive, AI-assisted excellence.*
+This skeleton provides a complete foundation for the MCP-ocs server with all architectural decisions properly implemented.
