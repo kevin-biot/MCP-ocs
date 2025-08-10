@@ -315,16 +315,16 @@ npm test
 
 ## 📝 **Documentation**
 
-- **[Architecture Decision Records](./docs/architecture/)** - Technical decisions and rationale
-- **[API Documentation](./docs/api/)** - Tool interfaces and schemas  
-- **[Workflow Guides](./docs/workflows/)** - Diagnostic procedures and templates
-- **[Deployment Guide](./docs/deployment/)** - Installation and configuration
+- **[Architecture Decision Records](./docs/architecture/)** - Technical decisions and rationale *(Coming Soon)*
+- **[API Documentation](./docs/api/)** - Tool interfaces and schemas *(Coming Soon)*
+- **[Workflow Guides](./docs/workflows/)** - Diagnostic procedures and templates *(Coming Soon)*
+- **[Deployment Guide](./docs/deployment/)** - Installation and configuration *(Coming Soon)*
 
 ## 🔗 **Related Projects**
 
-- **[MCP-files](../MCP-files/)** - File system operations and shared memory foundation
-- **[MCP-router](../MCP-router/)** - Smart routing and workflow orchestration
-- **[Shared Memory Library](../MCP-router/src/memory/)** - Cross-domain memory management
+- **[MCP-files](https://github.com/kevin-biot/MCP-files)** - File system operations and shared memory foundation
+- **[MCP-router](https://github.com/kevin-biot/MCP-router)** - Smart routing and workflow orchestration
+- **[Shared Memory Library](https://github.com/kevin-biot/MCP-router/tree/main/src/memory)** - Cross-domain memory management
 
 ## 📄 **License**
 

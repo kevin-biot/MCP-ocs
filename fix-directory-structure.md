@@ -11,15 +11,17 @@ Add .gitkeep files to preserve directory structure, then push the updates.
 ```bash
 cd /Users/kevinbrown/MCP-ocs
 
-# Add the new .gitkeep files
+# Add the new .gitkeep files and documentation
 git add .
 
-# Commit the directory structure
-git commit -m "feat: Add directory structure with .gitkeep files
+# Commit the directory structure and fixes
+git commit -m "feat: Add complete directory structure and fix README links
 
 - Add .gitkeep files to preserve project directory structure
-- Ensure src/tools/, config/, docs/, tests/, scripts/ directories are tracked
-- Complete project structure now visible on GitHub
+- Fix broken documentation links in README
+- Add placeholder documentation for architecture, API, workflows, deployment
+- Update related project links to use GitHub URLs
+- Complete professional project structure now visible on GitHub
 - Ready for Sprint 1.1 development"
 
 # Push to GitHub
