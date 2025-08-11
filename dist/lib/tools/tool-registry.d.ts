@@ -3,7 +3,7 @@
  * Implements ADR-004: Tool namespace management
  */
 import { ToolCapability } from '../types/common.js';
-import { DiagnosticTools } from '../../tools/diagnostics/index.js';
+import { DiagnosticToolsV2 as DiagnosticTools } from '../../tools/diagnostics/index.js';
 import { ReadOpsTools } from '../../tools/read-ops/index.js';
 import { WriteOpsTools } from '../../tools/write-ops/index.js';
 import { StateMgmtTools } from '../../tools/state-mgmt/index.js';
@@ -29,5 +29,14 @@ export declare class ToolRegistry {
     getTool(name: string): RegisteredTool | undefined;
     getToolsByNamespace(namespace: string): RegisteredTool[];
     getToolsByDomain(domain: string): RegisteredTool[];
+    /**
+     * Register a new tool (public method for v2 tools)
+     */
+    registerExternalTool(toolDefinition: {
+        name: string;
+        description: string;
+        inputSchema: any;
+        handler: Function;
+    }): void;
     executeTool(name: string, args: any): Promise<any>;
 }

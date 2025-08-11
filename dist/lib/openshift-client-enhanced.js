@@ -252,7 +252,7 @@ export class OpenShiftClient {
         try {
             // Execute operations concurrently with proper error handling
             const [versionResult, whoamiResult, projectResult] = await Promise.allSettled([
-                this.executeOcCommandWithResilience(['version', '--client', '-o', 'json']),
+                this.executeOcCommandWithResilience(['version', '-o', 'json']),
                 this.executeOcCommandWithResilience(['whoami']),
                 this.executeOcCommandWithResilience(['project', '-q'])
             ]);

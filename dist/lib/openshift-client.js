@@ -34,7 +34,7 @@ export class OpenShiftClient {
     async getClusterInfo() {
         try {
             const [versionOutput, whoamiOutput, projectOutput] = await Promise.all([
-                this.executeOcCommand(['version', '--client', '-o', 'json']),
+                this.executeOcCommand(['version', '-o', 'json']),
                 this.executeOcCommand(['whoami']),
                 this.executeOcCommand(['project', '-q']).catch(() => 'default')
             ]);

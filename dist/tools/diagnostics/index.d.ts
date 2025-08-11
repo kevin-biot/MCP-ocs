@@ -1,25 +1,59 @@
 /**
- * Diagnostic Tools - OpenShift Health and Status Checks
+ * Enhanced Diagnostic Tools v2 - OpenShift Health and Status Checks
  *
- * Following ADR-004 namespace conventions: oc_diagnostic_*
- * Safe read-only operations for cluster health assessment
+ * Replaces v1 diagnostic tools with enhanced implementations:
+ * - Better error handling and caching
+ * - Intelligent pattern detection
+ * - Comprehensive health analysis
+ * - Real-world operational patterns
  */
 import { ToolDefinition } from '../../lib/tools/namespace-manager.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
-export declare class DiagnosticTools {
+export declare class DiagnosticToolsV2 {
     private openshiftClient;
     private memoryManager;
+    private ocWrapperV2;
+    private namespaceHealthChecker;
+    private rcaChecklistEngine;
     constructor(openshiftClient: OpenShiftClient, memoryManager: SharedMemoryManager);
     getTools(): ToolDefinition[];
+    executeTool(toolName: string, args: any): Promise<string>;
     /**
-     * Execute diagnostic tool (placeholder implementation)
-     * In real implementation, this would call the actual OpenShift client methods
+     * Enhanced cluster health check with v2 capabilities
      */
-    executeTool(toolName: string, args: any): Promise<any>;
-    private checkClusterHealth;
-    private checkPodHealth;
-    private analyzeResourceUsage;
-    private analyzeEvents;
-    private identifyEventPatterns;
+    private enhancedClusterHealth;
+    /**
+     * Enhanced namespace health using v2 implementation
+     */
+    private enhancedNamespaceHealth;
+    /**
+     * Enhanced pod health with dependency analysis
+     */
+    private enhancedPodHealth;
+    private analyzeNodeHealth;
+    private analyzeOperatorHealth;
+    private analyzeSystemNamespaces;
+    private analyzeUserNamespaces;
+    private calculateOverallHealth;
+    private generateClusterRecommendations;
+    private generateNamespaceNextActions;
+    private performDeepNamespaceAnalysis;
+    private checkResourceQuotas;
+    private checkNetworkPolicies;
+    private checkSecrets;
+    private analyzePodDetails;
+    private analyzePodDependencies;
+    private findServicesForPod;
+    private findConfigMapsForPod;
+    private findSecretsForPod;
+    private analyzePodResources;
+    private generatePodRecommendations;
+    private generatePodHealthSummary;
+    private formatClusterHealthResponse;
+    /**
+     * Execute RCA checklist workflow
+     */
+    private executeRCAChecklist;
+    private formatErrorResponse;
 }

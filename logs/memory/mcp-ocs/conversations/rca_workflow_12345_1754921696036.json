@@ -1,0 +1,17 @@
+{
+  "sessionId": "rca_workflow_12345",
+  "domain": "openshift",
+  "timestamp": 1754921696036,
+  "userMessage": "Get pods in student03 namespace",
+  "assistantResponse": "Found 1 pods: 1 running, 0 pending, 0 failed",
+  "context": [
+    "pods",
+    "namespace",
+    "student03"
+  ],
+  "tags": [
+    "read_operation",
+    "pods",
+    "cluster_state"
+  ]
+}

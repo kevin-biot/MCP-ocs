@@ -1,0 +1,18 @@
+{
+  "incidentId": "cluster-health-rca_checklist_session",
+  "domain": "cluster",
+  "timestamp": 1754921514815,
+  "symptoms": [
+    "cluster_issues_detected"
+  ],
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Enhanced cluster health check completed"
+  ],
+  "tags": [
+    "cluster_health",
+    "diagnostic",
+    "degraded"
+  ],
+  "environment": "prod"
+}

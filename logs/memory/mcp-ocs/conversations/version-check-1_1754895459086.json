@@ -1,0 +1,15 @@
+{
+  "sessionId": "version-check-1",
+  "domain": "openshift",
+  "timestamp": 1754895459086,
+  "userMessage": "Tool call: oc_diagnostic_cluster_health",
+  "assistantResponse": "{\n  \"clusterStatus\": \"connected\",\n  \"version\": \"4.18.1\",\n  \"currentUser\": \"kube:admin\",\n  \"serverUrl\": \".clusters[0].cluster.server\",\n  \"timestamp\": \"2025-08-11T06:57:39.085Z\",\n  \"overallHealth\": \"healthy\",\n  \"issues\": [],\n  \"recommendations\": []\n}",
+  "context": [
+    "oc_diagnostic_cluster_health"
+  ],
+  "tags": [
+    "openshift",
+    "kubernetes",
+    "dev"
+  ]
+}

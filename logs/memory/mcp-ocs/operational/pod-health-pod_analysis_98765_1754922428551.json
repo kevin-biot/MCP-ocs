@@ -1,0 +1,22 @@
+{
+  "incidentId": "pod-health-pod_analysis_98765",
+  "domain": "cluster",
+  "timestamp": 1754922428551,
+  "symptoms": [
+    "pod_healthy"
+  ],
+  "affectedResources": [
+    "pod/java-webapp-build-2bvkl-jq69m-pod",
+    "namespace/student04"
+  ],
+  "diagnosticSteps": [
+    "Enhanced pod health check completed"
+  ],
+  "tags": [
+    "pod_health",
+    "diagnostic",
+    "student04",
+    "java-webapp-build-2bvkl-jq69m-pod"
+  ],
+  "environment": "prod"
+}

@@ -1,0 +1,15 @@
+{
+  "sessionId": "rca_workflow_12345",
+  "domain": "openshift",
+  "timestamp": 1754921676666,
+  "userMessage": "Tool call: core_workflow_state",
+  "assistantResponse": "{\n  \"sessionId\": \"rca_workflow_12345\",\n  \"found\": true,\n  \"state\": {\n    \"sessionId\": \"rca_workflow_12345\",\n    \"currentState\": \"gathering\",\n    \"evidenceCount\": 0,\n    \"lastActivity\": \"2025-08-11T14:14:36.665Z\"\n  },\n  \"allActiveSessions\": 1,\n  \"timestamp\": \"2025-08-11T14:14:36.665Z\"\n}",
+  "context": [
+    "core_workflow_state"
+  ],
+  "tags": [
+    "openshift",
+    "kubernetes",
+    "dev"
+  ]
+}

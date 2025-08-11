@@ -1,0 +1,15 @@
+{
+  "sessionId": "rca_workflow_12345",
+  "domain": "openshift",
+  "timestamp": 1754921715918,
+  "userMessage": "Tool call: oc_diagnostic_cluster_health",
+  "assistantResponse": "\"{\\n  \\\"tool\\\": \\\"oc_diagnostic_cluster_health\\\",\\n  \\\"sessionId\\\": \\\"rca_workflow_12345\\\",\\n  \\\"cluster\\\": {\\n    \\\"status\\\": \\\"connected\\\",\\n    \\\"version\\\": \\\"4.18.1\\\",\\n    \\\"currentUser\\\": \\\"kube:admin\\\",\\n    \\\"serverUrl\\\": \\\".clusters[0].cluster.server\\\",\\n    \\\"timestamp\\\": \\\"2025-08-11T14:15:15.917Z\\\"\\n  },\\n  \\\"nodes\\\": {\\n    \\\"total\\\": 6,\\n    \\\"ready\\\": 6,\\n    \\\"issues\\\": []\\n  },\\n  \\\"operators\\\": {\\n    \\\"total\\\": 34,\\n    \\\"degraded\\\": []\\n  },\\n  \\\"systemNamespaces\\\": [\\n    {\\n      \\\"namespace\\\": \\\"openshift-apiserver\\\",\\n      \\\"status\\\": \\\"healthy\\\",\\n      \\\"issues\\\": 0\\n    },\\n    {\\n      \\\"namespace\\\": \\\"openshift-etcd\\\",\\n      \\\"status\\\": \\\"degraded\\\",\\n      \\\"issues\\\": 0\\n    },\\n    {\\n      \\\"namespace\\\": \\\"openshift-kube-apiserver\\\",\\n      \\\"status\\\": \\\"degraded\\\",\\n      \\\"issues\\\": 0\\n    }\\n  ],\\n  \\\"userNamespaces\\\": [\\n    {\\n      \\\"namespace\\\": \\\"default\\\",\\n      \\\"status\\\": \\\"failing\\\",\\n      \\\"podCount\\\": 0,\\n      \\\"issues\\\": 0\\n    },\\n    {\\n      \\\"namespace\\\": \\\"devops\\\",\\n      \\\"status\\\": \\\"failing\\\",\\n      \\\"podCount\\\": 1,\\n      \\\"issues\\\": 0\\n    },\\n    {\\n      \\\"namespace\\\": \\\"openshift\\\",\\n      \\\"status\\\": \\\"failing\\\",\\n      \\\"podCount\\\": 0,\\n      \\\"issues\\\": 0\\n    },\\n    {\\n      \\\"namespace\\\": \\\"student01\\\",\\n      \\\"status\\\": \\\"healthy\\\",\\n      \\\"podCount\\\": 3,\\n      \\\"issues\\\": 0\\n    },\\n    {\\n      \\\"namespace\\\": \\\"student02\\\",\\n      \\\"status\\\": \\\"healthy\\\",\\n      \\\"podCount\\\": 1,\\n      \\\"issues\\\": 0\\n    }\\n  ],\\n  \\\"overallHealth\\\": \\\"degraded\\\",\\n  \\\"duration\\\": \\\"8035ms\\\",\\n  \\\"recommendations\\\": [],\\n  \\\"human\\\": \\\"Cluster is degraded. Nodes: 6/6 ready. Operators: 0 degraded.\\\"\\n}\"",
+  "context": [
+    "oc_diagnostic_cluster_health"
+  ],
+  "tags": [
+    "openshift",
+    "kubernetes",
+    "dev"
+  ]
+}

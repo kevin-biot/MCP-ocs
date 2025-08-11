@@ -18,10 +18,12 @@ import { WorkflowEngine } from "./lib/workflow/workflow-engine.js";
 import { ConfigManager } from "./lib/config/config-manager.js";
 import { ToolRegistry } from "./lib/tools/tool-registry.js";
 // Core tool implementations
-import { DiagnosticTools } from "./tools/diagnostics/index.js";
+import { DiagnosticToolsV2 as DiagnosticTools } from "./tools/diagnostics/index.js";
 import { ReadOpsTools } from "./tools/read-ops/index.js";
 import { WriteOpsTools } from "./tools/write-ops/index.js";
 import { StateMgmtTools } from "./tools/state-mgmt/index.js";
+// V2 Tools - now integrated into main tools
+// import { checkNamespaceHealthV2Tool } from "./v2-integration.js";
 const server = new Server({
     name: "mcp-ocs",
     version: "0.1.0",
@@ -86,6 +88,8 @@ async function initialize() {
         const stateMgmtTools = new StateMgmtTools(memoryManager, workflowEngine);
         toolRegistry = new ToolRegistry(diagnosticTools, readOpsTools, writeOpsTools, stateMgmtTools);
         // Tools are registered automatically in constructor
+        // V2 tools now integrated into main diagnostic tools
+        // toolRegistry.registerExternalTool(checkNamespaceHealthV2Tool);
         console.error('✅ MCP-ocs initialized successfully');
         console.error(`📁 Memory system: ${memoryManager.isChromaAvailable() ? 'ChromaDB + JSON' : 'JSON fallback'}`);
         console.error(`🔧 Tool mode: ${namespaceManager.getCurrentMode()}`);
@@ -103,6 +107,7 @@ async function initialize() {
 server.setRequestHandler(ListToolsRequestSchema, async () => {
     try {
         const availableTools = toolRegistry.getAvailableTools();
+        console.error("DEBUG: Available tools:", JSON.stringify(availableTools, null, 2));
         // Store tool listing in memory for analytics
         await memoryManager.storeOperational({
             incidentId: `tool-list-${Date.now()}`,
@@ -116,7 +121,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         });
         return {
             tools: availableTools.map((tool) => ({
-                name: tool.fullName,
+                name: tool.name,
                 description: tool.description,
                 inputSchema: tool.inputSchema
             }))

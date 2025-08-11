@@ -16,20 +16,34 @@ export class ToolRegistry {
         this.registerAllTools();
     }
     registerAllTools() {
-        // Register diagnostic tools
-        this.registerTool('oc_diagnostic_cluster_health', 'mcp-openshift', 'cluster', { type: 'diagnostic', level: 'basic', riskLevel: 'safe' }, this.diagnosticTools.executeTool.bind(this.diagnosticTools, 'oc_diagnostic_cluster_health'), 'Check overall cluster health and identify issues', {
+        // Register enhanced diagnostic tools (v2)
+        this.registerTool('oc_diagnostic_cluster_health', 'mcp-openshift', 'cluster', { type: 'diagnostic', level: 'basic', riskLevel: 'safe' }, this.diagnosticTools.executeTool.bind(this.diagnosticTools, 'oc_diagnostic_cluster_health'), 'Enhanced cluster health analysis with intelligent issue detection', {
             type: 'object',
             properties: {
-                sessionId: { type: 'string' }
+                sessionId: { type: 'string' },
+                includeNamespaceAnalysis: { type: 'boolean' },
+                maxNamespacesToAnalyze: { type: 'number' }
             },
             required: ['sessionId']
         });
-        this.registerTool('oc_diagnostic_pod_health', 'mcp-openshift', 'cluster', { type: 'diagnostic', level: 'basic', riskLevel: 'safe' }, this.diagnosticTools.executeTool.bind(this.diagnosticTools, 'oc_diagnostic_pod_health'), 'Diagnose pod health issues', {
+        this.registerTool('oc_diagnostic_namespace_health', 'mcp-openshift', 'cluster', { type: 'diagnostic', level: 'basic', riskLevel: 'safe' }, this.diagnosticTools.executeTool.bind(this.diagnosticTools, 'oc_diagnostic_namespace_health'), 'Comprehensive namespace health analysis with pod, PVC, and route diagnostics', {
             type: 'object',
             properties: {
                 sessionId: { type: 'string' },
                 namespace: { type: 'string' },
-                podName: { type: 'string' }
+                includeIngressTest: { type: 'boolean' },
+                deepAnalysis: { type: 'boolean' }
+            },
+            required: ['sessionId', 'namespace']
+        });
+        this.registerTool('oc_diagnostic_pod_health', 'mcp-openshift', 'cluster', { type: 'diagnostic', level: 'basic', riskLevel: 'safe' }, this.diagnosticTools.executeTool.bind(this.diagnosticTools, 'oc_diagnostic_pod_health'), 'Enhanced pod health diagnostics with dependency analysis', {
+            type: 'object',
+            properties: {
+                sessionId: { type: 'string' },
+                namespace: { type: 'string' },
+                podName: { type: 'string' },
+                includeDependencies: { type: 'boolean' },
+                includeResourceAnalysis: { type: 'boolean' }
             },
             required: ['sessionId', 'namespace', 'podName']
         });
@@ -82,6 +96,14 @@ export class ToolRegistry {
     }
     getToolsByDomain(domain) {
         return Array.from(this.tools.values()).filter(tool => tool.domain === domain);
+    }
+    /**
+     * Register a new tool (public method for v2 tools)
+     */
+    registerExternalTool(toolDefinition) {
+        this.registerTool(toolDefinition.name, 'mcp-v2', // v2 namespace
+        'cluster', // default domain
+        { type: 'diagnostic', level: 'advanced', riskLevel: 'safe' }, toolDefinition.handler, toolDefinition.description, toolDefinition.inputSchema);
     }
     async executeTool(name, args) {
         const tool = this.getTool(name);

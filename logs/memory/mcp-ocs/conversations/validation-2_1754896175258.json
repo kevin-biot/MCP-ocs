@@ -1,0 +1,17 @@
+{
+  "sessionId": "validation-2",
+  "domain": "openshift",
+  "timestamp": 1754896175258,
+  "userMessage": "Get pods in kube-system namespace",
+  "assistantResponse": "Found 0 pods: 0 running, 0 pending, 0 failed",
+  "context": [
+    "pods",
+    "namespace",
+    "kube-system"
+  ],
+  "tags": [
+    "read_operation",
+    "pods",
+    "cluster_state"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "incidentId": "tool-list-1754895330675",
+  "domain": "system",
+  "timestamp": 1754895330675,
+  "symptoms": [
+    "tool_discovery_request"
+  ],
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Listed 5 available tools"
+  ],
+  "tags": [
+    "tool_discovery",
+    "system_health"
+  ],
+  "environment": "dev"
+}

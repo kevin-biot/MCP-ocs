@@ -1,0 +1,21 @@
+{
+  "incidentId": "namespace-health-storage_analysis_54321",
+  "domain": "cluster",
+  "timestamp": 1754922238425,
+  "symptoms": [
+    "Missing or invalid StorageClass - create default StorageClass or specify in PVC"
+  ],
+  "affectedResources": [
+    "namespace/student03"
+  ],
+  "diagnosticSteps": [
+    "Enhanced namespace health check completed"
+  ],
+  "tags": [
+    "namespace_health",
+    "diagnostic",
+    "student03",
+    "degraded"
+  ],
+  "environment": "prod"
+}

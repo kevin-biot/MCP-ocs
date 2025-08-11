@@ -1,0 +1,18 @@
+{
+  "incidentId": "cluster-health-storage_analysis_54321",
+  "domain": "cluster",
+  "timestamp": 1754922230299,
+  "symptoms": [
+    "cluster_issues_detected"
+  ],
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Enhanced cluster health check completed"
+  ],
+  "tags": [
+    "cluster_health",
+    "diagnostic",
+    "degraded"
+  ],
+  "environment": "prod"
+}

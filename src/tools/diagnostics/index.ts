@@ -13,10 +13,12 @@ import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
 import { OcWrapperV2 } from '../../v2/lib/oc-wrapper-v2.js';
 import { NamespaceHealthChecker } from '../../v2/tools/check-namespace-health/index.js';
+import { RCAChecklistEngine } from '../../v2/tools/rca-checklist/index.js';
 
 export class DiagnosticToolsV2 {
   private ocWrapperV2: OcWrapperV2;
   private namespaceHealthChecker: NamespaceHealthChecker;
+  private rcaChecklistEngine: RCAChecklistEngine;
 
   constructor(
     private openshiftClient: OpenShiftClient,
@@ -25,6 +27,7 @@ export class DiagnosticToolsV2 {
     // Initialize v2 components
     this.ocWrapperV2 = new OcWrapperV2();
     this.namespaceHealthChecker = new NamespaceHealthChecker(this.ocWrapperV2);
+    this.rcaChecklistEngine = new RCAChecklistEngine(this.ocWrapperV2);
   }
 
   getTools(): ToolDefinition[] {
@@ -34,6 +37,7 @@ export class DiagnosticToolsV2 {
         namespace: 'mcp-openshift',
         fullName: 'oc_diagnostic_cluster_health',
         domain: 'cluster',
+        priority: 90,
         capabilities: [
           { type: 'diagnostic', level: 'basic', riskLevel: 'safe' }
         ],
@@ -55,11 +59,14 @@ export class DiagnosticToolsV2 {
         namespace: 'mcp-openshift',
         fullName: 'oc_diagnostic_namespace_health',
         domain: 'cluster',
+        priority: 80,
         capabilities: [
           { type: 'diagnostic', level: 'basic', riskLevel: 'safe' }
         ],
         dependencies: [],
-        contextRequirements: ['namespace'],
+        contextRequirements: [
+          { type: 'domain_focus', value: 'namespace', required: true }
+        ],
         description: 'Comprehensive namespace health analysis with pod, PVC, and route diagnostics',
         inputSchema: {
           type: 'object',
@@ -77,11 +84,15 @@ export class DiagnosticToolsV2 {
         namespace: 'mcp-openshift',
         fullName: 'oc_diagnostic_pod_health',
         domain: 'cluster',
+        priority: 70,
         capabilities: [
           { type: 'diagnostic', level: 'basic', riskLevel: 'safe' }
         ],
         dependencies: [],
-        contextRequirements: ['namespace', 'pod'],
+        contextRequirements: [
+          { type: 'domain_focus', value: 'namespace', required: true },
+          { type: 'domain_focus', value: 'pod', required: true }
+        ],
         description: 'Enhanced pod health diagnostics with dependency analysis',
         inputSchema: {
           type: 'object',
@@ -94,8 +105,31 @@ export class DiagnosticToolsV2 {
           },
           required: ['sessionId', 'namespace', 'podName']
         }
+      },
+    {
+      name: 'rca_checklist',
+      namespace: 'mcp-openshift',
+      fullName: 'oc_diagnostic_rca_checklist',
+      domain: 'cluster',
+      priority: 100,
+      capabilities: [
+        { type: 'diagnostic', level: 'advanced', riskLevel: 'safe' }
+      ],
+      dependencies: [],
+      contextRequirements: [],
+      description: 'Guided "First 10 Minutes" RCA workflow for systematic incident response',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          sessionId: { type: 'string' },
+          namespace: { type: 'string', description: 'Target namespace (optional for cluster-wide analysis)' },
+          outputFormat: { type: 'string', enum: ['json', 'markdown'], default: 'json' },
+          includeDeepAnalysis: { type: 'boolean', default: false },
+          maxCheckTime: { type: 'number', default: 60000, description: 'Maximum checklist execution time in ms' }
+        },
+        required: ['sessionId']
       }
-    ];
+    }];
   }
 
   async executeTool(toolName: string, args: any): Promise<string> {
@@ -112,6 +146,9 @@ export class DiagnosticToolsV2 {
         case 'oc_diagnostic_pod_health':
           return await this.enhancedPodHealth(args);
           
+        case 'oc_diagnostic_rca_checklist':
+          return await this.executeRCAChecklist(args);
+          
         default:
           throw new Error(`Unknown diagnostic tool: ${toolName}`);
       }
@@ -126,7 +163,7 @@ export class DiagnosticToolsV2 {
         affectedResources: [],
         diagnosticSteps: [`Failed to execute ${toolName}`],
         tags: ['diagnostic_error', 'tool_failure', toolName],
-        environment: 'production'
+        environment: 'prod'
       });
 
       throw error;
@@ -186,7 +223,7 @@ export class DiagnosticToolsV2 {
         affectedResources: [],
         diagnosticSteps: ['Enhanced cluster health check completed'],
         tags: ['cluster_health', 'diagnostic', healthSummary.overallHealth],
-        environment: 'production'
+        environment: 'prod'
       });
 
       return this.formatClusterHealthResponse(healthSummary, sessionId);
@@ -266,7 +303,7 @@ export class DiagnosticToolsV2 {
         affectedResources: [`namespace/${namespace}`],
         diagnosticSteps: ['Enhanced namespace health check completed'],
         tags: ['namespace_health', 'diagnostic', namespace, healthResult.status],
-        environment: 'production'
+        environment: 'prod'
       });
 
       return JSON.stringify(response, null, 2);
@@ -333,7 +370,7 @@ export class DiagnosticToolsV2 {
         affectedResources: [`pod/${podName}`, `namespace/${namespace}`],
         diagnosticSteps: ['Enhanced pod health check completed'],
         tags: ['pod_health', 'diagnostic', namespace, podName],
-        environment: 'production'
+        environment: 'prod'
       });
 
       return JSON.stringify(response, null, 2);
@@ -618,6 +655,89 @@ export class DiagnosticToolsV2 {
       ...healthSummary,
       human: `Cluster is ${healthSummary.overallHealth}. Nodes: ${healthSummary.nodes.ready}/${healthSummary.nodes.total} ready. Operators: ${healthSummary.operators.degraded.length} degraded.`
     }, null, 2);
+  }
+
+  /**
+   * Execute RCA checklist workflow
+   */
+  private async executeRCAChecklist(args: {
+    sessionId: string;
+    namespace?: string;
+    outputFormat?: 'json' | 'markdown';
+    includeDeepAnalysis?: boolean;
+    maxCheckTime?: number;
+  }): Promise<string> {
+    const { sessionId, namespace, outputFormat = 'json', includeDeepAnalysis = false, maxCheckTime = 60000 } = args;
+
+    try {
+      // Execute RCA checklist using v2 engine
+      const checklistResult = await this.rcaChecklistEngine.executeRCAChecklist({
+        namespace,
+        outputFormat,
+        includeDeepAnalysis,
+        maxCheckTime
+      });
+
+      // Store RCA session in operational memory
+      await this.memoryManager.storeOperational({
+        incidentId: `rca-checklist-${sessionId}`,
+        domain: 'cluster',
+        timestamp: Date.now(),
+        symptoms: checklistResult.evidence.symptoms,
+        affectedResources: checklistResult.evidence.affectedResources,
+        diagnosticSteps: checklistResult.evidence.diagnosticSteps,
+        tags: ['rca_checklist', 'systematic_diagnostic', checklistResult.overallStatus, ...(namespace ? [namespace] : ['cluster_wide'])],
+        environment: 'prod'
+      });
+
+      // Format response with enhanced context
+      const response = {
+        tool: 'oc_diagnostic_rca_checklist',
+        sessionId,
+        reportId: checklistResult.reportId,
+        timestamp: checklistResult.timestamp,
+        duration: `${checklistResult.duration}ms`,
+        
+        // Core findings
+        scope: namespace ? `namespace: ${namespace}` : 'cluster-wide',
+        overallStatus: checklistResult.overallStatus,
+        
+        // Checklist results
+        summary: checklistResult.summary,
+        checksPerformed: checklistResult.checksPerformed.map(check => ({
+          name: check.name,
+          status: check.status,
+          severity: check.severity,
+          findings: check.findings.slice(0, 3), // Limit for readability
+          recommendations: check.recommendations.slice(0, 2)
+        })),
+        
+        // Priority actions
+        criticalIssues: checklistResult.criticalIssues,
+        nextActions: checklistResult.nextActions,
+        
+        // Evidence for workflow integration
+        evidence: checklistResult.evidence,
+        
+        // Human readable summary
+        human: checklistResult.human,
+        
+        // Markdown report (if requested)
+        ...(outputFormat === 'markdown' && { markdown: checklistResult.markdown }),
+        
+        // Performance metrics
+        performance: {
+          totalCheckTime: `${checklistResult.duration}ms`,
+          checksCompleted: checklistResult.summary.totalChecks,
+          averageCheckTime: `${Math.round(checklistResult.duration / Math.max(checklistResult.summary.totalChecks, 1))}ms`
+        }
+      };
+
+      return JSON.stringify(response, null, 2);
+
+    } catch (error) {
+      return this.formatErrorResponse('RCA checklist execution', error, sessionId);
+    }
   }
 
   private formatErrorResponse(operation: string, error: any, sessionId: string): string {

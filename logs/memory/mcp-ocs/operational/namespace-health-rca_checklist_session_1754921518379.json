@@ -1,0 +1,21 @@
+{
+  "incidentId": "namespace-health-rca_checklist_session",
+  "domain": "cluster",
+  "timestamp": 1754921518379,
+  "symptoms": [
+    "namespace_healthy"
+  ],
+  "affectedResources": [
+    "namespace/openshift-etcd"
+  ],
+  "diagnosticSteps": [
+    "Enhanced namespace health check completed"
+  ],
+  "tags": [
+    "namespace_health",
+    "diagnostic",
+    "openshift-etcd",
+    "degraded"
+  ],
+  "environment": "prod"
+}
