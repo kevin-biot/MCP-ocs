@@ -179,11 +179,11 @@ export class VectorMemoryManager {
       evidence.push(`Summary: ${result.summary}`);
     }
     
-    if (result?.issues?.length > 0) {
+    if (result?.issues && result.issues.length > 0) {
       evidence.push(`Issues: ${result.issues.join(', ')}`);
     }
     
-    if (result?.recommendations?.length > 0) {
+    if (result?.recommendations && result.recommendations.length > 0) {
       evidence.push(`Recommendations: ${result.recommendations.slice(0, 2).join(', ')}`);
     }
     
@@ -272,22 +272,26 @@ export class VectorMemoryManager {
   // Helper methods for pattern recognition and analysis
 
   private isStorageIssue(result: ToolResult, context: any): boolean {
-    return (result?.issues?.some(i => i.includes('pvc') || i.includes('storage')) ||
+    const issues = result?.issues || [];
+    const summary = result?.summary || '';
+    return (issues.some(i => i.includes('pvc') || i.includes('storage'))) ||
             context.resourceType === 'pvc' ||
-            result?.summary?.includes('PVC'));
+            summary.includes('PVC');
   }
 
   private isBuildPipelineIssue(result: ToolResult, context: any): boolean {
-    return (result?.summary?.includes('Succeeded') && 
-            result?.summary?.includes('0/1 ready') &&
-            (context.namespace?.includes('student04') || 
-             result?.summary?.includes('build') ||
-             result?.summary?.includes('pipeline')));
+    const summary = result?.summary || '';
+    return (summary.includes('Succeeded') && 
+            summary.includes('0/1 ready') &&
+            (context.namespace && context.namespace.includes('student04') || 
+             summary.includes('build') ||
+             summary.includes('pipeline')));
   }
 
   private isKubernetesLifecycleIssue(result: ToolResult, context: any): boolean {
-    return (result?.summary?.includes('Pending') && 
-           result?.summary?.includes('not used'));
+    const summary = result?.summary || '';
+    return (summary.includes('Pending') && 
+           summary.includes('not used'));
   }
 
   private generateSummary(toolCall: ToolCall, result: ToolResult): string {
@@ -318,7 +322,7 @@ export class VectorMemoryManager {
       confidence = 0.95; // High confidence for known patterns
     }
     
-    if (result?.issues?.length > 0) {
+    if (result?.issues && result.issues.length > 0) {
       confidence = Math.min(confidence, 0.90); // Lower confidence if issues found
     }
     
@@ -326,7 +330,7 @@ export class VectorMemoryManager {
   }
 
   private determineSeverity(toolCall: ToolCall, result: ToolResult): string {
-    const severityMap = {
+    const severityMap: { [key: string]: string } = {
       'cluster_health': 'high',
       'namespace_health': 'medium',
       'pod_health': 'medium',

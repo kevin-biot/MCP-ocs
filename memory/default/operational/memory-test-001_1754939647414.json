@@ -1,0 +1,15 @@
+{
+  "incidentId": "memory-test-001",
+  "domain": "cluster",
+  "timestamp": 1754939647414,
+  "symptoms": [
+    "Testing memory storage functionality"
+  ],
+  "environment": "test",
+  "affectedResources": [],
+  "diagnosticSteps": [],
+  "tags": [
+    "manual_entry",
+    "incident_resolution"
+  ]
+}

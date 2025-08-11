@@ -210,7 +210,7 @@ export class RCAChecklistEngine {
             result.evidence.symptoms.push(...healthResult.suspicions);
             result.evidence.affectedResources.push(`namespace/${namespace}`);
             if (healthResult.checks.pods.crashloops.length > 0) {
-                result.evidence.affectedResources.push(...healthResult.checks.pods.crashloops.map(p => `pod/${p}`));
+                result.evidence.affectedResources.push(...healthResult.checks.pods.crashloops.map((p) => `pod/${p}`));
             }
         }
         catch (error) {
@@ -249,7 +249,7 @@ export class RCAChecklistEngine {
                 findings: [
                     `Storage classes: ${storageClasses.items.length} available`,
                     `Default storage class: ${defaultSC ? defaultSC.metadata.name : 'NONE (issue!)'}`,
-                    `PVCs: ${pvcAnalysis.boundPVCs}/${pvcAnalysis.totalPVCs} bound`,
+                    `PVCs: ${pvcAnalysis.boundPvc}/${pvcAnalysis.totalPVCs} bound`,
                     `Pending PVCs: ${pvcAnalysis.pendingPVCs}`,
                     ...pvcAnalysis.issues.slice(0, 3)
                 ],
@@ -507,6 +507,7 @@ export class RCAChecklistEngine {
         let pendingPVCs = 0;
         const issues = [];
         for (const pvc of pvcs.items) {
+            const name = pvc.metadata.name;
             const phase = pvc.status?.phase;
             switch (phase) {
                 case 'Bound':
@@ -520,7 +521,7 @@ export class RCAChecklistEngine {
                     issues.push(`PVC ${pvc.metadata.name} in unknown state: ${phase}`);
             }
         }
-        return { totalPVCs, boundPVCs, pendingPVCs, issues };
+        return { totalPVCs, boundPvc: boundPVCs, pendingPVCs, issues };
     }
     analyzeNetworkHealth(services, routes) {
         const totalServices = services.items.length;
@@ -572,7 +573,7 @@ export class RCAChecklistEngine {
         if (!value || typeof value !== 'string')
             return null;
         // Handle memory units (Ki, Mi, Gi, Ti)
-        const memoryMatch = value.match(/^(\d+(?:\.\d+)?)(Ki|Mi|Gi|Ti|k|M|G|T)?$/);
+        const memoryMatch = value.match(/^(\\d+(?:\\.\\d+)?)(Ki|Mi|Gi|Ti|k|M|G|T)?$/);
         if (memoryMatch) {
             const num = parseFloat(memoryMatch[1]);
             const unit = memoryMatch[2] || '';
@@ -583,7 +584,7 @@ export class RCAChecklistEngine {
             return num * (multipliers[unit] || 1);
         }
         // Handle CPU units (m for millicores)
-        const cpuMatch = value.match(/^(\d+(?:\.\d+)?)m?$/);
+        const cpuMatch = value.match(/^(\\d+(?:\\.\\d+)?)m?$/);
         if (cpuMatch) {
             const num = parseFloat(cpuMatch[1]);
             return value.includes('m') ? num : num * 1000; // Convert to millicores
@@ -660,47 +661,47 @@ export class RCAChecklistEngine {
             `${result.nextActions.length > 0 ? 'Next: ' + result.nextActions[0] : 'No immediate action required.'}`;
     }
     generateMarkdownReport(result) {
-        let markdown = `# RCA Checklist Report\n\n`;
-        markdown += `**Report ID**: ${result.reportId}\n`;
-        markdown += `**Timestamp**: ${result.timestamp}\n`;
-        markdown += `**Duration**: ${result.duration}ms\n`;
-        markdown += `**Status**: ${result.overallStatus.toUpperCase()}\n\n`;
+        let markdown = `# RCA Checklist Report\\n\\n`;
+        markdown += `**Report ID**: ${result.reportId}\\n`;
+        markdown += `**Timestamp**: ${result.timestamp}\\n`;
+        markdown += `**Duration**: ${result.duration}ms\\n`;
+        markdown += `**Status**: ${result.overallStatus.toUpperCase()}\\n\\n`;
         if (result.namespace) {
-            markdown += `**Namespace**: ${result.namespace}\n\n`;
+            markdown += `**Namespace**: ${result.namespace}\\n\\n`;
         }
-        markdown += `## Summary\n`;
-        markdown += `- **Checks**: ${result.summary.passed}/${result.summary.totalChecks} passed\n`;
-        markdown += `- **Warnings**: ${result.summary.warnings}\n`;
-        markdown += `- **Failures**: ${result.summary.failed}\n\n`;
+        markdown += `## Summary\\n`;
+        markdown += `- **Checks**: ${result.summary.passed}/${result.summary.totalChecks} passed\\n`;
+        markdown += `- **Warnings**: ${result.summary.warnings}\\n`;
+        markdown += `- **Failures**: ${result.summary.failed}\\n\\n`;
         if (result.criticalIssues.length > 0) {
-            markdown += `## Critical Issues\n`;
+            markdown += `## Critical Issues\\n`;
             result.criticalIssues.forEach(issue => {
-                markdown += `- ${issue}\n`;
+                markdown += `- ${issue}\\n`;
             });
-            markdown += `\n`;
+            markdown += `\\n`;
         }
         if (result.nextActions.length > 0) {
-            markdown += `## Next Actions\n`;
+            markdown += `## Next Actions\\n`;
             result.nextActions.forEach((action, index) => {
-                markdown += `${index + 1}. ${action}\n`;
+                markdown += `${index + 1}. ${action}\\n`;
             });
-            markdown += `\n`;
+            markdown += `\\n`;
         }
-        markdown += `## Detailed Findings\n`;
+        markdown += `## Detailed Findings\\n`;
         result.checksPerformed.forEach(check => {
             const statusIcon = check.status === 'pass' ? '✅' :
                 check.status === 'warning' ? '⚠️' : '❌';
-            markdown += `### ${statusIcon} ${check.name}\n`;
+            markdown += `### ${statusIcon} ${check.name}\\n`;
             check.findings.forEach(finding => {
-                markdown += `- ${finding}\n`;
+                markdown += `- ${finding}\\n`;
             });
             if (check.recommendations.length > 0) {
-                markdown += `**Recommendations**:\n`;
+                markdown += `**Recommendations**:\\n`;
                 check.recommendations.forEach(rec => {
-                    markdown += `- ${rec}\n`;
+                    markdown += `- ${rec}\\n`;
                 });
             }
-            markdown += `\n`;
+            markdown += `\\n`;
         });
         return markdown;
     }

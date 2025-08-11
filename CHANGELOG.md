@@ -5,6 +5,91 @@ All notable changes to the MCP-ocs project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-08-11 - Auto-Memory Integration Release
+
+### 🧠 Major Features Added
+
+#### Automatic Tool Memory Integration (ADR-007)
+- **AutoMemorySystem** (`src/lib/memory/auto-memory-system.ts`)
+  - Automatic capture and tagging of every tool execution
+  - Smart pattern recognition (student04 = CI/CD artifacts, not broken apps)
+  - Context retrieval before tool execution ("Found 3 relevant past experiences")
+  - Zero manual effort - builds operational intelligence automatically
+  - RED ZONE optimization for engineers in critical incidents
+
+- **Complete Tool Suite Restored** (13 tools total)
+  - **4 Diagnostic Tools**: `oc_diagnostic_cluster_health`, `oc_diagnostic_namespace_health`, `oc_diagnostic_pod_health`, `oc_diagnostic_rca_checklist`
+  - **3 Read Operations**: `oc_read_get_pods`, `oc_read_describe`, `oc_read_logs`
+  - **5 Memory/State Tools**: `memory_store_operational`, `memory_search_operational`, `memory_get_stats`, `memory_search_conversations`, `core_workflow_state`
+  - **ChromaDB Integration Ready**: Vector similarity search capabilities (JSON fallback operational)
+
+#### MCP Protocol Fixes
+- **Fixed MCP SDK Integration**: Resolved TypeScript type issues with proper schema objects
+- **Restored stdio Protocol**: Fixed broken HTTP server back to working MCP stdio transport
+- **Tool Registration**: All tool suites properly registered and routed
+- **Memory System**: Complete memory operations functional with JSON storage
+
+### 🔧 Enhanced Features
+
+#### Smart Memory Tagging Framework
+- **Pattern Recognition Tags**: Automatically identifies CI/CD patterns, build artifacts, infrastructure issues
+- **Context-Aware Tagging**: Namespace-specific patterns (student04_pattern, build_pipeline)
+- **Severity Classification**: RED ZONE relevance, priority levels, engineer guidance
+- **Resource Type Detection**: Automatic classification of pods, namespaces, clusters, PVCs
+
+#### AWS OpenShift Integration
+- **Real Cluster Connectivity**: Verified connection to AWS OpenShift 4.18.1
+- **Live Diagnostic Data**: 6/6 nodes ready, 34 operators, real cluster health metrics
+- **Environment Integration**: Proper KUBECONFIG handling for AWS authentication
+- **Production Ready**: Tested against live AWS infrastructure
+
+### 🐛 Bug Fixes
+
+#### Tool System Recovery
+- **Reverted Qwen's Architectural Changes**: Restored working diagnostic suite after AI overwrites
+- **Fixed Missing Tools**: Recovered `oc_read_get_pods` and `memory_store_operational` from separate tool suites
+- **Memory Directory Structure**: Created missing memory directories for proper storage
+- **Tool Routing**: Fixed tool execution routing for all tool categories
+
+#### MCP Server Issues
+- **SDK Type Errors**: Fixed `ListToolsRequestSchema` and `CallToolRequestSchema` usage
+- **Constructor Issues**: Resolved WorkflowEngine configuration problems
+- **Import Path Fixes**: Corrected .ts to .js import paths for compiled output
+
+### 📊 Performance & Monitoring
+
+#### Memory System Statistics
+- **Storage Tracking**: Monitor JSON storage usage and ChromaDB availability
+- **Operation Metrics**: Track successful vs failed tool executions
+- **Context Hit Rate**: Measure relevance of retrieved memories
+- **Pattern Recognition**: Monitor smart tagging accuracy and coverage
+
+### 🔄 Breaking Changes
+
+#### Tool Execution Wrapper
+- All tool executions now automatically captured in memory system
+- Tool calls include automatic context retrieval before execution
+- SessionId parameter recommended for all tool calls (auto-generated if missing)
+- Memory storage occurs in parallel with tool execution
+
+### 📝 Documentation
+
+#### Architecture Decision Records
+- **ADR-007**: Automatic Tool Memory Integration for Operational Intelligence
+- Comprehensive documentation of smart tagging framework
+- Implementation examples and pattern recognition use cases
+- Future enhancement roadmap (ML pattern detection, collaborative intelligence)
+
+### 🧪 Testing
+
+#### Integration Tests
+- **Memory Function Tests**: Complete test suite for all 5 memory operations
+- **AWS Integration Tests**: Real cluster connectivity and diagnostic verification
+- **Tool Execution Tests**: Verify auto-memory capture and context retrieval
+- **Pattern Recognition Tests**: Validate smart tagging for known scenarios
+
+---
+
 ## [0.2.0] - 2024-12-XX - Production Ready Release
 
 ### 🚀 Major Features Added

@@ -5,7 +5,7 @@
  * and provides context-aware diagnostics for operational decision making.
  */
 
-import { VectorMemoryManager } from './memory/vector-memory-manager.js';
+import { VectorMemoryManager } from '../memory/vector-memory-manager.js';
 import { ToolCall, ToolResult } from './tool-types.js';
 
 export class ToolExecutionTracker {

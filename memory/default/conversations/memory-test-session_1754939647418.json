@@ -1,0 +1,15 @@
+{
+  "sessionId": "memory-test-session",
+  "domain": "knowledge",
+  "timestamp": 1754939647418,
+  "userMessage": "Store incident memory-test-001",
+  "assistantResponse": "Successfully stored incident memory-test-001 in operational memory",
+  "context": [
+    "incident_storage",
+    "memory-test-001"
+  ],
+  "tags": [
+    "memory_operation",
+    "incident_management"
+  ]
+}

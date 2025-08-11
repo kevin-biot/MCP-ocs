@@ -1,0 +1,18 @@
+{
+  "incidentId": "aws-connectivity-test",
+  "domain": "cluster",
+  "timestamp": 1754939318310,
+  "symptoms": [
+    "Testing AWS OpenShift connectivity"
+  ],
+  "resolution": "Connectivity test successful",
+  "environment": "prod",
+  "affectedResources": [
+    "aws-openshift-cluster"
+  ],
+  "diagnosticSteps": [],
+  "tags": [
+    "manual_entry",
+    "incident_resolution"
+  ]
+}

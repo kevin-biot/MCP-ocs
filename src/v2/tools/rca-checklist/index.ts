@@ -15,7 +15,6 @@
 
 import { OcWrapperV2 } from '../../lib/oc-wrapper-v2.js';
 import { NamespaceHealthChecker } from '../check-namespace-health/index.js';
-import { ToolExecutionTracker } from '../../lib/tools/tool-execution-tracker.js';
 
 export interface RCAChecklistInput {
   namespace?: string;           // Target namespace (optional for cluster-wide)
@@ -70,12 +69,10 @@ export interface RCAChecklistResult {
 export class RCAChecklistEngine {
   private ocWrapper: OcWrapperV2;
   private namespaceHealthChecker: NamespaceHealthChecker;
-  private executionTracker: ToolExecutionTracker;
 
-  constructor(ocWrapper: OcWrapperV2, executionTracker: ToolExecutionTracker) {
+  constructor(ocWrapper: OcWrapperV2) {
     this.ocWrapper = ocWrapper;
     this.namespaceHealthChecker = new NamespaceHealthChecker(ocWrapper);
-    this.executionTracker = executionTracker;
   }
 
   /**
@@ -263,55 +260,42 @@ export class RCAChecklistEngine {
     const startTime = Date.now();
     
     try {
-      // Use our comprehensive namespace health checker with automatic memory tracking
-      const toolCall = {
-        toolName: 'oc_diagnostic_namespace_health',
-        sessionId: result.reportId,
-        args: { namespace, includeIngressTest: true, maxLogLinesPerPod: deepAnalysis ? 20 : 0 }
-      };
-      
-      // Execute with automatic memory storage
-      const namespaceResult = await this.executionTracker.executeWithMemory(
-        toolCall,
-        async () => {
-          return await this.namespaceHealthChecker.checkHealth({
-            namespace,
-            includeIngressTest: true,
-            maxLogLinesPerPod: deepAnalysis ? 20 : 0
-          });
-        },
-        { namespace, severity: 'high' }
-      );
+      // Use our comprehensive namespace health checker
+      const healthResult = await this.namespaceHealthChecker.checkHealth({
+        namespace,
+        includeIngressTest: true,
+        maxLogLinesPerPod: deepAnalysis ? 20 : 0
+      });
       
       const check: ChecklistItem = {
         name: checkName,
-        status: namespaceResult.status === 'healthy' ? 'pass' : 
-                namespaceResult.status === 'degraded' ? 'warning' : 'fail',
+        status: healthResult.status === 'healthy' ? 'pass' : 
+                healthResult.status === 'degraded' ? 'warning' : 'fail',
         findings: [
-          `Namespace status: ${namespaceResult.status}`,
-          `Pods: ${namespaceResult.checks.pods.ready}/${namespaceResult.checks.pods.total} ready`,
-          `PVCs: ${namespaceResult.checks.pvcs.bound}/${namespaceResult.checks.pvcs.total} bound`,
-          `Routes: ${namespaceResult.checks.routes.total} configured`,
-          ...namespaceResult.suspicions.slice(0, 3)
+          `Namespace status: ${healthResult.status}`,
+          `Pods: ${healthResult.checks.pods.ready}/${healthResult.checks.pods.total} ready`,
+          `PVCs: ${healthResult.checks.pvcs.bound}/${healthResult.checks.pvcs.total} bound`,
+          `Routes: ${healthResult.checks.routes.total} configured`,
+          ...healthResult.suspicions.slice(0, 3)
         ],
-        recommendations: namespaceResult.suspicions.length > 0 ? [
+        recommendations: healthResult.suspicions.length > 0 ? [
           'Review namespace-specific issues identified above',
           'Check pod logs for crashloop pods',
           'Verify PVC and storage configuration'
         ] : [],
         duration: Date.now() - startTime,
-        severity: namespaceResult.status === 'failing' ? 'critical' : 
-                 namespaceResult.status === 'degraded' ? 'medium' : 'low'
+        severity: healthResult.status === 'failing' ? 'critical' : 
+                 healthResult.status === 'degraded' ? 'medium' : 'low'
       };
       
       result.checksPerformed.push(check);
       
       // Add evidence from namespace analysis
-      result.evidence.symptoms.push(...namespaceResult.suspicions);
+      result.evidence.symptoms.push(...healthResult.suspicions);
       result.evidence.affectedResources.push(`namespace/${namespace}`);
       
-      if (namespaceResult.checks.pods.crashloops.length > 0) {
-        result.evidence.affectedResources.push(...namespaceResult.checks.pods.crashloops.map(p => `pod/${p}`));
+      if (healthResult.checks.pods.crashloops.length > 0) {
+        result.evidence.affectedResources.push(...healthResult.checks.pods.crashloops.map((p: string) => `pod/${p}`));
       }
       
     } catch (error) {
@@ -360,7 +344,7 @@ export class RCAChecklistEngine {
         findings: [
           `Storage classes: ${storageClasses.items.length} available`,
           `Default storage class: ${defaultSC ? defaultSC.metadata.name : 'NONE (issue!)'}`,
-          `PVCs: ${pvcAnalysis.boundPVCs}/${pvcAnalysis.totalPVCs} bound`,
+          `PVCs: ${pvcAnalysis.boundPvc}/${pvcAnalysis.totalPVCs} bound`,
           `Pending PVCs: ${pvcAnalysis.pendingPVCs}`,
           ...pvcAnalysis.issues.slice(0, 3)
         ],
@@ -527,19 +511,7 @@ export class RCAChecklistEngine {
     
     for (const ns of criticalNamespaces) {
       try {
-        const toolCall = {
-          toolName: 'oc_diagnostic_namespace_health',
-          sessionId: result.reportId,
-          args: { namespace: ns, includeIngressTest: false }
-        };
-        
-        const healthResult = await this.executionTracker.executeWithMemory(
-          toolCall,
-          async () => {
-            return await this.namespaceHealthChecker.checkHealth({ namespace: ns });
-          },
-          { namespace: ns, severity: 'high' }
-        );
+        const healthResult = await this.namespaceHealthChecker.checkHealth({ namespace: ns });
         
         if (healthResult.status !== 'healthy') {
           const check: ChecklistItem = {

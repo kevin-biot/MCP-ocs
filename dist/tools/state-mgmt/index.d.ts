@@ -12,9 +12,10 @@ export declare class StateMgmtTools {
     private workflowEngine;
     constructor(memoryManager: SharedMemoryManager, workflowEngine: WorkflowEngine);
     getTools(): ToolDefinition[];
-    executeTool(toolName: string, args: any): Promise<any>;
     private storeIncident;
+    private searchOperational;
     private getWorkflowState;
     private getMemoryStats;
     private searchConversations;
+    executeTool(toolName: string, args: any): Promise<string>;
 }

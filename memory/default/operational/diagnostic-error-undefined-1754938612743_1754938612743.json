@@ -1,0 +1,19 @@
+{
+  "incidentId": "diagnostic-error-undefined-1754938612743",
+  "domain": "cluster",
+  "timestamp": 1754938612743,
+  "symptoms": [
+    "Diagnostic tool error: oc_read_get_pods"
+  ],
+  "rootCause": "Unknown diagnostic tool: oc_read_get_pods",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Failed to execute oc_read_get_pods"
+  ],
+  "tags": [
+    "diagnostic_error",
+    "tool_failure",
+    "oc_read_get_pods"
+  ],
+  "environment": "prod"
+}

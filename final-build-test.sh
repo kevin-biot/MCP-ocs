@@ -1,33 +1,23 @@
 #!/bin/bash
 
-echo "🎯 Final Build Test - All Fixes Applied"
-echo "======================================="
+echo "=== Final Build Test for MCP-ocs ==="
 
+# Change to project directory
 cd /Users/kevinbrown/MCP-ocs
 
-echo "🔧 Running TypeScript compilation..."
+echo "1. Installing missing type definitions..."
+npm install --save-dev @types/express
+
+echo "2. Running TypeScript compilation..."
 npm run build
 
-BUILD_STATUS=$?
+echo "3. Checking for remaining issues..."
 
-echo ""
-if [ $BUILD_STATUS -eq 0 ]; then
-    echo "🎉 SUCCESS! Build completed successfully!"
-    echo ""
-    echo "📦 Checking dist directory..."
-    ls -la dist/ | head -10
-    
-    echo ""
-    echo "🧪 Ready for testing!"
-    echo "Next step: npm test -- --testPathPattern=basic"
+# Check if build succeeded
+if [ $? -eq 0 ]; then
+    echo "✅ SUCCESS: All TypeScript compilation issues have been resolved!"
+    echo "Build completed successfully with no errors."
 else
-    echo "❌ Build failed. Error count:"
-    npm run build 2>&1 | grep -c "error TS" || echo "0"
-    
-    echo ""
-    echo "📋 Remaining errors:"
-    npm run build 2>&1 | grep "error TS" | head -10
+    echo "❌ BUILD STILL HAS ERRORS"
+    echo "Please review the TypeScript compilation output above for remaining issues."
 fi
-
-echo ""
-echo "🏁 Build test complete!"

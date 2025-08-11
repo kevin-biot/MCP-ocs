@@ -1,0 +1,20 @@
+{
+  "incidentId": "memory-test-001",
+  "domain": "operations",
+  "timestamp": 1754939939783,
+  "symptoms": [
+    "Testing memory storage functionality"
+  ],
+  "rootCause": "",
+  "resolution": "",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Manual incident storage"
+  ],
+  "tags": [
+    "incident_storage",
+    "manual_entry",
+    "test"
+  ],
+  "environment": "test"
+}

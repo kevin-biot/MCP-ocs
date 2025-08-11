@@ -1,0 +1,18 @@
+{
+  "incidentId": "cluster-health-aws-test-session-001",
+  "domain": "cluster",
+  "timestamp": 1754939316145,
+  "symptoms": [
+    "cluster_issues_detected"
+  ],
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Enhanced cluster health check completed"
+  ],
+  "tags": [
+    "cluster_health",
+    "diagnostic",
+    "degraded"
+  ],
+  "environment": "prod"
+}

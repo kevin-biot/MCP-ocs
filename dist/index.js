@@ -1,380 +1,102 @@
 #!/usr/bin/env node
 /**
- * MCP-ocs: OpenShift Container Platform Operations and Diagnostics Server
- *
- * Architecture follows ADRs:
- * - ADR-001: OpenShift CLI wrapper approach (Phase 1)
- * - ADR-003: ChromaDB + JSON hybrid memory system
- * - ADR-004: Tool namespace management with context-aware filtering
- * - ADR-005: Workflow state machine with panic detection
+ * MCP-ocs Main Entry Point - Complete Tool Suite
+ * Registers ALL tools: diagnostics, read-ops, state-mgmt, write-ops
  */
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { CallToolRequestSchema, ListToolsRequestSchema, ListResourcesRequestSchema, ReadResourceRequestSchema, } from "@modelcontextprotocol/sdk/types.js";
-import { OpenShiftClient } from "./lib/openshift-client.js";
-import { SharedMemoryManager } from "./lib/memory/shared-memory.js";
-import { ToolNamespaceManager } from "./lib/tools/namespace-manager.js";
-import { WorkflowEngine } from "./lib/workflow/workflow-engine.js";
-import { ConfigManager } from "./lib/config/config-manager.js";
-import { ToolRegistry } from "./lib/tools/tool-registry.js";
-// Core tool implementations
-import { DiagnosticToolsV2 as DiagnosticTools } from "./tools/diagnostics/index.js";
-import { ReadOpsTools } from "./tools/read-ops/index.js";
-import { WriteOpsTools } from "./tools/write-ops/index.js";
-import { StateMgmtTools } from "./tools/state-mgmt/index.js";
-// V2 Tools - now integrated into main tools
-// import { checkNamespaceHealthV2Tool } from "./v2-integration.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { ListToolsRequestSchema, CallToolRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+import { DiagnosticToolsV2 } from './tools/diagnostics/index.js';
+import { ReadOpsTools } from './tools/read-ops/index.js';
+import { StateMgmtTools } from './tools/state-mgmt/index.js';
+import { OpenShiftClient } from './lib/openshift-client.js';
+import { SharedMemoryManager } from './lib/memory/shared-memory.js';
+import { WorkflowEngine } from './lib/workflow/workflow-engine.js';
+console.error('🚀 Starting MCP-ocs server...');
+// Initialize core components
+const openshiftClient = new OpenShiftClient({
+    ocPath: 'oc',
+    timeout: 30000
+});
+const sharedMemory = new SharedMemoryManager({
+    domain: 'mcp-ocs',
+    namespace: 'default',
+    memoryDir: './memory',
+    enableCompression: true,
+    retentionDays: 30
+});
+const workflowEngine = new WorkflowEngine({
+    enablePanicDetection: true,
+    enforcementLevel: 'guidance',
+    memoryManager: sharedMemory,
+    minEvidenceThreshold: 2
+});
+// Create ALL tool suites
+const diagnosticTools = new DiagnosticToolsV2(openshiftClient, sharedMemory);
+const readOpsTools = new ReadOpsTools(openshiftClient, sharedMemory);
+const stateMgmtTools = new StateMgmtTools(sharedMemory, workflowEngine);
+// Combine all tools
+const allTools = [
+    ...diagnosticTools.getTools(),
+    ...readOpsTools.getTools(),
+    ...stateMgmtTools.getTools()
+];
+console.error(`✅ Registered ${allTools.length} tools from all suites`);
+// Create MCP server
 const server = new Server({
     name: "mcp-ocs",
-    version: "0.1.0",
+    version: "1.0.0",
 }, {
     capabilities: {
         tools: {},
-        resources: {},
     },
 });
-// Global instances
-let configManager;
-let memoryManager;
-let openshiftClient;
-let namespaceManager;
-let workflowEngine;
-let toolRegistry;
-/**
- * Initialize the MCP server with all architectural components
- */
-async function initialize() {
-    try {
-        // 1. Load configuration
-        configManager = new ConfigManager();
-        await configManager.load();
-        // 2. Initialize memory system (ADR-003)
-        memoryManager = new SharedMemoryManager({
-            domain: 'openshift',
-            namespace: configManager.get('memory.namespace', 'mcp-ocs'),
-            chromaHost: configManager.get('memory.chromaHost', '127.0.0.1'),
-            chromaPort: configManager.get('memory.chromaPort', 8000),
-            memoryDir: configManager.get('memory.jsonDir', './logs/memory'),
-            enableCompression: configManager.get('memory.compression', true)
-        });
-        await memoryManager.initialize();
-        // 3. Initialize OpenShift client (ADR-001)
-        openshiftClient = new OpenShiftClient({
-            ocPath: configManager.get('openshift.ocPath', 'oc'),
-            kubeconfig: configManager.get('openshift.kubeconfig'),
-            context: configManager.get('openshift.context'),
-            namespace: configManager.get('openshift.defaultNamespace'),
-            timeout: configManager.get('openshift.timeout', 30000)
-        });
-        await openshiftClient.validateConnection();
-        // 4. Initialize tool namespace management (ADR-004)
-        namespaceManager = new ToolNamespaceManager({
-            mode: configManager.get('tools.mode', 'single'), // single | team | router
-            enabledDomains: configManager.get('tools.enabledDomains', ['cluster', 'filesystem', 'knowledge']),
-            contextFiltering: configManager.get('tools.contextFiltering', true)
-        });
-        // 5. Initialize workflow engine (ADR-005)
-        workflowEngine = new WorkflowEngine({
-            enablePanicDetection: configManager.get('workflow.panicDetection', true),
-            enforcementLevel: configManager.get('workflow.enforcement', 'guidance'), // guidance | blocking
-            memoryManager,
-            minEvidenceThreshold: configManager.get('workflow.minEvidence', 2)
-        });
-        // 6. Initialize and register tools
-        // Create tool instances first
-        const diagnosticTools = new DiagnosticTools(openshiftClient, memoryManager);
-        const readOpsTools = new ReadOpsTools(openshiftClient, memoryManager);
-        const writeOpsTools = new WriteOpsTools(openshiftClient, memoryManager, workflowEngine);
-        const stateMgmtTools = new StateMgmtTools(memoryManager, workflowEngine);
-        toolRegistry = new ToolRegistry(diagnosticTools, readOpsTools, writeOpsTools, stateMgmtTools);
-        // Tools are registered automatically in constructor
-        // V2 tools now integrated into main diagnostic tools
-        // toolRegistry.registerExternalTool(checkNamespaceHealthV2Tool);
-        console.error('✅ MCP-ocs initialized successfully');
-        console.error(`📁 Memory system: ${memoryManager.isChromaAvailable() ? 'ChromaDB + JSON' : 'JSON fallback'}`);
-        console.error(`🔧 Tool mode: ${namespaceManager.getCurrentMode()}`);
-        console.error(`🔄 Workflow enforcement: ${workflowEngine.getEnforcementLevel()}`);
-    }
-    catch (error) {
-        console.error('❌ Failed to initialize MCP-ocs:', error);
-        process.exit(1);
-    }
-}
-// Tool registration now handled in ToolRegistry constructor
-/**
- * List available tools (filtered by namespace and context)
- */
+// Register tools/list handler
 server.setRequestHandler(ListToolsRequestSchema, async () => {
-    try {
-        const availableTools = toolRegistry.getAvailableTools();
-        console.error("DEBUG: Available tools:", JSON.stringify(availableTools, null, 2));
-        // Store tool listing in memory for analytics
-        await memoryManager.storeOperational({
-            incidentId: `tool-list-${Date.now()}`,
-            domain: 'system',
-            timestamp: Date.now(),
-            symptoms: ['tool_discovery_request'],
-            affectedResources: [],
-            diagnosticSteps: [`Listed ${availableTools.length} available tools`],
-            tags: ['tool_discovery', 'system_health'],
-            environment: configManager.get('environment', 'dev')
-        });
-        return {
-            tools: availableTools.map((tool) => ({
-                name: tool.name,
-                description: tool.description,
-                inputSchema: tool.inputSchema
-            }))
-        };
-    }
-    catch (error) {
-        console.error('Error listing tools:', error);
-        throw error;
-    }
+    console.error('📋 Listing all available tools...');
+    return {
+        tools: allTools.map(tool => ({
+            name: tool.fullName,
+            description: tool.description,
+            inputSchema: tool.inputSchema
+        }))
+    };
 });
-/**
- * Execute tool calls with workflow enforcement and memory storage
- */
+// Register tools/call handler
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-    const { name: toolName, arguments: args } = request.params;
-    const sessionId = args?.sessionId || `session-${Date.now()}`;
+    const { name, arguments: args } = request.params;
+    console.error(`🔧 Executing tool: ${name}`);
     try {
-        // 1. Workflow enforcement check (ADR-005)
-        const workflowResponse = await workflowEngine.processToolRequest(sessionId, {
-            name: toolName,
-            arguments: args,
-            timestamp: new Date(),
-            domain: 'cluster'
-        });
-        // 2. Handle workflow blocking/guidance
-        if (workflowResponse.blocked) {
-            return {
-                content: [{
-                        type: "text",
-                        text: `🛑 Operation blocked by workflow engine\\n\\n${workflowResponse.interventionMessage}`
-                    }]
-            };
+        let result;
+        // Route to appropriate tool suite
+        if (name.startsWith('oc_diagnostic_')) {
+            result = await diagnosticTools.executeTool(name, args || {});
         }
-        if (workflowResponse.warning) {
-            console.error(`⚠️ Workflow warning: ${workflowResponse.cautionMessage}`);
+        else if (name.startsWith('oc_read_')) {
+            result = await readOpsTools.executeTool(name, args || {});
         }
-        // 3. Execute the tool
-        const toolResult = await toolRegistry.executeTool(toolName, args);
-        // 4. Store conversation memory (ADR-003)
-        await memoryManager.storeConversation({
-            sessionId: sessionId,
-            domain: 'openshift',
-            timestamp: Date.now(),
-            userMessage: `Tool call: ${toolName}`,
-            assistantResponse: JSON.stringify(toolResult, null, 2),
-            context: await extractContext(toolName, args, toolResult),
-            tags: await generateTags(toolName, args, toolResult)
-        });
-        // 5. Format response with workflow guidance
-        const responseText = formatToolResponse(toolResult, workflowResponse);
+        else if (name.startsWith('memory_') || name.startsWith('core_')) {
+            result = await stateMgmtTools.executeTool(name, args || {});
+        }
+        else {
+            throw new Error(`Unknown tool: ${name}`);
+        }
         return {
-            content: [{
-                    type: "text",
-                    text: responseText
-                }]
+            content: [
+                {
+                    type: 'text',
+                    text: result
+                }
+            ]
         };
     }
     catch (error) {
-        console.error(`Error executing tool ${toolName}:`, error);
-        // Store error in memory for pattern analysis
-        await memoryManager.storeOperational({
-            incidentId: `error-${sessionId}-${Date.now()}`,
-            domain: 'system',
-            timestamp: Date.now(),
-            symptoms: [`Tool execution error: ${toolName}`],
-            rootCause: error instanceof Error ? error.message : 'Unknown error',
-            affectedResources: [],
-            diagnosticSteps: [`Failed to execute ${toolName} with args: ${JSON.stringify(args)}`],
-            tags: ['tool_error', 'system_issue', toolName],
-            environment: configManager.get('environment', 'dev')
-        });
-        return {
-            content: [{
-                    type: "text",
-                    text: `❌ Error executing ${toolName}: ${error instanceof Error ? error.message : 'Unknown error'}`
-                }],
-            isError: true
-        };
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        console.error(`❌ Tool execution failed: ${errorMessage}`);
+        throw new Error(`Tool execution failed: ${errorMessage}`);
     }
 });
-/**
- * List available resources (cluster state, memory, etc.)
- */
-server.setRequestHandler(ListResourcesRequestSchema, async () => {
-    try {
-        const resources = [];
-        // OpenShift cluster resources
-        const clusterInfo = await openshiftClient.getClusterInfo();
-        resources.push({
-            uri: "cluster://info",
-            name: "Cluster Information",
-            description: "Current OpenShift cluster status and metadata",
-            mimeType: "application/json"
-        });
-        // Memory resources
-        const memoryStats = await memoryManager.getStats();
-        resources.push({
-            uri: "memory://stats",
-            name: "Memory System Statistics",
-            description: "Current memory system status and usage",
-            mimeType: "application/json"
-        });
-        // Workflow state
-        resources.push({
-            uri: "workflow://state",
-            name: "Current Workflow State",
-            description: "Active workflow sessions and states",
-            mimeType: "application/json"
-        });
-        return { resources };
-    }
-    catch (error) {
-        console.error('Error listing resources:', error);
-        return { resources: [] };
-    }
-});
-/**
- * Read resource content
- */
-server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
-    const { uri } = request.params;
-    try {
-        if (uri === "cluster://info") {
-            const clusterInfo = await openshiftClient.getClusterInfo();
-            return {
-                contents: [{
-                        uri,
-                        mimeType: "application/json",
-                        text: JSON.stringify(clusterInfo, null, 2)
-                    }]
-            };
-        }
-        if (uri === "memory://stats") {
-            const memoryStats = await memoryManager.getStats();
-            return {
-                contents: [{
-                        uri,
-                        mimeType: "application/json",
-                        text: JSON.stringify(memoryStats, null, 2)
-                    }]
-            };
-        }
-        if (uri === "workflow://state") {
-            const workflowState = await workflowEngine.getActiveStates();
-            return {
-                contents: [{
-                        uri,
-                        mimeType: "application/json",
-                        text: JSON.stringify(workflowState, null, 2)
-                    }]
-            };
-        }
-        throw new Error(`Unknown resource: ${uri}`);
-    }
-    catch (error) {
-        console.error(`Error reading resource ${uri}:`, error);
-        throw error;
-    }
-});
-/**
- * Helper functions
- */
-async function extractContext(toolName, args, result) {
-    const context = [toolName];
-    // Extract OpenShift-specific context
-    if (args.namespace)
-        context.push(args.namespace);
-    if (args.name)
-        context.push(args.name);
-    if (args.selector)
-        context.push(args.selector);
-    // Extract resource types from tool name
-    const resourceTypes = ['pod', 'deployment', 'service', 'route', 'configmap', 'secret'];
-    resourceTypes.forEach(type => {
-        if (toolName.toLowerCase().includes(type)) {
-            context.push(type);
-        }
-    });
-    return context;
-}
-async function generateTags(toolName, args, result) {
-    const tags = [];
-    // Operation type tags
-    if (toolName.includes('get') || toolName.includes('list') || toolName.includes('describe')) {
-        tags.push('read_operation');
-    }
-    else if (toolName.includes('apply') || toolName.includes('create') || toolName.includes('update')) {
-        tags.push('write_operation');
-    }
-    else if (toolName.includes('delete')) {
-        tags.push('delete_operation');
-    }
-    // Domain tags
-    tags.push('openshift', 'kubernetes');
-    // Environment tag
-    const environment = configManager.get('environment', 'dev');
-    tags.push(environment);
-    return tags;
-}
-function formatToolResponse(toolResult, workflowResponse) {
-    let response = '';
-    // Add workflow guidance if present
-    if (workflowResponse.workflowGuidance) {
-        response += `🧭 **Workflow Guidance**: ${workflowResponse.workflowGuidance}\\n\\n`;
-    }
-    // Add current workflow state
-    if (workflowResponse.currentState) {
-        response += `📊 **Current State**: ${workflowResponse.currentState}\\n\\n`;
-    }
-    // Add tool result
-    if (typeof toolResult === 'string') {
-        response += toolResult;
-    }
-    else {
-        response += JSON.stringify(toolResult, null, 2);
-    }
-    // Add next recommended actions
-    if (workflowResponse.nextRecommendedActions?.length > 0) {
-        response += '\\n\\n🎯 **Next Recommended Actions**:\\n';
-        workflowResponse.nextRecommendedActions.forEach((action, index) => {
-            response += `${index + 1}. ${action}\\n`;
-        });
-    }
-    return response;
-}
-/**
- * Main entry point
- */
-async function main() {
-    await initialize();
-    const transport = new StdioServerTransport();
-    await server.connect(transport);
-    console.error('🚀 MCP-ocs server running on stdio');
-}
-// Graceful shutdown handling
-process.on('SIGINT', async () => {
-    console.error('\\n🛑 Received SIGINT, shutting down gracefully...');
-    if (memoryManager) {
-        await memoryManager.close();
-    }
-    if (openshiftClient) {
-        await openshiftClient.close();
-    }
-    console.error('✅ Shutdown complete');
-    process.exit(0);
-});
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
-    process.exit(1);
-});
-if (import.meta.url === `file://${process.argv[1]}`) {
-    main().catch((error) => {
-        console.error('❌ Fatal error:', error);
-        process.exit(1);
-    });
-}
+// Connect to stdio transport
+const transport = new StdioServerTransport();
+await server.connect(transport);
+console.error('✅ MCP-ocs server connected and ready!');

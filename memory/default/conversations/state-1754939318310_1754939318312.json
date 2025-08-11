@@ -1,0 +1,15 @@
+{
+  "sessionId": "state-1754939318310",
+  "domain": "knowledge",
+  "timestamp": 1754939318312,
+  "userMessage": "Store incident aws-connectivity-test",
+  "assistantResponse": "Successfully stored incident aws-connectivity-test in operational memory",
+  "context": [
+    "incident_storage",
+    "aws-connectivity-test"
+  ],
+  "tags": [
+    "memory_operation",
+    "incident_management"
+  ]
+}

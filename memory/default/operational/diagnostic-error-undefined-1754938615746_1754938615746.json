@@ -1,0 +1,19 @@
+{
+  "incidentId": "diagnostic-error-undefined-1754938615746",
+  "domain": "cluster",
+  "timestamp": 1754938615746,
+  "symptoms": [
+    "Diagnostic tool error: memory_store_operational"
+  ],
+  "rootCause": "Unknown diagnostic tool: memory_store_operational",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Failed to execute memory_store_operational"
+  ],
+  "tags": [
+    "diagnostic_error",
+    "tool_failure",
+    "memory_store_operational"
+  ],
+  "environment": "prod"
+}

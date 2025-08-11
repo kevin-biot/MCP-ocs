@@ -618,7 +618,12 @@ export class DiagnosticToolsV2 {
                     averageCheckTime: `${Math.round(checklistResult.duration / Math.max(checklistResult.summary.totalChecks, 1))}ms`
                 }
             };
-            return JSON.stringify(response, null, 2);
+            // Return proper ToolResult object instead of just JSON string
+            return JSON.stringify({
+                success: true,
+                result: response,
+                timestamp: new Date().toISOString()
+            }, null, 2);
         }
         catch (error) {
             return this.formatErrorResponse('RCA checklist execution', error, sessionId);

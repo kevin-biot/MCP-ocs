@@ -8,7 +8,7 @@
  * - Real-world operational patterns
  */
 
-import { ToolDefinition } from '../../lib/tools/namespace-manager.js';
+import { ToolDefinition } from '../../lib/tools/tool-types.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
 import { OcWrapperV2 } from '../../v2/lib/oc-wrapper-v2.js';
@@ -733,7 +733,12 @@ export class DiagnosticToolsV2 {
         }
       };
 
-      return JSON.stringify(response, null, 2);
+      // Return proper ToolResult object instead of just JSON string
+      return JSON.stringify({
+        success: true,
+        result: response,
+        timestamp: new Date().toISOString()
+      }, null, 2);
 
     } catch (error) {
       return this.formatErrorResponse('RCA checklist execution', error, sessionId);

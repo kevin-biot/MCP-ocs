@@ -1,70 +1,156 @@
+#!/usr/bin/env node
+
 /**
- * MCP-ocs Main Entry Point
- * 
- * Initializes the Model Context Protocol server for OpenShift operations and diagnostics.
+ * MCP-ocs Main Entry Point - Complete Tool Suite
+ * Registers ALL tools: diagnostics, read-ops, state-mgmt, write-ops
  */
 
-import express from 'express';
-import { createServer } from 'http';
-import { MCPServer } from '@modelcontextprotocol/sdk/server.js';
-import { VectorMemoryManager } from './lib/memory/vector-memory-manager.js';
-import { ToolExecutionTracker } from './lib/tools/tool-execution-tracker.js';
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { 
+  ListToolsRequestSchema, 
+  CallToolRequestSchema 
+} from '@modelcontextprotocol/sdk/types.js';
+
 import { DiagnosticToolsV2 } from './tools/diagnostics/index.js';
+import { ReadOpsTools } from './tools/read-ops/index.js';
+import { StateMgmtTools } from './tools/state-mgmt/index.js';
 import { OpenShiftClient } from './lib/openshift-client.js';
 import { SharedMemoryManager } from './lib/memory/shared-memory.js';
+import { WorkflowEngine } from './lib/workflow/workflow-engine.js';
+import { AutoMemorySystem } from './lib/memory/auto-memory-system.js';
+
+console.error('🚀 Starting MCP-ocs server...');
 
 // Initialize core components
-const memoryManager = new VectorMemoryManager();
-const toolTracker = new ToolExecutionTracker(memoryManager);
-const openshiftClient = new OpenShiftClient();
-const sharedMemory = new SharedMemoryManager();
-
-// Create the main diagnostic tools system
-const diagnosticTools = new DiagnosticToolsV2(
-  openshiftClient,
-  sharedMemory
-);
-
-// Setup Express server with MCP protocol
-const app = express();
-const server = createServer(app);
-
-// Initialize MCP server with our diagnostic tools
-const mcpServer = new MCPServer({
-  server,
-  tools: diagnosticTools.getTools(),
-  toolExecutionTracker: toolTracker
+const openshiftClient = new OpenShiftClient({
+  ocPath: 'oc',
+  timeout: 30000
 });
 
-// Start the server
-const PORT = process.env.PORT || 3000;
+const sharedMemory = new SharedMemoryManager({
+  domain: 'mcp-ocs',
+  namespace: 'default',
+  memoryDir: './memory',
+  enableCompression: true,
+  retentionDays: 30,
+  chromaHost: '127.0.0.1',
+  chromaPort: 8000
+});
 
-async function startServer() {
-  try {
-    // Initialize the memory system
-    console.log('Initializing MCP-ocs memory system...');
-    
-    // Start the server
-    server.listen(PORT, () => {
-      console.log(`🚀 MCP-ocs server running on port ${PORT}`);
-      console.log('📊 Tool memory system initialized with vector storage');
-      console.log('🔍 All tool executions will be automatically stored and tagged');
-    });
-    
-    // Setup cleanup on shutdown
-    process.on('SIGINT', async () => {
-      console.log('Shutting down MCP-ocs server...');
-      await toolTracker.cleanupOldExecutions(1); // Cleanup memories from last day
-      process.exit(0);
-    });
-    
-  } catch (error) {
-    console.error('Failed to start MCP-ocs server:', error);
-    process.exit(1);
+const workflowEngine = new WorkflowEngine({
+  enablePanicDetection: true,
+  enforcementLevel: 'guidance',
+  memoryManager: sharedMemory,
+  minEvidenceThreshold: 2
+});
+
+// Initialize auto-memory system for intelligent tool tracking
+const autoMemory = new AutoMemorySystem(sharedMemory);
+
+// Create ALL tool suites
+const diagnosticTools = new DiagnosticToolsV2(openshiftClient, sharedMemory);
+const readOpsTools = new ReadOpsTools(openshiftClient, sharedMemory);
+const stateMgmtTools = new StateMgmtTools(sharedMemory, workflowEngine);
+
+// Combine all tools
+const allTools = [
+  ...diagnosticTools.getTools(),
+  ...readOpsTools.getTools(), 
+  ...stateMgmtTools.getTools()
+];
+
+console.error(`✅ Registered ${allTools.length} tools from all suites`);
+
+// Create MCP server
+const server = new Server(
+  {
+    name: "mcp-ocs",
+    version: "1.0.0",
+  },
+  {
+    capabilities: {
+      tools: {},
+    },
   }
-}
+);
 
-// Start the application
-startServer();
+// Register tools/list handler
+server.setRequestHandler(ListToolsRequestSchema, async () => {
+  console.error('📋 Listing all available tools...');
+  return {
+    tools: allTools.map(tool => ({
+      name: tool.fullName,
+      description: tool.description,
+      inputSchema: tool.inputSchema
+    }))
+  };
+});
 
-export { mcpServer, memoryManager, toolTracker };
+// Register tools/call handler with auto-memory integration
+server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  const { name, arguments: args } = request.params;
+  const startTime = Date.now();
+  
+  console.error(`🔧 Executing tool: ${name}`);
+  
+  // Check for relevant past context before execution
+  const relevantContext = await autoMemory.retrieveRelevantContext(name, args || {});
+  if (relevantContext.length > 0) {
+    console.error(`🧠 Found ${relevantContext.length} relevant past experiences`);
+  }
+  
+  let result: string;
+  let success = true;
+  let error: string | undefined;
+  
+  try {
+    // Route to appropriate tool suite
+    if (name.startsWith('oc_diagnostic_')) {
+      result = await diagnosticTools.executeTool(name, args || {});
+    } else if (name.startsWith('oc_read_')) {
+      result = await readOpsTools.executeTool(name, args || {});
+    } else if (name.startsWith('memory_') || name.startsWith('core_')) {
+      result = await stateMgmtTools.executeTool(name, args || {});
+    } else {
+      throw new Error(`Unknown tool: ${name}`);
+    }
+    
+  } catch (toolError) {
+    success = false;
+    error = toolError instanceof Error ? toolError.message : 'Unknown error';
+    console.error(`❌ Tool execution failed: ${error}`);
+    throw new Error(`Tool execution failed: ${error}`);
+    
+  } finally {
+    // Auto-capture this tool execution for future reference
+    const duration = Date.now() - startTime;
+    const sessionId = args?.sessionId || `auto-session-${Date.now()}`;
+    
+    await autoMemory.captureToolExecution({
+      toolName: name,
+      arguments: args || {},
+      result: result!,
+      sessionId,
+      timestamp: startTime,
+      duration,
+      success,
+      error
+    });
+  }
+  
+  return {
+    content: [
+      {
+        type: 'text',
+        text: result!
+      }
+    ]
+  };
+});
+
+// Connect to stdio transport
+const transport = new StdioServerTransport();
+await server.connect(transport);
+
+console.error('✅ MCP-ocs server connected and ready!');

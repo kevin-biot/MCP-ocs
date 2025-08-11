@@ -6,7 +6,10 @@
  */
 
 import { spawn } from 'child_process';
-import { setTimeout } from 'timers/promises';
+
+async function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 console.log('🧪 MCP-ocs + AWS OpenShift Integration Test');
 console.log('==========================================');
@@ -51,7 +54,7 @@ async function testRealCluster() {
     console.log('🚀 Starting real cluster tests...\n');
     
     // Wait for server initialization
-    await setTimeout(3000);
+    await delay(3000);
     
     // Test 1: Initialize MCP connection
     console.log('🔧 Test 1: Initialize MCP connection');
@@ -61,13 +64,13 @@ async function testRealCluster() {
       clientInfo: { name: "aws-test-client", version: "1.0.0" }
     });
     
-    await setTimeout(2000);
+    await delay(2000);
     
     // Test 2: List available tools
     console.log('🔧 Test 2: List available tools');
     sendMCPMessage('tools/list');
     
-    await setTimeout(2000);
+    await delay(2000);
     
     // Test 3: Real cluster health check
     console.log('🔧 Test 3: AWS OpenShift cluster health diagnostic');
@@ -76,7 +79,7 @@ async function testRealCluster() {
       arguments: { sessionId: 'aws-test-session-001' }
     });
     
-    await setTimeout(3000);
+    await delay(3000);
     
     // Test 4: Get real pods from cluster
     console.log('🔧 Test 4: Get pods from AWS cluster');
@@ -88,7 +91,7 @@ async function testRealCluster() {
       }
     });
     
-    await setTimeout(3000);
+    await delay(3000);
     
     // Test 5: Memory system with real data
     console.log('🔧 Test 5: Store real cluster info in memory');
@@ -104,7 +107,7 @@ async function testRealCluster() {
       }
     });
     
-    await setTimeout(2000);
+    await delay(2000);
     
     console.log('\n✅ Real cluster integration tests completed');
     
@@ -135,8 +138,6 @@ async function testRealCluster() {
 
 // Handle server startup and run tests
 setTimeout(() => testRealCluster(), 1000);
-  testRealCluster();
-
 
 // Handle any server errors
 server.on('error', (error) => {
