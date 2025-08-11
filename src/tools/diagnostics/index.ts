@@ -1,19 +1,31 @@
 /**
- * Diagnostic Tools - OpenShift Health and Status Checks
+ * Enhanced Diagnostic Tools v2 - OpenShift Health and Status Checks
  * 
- * Following ADR-004 namespace conventions: oc_diagnostic_*
- * Safe read-only operations for cluster health assessment
+ * Replaces v1 diagnostic tools with enhanced implementations:
+ * - Better error handling and caching
+ * - Intelligent pattern detection  
+ * - Comprehensive health analysis
+ * - Real-world operational patterns
  */
 
 import { ToolDefinition } from '../../lib/tools/namespace-manager.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
+import { OcWrapperV2 } from '../../v2/lib/oc-wrapper-v2.js';
+import { NamespaceHealthChecker } from '../../v2/tools/check-namespace-health/index.js';
 
-export class DiagnosticTools {
+export class DiagnosticToolsV2 {
+  private ocWrapperV2: OcWrapperV2;
+  private namespaceHealthChecker: NamespaceHealthChecker;
+
   constructor(
     private openshiftClient: OpenShiftClient,
     private memoryManager: SharedMemoryManager
-  ) {}
+  ) {
+    // Initialize v2 components
+    this.ocWrapperV2 = new OcWrapperV2();
+    this.namespaceHealthChecker = new NamespaceHealthChecker(this.ocWrapperV2);
+  }
 
   getTools(): ToolDefinition[] {
     return [
@@ -27,280 +39,596 @@ export class DiagnosticTools {
         ],
         dependencies: [],
         contextRequirements: [],
-        description: 'Check overall OpenShift cluster health and status',
+        description: 'Enhanced cluster health analysis with intelligent issue detection',
         inputSchema: {
           type: 'object',
           properties: {
-            sessionId: {
-              type: 'string',
-              description: 'Session ID for workflow tracking'
-            }
-          }
-        },
-        priority: 100
+            sessionId: { type: 'string' },
+            includeNamespaceAnalysis: { type: 'boolean', default: false },
+            maxNamespacesToAnalyze: { type: 'number', default: 10 }
+          },
+          required: ['sessionId']
+        }
       },
       {
-        name: 'pod_health_check',
+        name: 'namespace_health',
+        namespace: 'mcp-openshift',
+        fullName: 'oc_diagnostic_namespace_health',
+        domain: 'cluster',
+        capabilities: [
+          { type: 'diagnostic', level: 'basic', riskLevel: 'safe' }
+        ],
+        dependencies: [],
+        contextRequirements: ['namespace'],
+        description: 'Comprehensive namespace health analysis with pod, PVC, and route diagnostics',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            sessionId: { type: 'string' },
+            namespace: { type: 'string' },
+            includeIngressTest: { type: 'boolean', default: false },
+            deepAnalysis: { type: 'boolean', default: false }
+          },
+          required: ['sessionId', 'namespace']
+        }
+      },
+      {
+        name: 'pod_health',
         namespace: 'mcp-openshift',
         fullName: 'oc_diagnostic_pod_health',
         domain: 'cluster',
         capabilities: [
-          { type: 'diagnostic', level: 'advanced', riskLevel: 'safe' }
+          { type: 'diagnostic', level: 'basic', riskLevel: 'safe' }
         ],
         dependencies: [],
-        contextRequirements: [],
-        description: 'Comprehensive health check for pods in a namespace',
+        contextRequirements: ['namespace', 'pod'],
+        description: 'Enhanced pod health diagnostics with dependency analysis',
         inputSchema: {
           type: 'object',
           properties: {
-            namespace: {
-              type: 'string',
-              description: 'Kubernetes namespace to check (optional, uses default if not specified)'
-            },
-            selector: {
-              type: 'string',
-              description: 'Label selector to filter pods (optional)'
-            },
-            sessionId: {
-              type: 'string',
-              description: 'Session ID for workflow tracking'
-            }
-          }
-        },
-        priority: 90
-      },
-      {
-        name: 'resource_utilization',
-        namespace: 'mcp-openshift',
-        fullName: 'oc_diagnostic_resource_usage',
-        domain: 'cluster',
-        capabilities: [
-          { type: 'diagnostic', level: 'advanced', riskLevel: 'safe' }
-        ],
-        dependencies: [],
-        contextRequirements: [],
-        description: 'Analyze resource utilization across cluster nodes and namespaces',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            scope: {
-              type: 'string',
-              enum: ['cluster', 'namespace', 'node'],
-              description: 'Scope of resource analysis'
-            },
-            target: {
-              type: 'string',
-              description: 'Specific namespace or node name (if scope is not cluster)'
-            },
-            sessionId: {
-              type: 'string',
-              description: 'Session ID for workflow tracking'
-            }
+            sessionId: { type: 'string' },
+            namespace: { type: 'string' },
+            podName: { type: 'string' },
+            includeDependencies: { type: 'boolean', default: true },
+            includeResourceAnalysis: { type: 'boolean', default: true }
           },
-          required: ['scope']
-        },
-        priority: 80
-      },
-      {
-        name: 'event_analysis',
-        namespace: 'mcp-openshift',
-        fullName: 'oc_diagnostic_events',
-        domain: 'cluster',
-        capabilities: [
-          { type: 'diagnostic', level: 'advanced', riskLevel: 'safe' }
-        ],
-        dependencies: [],
-        contextRequirements: [],
-        description: 'Analyze recent cluster events for issues and patterns',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            namespace: {
-              type: 'string',
-              description: 'Filter events by namespace (optional)'
-            },
-            timeRange: {
-              type: 'string',
-              description: 'Time range for events (e.g., "1h", "30m", "24h")',
-              default: '1h'
-            },
-            eventType: {
-              type: 'string',
-              enum: ['Warning', 'Normal', 'all'],
-              description: 'Filter by event type',
-              default: 'all'
-            },
-            sessionId: {
-              type: 'string',
-              description: 'Session ID for workflow tracking'
-            }
-          }
-        },
-        priority: 85
+          required: ['sessionId', 'namespace', 'podName']
+        }
       }
     ];
   }
 
-  /**
-   * Execute diagnostic tool (placeholder implementation)
-   * In real implementation, this would call the actual OpenShift client methods
-   */
-  async executeTool(toolName: string, args: any): Promise<any> {
-    const sessionId = args.sessionId || `diagnostic-${Date.now()}`;
-    
+  async executeTool(toolName: string, args: any): Promise<string> {
+    const { sessionId } = args;
+
     try {
       switch (toolName) {
         case 'oc_diagnostic_cluster_health':
-          return await this.checkClusterHealth(sessionId);
+          return await this.enhancedClusterHealth(args);
+          
+        case 'oc_diagnostic_namespace_health':
+          return await this.enhancedNamespaceHealth(args);
           
         case 'oc_diagnostic_pod_health':
-          return await this.checkPodHealth(args.namespace, args.selector, sessionId);
-          
-        case 'oc_diagnostic_resource_usage':
-          return await this.analyzeResourceUsage(args.scope, args.target, sessionId);
-          
-        case 'oc_diagnostic_events':
-          return await this.analyzeEvents(args.namespace, args.timeRange, args.eventType, sessionId);
+          return await this.enhancedPodHealth(args);
           
         default:
           throw new Error(`Unknown diagnostic tool: ${toolName}`);
       }
     } catch (error) {
-      // Store diagnostic failure in memory for pattern analysis
+      // Store diagnostic error for analysis
       await this.memoryManager.storeOperational({
         incidentId: `diagnostic-error-${sessionId}-${Date.now()}`,
-        domain: 'system',
+        domain: 'cluster',
         timestamp: Date.now(),
-        symptoms: [`Diagnostic tool ${toolName} failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
+        symptoms: [`Diagnostic tool error: ${toolName}`],
+        rootCause: error instanceof Error ? error.message : 'Unknown error',
         affectedResources: [],
-        diagnosticSteps: [`Attempted ${toolName} with args: ${JSON.stringify(args)}`],
+        diagnosticSteps: [`Failed to execute ${toolName}`],
         tags: ['diagnostic_error', 'tool_failure', toolName],
-        environment: 'dev'
+        environment: 'production'
       });
-      
+
       throw error;
     }
   }
 
-  private async checkClusterHealth(sessionId: string): Promise<any> {
-    console.error(`🏥 Checking cluster health for session ${sessionId}`);
-    
-    // Get cluster info
-    const clusterInfo = await this.openshiftClient.getClusterInfo();
-    
-    // Check node status (placeholder - would use real oc commands)
-    const healthSummary = {
-      clusterStatus: clusterInfo.status,
-      version: clusterInfo.version,
-      currentUser: clusterInfo.currentUser,
-      serverUrl: clusterInfo.serverUrl,
-      timestamp: new Date().toISOString(),
-      overallHealth: 'healthy', // Would be calculated from actual checks
-      issues: [] as string[],
-      recommendations: [] as string[]
-    };
-    
-    // Store successful diagnostic in memory
-    await this.memoryManager.storeOperational({
-      incidentId: `cluster-health-${sessionId}`,
-      domain: 'cluster',
-      timestamp: Date.now(),
-      symptoms: [`Cluster health check completed`],
-      affectedResources: [],
-      diagnosticSteps: ['Retrieved cluster info', 'Analyzed cluster status'],
-      tags: ['cluster_health', 'diagnostic', 'routine_check'],
-      environment: 'dev'
-    });
-    
-    return healthSummary;
-  }
+  /**
+   * Enhanced cluster health check with v2 capabilities
+   */
+  private async enhancedClusterHealth(args: {
+    sessionId: string;
+    includeNamespaceAnalysis?: boolean;
+    maxNamespacesToAnalyze?: number;
+  }): Promise<string> {
+    const startTime = Date.now();
+    const { sessionId, includeNamespaceAnalysis = false, maxNamespacesToAnalyze = 10 } = args;
 
-  private async checkPodHealth(namespace?: string, selector?: string, sessionId?: string): Promise<any> {
-    console.error(`🔍 Checking pod health in namespace: ${namespace || 'default'}`);
-    
-    // Get pods
-    const pods = await this.openshiftClient.getPods(namespace, selector);
-    
-    // Analyze pod health
-    const healthAnalysis = {
-      namespace: namespace || 'default',
-      totalPods: pods.length,
-      healthyPods: pods.filter(p => p.status === 'Running' && p.ready === '1/1').length,
-      unhealthyPods: pods.filter(p => p.status !== 'Running' || p.ready !== '1/1'),
-      highRestartPods: pods.filter(p => p.restarts > 5),
-      recommendations: [] as string[],
-      timestamp: new Date().toISOString()
-    };
-    
-    // Generate recommendations
-    if (healthAnalysis.unhealthyPods.length > 0) {
-      healthAnalysis.recommendations.push('Investigate unhealthy pods');
+    try {
+      // Get cluster info using both v1 and v2 capabilities
+      const clusterInfo = await this.openshiftClient.getClusterInfo();
+      
+      // Enhanced analysis using v2 wrapper
+      const nodeHealth = await this.analyzeNodeHealth();
+      const operatorHealth = await this.analyzeOperatorHealth();
+      const systemNamespaceHealth = await this.analyzeSystemNamespaces();
+      
+      // Optional namespace analysis
+      let namespaceAnalysis = null;
+      if (includeNamespaceAnalysis) {
+        namespaceAnalysis = await this.analyzeUserNamespaces(maxNamespacesToAnalyze);
+      }
+
+      // Generate comprehensive report
+      const healthSummary = {
+        cluster: {
+          status: clusterInfo.status,
+          version: clusterInfo.version,
+          currentUser: clusterInfo.currentUser,
+          serverUrl: clusterInfo.serverUrl,
+          timestamp: new Date().toISOString()
+        },
+        nodes: nodeHealth,
+        operators: operatorHealth,
+        systemNamespaces: systemNamespaceHealth,
+        userNamespaces: namespaceAnalysis,
+        overallHealth: this.calculateOverallHealth(nodeHealth, operatorHealth, systemNamespaceHealth),
+        duration: `${Date.now() - startTime}ms`,
+        recommendations: this.generateClusterRecommendations(nodeHealth, operatorHealth, systemNamespaceHealth)
+      };
+
+      // Store diagnostic results in memory
+      await this.memoryManager.storeOperational({
+        incidentId: `cluster-health-${sessionId}`,
+        domain: 'cluster',
+        timestamp: Date.now(),
+        symptoms: healthSummary.overallHealth === 'healthy' ? ['cluster_healthy'] : ['cluster_issues_detected'],
+        affectedResources: [],
+        diagnosticSteps: ['Enhanced cluster health check completed'],
+        tags: ['cluster_health', 'diagnostic', healthSummary.overallHealth],
+        environment: 'production'
+      });
+
+      return this.formatClusterHealthResponse(healthSummary, sessionId);
+
+    } catch (error) {
+      return this.formatErrorResponse('cluster health check', error, sessionId);
     }
-    if (healthAnalysis.highRestartPods.length > 0) {
-      healthAnalysis.recommendations.push('Check pods with high restart counts');
+  }
+
+  /**
+   * Enhanced namespace health using v2 implementation
+   */
+  private async enhancedNamespaceHealth(args: {
+    sessionId: string;
+    namespace: string;
+    includeIngressTest?: boolean;
+    deepAnalysis?: boolean;
+  }): Promise<string> {
+    const { sessionId, namespace, includeIngressTest = false, deepAnalysis = false } = args;
+
+    try {
+      // Use v2 namespace health checker
+      const healthResult = await this.namespaceHealthChecker.checkHealth({
+        namespace,
+        includeIngressTest,
+        maxLogLinesPerPod: deepAnalysis ? 50 : 0
+      });
+
+      // Enhanced analysis if requested
+      let deepAnalysisResults = null;
+      if (deepAnalysis) {
+        deepAnalysisResults = await this.performDeepNamespaceAnalysis(namespace);
+      }
+
+      // Format response with v2 enhancements
+      const response = {
+        tool: 'oc_diagnostic_namespace_health',
+        sessionId,
+        namespace: healthResult.namespace,
+        status: healthResult.status,
+        timestamp: healthResult.timestamp,
+        duration: `${healthResult.duration}ms`,
+        
+        summary: {
+          pods: `${healthResult.checks.pods.ready}/${healthResult.checks.pods.total} ready`,
+          pvcs: `${healthResult.checks.pvcs.bound}/${healthResult.checks.pvcs.total} bound`,
+          routes: `${healthResult.checks.routes.total} configured`,
+          criticalEvents: healthResult.checks.events.length
+        },
+        
+        issues: {
+          crashLoopPods: healthResult.checks.pods.crashloops,
+          imagePullErrors: healthResult.checks.pods.imagePullErrors,
+          pendingPods: healthResult.checks.pods.pending,
+          oomKilledPods: healthResult.checks.pods.oomKilled,
+          pvcErrors: healthResult.checks.pvcs.errors,
+          recentEvents: healthResult.checks.events.slice(0, 5)
+        },
+        
+        suspicions: healthResult.suspicions,
+        human: healthResult.human,
+        
+        deepAnalysis: deepAnalysisResults,
+        
+        nextActions: this.generateNamespaceNextActions(healthResult),
+        
+        // Integration with existing memory system
+        memoryStored: true
+      };
+
+      // Store in operational memory
+      await this.memoryManager.storeOperational({
+        incidentId: `namespace-health-${sessionId}`,
+        domain: 'cluster',
+        timestamp: Date.now(),
+        symptoms: healthResult.suspicions.length > 0 ? healthResult.suspicions : ['namespace_healthy'],
+        affectedResources: [`namespace/${namespace}`],
+        diagnosticSteps: ['Enhanced namespace health check completed'],
+        tags: ['namespace_health', 'diagnostic', namespace, healthResult.status],
+        environment: 'production'
+      });
+
+      return JSON.stringify(response, null, 2);
+
+    } catch (error) {
+      return this.formatErrorResponse('namespace health check', error, sessionId);
     }
-    
-    return healthAnalysis;
   }
 
-  private async analyzeResourceUsage(scope: string, target?: string, sessionId?: string): Promise<any> {
-    console.error(`📊 Analyzing resource usage - scope: ${scope}, target: ${target}`);
-    
-    // Placeholder implementation
-    return {
-      scope,
-      target,
-      analysis: 'Resource analysis would be implemented with real oc commands',
-      timestamp: new Date().toISOString(),
-      recommendations: ['Monitor resource usage patterns', 'Consider scaling if needed']
-    };
+  /**
+   * Enhanced pod health with dependency analysis
+   */
+  private async enhancedPodHealth(args: {
+    sessionId: string;
+    namespace: string;
+    podName: string;
+    includeDependencies?: boolean;
+    includeResourceAnalysis?: boolean;
+  }): Promise<string> {
+    const { sessionId, namespace, podName, includeDependencies = true, includeResourceAnalysis = true } = args;
+
+    try {
+      // Get pod details using v2 wrapper
+      const podData = await this.ocWrapperV2.executeOc(['get', 'pod', podName, '-o', 'json'], { namespace });
+      const pod = JSON.parse(podData.stdout);
+
+      // Analyze pod health
+      const podAnalysis = this.analyzePodDetails(pod);
+      
+      // Optional dependency analysis
+      let dependencies = null;
+      if (includeDependencies) {
+        dependencies = await this.analyzePodDependencies(namespace, podName);
+      }
+
+      // Optional resource analysis
+      let resourceAnalysis = null;
+      if (includeResourceAnalysis) {
+        resourceAnalysis = await this.analyzePodResources(pod);
+      }
+
+      const response = {
+        tool: 'oc_diagnostic_pod_health',
+        sessionId,
+        namespace,
+        podName,
+        timestamp: new Date().toISOString(),
+        
+        health: podAnalysis,
+        dependencies,
+        resources: resourceAnalysis,
+        
+        recommendations: this.generatePodRecommendations(podAnalysis, dependencies, resourceAnalysis),
+        
+        human: this.generatePodHealthSummary(podName, podAnalysis, dependencies)
+      };
+
+      // Store pod health check
+      await this.memoryManager.storeOperational({
+        incidentId: `pod-health-${sessionId}`,
+        domain: 'cluster',
+        timestamp: Date.now(),
+        symptoms: podAnalysis.issues.length > 0 ? podAnalysis.issues : ['pod_healthy'],
+        affectedResources: [`pod/${podName}`, `namespace/${namespace}`],
+        diagnosticSteps: ['Enhanced pod health check completed'],
+        tags: ['pod_health', 'diagnostic', namespace, podName],
+        environment: 'production'
+      });
+
+      return JSON.stringify(response, null, 2);
+
+    } catch (error) {
+      return this.formatErrorResponse('pod health check', error, sessionId);
+    }
   }
 
-  private async analyzeEvents(namespace?: string, timeRange?: string, eventType?: string, sessionId?: string): Promise<any> {
-    console.error(`📋 Analyzing events - namespace: ${namespace}, timeRange: ${timeRange}, type: ${eventType}`);
-    
-    // Get events
-    const events = await this.openshiftClient.getEvents(namespace);
-    
-    // Filter and analyze events
-    const filteredEvents = eventType === 'all' ? events : 
-                          events.filter(e => e.type === eventType);
-    
-    const eventAnalysis = {
-      namespace: namespace || 'all',
-      timeRange: timeRange || '1h',
-      eventType: eventType || 'all',
-      totalEvents: filteredEvents.length,
-      warningEvents: filteredEvents.filter(e => e.type === 'Warning').length,
-      recentPatterns: this.identifyEventPatterns(filteredEvents),
-      timestamp: new Date().toISOString()
-    };
-    
-    return eventAnalysis;
+  // Helper methods for enhanced analysis
+
+  private async analyzeNodeHealth() {
+    try {
+      const nodesData = await this.ocWrapperV2.executeOc(['get', 'nodes', '-o', 'json']);
+      const nodes = JSON.parse(nodesData.stdout);
+      
+      return {
+        total: nodes.items.length,
+        ready: nodes.items.filter((node: any) => 
+          node.status.conditions.some((c: any) => c.type === 'Ready' && c.status === 'True')
+        ).length,
+        issues: nodes.items.filter((node: any) => 
+          node.status.conditions.some((c: any) => c.type === 'Ready' && c.status !== 'True')
+        ).map((node: any) => node.metadata.name)
+      };
+    } catch (error) {
+      return { total: 0, ready: 0, issues: [`Failed to get node status: ${error}`] };
+    }
   }
 
-  private identifyEventPatterns(events: any[]): any[] {
-    // Simple pattern identification
-    const patterns: any[] = [];
-    const reasonCounts = new Map();
-    
-    events.forEach(event => {
-      const count = reasonCounts.get(event.reason) || 0;
-      reasonCounts.set(event.reason, count + 1);
-    });
-    
-    // Identify frequent reasons
-    reasonCounts.forEach((count, reason) => {
-      if (count > 3) {
-        patterns.push({
-          type: 'frequent_event',
-          reason,
-          count,
-          significance: count > 10 ? 'high' : 'medium'
+  private async analyzeOperatorHealth() {
+    try {
+      const operatorsData = await this.ocWrapperV2.executeOc(['get', 'clusteroperators', '-o', 'json']);
+      const operators = JSON.parse(operatorsData.stdout);
+      
+      return {
+        total: operators.items.length,
+        degraded: operators.items.filter((op: any) =>
+          op.status.conditions.some((c: any) => c.type === 'Degraded' && c.status === 'True')
+        ).map((op: any) => op.metadata.name)
+      };
+    } catch (error) {
+      return { total: 0, degraded: [`Failed to get operator status: ${error}`] };
+    }
+  }
+
+  private async analyzeSystemNamespaces() {
+    const systemNamespaces = ['openshift-apiserver', 'openshift-etcd', 'openshift-kube-apiserver'];
+    const results = [];
+
+    for (const ns of systemNamespaces) {
+      try {
+        const health = await this.namespaceHealthChecker.checkHealth({ namespace: ns });
+        results.push({
+          namespace: ns,
+          status: health.status,
+          issues: health.suspicions.length
+        });
+      } catch (error) {
+        results.push({
+          namespace: ns,
+          status: 'error',
+          issues: 1
         });
       }
-    });
+    }
+
+    return results;
+  }
+
+  private async analyzeUserNamespaces(maxCount: number) {
+    try {
+      const namespacesData = await this.ocWrapperV2.executeOc(['get', 'namespaces', '-o', 'json']);
+      const namespaces = JSON.parse(namespacesData.stdout);
+      
+      const userNamespaces = namespaces.items
+        .filter((ns: any) => !ns.metadata.name.startsWith('openshift-') && 
+                           !ns.metadata.name.startsWith('kube-'))
+        .slice(0, maxCount);
+
+      const results = [];
+      for (const ns of userNamespaces) {
+        try {
+          const health = await this.namespaceHealthChecker.checkHealth({ 
+            namespace: ns.metadata.name 
+          });
+          results.push({
+            namespace: ns.metadata.name,
+            status: health.status,
+            podCount: health.checks.pods.total,
+            issues: health.suspicions.length
+          });
+        } catch (error) {
+          results.push({
+            namespace: ns.metadata.name,
+            status: 'error',
+            issues: 1
+          });
+        }
+      }
+
+      return results;
+    } catch (error) {
+      return [`Failed to analyze user namespaces: ${error}`];
+    }
+  }
+
+  private calculateOverallHealth(nodeHealth: any, operatorHealth: any, systemHealth: any): string {
+    if (nodeHealth.issues.length > 0 || operatorHealth.degraded.length > 0) {
+      return 'failing';
+    }
     
-    return patterns;
+    const systemIssues = systemHealth.filter((ns: any) => ns.status !== 'healthy').length;
+    if (systemIssues > 0) {
+      return 'degraded';
+    }
+    
+    return 'healthy';
+  }
+
+  private generateClusterRecommendations(nodeHealth: any, operatorHealth: any, systemHealth: any): string[] {
+    const recommendations = [];
+    
+    if (nodeHealth.issues.length > 0) {
+      recommendations.push(`Check node issues: oc describe node ${nodeHealth.issues[0]}`);
+    }
+    
+    if (operatorHealth.degraded.length > 0) {
+      recommendations.push(`Check degraded operators: oc get clusteroperator ${operatorHealth.degraded[0]} -o yaml`);
+    }
+    
+    const failingSystemNs = systemHealth.filter((ns: any) => ns.status === 'failing');
+    if (failingSystemNs.length > 0) {
+      recommendations.push(`Check system namespace: oc get pods -n ${failingSystemNs[0].namespace}`);
+    }
+    
+    return recommendations.slice(0, 3); // Top 3 recommendations
+  }
+
+  private generateNamespaceNextActions(healthResult: any): string[] {
+    const actions = [];
+    
+    if (healthResult.checks.pods.crashloops.length > 0) {
+      actions.push(`Check crashloop logs: oc logs ${healthResult.checks.pods.crashloops[0]} -n ${healthResult.namespace} --previous`);
+    }
+    
+    if (healthResult.checks.pods.imagePullErrors.length > 0) {
+      actions.push(`Check image pull issues: oc describe pod ${healthResult.checks.pods.imagePullErrors[0]} -n ${healthResult.namespace}`);
+    }
+    
+    if (healthResult.checks.pvcs.pending > 0) {
+      actions.push(`Check PVC status: oc get pvc -n ${healthResult.namespace}`);
+    }
+    
+    return actions.slice(0, 3);
+  }
+
+  private async performDeepNamespaceAnalysis(namespace: string) {
+    // Placeholder for deep analysis - can be enhanced with resource quotas, network policies, etc.
+    return {
+      resourceQuotas: await this.checkResourceQuotas(namespace),
+      networkPolicies: await this.checkNetworkPolicies(namespace),
+      secrets: await this.checkSecrets(namespace)
+    };
+  }
+
+  private async checkResourceQuotas(namespace: string) {
+    try {
+      const quotaData = await this.ocWrapperV2.executeOc(['get', 'resourcequota', '-o', 'json'], { namespace });
+      return JSON.parse(quotaData.stdout).items.length;
+    } catch {
+      return 0;
+    }
+  }
+
+  private async checkNetworkPolicies(namespace: string) {
+    try {
+      const npData = await this.ocWrapperV2.executeOc(['get', 'networkpolicy', '-o', 'json'], { namespace });
+      return JSON.parse(npData.stdout).items.length;
+    } catch {
+      return 0;
+    }
+  }
+
+  private async checkSecrets(namespace: string) {
+    try {
+      const secretData = await this.ocWrapperV2.executeOc(['get', 'secrets', '-o', 'json'], { namespace });
+      return JSON.parse(secretData.stdout).items.length;
+    } catch {
+      return 0;
+    }
+  }
+
+  private analyzePodDetails(pod: any) {
+    const containerStatuses = pod.status.containerStatuses || [];
+    const issues = [];
+    
+    for (const container of containerStatuses) {
+      if (container.state?.waiting) {
+        issues.push(`${container.name}: ${container.state.waiting.reason}`);
+      }
+      if (container.restartCount > 5) {
+        issues.push(`${container.name}: High restart count (${container.restartCount})`);
+      }
+    }
+    
+    return {
+      phase: pod.status.phase,
+      ready: containerStatuses.every((c: any) => c.ready),
+      restarts: containerStatuses.reduce((sum: number, c: any) => sum + c.restartCount, 0),
+      issues
+    };
+  }
+
+  private async analyzePodDependencies(namespace: string, podName: string) {
+    // Placeholder for dependency analysis - services, configmaps, secrets, etc.
+    return {
+      services: await this.findServicesForPod(namespace, podName),
+      configMaps: await this.findConfigMapsForPod(namespace, podName),
+      secrets: await this.findSecretsForPod(namespace, podName)
+    };
+  }
+
+  private async findServicesForPod(namespace: string, podName: string) {
+    // Simplified service discovery
+    try {
+      const servicesData = await this.ocWrapperV2.executeOc(['get', 'services', '-o', 'json'], { namespace });
+      const services = JSON.parse(servicesData.stdout);
+      return services.items.length;
+    } catch {
+      return 0;
+    }
+  }
+
+  private async findConfigMapsForPod(namespace: string, podName: string) {
+    // Placeholder - would analyze pod spec for configMap references
+    return 0;
+  }
+
+  private async findSecretsForPod(namespace: string, podName: string) {
+    // Placeholder - would analyze pod spec for secret references  
+    return 0;
+  }
+
+  private async analyzePodResources(pod: any) {
+    const containers = pod.spec.containers || [];
+    return {
+      containers: containers.length,
+      hasResourceLimits: containers.some((c: any) => c.resources?.limits),
+      hasResourceRequests: containers.some((c: any) => c.resources?.requests)
+    };
+  }
+
+  private generatePodRecommendations(analysis: any, dependencies: any, resources: any): string[] {
+    const recommendations = [];
+    
+    if (analysis.issues.length > 0) {
+      recommendations.push('Check pod logs and events for specific error details');
+    }
+    
+    if (!resources?.hasResourceLimits) {
+      recommendations.push('Consider adding resource limits to prevent resource contention');
+    }
+    
+    if (analysis.restarts > 0) {
+      recommendations.push('Investigate causes of pod restarts');
+    }
+    
+    return recommendations;
+  }
+
+  private generatePodHealthSummary(podName: string, analysis: any, dependencies: any): string {
+    const status = analysis.ready ? 'healthy' : 'unhealthy';
+    const issues = analysis.issues.length > 0 ? ` Issues: ${analysis.issues.join(', ')}` : '';
+    return `Pod ${podName} is ${status}. Phase: ${analysis.phase}, Restarts: ${analysis.restarts}.${issues}`;
+  }
+
+  private formatClusterHealthResponse(healthSummary: any, sessionId: string): string {
+    return JSON.stringify({
+      tool: 'oc_diagnostic_cluster_health',
+      sessionId,
+      ...healthSummary,
+      human: `Cluster is ${healthSummary.overallHealth}. Nodes: ${healthSummary.nodes.ready}/${healthSummary.nodes.total} ready. Operators: ${healthSummary.operators.degraded.length} degraded.`
+    }, null, 2);
+  }
+
+  private formatErrorResponse(operation: string, error: any, sessionId: string): string {
+    return JSON.stringify({
+      tool: 'diagnostic_error',
+      sessionId,
+      error: true,
+      operation,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString(),
+      human: `Failed to perform ${operation}: ${error instanceof Error ? error.message : 'Unknown error'}`
+    }, null, 2);
   }
 }

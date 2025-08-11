@@ -94,11 +94,11 @@ for namespace in "${REAL_NAMESPACES[@]}"; do
     log "   PVCs: $REAL_PVC_COUNT"
     
     # Test check_namespace_health if tool exists
-    if grep -q "check_namespace_health" src/index.ts 2>/dev/null; then
-        log "🔧 Testing check_namespace_health tool..."
+    if grep -q "oc_diagnostic_namespace_health" src/lib/tools/tool-registry.ts 2>/dev/null; then
+        log "🔧 Testing oc_diagnostic_namespace_health tool..."
         
-        TOOL_ARGS="{\"namespace\":\"$namespace\"}"
-        TOOL_RESULT=$(test_tool_response "check_namespace_health" "$TOOL_ARGS" "$TIMEOUT")
+        TOOL_ARGS="{\"namespace\":\"$namespace\",\"sessionId\":\"validation-test\"}"
+        TOOL_RESULT=$(test_tool_response "oc_diagnostic_namespace_health" "$TOOL_ARGS" "$TIMEOUT")
         
         if [ $? -eq 0 ] && [ -n "$TOOL_RESULT" ]; then
             # Extract tool data
@@ -119,7 +119,7 @@ for namespace in "${REAL_NAMESPACES[@]}"; do
             log "❌ Tool failed or timed out"
         fi
     else
-        log "⚠️  check_namespace_health tool not yet implemented"
+        log "⚠️  oc_diagnostic_namespace_health tool not yet implemented"
     fi
     
     # Test other tools if they exist
@@ -139,7 +139,7 @@ for namespace in "${REAL_NAMESPACES[@]:0:2}"; do
         log "⏱️  Testing response time for $namespace"
         
         START_TIME=$(date +%s%3N)
-        TOOL_RESULT=$(test_tool_response "check_namespace_health" "{\"namespace\":\"$namespace\"}" "$TIMEOUT")
+        TOOL_RESULT=$(test_tool_response "oc_diagnostic_namespace_health" "{\"namespace\":\"$namespace\",\"sessionId\":\"perf-test\"}" "$TIMEOUT")
         END_TIME=$(date +%s%3N)
         
         if [ $? -eq 0 ]; then
@@ -163,7 +163,7 @@ echo "======================"
 
 # Test non-existent namespace
 log "🔧 Testing non-existent namespace handling..."
-NONEXISTENT_RESULT=$(test_tool_response "check_namespace_health" "{\"namespace\":\"nonexistent-test-12345\"}" 10)
+NONEXISTENT_RESULT=$(test_tool_response "oc_diagnostic_namespace_health" "{\"namespace\":\"nonexistent-test-12345\",\"sessionId\":\"error-test\"}" 10)
 
 if [ $? -eq 0 ]; then
     if echo "$NONEXISTENT_RESULT" | grep -q "not found\|does not exist\|error"; then
