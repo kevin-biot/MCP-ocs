@@ -68,6 +68,7 @@ const allTools = [
 ];
 
 console.error(`✅ Registered ${allTools.length} tools from all suites`);
+console.error('🔧 Debug - Tool names:', allTools.map(t => t.name || t.fullName));
 
 // Create MCP server
 const server = new Server(
@@ -119,6 +120,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       result = await readOpsTools.executeTool(name, args || {});
     } else if (name.startsWith('memory_') || name.startsWith('core_')) {
       result = await stateMgmtTools.executeTool(name, args || {});
+    } else if (name === 'knowledge_seed_pattern') {
+      result = await knowledgeSeedingTool.execute(args || {});
     } else {
       throw new Error(`Unknown tool: ${name}`);
     }
@@ -132,13 +135,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   } finally {
     // Auto-capture this tool execution for future reference
     const duration = Date.now() - startTime;
-    const sessionId = args?.sessionId || `auto-session-${Date.now()}`;
+    const sessionId = (args as any)?.sessionId || `auto-session-${Date.now()}`;
     
     await autoMemory.captureToolExecution({
       toolName: name,
       arguments: args || {},
       result: result!,
-      sessionId,
+      sessionId: sessionId as string,
       timestamp: startTime,
       duration,
       success,

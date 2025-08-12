@@ -178,16 +178,15 @@ export class KnowledgeSeedingSystem {
     };
 
     // Store in conversation memory for persistence
-    await this.memoryManager.storeConversationMemory(
-      memoryId, // sessionId
-      `Knowledge Seed: ${seed.title}`, // userMessage
-      JSON.stringify(enhancedRecord), // assistantResponse
-      {
-        autoExtract: false, // We're providing explicit tags
-        tags: allTags,
-        context: [`Knowledge seeded by ${seed.metadata.author}`, `Source: ${seed.sourceClass}`]
-      }
-    );
+    await this.memoryManager.storeConversation({
+      sessionId: memoryId,
+      domain: 'knowledge-seeding',
+      timestamp: Date.now(),
+      userMessage: `Knowledge Seed: ${seed.title}`,
+      assistantResponse: JSON.stringify(enhancedRecord),
+      context: [`Knowledge seeded by ${seed.metadata.author}`, `Source: ${seed.sourceClass}`],
+      tags: allTags
+    });
 
     return memoryId;
   }
@@ -230,17 +229,17 @@ export class KnowledgeSeedingSystem {
     }
 
     // Search using the memory manager
-    const results = await this.memoryManager.searchConversationMemory(
+    const results = await this.memoryManager.searchConversations(
       searchQuery,
-      { limit: options.limit || 10 }
+      options.limit || 10
     );
 
     // Filter by reliability threshold if specified
-    if (options.reliabilityThreshold) {
-      return results.filter(result => {
+    if (options.reliabilityThreshold !== undefined) {
+      return results.filter((result: any) => {
         try {
           const record = JSON.parse(result.assistantResponse);
-          return record.metadata?.reliability >= options.reliabilityThreshold;
+          return record.metadata?.reliability >= options.reliabilityThreshold!;
         } catch {
           return true; // Keep if we can't parse
         }
@@ -253,8 +252,8 @@ export class KnowledgeSeedingSystem {
   /**
    * Quick knowledge seeding using predefined templates
    */
-  async quickSeed(templateType: keyof typeof ENGINEER_TEMPLATES, ...args: any[]): Promise<string> {
-    const template = ENGINEER_TEMPLATES[templateType](...args);
+  async quickSeed(templateType: keyof typeof ENGINEER_TEMPLATES, ...args: string[]): Promise<string> {
+    const template = (ENGINEER_TEMPLATES[templateType] as any)(...args);
     return this.seedKnowledge(template);
   }
 

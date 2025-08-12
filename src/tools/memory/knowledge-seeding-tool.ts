@@ -34,7 +34,9 @@ export interface KnowledgeSeedingToolArguments {
 }
 
 export class KnowledgeSeedingTool implements Tool {
+  [x: string]: unknown;  // Index signature for Tool interface
   name = 'knowledge_seed_pattern';
+  fullName = 'knowledge_seed_pattern';  // Add fullName property
   description = `
 Seed knowledge patterns into the vector memory system for future retrieval.
 
@@ -77,7 +79,7 @@ EXAMPLES:
 }
 `;
 
-  inputSchema = {
+  inputSchema: any = {
     type: 'object',
     properties: {
       operation: {
