@@ -1,0 +1,17 @@
+{
+  "sessionId": "pv-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755038930346,
+  "userMessage": "Describe pv pvc-e7f98dd3-d627-4478-8193-6be4659f5b31",
+  "assistantResponse": "Retrieved detailed information for pv/pvc-e7f98dd3-d627-4478-8193-6be4659f5b31",
+  "context": [
+    "pv",
+    "pvc-e7f98dd3-d627-4478-8193-6be4659f5b31",
+    "default"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "pv"
+  ]
+}

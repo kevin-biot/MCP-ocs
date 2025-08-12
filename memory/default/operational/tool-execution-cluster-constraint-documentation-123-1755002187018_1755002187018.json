@@ -1,0 +1,23 @@
+{
+  "incidentId": "tool-execution-cluster-constraint-documentation-123-1755002187018",
+  "domain": "openshift",
+  "timestamp": 1755002187018,
+  "symptoms": [
+    "Operation in namespace: default"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:default"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_get_pods"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:default",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

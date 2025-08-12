@@ -9,13 +9,17 @@
  */
 
 import { ToolDefinition } from '../../lib/tools/tool-types.js';
+import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
 import { OcWrapperV2 } from '../../v2/lib/oc-wrapper-v2.js';
 import { NamespaceHealthChecker } from '../../v2/tools/check-namespace-health/index.js';
 import { RCAChecklistEngine } from '../../v2/tools/rca-checklist/index.js';
+import { checkNamespaceHealthV2Tool } from '../../v2-integration.js';
 
-export class DiagnosticToolsV2 {
+export class DiagnosticToolsV2 implements ToolSuite {
+  category = 'diagnostic';
+  version = 'v2';
   private ocWrapperV2: OcWrapperV2;
   private namespaceHealthChecker: NamespaceHealthChecker;
   private rcaChecklistEngine: RCAChecklistEngine;
@@ -30,7 +34,36 @@ export class DiagnosticToolsV2 {
     this.rcaChecklistEngine = new RCAChecklistEngine(this.ocWrapperV2);
   }
 
-  getTools(): ToolDefinition[] {
+  /**
+   * Execute the enhanced namespace health tool
+   */
+  private async executeNamespaceHealthV2(args: {
+    sessionId: string;
+    namespace: string;
+    includeIngressTest?: boolean;
+    maxLogLinesPerPod?: number;
+  }): Promise<string> {
+    try {
+      // Use the original V2 tool implementation
+      const v2Args = {
+        sessionId: args.sessionId,
+        namespace: args.namespace,
+        includeIngressTest: args.includeIngressTest || false,
+        maxLogLinesPerPod: args.maxLogLinesPerPod || 0
+      };
+      
+      return await checkNamespaceHealthV2Tool.handler(v2Args);
+    } catch (error) {
+      return this.formatErrorResponse('enhanced namespace health check', error, args.sessionId);
+    }
+  }
+
+  getTools(): StandardTool[] {
+    const toolDefinitions = this.getToolDefinitions();
+    return toolDefinitions.map(tool => this.convertToStandardTool(tool));
+  }
+
+  private getToolDefinitions(): ToolDefinition[] {
     return [
       {
         name: 'cluster_health',
@@ -67,13 +100,14 @@ export class DiagnosticToolsV2 {
         contextRequirements: [
           { type: 'domain_focus', value: 'namespace', required: true }
         ],
-        description: 'Comprehensive namespace health analysis with pod, PVC, and route diagnostics',
+        description: 'Comprehensive namespace health analysis with pod, PVC, route diagnostics and ingress testing',
         inputSchema: {
           type: 'object',
           properties: {
             sessionId: { type: 'string' },
             namespace: { type: 'string' },
             includeIngressTest: { type: 'boolean', default: false },
+            maxLogLinesPerPod: { type: 'number', default: 0 },
             deepAnalysis: { type: 'boolean', default: false }
           },
           required: ['sessionId', 'namespace']
@@ -132,6 +166,18 @@ export class DiagnosticToolsV2 {
     }];
   }
 
+  private convertToStandardTool(toolDef: ToolDefinition): StandardTool {
+    return {
+      name: toolDef.name,
+      fullName: toolDef.fullName,
+      description: toolDef.description,
+      inputSchema: toolDef.inputSchema,
+      category: 'diagnostic' as const,
+      version: 'v2' as const,
+      execute: async (args: any) => this.executeTool(toolDef.fullName, args)
+    };
+  }
+
   async executeTool(toolName: string, args: any): Promise<string> {
     const { sessionId } = args;
 
@@ -141,7 +187,7 @@ export class DiagnosticToolsV2 {
           return await this.enhancedClusterHealth(args);
           
         case 'oc_diagnostic_namespace_health':
-          return await this.enhancedNamespaceHealth(args);
+          return await this.executeNamespaceHealthV2(args);  // Use V2 implementation
           
         case 'oc_diagnostic_pod_health':
           return await this.enhancedPodHealth(args);

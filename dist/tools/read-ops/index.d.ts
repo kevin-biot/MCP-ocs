@@ -4,17 +4,27 @@
  * Following ADR-004 namespace conventions: oc_read_*
  * Read-only operations for information gathering
  */
-import { ToolDefinition } from '../../lib/tools/namespace-manager.js';
+import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
-export declare class ReadOpsTools {
+export declare class ReadOpsTools implements ToolSuite {
     private openshiftClient;
     private memoryManager;
+    category: string;
+    version: string;
     constructor(openshiftClient: OpenShiftClient, memoryManager: SharedMemoryManager);
-    getTools(): ToolDefinition[];
-    executeTool(toolName: string, args: any): Promise<any>;
+    getTools(): StandardTool[];
+    private getToolDefinitions;
+    private convertToStandardTool;
+    executeTool(toolName: string, args: any): Promise<string>;
     private getPods;
     private describeResource;
     private getLogs;
     private searchMemory;
+    /**
+     * Enhanced error handling and sanitization methods
+     */
+    private safeJsonStringify;
+    private sanitizeError;
+    private sanitizeArgs;
 }

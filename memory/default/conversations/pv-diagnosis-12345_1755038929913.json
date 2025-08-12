@@ -1,0 +1,18 @@
+{
+  "sessionId": "pv-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755038929913,
+  "userMessage": "Execute oc_read_describe with args: {\"resourceType\":\"pv\",\"name\":\"pvc-e7f98dd3-d627-4478-8193-6be4659f5b31\",\"sessionId\":\"pv-diagnosis-12345\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_describe",
+    "resourceType",
+    "name",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "execution_success"
+  ]
+}

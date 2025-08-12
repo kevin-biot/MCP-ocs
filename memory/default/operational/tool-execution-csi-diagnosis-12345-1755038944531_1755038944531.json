@@ -1,0 +1,25 @@
+{
+  "incidentId": "tool-execution-csi-diagnosis-12345-1755038944531",
+  "domain": "openshift",
+  "timestamp": 1755038944531,
+  "symptoms": [
+    "Operation in namespace: openshift-cluster-csi-drivers"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:openshift-cluster-csi-drivers"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_get_pods"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-cluster-csi-drivers",
+    "pod_analysis",
+    "pod_count:7",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

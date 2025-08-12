@@ -1,0 +1,24 @@
+{
+  "incidentId": "tool-execution-openshift-pipelines-investigation-12345-1755038632310",
+  "domain": "openshift",
+  "timestamp": 1755038632310,
+  "symptoms": [
+    "Operation in namespace: openshift-pipelines"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:openshift-pipelines",
+    "pod:tekton-results-api-674544857d-9pdh4"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_logs"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-pipelines",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

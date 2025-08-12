@@ -1,0 +1,17 @@
+{
+  "sessionId": "cluster-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755038934607,
+  "userMessage": "Describe clusteroperator storage",
+  "assistantResponse": "Retrieved detailed information for clusteroperator/storage",
+  "context": [
+    "clusteroperator",
+    "storage",
+    "default"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "clusteroperator"
+  ]
+}

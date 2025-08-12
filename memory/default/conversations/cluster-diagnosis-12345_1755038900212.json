@@ -1,0 +1,20 @@
+{
+  "sessionId": "cluster-diagnosis-12345",
+  "domain": "cluster",
+  "timestamp": 1755038900212,
+  "userMessage": "Execute oc_diagnostic_cluster_health with args: {\"sessionId\":\"cluster-diagnosis-12345\",\"includeNamespaceAnalysis\":true,\"maxNamespacesToAnalyze\":5}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_diagnostic_cluster_health",
+    "sessionId",
+    "includeNamespaceAnalysis",
+    "maxNamespacesToAnalyze"
+  ],
+  "tags": [
+    "diagnostic_tool",
+    "red_zone_relevant",
+    "execution_success",
+    "slow_execution",
+    "performance_concern"
+  ]
+}

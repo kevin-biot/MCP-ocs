@@ -7,17 +7,25 @@
  * - Comprehensive health analysis
  * - Real-world operational patterns
  */
-import { ToolDefinition } from '../../lib/tools/tool-types.js';
+import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
-export declare class DiagnosticToolsV2 {
+export declare class DiagnosticToolsV2 implements ToolSuite {
     private openshiftClient;
     private memoryManager;
+    category: string;
+    version: string;
     private ocWrapperV2;
     private namespaceHealthChecker;
     private rcaChecklistEngine;
     constructor(openshiftClient: OpenShiftClient, memoryManager: SharedMemoryManager);
-    getTools(): ToolDefinition[];
+    /**
+     * Execute the enhanced namespace health tool
+     */
+    private executeNamespaceHealthV2;
+    getTools(): StandardTool[];
+    private getToolDefinitions;
+    private convertToStandardTool;
     executeTool(toolName: string, args: any): Promise<string>;
     /**
      * Enhanced cluster health check with v2 capabilities

@@ -1,0 +1,21 @@
+{
+  "incidentId": "tool-execution-test-session-123-1754990443530",
+  "domain": "cluster",
+  "timestamp": 1754990443530,
+  "symptoms": [],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Executed oc_diagnostic_cluster_health"
+  ],
+  "tags": [
+    "diagnostic_tool",
+    "red_zone_relevant",
+    "cluster_degraded",
+    "high_priority",
+    "red_zone_critical",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

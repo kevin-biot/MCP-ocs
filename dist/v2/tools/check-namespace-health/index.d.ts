@@ -38,6 +38,17 @@ export interface RouteHealthSummary {
         message: string;
     };
 }
+export interface ScaleDownAnalysis {
+    isScaleDown: boolean;
+    evidence: string[];
+    deploymentStatus: {
+        total: number;
+        scaledToZero: number;
+        recentlyScaled: string[];
+    };
+    scaleDownEvents: string[];
+    verdict: 'intentional_scale_down' | 'node_failure' | 'resource_pressure' | 'application_failure' | 'unknown';
+}
 export interface NamespaceHealthResult {
     namespace: string;
     status: 'healthy' | 'degraded' | 'failing';
@@ -56,7 +67,11 @@ export declare class NamespaceHealthChecker {
     private ocWrapper;
     constructor(ocWrapper: OcWrapperV2);
     /**
-     * Perform comprehensive namespace health check
+     * Analyze scale-down patterns to distinguish from application failures
+     */
+    private analyzeScaleDownPatterns;
+    /**
+     * Perform comprehensive namespace health check with scale-down detection
      */
     checkHealth(input: NamespaceHealthInput): Promise<NamespaceHealthResult>;
     /**
@@ -76,15 +91,15 @@ export declare class NamespaceHealthChecker {
      */
     private analyzeCriticalEvents;
     /**
-     * Generate intelligent suspicions based on patterns
+     * Generate intelligent suspicions based on patterns (including scale-down detection)
      */
     private generateSuspicions;
     /**
-     * Determine overall health status
+     * Determine overall health status (with scale-down awareness)
      */
     private determineOverallStatus;
     /**
-     * Generate human-readable summary
+     * Generate human-readable summary (with scale-down context)
      */
     private generateHumanSummary;
     private createFailureResult;

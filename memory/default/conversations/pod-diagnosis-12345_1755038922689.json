@@ -1,0 +1,17 @@
+{
+  "sessionId": "pod-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755038922689,
+  "userMessage": "Get logs from pod tekton-results-postgres-0",
+  "assistantResponse": "Retrieved 1 lines of logs from tekton-results-postgres-0",
+  "context": [
+    "logs",
+    "tekton-results-postgres-0",
+    "openshift-pipelines"
+  ],
+  "tags": [
+    "read_operation",
+    "logs",
+    "troubleshooting"
+  ]
+}

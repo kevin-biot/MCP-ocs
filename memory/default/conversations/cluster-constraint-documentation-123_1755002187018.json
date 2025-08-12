@@ -1,0 +1,18 @@
+{
+  "sessionId": "cluster-constraint-documentation-123",
+  "domain": "openshift",
+  "timestamp": 1755002187018,
+  "userMessage": "Execute oc_read_get_pods with args: {\"sessionId\":\"cluster-constraint-documentation-123\",\"namespace\":\"default\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_get_pods",
+    "sessionId",
+    "namespace"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:default",
+    "execution_success"
+  ]
+}

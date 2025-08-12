@@ -7,10 +7,10 @@
 import { 
   KnowledgeSeedingSystem, 
   KnowledgeSourceClass 
-} from './src/lib/memory/knowledge-seeding-system.js';
-import { SharedMemoryManager } from './src/lib/memory/shared-memory.js';
-import { AutoMemorySystem } from './src/lib/memory/auto-memory-system.js';
-import { KnowledgeSeedingTool } from './src/tools/memory/knowledge-seeding-tool.js';
+} from './dist/lib/memory/knowledge-seeding-system.js';
+import { SharedMemoryManager } from './dist/lib/memory/shared-memory.js';
+import { AutoMemorySystem } from './dist/lib/memory/auto-memory-system.js';
+import { KnowledgeSeedingTool } from './dist/tools/memory/knowledge-seeding-tool.js';
 
 async function quickTest() {
   console.log('🧪 Quick Knowledge Seeding Test\n');

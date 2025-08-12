@@ -1,0 +1,17 @@
+{
+  "sessionId": "openshift-pipelines-investigation-12345",
+  "domain": "openshift",
+  "timestamp": 1755038619072,
+  "userMessage": "Describe pod tekton-results-api-674544857d-9pdh4",
+  "assistantResponse": "Retrieved detailed information for pod/tekton-results-api-674544857d-9pdh4",
+  "context": [
+    "pod",
+    "tekton-results-api-674544857d-9pdh4",
+    "openshift-pipelines"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "pod"
+  ]
+}

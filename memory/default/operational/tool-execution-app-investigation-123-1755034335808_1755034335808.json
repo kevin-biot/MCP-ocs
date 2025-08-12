@@ -1,0 +1,22 @@
+{
+  "incidentId": "tool-execution-app-investigation-123-1755034335808",
+  "domain": "cluster",
+  "timestamp": 1755034335808,
+  "symptoms": [
+    "Tool execution failed: oc_diagnostic_cluster_health",
+    "Tool not found: oc_diagnostic_cluster_health. Available tools: cluster_health, namespace_health, pod_health, rca_checklist, get_pods, describe_resource, get_logs, search_memory, store_incident, search_operational, get_workflow_state, memory_stats, search_conversations, knowledge_seed_pattern"
+  ],
+  "rootCause": "Tool not found: oc_diagnostic_cluster_health. Available tools: cluster_health, namespace_health, pod_health, rca_checklist, get_pods, describe_resource, get_logs, search_memory, store_incident, search_operational, get_workflow_state, memory_stats, search_conversations, knowledge_seed_pattern",
+  "resolution": "operation_failed",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Executed oc_diagnostic_cluster_health"
+  ],
+  "tags": [
+    "diagnostic_tool",
+    "red_zone_relevant",
+    "execution_failed",
+    "needs_investigation"
+  ],
+  "environment": "prod"
+}

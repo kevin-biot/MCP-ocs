@@ -1,0 +1,21 @@
+{
+  "sessionId": "openshift-pipelines-investigation-12345",
+  "domain": "openshift",
+  "timestamp": 1755038648250,
+  "userMessage": "Execute oc_read_get_pods with args: {\"namespace\":\"openshift-pipelines\",\"selector\":\"app.kubernetes.io/name=tekton-results-postgres\",\"sessionId\":\"openshift-pipelines-investigation-12345\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_get_pods",
+    "namespace",
+    "selector",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-pipelines",
+    "pod_analysis",
+    "pod_count:1",
+    "execution_success"
+  ]
+}

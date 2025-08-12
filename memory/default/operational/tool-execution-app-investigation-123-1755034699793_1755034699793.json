@@ -1,0 +1,18 @@
+{
+  "incidentId": "tool-execution-app-investigation-123-1755034699793",
+  "domain": "openshift",
+  "timestamp": 1755034699793,
+  "symptoms": [],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Executed oc_read_get_pods"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

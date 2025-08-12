@@ -7,11 +7,17 @@
 export class ReadOpsTools {
     openshiftClient;
     memoryManager;
+    category = 'read-ops';
+    version = 'v2';
     constructor(openshiftClient, memoryManager) {
         this.openshiftClient = openshiftClient;
         this.memoryManager = memoryManager;
     }
     getTools() {
+        const toolDefinitions = this.getToolDefinitions();
+        return toolDefinitions.map(tool => this.convertToStandardTool(tool));
+    }
+    getToolDefinitions() {
         return [
             {
                 name: 'get_pods',
@@ -125,7 +131,7 @@ export class ReadOpsTools {
             {
                 name: 'search_memory',
                 namespace: 'mcp-memory',
-                fullName: 'memory_search_operational',
+                fullName: 'memory_search_incidents',
                 domain: 'knowledge',
                 capabilities: [
                     { type: 'memory', level: 'basic', riskLevel: 'safe' }
@@ -156,25 +162,56 @@ export class ReadOpsTools {
             }
         ];
     }
+    convertToStandardTool(toolDef) {
+        return {
+            name: toolDef.name,
+            fullName: toolDef.fullName,
+            description: toolDef.description,
+            inputSchema: toolDef.inputSchema,
+            category: 'read-ops',
+            version: 'v2',
+            execute: async (args) => this.executeTool(toolDef.fullName, args)
+        };
+    }
     async executeTool(toolName, args) {
         const sessionId = args.sessionId || `read-${Date.now()}`;
         try {
+            let result;
             switch (toolName) {
                 case 'oc_read_get_pods':
-                    return await this.getPods(args.namespace, args.selector, sessionId);
+                    result = await this.getPods(args.namespace, args.selector, sessionId);
+                    break;
                 case 'oc_read_describe':
-                    return await this.describeResource(args.resourceType, args.name, args.namespace, sessionId);
+                    result = await this.describeResource(args.resourceType, args.name, args.namespace, sessionId);
+                    break;
                 case 'oc_read_logs':
-                    return await this.getLogs(args.podName, args.namespace, args.container, args.lines, args.since, sessionId);
-                case 'memory_search_operational':
-                    return await this.searchMemory(args.query, args.limit, sessionId);
+                    result = await this.getLogs(args.podName, args.namespace, args.container, args.lines, args.since, sessionId);
+                    break;
+                case 'memory_search_incidents':
+                    result = await this.searchMemory(args.query, args.limit, sessionId);
+                    break;
                 default:
                     throw new Error(`Unknown read operation tool: ${toolName}`);
             }
+            // Enhanced error handling: check for method existence before calling
+            if (toolName === 'oc_read_describe' && typeof this.openshiftClient.describeResource !== 'function') {
+                throw new Error('describeResource method not implemented in OpenShiftClient');
+            }
+            // Safely convert result to JSON with size limits and sanitization
+            const jsonResult = this.safeJsonStringify(result);
+            return jsonResult;
         }
         catch (error) {
             console.error(`❌ Read operation ${toolName} failed:`, error);
-            throw error;
+            // Enhanced error handling to prevent MCP corruption
+            const errorResult = {
+                success: false,
+                tool: toolName,
+                error: this.sanitizeError(error),
+                timestamp: new Date().toISOString(),
+                args: this.sanitizeArgs(args)
+            };
+            return this.safeJsonStringify(errorResult);
         }
     }
     async getPods(namespace, selector, sessionId) {
@@ -284,5 +321,56 @@ export class ReadOpsTools {
             tags: ['memory_operation', 'knowledge_retrieval', 'pattern_matching']
         });
         return searchResult;
+    }
+    /**
+     * Enhanced error handling and sanitization methods
+     */
+    safeJsonStringify(obj) {
+        try {
+            // Check object size before stringifying
+            const testStr = JSON.stringify(obj);
+            // If response is too large (>500KB), truncate it
+            if (testStr.length > 500000) {
+                console.error('⚠️ Large response detected, truncating...');
+                if (typeof obj === 'object' && obj.description) {
+                    // For describe operations, truncate the description field
+                    const truncated = {
+                        ...obj,
+                        description: obj.description.substring(0, 100000) + '\n\n[... truncated due to size limit ...]',
+                        truncated: true,
+                        originalSize: testStr.length
+                    };
+                    return JSON.stringify(truncated, null, 2);
+                }
+            }
+            return JSON.stringify(obj, null, 2);
+        }
+        catch (error) {
+            console.error('❌ JSON stringify failed:', error);
+            // Fallback to safe string representation
+            return JSON.stringify({
+                success: false,
+                error: 'Failed to serialize response',
+                message: 'Response contained non-serializable data',
+                timestamp: new Date().toISOString()
+            }, null, 2);
+        }
+    }
+    sanitizeError(error) {
+        if (error instanceof Error) {
+            // Clean error message of any potential special characters that could break MCP
+            return error.message.replace(/[\r\n\t]/g, ' ').substring(0, 1000);
+        }
+        if (typeof error === 'string') {
+            return error.replace(/[\r\n\t]/g, ' ').substring(0, 1000);
+        }
+        return 'Unknown error type';
+    }
+    sanitizeArgs(args) {
+        // Remove potentially problematic fields from args for error reporting
+        const sanitized = { ...args };
+        // Remove large or sensitive fields
+        delete sanitized.sessionId;
+        return sanitized;
     }
 }

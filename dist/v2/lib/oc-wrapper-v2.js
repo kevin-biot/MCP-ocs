@@ -140,6 +140,22 @@ export class OcWrapperV2 {
         }
     }
     /**
+     * Get deployments in namespace
+     */
+    async getDeployments(namespace) {
+        const result = await this.executeOc(['get', 'deployments', '-o', 'json'], {
+            namespace,
+            cacheKey: `deployments:${namespace}`,
+            cacheTTL: 20000 // 20s cache for deployments
+        });
+        try {
+            return JSON.parse(result.stdout);
+        }
+        catch (error) {
+            throw new Error(`Failed to parse deployments JSON: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+    }
+    /**
      * Get ingress in namespace (Kubernetes fallback)
      */
     async getIngress(namespace) {

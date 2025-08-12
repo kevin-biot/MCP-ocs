@@ -1,0 +1,17 @@
+{
+  "sessionId": "openshift-builds-investigation-12345",
+  "domain": "openshift",
+  "timestamp": 1755038514258,
+  "userMessage": "Describe namespace openshift-builds",
+  "assistantResponse": "Retrieved detailed information for namespace/openshift-builds",
+  "context": [
+    "namespace",
+    "openshift-builds",
+    "default"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "namespace"
+  ]
+}

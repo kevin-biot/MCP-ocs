@@ -1,0 +1,20 @@
+{
+  "sessionId": "csi-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755038944531,
+  "userMessage": "Execute oc_read_get_pods with args: {\"namespace\":\"openshift-cluster-csi-drivers\",\"sessionId\":\"csi-diagnosis-12345\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_get_pods",
+    "namespace",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-cluster-csi-drivers",
+    "pod_analysis",
+    "pod_count:7",
+    "execution_success"
+  ]
+}

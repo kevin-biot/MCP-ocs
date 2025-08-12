@@ -1,0 +1,17 @@
+{
+  "sessionId": "openshift-pipelines-investigation-12345",
+  "domain": "openshift",
+  "timestamp": 1755038659300,
+  "userMessage": "Describe pvc postgredb-tekton-results-postgres-0",
+  "assistantResponse": "Retrieved detailed information for pvc/postgredb-tekton-results-postgres-0",
+  "context": [
+    "pvc",
+    "postgredb-tekton-results-postgres-0",
+    "openshift-pipelines"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "pvc"
+  ]
+}

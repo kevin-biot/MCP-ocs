@@ -1,0 +1,17 @@
+{
+  "sessionId": "test-session-123",
+  "domain": "openshift",
+  "timestamp": 1754990452400,
+  "userMessage": "Get pods in openshift-apiserver namespace",
+  "assistantResponse": "Found 3 pods: 3 running, 0 pending, 0 failed",
+  "context": [
+    "pods",
+    "namespace",
+    "openshift-apiserver"
+  ],
+  "tags": [
+    "read_operation",
+    "pods",
+    "cluster_state"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "sessionId": "cluster-constraint-documentation-123",
+  "domain": "openshift",
+  "timestamp": 1755002187643,
+  "userMessage": "Get pods in default namespace",
+  "assistantResponse": "Found 0 pods: 0 running, 0 pending, 0 failed",
+  "context": [
+    "pods",
+    "namespace",
+    "default"
+  ],
+  "tags": [
+    "read_operation",
+    "pods",
+    "cluster_state"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "sessionId": "knowledge_internal_operational_1755001909437",
+  "domain": "knowledge-seeding",
+  "timestamp": 1755001909437,
+  "userMessage": "Knowledge Seed: Cluster Scaling Constraint - 1 Worker Node",
+  "assistantResponse": "{\"id\":\"knowledge_internal_operational_1755001909437\",\"sourceClass\":\"internal_operational\",\"content\":\"Cluster has been scaled down to 1 worker node due to cost constraints. This represents a significant reduction from the previous 3 worker node configuration and impacts workload scheduling, resource availability, and incident response capabilities.\",\"tags\":[\"source:internal_operational\",\"cluster-constraint\",\"cost-optimization\",\"resource-limitation\",\"operational-reality\",\"knowledge_seed\",\"vector_memory\",\"seeded_knowledge\",\"cluster:production-cluster\"],\"context\":{\"title\":\"Cluster Scaling Constraint - 1 Worker Node\",\"seedType\":\"manual_knowledge_seeding\",\"engineerAdded\":false},\"metadata\":{\"sourceType\":\"internal_operational\",\"author\":\"system\",\"creationDate\":\"2025-08-12T12:31:49.437Z\",\"reliability\":95,\"references\":[],\"cluster\":\"production-cluster\"}}",
+  "context": [
+    "Knowledge seeded by system",
+    "Source: internal_operational"
+  ],
+  "tags": [
+    "source:internal_operational",
+    "cluster-constraint",
+    "cost-optimization",
+    "resource-limitation",
+    "operational-reality",
+    "knowledge_seed",
+    "vector_memory",
+    "seeded_knowledge",
+    "cluster:production-cluster"
+  ]
+}

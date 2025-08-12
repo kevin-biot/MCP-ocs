@@ -7,11 +7,17 @@
 export class StateMgmtTools {
     memoryManager;
     workflowEngine;
+    category = 'workflow';
+    version = 'v2';
     constructor(memoryManager, workflowEngine) {
         this.memoryManager = memoryManager;
         this.workflowEngine = workflowEngine;
     }
     getTools() {
+        const toolDefinitions = this.getToolDefinitions();
+        return toolDefinitions.map(tool => this.convertToStandardTool(tool));
+    }
+    getToolDefinitions() {
         return [
             {
                 name: 'store_incident',
@@ -174,6 +180,17 @@ export class StateMgmtTools {
                 priority: 65
             }
         ];
+    }
+    convertToStandardTool(toolDef) {
+        return {
+            name: toolDef.name,
+            fullName: toolDef.fullName,
+            description: toolDef.description,
+            inputSchema: toolDef.inputSchema,
+            category: 'workflow',
+            version: 'v2',
+            execute: async (args) => this.executeTool(toolDef.fullName, args)
+        };
     }
     async storeIncident(args) {
         console.error(`💾 Storing incident: ${args.incidentId}`);

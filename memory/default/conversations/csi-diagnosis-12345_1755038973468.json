@@ -1,0 +1,17 @@
+{
+  "sessionId": "csi-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755038973468,
+  "userMessage": "Get logs from pod aws-ebs-csi-driver-controller-79dbc5865f-9jc2v",
+  "assistantResponse": "Retrieved 1 lines of logs from aws-ebs-csi-driver-controller-79dbc5865f-9jc2v",
+  "context": [
+    "logs",
+    "aws-ebs-csi-driver-controller-79dbc5865f-9jc2v",
+    "openshift-cluster-csi-drivers"
+  ],
+  "tags": [
+    "read_operation",
+    "logs",
+    "troubleshooting"
+  ]
+}

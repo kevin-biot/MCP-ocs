@@ -1,0 +1,18 @@
+{
+  "incidentId": "tool-execution-pv-diagnosis-12345-1755038929913",
+  "domain": "openshift",
+  "timestamp": 1755038929913,
+  "symptoms": [],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Executed oc_read_describe"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

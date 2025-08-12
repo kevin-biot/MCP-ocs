@@ -1,0 +1,17 @@
+{
+  "sessionId": "openshift-pipelines-investigation-12345",
+  "domain": "openshift",
+  "timestamp": 1755038642949,
+  "userMessage": "Describe service tekton-results-postgres-service",
+  "assistantResponse": "Retrieved detailed information for service/tekton-results-postgres-service",
+  "context": [
+    "service",
+    "tekton-results-postgres-service",
+    "openshift-pipelines"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "service"
+  ]
+}

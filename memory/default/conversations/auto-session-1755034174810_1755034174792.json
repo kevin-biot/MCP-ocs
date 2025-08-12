@@ -1,0 +1,14 @@
+{
+  "sessionId": "auto-session-1755034174810",
+  "domain": "system",
+  "timestamp": 1755034174792,
+  "userMessage": "Execute knowledge_seed_pattern with args: {\"operation\":\"stats\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "knowledge_seed_pattern",
+    "operation"
+  ],
+  "tags": [
+    "execution_success"
+  ]
+}

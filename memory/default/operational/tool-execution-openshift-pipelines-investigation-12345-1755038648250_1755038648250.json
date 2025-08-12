@@ -1,0 +1,25 @@
+{
+  "incidentId": "tool-execution-openshift-pipelines-investigation-12345-1755038648250",
+  "domain": "openshift",
+  "timestamp": 1755038648250,
+  "symptoms": [
+    "Operation in namespace: openshift-pipelines"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:openshift-pipelines"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_get_pods"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-pipelines",
+    "pod_analysis",
+    "pod_count:1",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

@@ -1,0 +1,29 @@
+{
+  "incidentId": "tool-execution-app-investigation-123-1755034342217",
+  "domain": "cluster",
+  "timestamp": 1755034342217,
+  "symptoms": [
+    "Tool execution failed: oc_diagnostic_namespace_health",
+    "Tool not found: oc_diagnostic_namespace_health. Available tools: cluster_health, namespace_health, pod_health, rca_checklist, get_pods, describe_resource, get_logs, search_memory, store_incident, search_operational, get_workflow_state, memory_stats, search_conversations, knowledge_seed_pattern",
+    "Operation in namespace: student04"
+  ],
+  "rootCause": "Tool not found: oc_diagnostic_namespace_health. Available tools: cluster_health, namespace_health, pod_health, rca_checklist, get_pods, describe_resource, get_logs, search_memory, store_incident, search_operational, get_workflow_state, memory_stats, search_conversations, knowledge_seed_pattern",
+  "resolution": "operation_failed",
+  "affectedResources": [
+    "namespace:student04"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_diagnostic_namespace_health"
+  ],
+  "tags": [
+    "diagnostic_tool",
+    "red_zone_relevant",
+    "namespace:student04",
+    "student04_pattern",
+    "ci_cd_artifacts",
+    "build_pipeline",
+    "execution_failed",
+    "needs_investigation"
+  ],
+  "environment": "prod"
+}

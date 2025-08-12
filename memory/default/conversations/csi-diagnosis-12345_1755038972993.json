@@ -1,0 +1,20 @@
+{
+  "sessionId": "csi-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755038972993,
+  "userMessage": "Execute oc_read_logs with args: {\"podName\":\"aws-ebs-csi-driver-controller-79dbc5865f-9jc2v\",\"namespace\":\"openshift-cluster-csi-drivers\",\"lines\":50,\"sessionId\":\"csi-diagnosis-12345\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_logs",
+    "podName",
+    "namespace",
+    "lines",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-cluster-csi-drivers",
+    "execution_success"
+  ]
+}

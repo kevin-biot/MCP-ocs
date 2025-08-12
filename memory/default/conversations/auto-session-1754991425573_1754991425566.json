@@ -1,0 +1,17 @@
+{
+  "sessionId": "auto-session-1754991425573",
+  "domain": "system",
+  "timestamp": 1754991425566,
+  "userMessage": "Execute knowledge_seed_pattern with args: {\"operation\":\"quick_seed\",\"templateType\":\"PATTERN_DISCOVERY\",\"templateArgs\":[\"Student04 CI/CD Pattern\",\"Pods in Succeeded state with 0/1 ready\",\"student04 namespace runs CI/CD pipelines\"]}",
+  "assistantResponse": "Operation failed: Unknown tool: knowledge_seed_pattern",
+  "context": [
+    "knowledge_seed_pattern",
+    "operation",
+    "templateType",
+    "templateArgs"
+  ],
+  "tags": [
+    "execution_failed",
+    "needs_investigation"
+  ]
+}

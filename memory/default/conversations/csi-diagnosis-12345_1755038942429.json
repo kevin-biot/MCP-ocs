@@ -1,0 +1,17 @@
+{
+  "sessionId": "csi-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755038942429,
+  "userMessage": "Get pods in openshift-cluster-csi-drivers namespace",
+  "assistantResponse": "Found 0 pods: 0 running, 0 pending, 0 failed",
+  "context": [
+    "pods",
+    "namespace",
+    "openshift-cluster-csi-drivers"
+  ],
+  "tags": [
+    "read_operation",
+    "pods",
+    "cluster_state"
+  ]
+}

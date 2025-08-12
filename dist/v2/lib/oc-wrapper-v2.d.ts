@@ -47,6 +47,10 @@ export declare class OcWrapperV2 {
      */
     getRoutes(namespace: string): Promise<any>;
     /**
+     * Get deployments in namespace
+     */
+    getDeployments(namespace: string): Promise<any>;
+    /**
      * Get ingress in namespace (Kubernetes fallback)
      */
     getIngress(namespace: string): Promise<any>;

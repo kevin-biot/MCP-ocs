@@ -1,0 +1,22 @@
+{
+  "incidentId": "rca-checklist-openshift-builds-investigation-12345",
+  "domain": "cluster",
+  "timestamp": 1755038529737,
+  "symptoms": [
+    "📉 SCALE-DOWN: Detected scaling activity - verify if intentional",
+    "Scale-down evidence: Deployment openshift-builds-operator intentionally scaled to 0 replicas; Deployment openshift-pipelines-operator intentionally scaled to 0 replicas"
+  ],
+  "affectedResources": [
+    "namespace/openshift-builds"
+  ],
+  "diagnosticSteps": [
+    "Cluster connectivity verified"
+  ],
+  "tags": [
+    "rca_checklist",
+    "systematic_diagnostic",
+    "healthy",
+    "openshift-builds"
+  ],
+  "environment": "prod"
+}

@@ -1,0 +1,14 @@
+{
+  "sessionId": "cluster-constraint-documentation",
+  "domain": "operations",
+  "timestamp": 1755001906534,
+  "userMessage": "Store incident: cluster-scaling-downgrade",
+  "assistantResponse": "Incident stored successfully",
+  "context": [
+    "incident_storage"
+  ],
+  "tags": [
+    "memory_operation",
+    "incident_storage"
+  ]
+}

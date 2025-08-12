@@ -1,42 +1,107 @@
 /**
- * Tool Registry - Central registry for all MCP-ocs tools
- * Implements ADR-004: Tool namespace management
+ * Unified Tool Registry - Standardized MCP Tool Registration
+ *
+ * Eliminates inconsistent registration patterns and provides unified
+ * interface for all tool types (v1, v2, individual, collections)
  */
-import { ToolCapability } from '../types/common.js';
-import { DiagnosticToolsV2 as DiagnosticTools } from '../../tools/diagnostics/index.js';
-import { ReadOpsTools } from '../../tools/read-ops/index.js';
-import { WriteOpsTools } from '../../tools/write-ops/index.js';
-import { StateMgmtTools } from '../../tools/state-mgmt/index.js';
-export interface RegisteredTool {
+export interface StandardTool {
+    /** Unique tool identifier */
     name: string;
-    namespace: string;
-    domain: string;
-    capability: ToolCapability;
-    handler: Function;
+    /** Full name for MCP registration */
+    fullName: string;
+    /** Tool description for users */
     description: string;
+    /** JSON schema for input validation */
     inputSchema: any;
+    /** Tool execution method - MUST return JSON string */
+    execute(args: any): Promise<string>;
+    /** Tool category for organization */
+    category: 'diagnostic' | 'read-ops' | 'memory' | 'knowledge' | 'workflow';
+    /** Tool version for compatibility */
+    version: 'v1' | 'v2';
+    /** Optional metadata */
+    metadata?: {
+        author?: string;
+        deprecated?: boolean;
+        experimental?: boolean;
+        requiredPermissions?: string[];
+    };
 }
-export declare class ToolRegistry {
+export interface ToolSuite {
+    /** Suite category identifier */
+    category: string;
+    /** Suite version */
+    version: string;
+    /** Get all tools in this suite */
+    getTools(): StandardTool[];
+    /** Optional suite-level metadata */
+    metadata?: {
+        description?: string;
+        maintainer?: string;
+    };
+}
+export interface ToolRegistryStats {
+    totalTools: number;
+    byCategory: Record<string, number>;
+    byVersion: Record<string, number>;
+    suites: string[];
+}
+/**
+ * Unified Tool Registry
+ *
+ * Central registry for all MCP tools with consistent interface
+ * and automatic routing capabilities
+ */
+export declare class UnifiedToolRegistry {
     private tools;
-    private diagnosticTools;
-    private readOpsTools;
-    private writeOpsTools;
-    private stateMgmtTools;
-    constructor(diagnosticTools: DiagnosticTools, readOpsTools: ReadOpsTools, writeOpsTools: WriteOpsTools, stateMgmtTools: StateMgmtTools);
-    private registerAllTools;
-    private registerTool;
-    getAvailableTools(): RegisteredTool[];
-    getTool(name: string): RegisteredTool | undefined;
-    getToolsByNamespace(namespace: string): RegisteredTool[];
-    getToolsByDomain(domain: string): RegisteredTool[];
+    private suites;
     /**
-     * Register a new tool (public method for v2 tools)
+     * Register an entire tool suite
      */
-    registerExternalTool(toolDefinition: {
+    registerSuite(suite: ToolSuite): void;
+    /**
+     * Register a single tool
+     */
+    registerTool(tool: StandardTool): void;
+    /**
+     * Get all registered tools
+     */
+    getAllTools(): StandardTool[];
+    /**
+     * Get tools by category
+     */
+    getToolsByCategory(category: string): StandardTool[];
+    /**
+     * Get tools by version
+     */
+    getToolsByVersion(version: string): StandardTool[];
+    /**
+     * Execute a tool by name (supports both internal name and fullName)
+     */
+    executeTool(name: string, args: any): Promise<string>;
+    /**
+     * Check if a tool exists
+     */
+    hasTool(name: string): boolean;
+    /**
+     * Get registry statistics
+     */
+    getStats(): ToolRegistryStats;
+    /**
+     * Get tools formatted for MCP registration
+     */
+    getMCPTools(): Array<{
         name: string;
         description: string;
         inputSchema: any;
-        handler: Function;
-    }): void;
-    executeTool(name: string, args: any): Promise<any>;
+    }>;
+    /**
+     * Validate tool structure
+     */
+    private validateTool;
 }
+export declare function getGlobalToolRegistry(): UnifiedToolRegistry;
+/**
+ * Reset global registry (useful for testing)
+ */
+export declare function resetGlobalToolRegistry(): void;

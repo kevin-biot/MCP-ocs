@@ -1,0 +1,21 @@
+{
+  "sessionId": "namespace-diagnosis-12345",
+  "domain": "cluster",
+  "timestamp": 1755038911774,
+  "userMessage": "Execute oc_diagnostic_namespace_health with args: {\"sessionId\":\"namespace-diagnosis-12345\",\"namespace\":\"openshift-pipelines\",\"includeIngressTest\":false,\"maxLogLinesPerPod\":0,\"deepAnalysis\":true}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_diagnostic_namespace_health",
+    "sessionId",
+    "namespace",
+    "includeIngressTest",
+    "maxLogLinesPerPod",
+    "deepAnalysis"
+  ],
+  "tags": [
+    "diagnostic_tool",
+    "red_zone_relevant",
+    "namespace:openshift-pipelines",
+    "execution_success"
+  ]
+}

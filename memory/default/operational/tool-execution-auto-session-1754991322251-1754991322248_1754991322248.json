@@ -1,0 +1,20 @@
+{
+  "incidentId": "tool-execution-auto-session-1754991322251-1754991322248",
+  "domain": "system",
+  "timestamp": 1754991322248,
+  "symptoms": [
+    "Tool execution failed: knowledge_seed_pattern",
+    "Unknown tool: knowledge_seed_pattern"
+  ],
+  "rootCause": "Unknown tool: knowledge_seed_pattern",
+  "resolution": "operation_failed",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Executed knowledge_seed_pattern"
+  ],
+  "tags": [
+    "execution_failed",
+    "needs_investigation"
+  ],
+  "environment": "prod"
+}

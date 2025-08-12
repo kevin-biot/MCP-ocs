@@ -1,0 +1,17 @@
+{
+  "sessionId": "test-session-123",
+  "domain": "openshift",
+  "timestamp": 1754990297152,
+  "userMessage": "Execute oc_read_get_pods with args: {\"sessionId\":\"test-session-123\"}",
+  "assistantResponse": "Operation failed: OpenShift command failed: E0812 11:18:17.705552    7003 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: the server has asked for the client to provide credentials\"\nE0812 11:18:17.900087    7003 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: the server has asked for the client to provide credentials\"\nE0812 11:18:18.111900    7003 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: the server has asked for the client to provide credentials\"\nE0812 11:18:18.319748    7003 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: the server has asked for the client to provide credentials\"\nE0812 11:18:18.564930    7003 memcache.go:265] \"Unhandled Error\" err=\"couldn't get current server API group list: the server has asked for the client to provide credentials\"\nerror: You must be logged in to the server (the server has asked for the client to provide credentials)\n",
+  "context": [
+    "oc_read_get_pods",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "execution_failed",
+    "needs_investigation"
+  ]
+}

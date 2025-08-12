@@ -1,0 +1,15 @@
+{
+  "sessionId": "app-investigation-123",
+  "domain": "system",
+  "timestamp": 1755034336823,
+  "userMessage": "Execute core_workflow_state with args: {\"sessionId\":\"app-investigation-123\"}",
+  "assistantResponse": "Operation failed: Tool not found: core_workflow_state. Available tools: cluster_health, namespace_health, pod_health, rca_checklist, get_pods, describe_resource, get_logs, search_memory, store_incident, search_operational, get_workflow_state, memory_stats, search_conversations, knowledge_seed_pattern",
+  "context": [
+    "core_workflow_state",
+    "sessionId"
+  ],
+  "tags": [
+    "execution_failed",
+    "needs_investigation"
+  ]
+}

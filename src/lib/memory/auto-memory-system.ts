@@ -122,8 +122,8 @@ export class AutoMemorySystem {
         tags.push('pod_analysis', `pod_count:${resultData.pods.length}`);
         
         // Look for specific patterns
-        const succeededNotReady = resultData.pods.filter(p => 
-          p.status === 'Succeeded' && p.ready === '0/1'
+        const succeededNotReady = resultData.pods.filter((p: any) =>
+        p.status === 'Succeeded' && p.ready === '0/1'
         );
         
         if (succeededNotReady.length > 0) {
@@ -133,7 +133,7 @@ export class AutoMemorySystem {
       
       // PVC patterns
       if (resultData.pvcs && Array.isArray(resultData.pvcs)) {
-        const pendingPVCs = resultData.pvcs.filter(pvc => pvc.status === 'Pending');
+        const pendingPVCs = resultData.pvcs.filter((pvc: any) => pvc.status === 'Pending');
         if (pendingPVCs.length > 0) {
           tags.push('pvc_pending', 'storage_analysis');
         }

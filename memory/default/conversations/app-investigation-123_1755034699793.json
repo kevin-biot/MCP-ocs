@@ -1,0 +1,16 @@
+{
+  "sessionId": "app-investigation-123",
+  "domain": "openshift",
+  "timestamp": 1755034699793,
+  "userMessage": "Execute oc_read_get_pods with args: {\"sessionId\":\"app-investigation-123\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_get_pods",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "execution_success"
+  ]
+}

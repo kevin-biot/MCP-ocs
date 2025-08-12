@@ -1,0 +1,19 @@
+{
+  "sessionId": "knowledge_engineer_added_1755001916572",
+  "domain": "knowledge-seeding",
+  "timestamp": 1755001916572,
+  "userMessage": "Knowledge Seed: Pattern: Cluster Scaling Constraint",
+  "assistantResponse": "{\"id\":\"knowledge_engineer_added_1755001916572\",\"sourceClass\":\"engineer_added\",\"content\":\"**Pattern Identified:** 1 worker node due to cost constraints\\n\\n**Context:** Production cluster reduced from 3 to 1 worker nodes\\n\\n**Engineer Notes:** Add specific observations here\",\"tags\":[\"source:engineer_added\",\"pattern_discovery\",\"engineer_insight\",\"knowledge_seed\",\"vector_memory\",\"seeded_knowledge\"],\"context\":{\"title\":\"Pattern: Cluster Scaling Constraint\",\"seedType\":\"manual_knowledge_seeding\",\"engineerAdded\":true},\"metadata\":{\"sourceType\":\"engineer_added\",\"author\":\"Field Engineer\",\"creationDate\":\"2025-08-12T12:31:56.572Z\",\"reliability\":90,\"references\":[]}}",
+  "context": [
+    "Knowledge seeded by Field Engineer",
+    "Source: engineer_added"
+  ],
+  "tags": [
+    "source:engineer_added",
+    "pattern_discovery",
+    "engineer_insight",
+    "knowledge_seed",
+    "vector_memory",
+    "seeded_knowledge"
+  ]
+}

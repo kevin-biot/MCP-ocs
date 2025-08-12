@@ -1,0 +1,22 @@
+{
+  "incidentId": "pod-health-pod-diagnosis-12345",
+  "domain": "cluster",
+  "timestamp": 1755038919203,
+  "symptoms": [
+    "pod_healthy"
+  ],
+  "affectedResources": [
+    "pod/tekton-results-postgres-0",
+    "namespace/openshift-pipelines"
+  ],
+  "diagnosticSteps": [
+    "Enhanced pod health check completed"
+  ],
+  "tags": [
+    "pod_health",
+    "diagnostic",
+    "openshift-pipelines",
+    "tekton-results-postgres-0"
+  ],
+  "environment": "prod"
+}

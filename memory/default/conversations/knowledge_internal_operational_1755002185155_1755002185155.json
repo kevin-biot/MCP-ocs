@@ -1,0 +1,21 @@
+{
+  "sessionId": "knowledge_internal_operational_1755002185155",
+  "domain": "knowledge-seeding",
+  "timestamp": 1755002185155,
+  "userMessage": "Knowledge Seed: Cluster Scaling Constraint - Reduced Worker Nodes",
+  "assistantResponse": "{\"id\":\"knowledge_internal_operational_1755002185155\",\"sourceClass\":\"internal_operational\",\"content\":\"Cluster was scaled down from 3 worker nodes to 1 due to cost constraints. This represents a new operational reality that impacts workload scheduling and resource allocation.\",\"tags\":[\"source:internal_operational\",\"cluster\",\"scaling\",\"cost-optimization\",\"operational-reality\",\"knowledge_seed\",\"vector_memory\",\"seeded_knowledge\"],\"context\":{\"title\":\"Cluster Scaling Constraint - Reduced Worker Nodes\",\"seedType\":\"manual_knowledge_seeding\",\"engineerAdded\":false},\"metadata\":{\"sourceType\":\"internal_operational\",\"author\":\"System Documentation\",\"creationDate\":\"2025-08-12T12:36:25.155Z\",\"reliability\":95,\"references\":[]}}",
+  "context": [
+    "Knowledge seeded by System Documentation",
+    "Source: internal_operational"
+  ],
+  "tags": [
+    "source:internal_operational",
+    "cluster",
+    "scaling",
+    "cost-optimization",
+    "operational-reality",
+    "knowledge_seed",
+    "vector_memory",
+    "seeded_knowledge"
+  ]
+}

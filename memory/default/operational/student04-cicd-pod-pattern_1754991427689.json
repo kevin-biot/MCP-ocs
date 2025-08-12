@@ -1,0 +1,22 @@
+{
+  "incidentId": "student04-cicd-pod-pattern",
+  "domain": "operations",
+  "timestamp": 1754991427689,
+  "symptoms": [
+    "Pods showing Succeeded status with 0/1 ready"
+  ],
+  "rootCause": "Normal CI/CD pipeline artifacts in student04 namespace",
+  "resolution": "These are not broken applications but expected behavior for CI/CD pipelines",
+  "affectedResources": [
+    "student04 namespace pods"
+  ],
+  "diagnosticSteps": [
+    "Manual incident storage"
+  ],
+  "tags": [
+    "incident_storage",
+    "manual_entry",
+    "prod"
+  ],
+  "environment": "prod"
+}

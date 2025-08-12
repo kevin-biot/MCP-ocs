@@ -1,0 +1,16 @@
+{
+  "incidentId": "tool-execution-test-session-123-1754990294934",
+  "domain": "system",
+  "timestamp": 1754990294934,
+  "symptoms": [],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Executed core_workflow_state"
+  ],
+  "tags": [
+    "execution_success"
+  ],
+  "environment": "prod"
+}

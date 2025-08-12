@@ -1,0 +1,23 @@
+{
+  "incidentId": "tool-execution-openshift-builds-investigation-12345-1755038517922",
+  "domain": "openshift",
+  "timestamp": 1755038517922,
+  "symptoms": [
+    "Operation in namespace: openshift-builds"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:openshift-builds"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_describe"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-builds",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

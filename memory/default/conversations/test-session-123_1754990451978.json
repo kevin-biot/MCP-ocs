@@ -1,0 +1,18 @@
+{
+  "sessionId": "test-session-123",
+  "domain": "openshift",
+  "timestamp": 1754990451978,
+  "userMessage": "Execute oc_read_get_pods with args: {\"sessionId\":\"test-session-123\",\"namespace\":\"openshift-apiserver\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_get_pods",
+    "sessionId",
+    "namespace"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-apiserver",
+    "execution_success"
+  ]
+}

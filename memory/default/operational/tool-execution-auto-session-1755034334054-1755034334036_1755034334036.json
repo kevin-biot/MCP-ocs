@@ -1,0 +1,29 @@
+{
+  "incidentId": "tool-execution-auto-session-1755034334054-1755034334036",
+  "domain": "openshift",
+  "timestamp": 1755034334036,
+  "symptoms": [
+    "Tool execution failed: oc_read_get_pods",
+    "Tool not found: oc_read_get_pods. Available tools: cluster_health, namespace_health, pod_health, rca_checklist, get_pods, describe_resource, get_logs, search_memory, store_incident, search_operational, get_workflow_state, memory_stats, search_conversations, knowledge_seed_pattern",
+    "Operation in namespace: student04"
+  ],
+  "rootCause": "Tool not found: oc_read_get_pods. Available tools: cluster_health, namespace_health, pod_health, rca_checklist, get_pods, describe_resource, get_logs, search_memory, store_incident, search_operational, get_workflow_state, memory_stats, search_conversations, knowledge_seed_pattern",
+  "resolution": "operation_failed",
+  "affectedResources": [
+    "namespace:student04"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_get_pods"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:student04",
+    "student04_pattern",
+    "ci_cd_artifacts",
+    "build_pipeline",
+    "execution_failed",
+    "needs_investigation"
+  ],
+  "environment": "prod"
+}

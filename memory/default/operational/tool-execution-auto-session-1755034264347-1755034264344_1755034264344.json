@@ -1,0 +1,22 @@
+{
+  "incidentId": "tool-execution-auto-session-1755034264347-1755034264344",
+  "domain": "knowledge",
+  "timestamp": 1755034264344,
+  "symptoms": [
+    "Tool execution failed: memory_search_incidents",
+    "Tool not found: memory_search_incidents. Available tools: cluster_health, namespace_health, pod_health, rca_checklist, get_pods, describe_resource, get_logs, search_memory, store_incident, search_operational, get_workflow_state, memory_stats, search_conversations, knowledge_seed_pattern"
+  ],
+  "rootCause": "Tool not found: memory_search_incidents. Available tools: cluster_health, namespace_health, pod_health, rca_checklist, get_pods, describe_resource, get_logs, search_memory, store_incident, search_operational, get_workflow_state, memory_stats, search_conversations, knowledge_seed_pattern",
+  "resolution": "operation_failed",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Executed memory_search_incidents"
+  ],
+  "tags": [
+    "memory_operation",
+    "workflow_tracking",
+    "execution_failed",
+    "needs_investigation"
+  ],
+  "environment": "prod"
+}

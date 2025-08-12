@@ -1,0 +1,20 @@
+{
+  "incidentId": "tool-execution-app-investigation-123-1755034336823",
+  "domain": "system",
+  "timestamp": 1755034336823,
+  "symptoms": [
+    "Tool execution failed: core_workflow_state",
+    "Tool not found: core_workflow_state. Available tools: cluster_health, namespace_health, pod_health, rca_checklist, get_pods, describe_resource, get_logs, search_memory, store_incident, search_operational, get_workflow_state, memory_stats, search_conversations, knowledge_seed_pattern"
+  ],
+  "rootCause": "Tool not found: core_workflow_state. Available tools: cluster_health, namespace_health, pod_health, rca_checklist, get_pods, describe_resource, get_logs, search_memory, store_incident, search_operational, get_workflow_state, memory_stats, search_conversations, knowledge_seed_pattern",
+  "resolution": "operation_failed",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Executed core_workflow_state"
+  ],
+  "tags": [
+    "execution_failed",
+    "needs_investigation"
+  ],
+  "environment": "prod"
+}

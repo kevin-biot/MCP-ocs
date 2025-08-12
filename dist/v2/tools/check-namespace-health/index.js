@@ -14,7 +14,86 @@ export class NamespaceHealthChecker {
         this.ocWrapper = ocWrapper;
     }
     /**
-     * Perform comprehensive namespace health check
+     * Analyze scale-down patterns to distinguish from application failures
+     */
+    analyzeScaleDownPatterns(deploymentsData, eventsData, podHealth) {
+        const deployments = deploymentsData.items || [];
+        const events = eventsData.items || [];
+        const analysis = {
+            isScaleDown: false,
+            evidence: [],
+            deploymentStatus: {
+                total: deployments.length,
+                scaledToZero: 0,
+                recentlyScaled: []
+            },
+            scaleDownEvents: [],
+            verdict: 'unknown'
+        };
+        // Analyze deployment replica status
+        for (const deployment of deployments) {
+            const name = deployment.metadata.name;
+            const spec = deployment.spec || {};
+            const status = deployment.status || {};
+            const desiredReplicas = spec.replicas || 0;
+            const availableReplicas = status.availableReplicas || 0;
+            const readyReplicas = status.readyReplicas || 0;
+            if (desiredReplicas === 0) {
+                analysis.deploymentStatus.scaledToZero++;
+                analysis.evidence.push(`Deployment ${name} intentionally scaled to 0 replicas`);
+            }
+            // Check for recent scaling activity
+            const lastUpdateTime = new Date(deployment.metadata.resourceVersion || 0).getTime();
+            const recentThreshold = Date.now() - (2 * 60 * 60 * 1000); // Last 2 hours
+            if (lastUpdateTime > recentThreshold && desiredReplicas !== availableReplicas) {
+                analysis.deploymentStatus.recentlyScaled.push(name);
+                analysis.evidence.push(`Deployment ${name} recently modified (desired: ${desiredReplicas}, available: ${availableReplicas})`);
+            }
+        }
+        // Analyze events for scale-down indicators
+        const recentEvents = events.filter((event) => {
+            const eventTime = new Date(event.lastTimestamp || event.eventTime).getTime();
+            const cutoff = Date.now() - (60 * 60 * 1000); // Last hour
+            return eventTime > cutoff;
+        });
+        for (const event of recentEvents) {
+            const reason = event.reason;
+            const message = event.message;
+            const objectKind = event.involvedObject?.kind;
+            const objectName = event.involvedObject?.name;
+            // Look for scale-down related events
+            if (reason === 'ScalingReplicaSet' && message.includes('scaled down')) {
+                analysis.scaleDownEvents.push(`${objectKind}/${objectName}: ${message}`);
+                analysis.evidence.push(`Scale-down event detected: ${message}`);
+            }
+            if (reason === 'Killing' && objectKind === 'Pod') {
+                analysis.scaleDownEvents.push(`Pod termination: ${objectName}`);
+                analysis.evidence.push(`Pod ${objectName} was terminated`);
+            }
+            // Node-related events that might indicate node scaling
+            if (reason.includes('NodeNotReady') || reason.includes('NodeUnavailable')) {
+                analysis.evidence.push(`Node issue detected: ${message}`);
+            }
+        }
+        // Determine if this is a scale-down scenario
+        analysis.isScaleDown = analysis.deploymentStatus.scaledToZero > 0 || analysis.scaleDownEvents.length > 0;
+        // Determine the verdict based on evidence
+        if (analysis.deploymentStatus.scaledToZero > 0 && analysis.scaleDownEvents.length > 0) {
+            analysis.verdict = 'intentional_scale_down';
+        }
+        else if (analysis.evidence.some(e => e.includes('NodeNotReady') || e.includes('NodeUnavailable'))) {
+            analysis.verdict = 'node_failure';
+        }
+        else if (podHealth.total === 0 && analysis.deploymentStatus.total === 0) {
+            analysis.verdict = 'resource_pressure';
+        }
+        else if (podHealth.total === 0 && analysis.deploymentStatus.total > 0) {
+            analysis.verdict = 'application_failure';
+        }
+        return analysis;
+    }
+    /**
+     * Perform comprehensive namespace health check with scale-down detection
      */
     async checkHealth(input) {
         const startTime = Date.now();
@@ -26,23 +105,26 @@ export class NamespaceHealthChecker {
         }
         try {
             // Gather all data concurrently for performance
-            const [podsData, eventsData, pvcsData, routesData] = await Promise.all([
+            const [podsData, eventsData, pvcsData, routesData, deploymentsData] = await Promise.all([
                 this.ocWrapper.getPods(namespace),
                 this.ocWrapper.getEvents(namespace),
                 this.ocWrapper.getPVCs(namespace),
-                this.ocWrapper.getRoutes(namespace)
+                this.ocWrapper.getRoutes(namespace),
+                this.ocWrapper.getDeployments(namespace) // Add deployments for scale-down detection
             ]);
             // Analyze each component
             const podHealth = this.analyzePods(podsData);
             const pvcHealth = this.analyzePVCs(pvcsData);
             const routeHealth = await this.analyzeRoutes(routesData, includeIngressTest);
             const criticalEvents = this.analyzeCriticalEvents(eventsData);
-            // Generate suspicions based on findings
-            const suspicions = this.generateSuspicions(podHealth, pvcHealth, routeHealth, criticalEvents);
-            // Determine overall health status
-            const status = this.determineOverallStatus(podHealth, pvcHealth, routeHealth, criticalEvents);
-            // Generate human-readable summary
-            const human = this.generateHumanSummary(namespace, status, podHealth, pvcHealth, routeHealth, suspicions);
+            // NEW: Analyze scale-down patterns
+            const scaleDownAnalysis = this.analyzeScaleDownPatterns(deploymentsData, eventsData, podHealth);
+            // Generate suspicions based on findings (include scale-down awareness)
+            const suspicions = this.generateSuspicions(podHealth, pvcHealth, routeHealth, criticalEvents, scaleDownAnalysis);
+            // Determine overall health status (consider scale-down scenarios)
+            const status = this.determineOverallStatus(podHealth, pvcHealth, routeHealth, criticalEvents, scaleDownAnalysis);
+            // Generate human-readable summary (include scale-down context)
+            const human = this.generateHumanSummary(namespace, status, podHealth, pvcHealth, routeHealth, suspicions, scaleDownAnalysis);
             const result = {
                 namespace,
                 status,
@@ -200,9 +282,9 @@ export class NamespaceHealthChecker {
         return criticalEvents.slice(0, 10); // Limit to most recent 10
     }
     /**
-     * Generate intelligent suspicions based on patterns
+     * Generate intelligent suspicions based on patterns (including scale-down detection)
      */
-    generateSuspicions(pods, pvcs, routes, events) {
+    generateSuspicions(pods, pvcs, routes, events, scaleDownAnalysis) {
         const suspicions = [];
         // Pod-related suspicions
         if (pods.crashloops.length > 0) {
@@ -231,20 +313,53 @@ export class NamespaceHealthChecker {
         if (routes.probe && routes.probe.code >= 500) {
             suspicions.push('Route backend not responding - check pod readiness and service endpoints');
         }
+        // Scale-down pattern analysis (PRIORITY - check this first!)
+        if (scaleDownAnalysis.isScaleDown) {
+            switch (scaleDownAnalysis.verdict) {
+                case 'intentional_scale_down':
+                    suspicions.unshift(`🎯 SCALE-DOWN DETECTED: ${scaleDownAnalysis.deploymentStatus.scaledToZero} deployment(s) intentionally scaled to 0 - not an application failure`);
+                    break;
+                case 'node_failure':
+                    suspicions.unshift('🔴 NODE FAILURE: Scale-down appears to be due to node availability issues');
+                    break;
+                case 'resource_pressure':
+                    suspicions.unshift('⚠️ RESOURCE PRESSURE: Scale-down may be due to resource constraints');
+                    break;
+                default:
+                    suspicions.unshift('📉 SCALE-DOWN: Detected scaling activity - verify if intentional');
+            }
+            // Add specific scale-down evidence
+            if (scaleDownAnalysis.evidence.length > 0) {
+                suspicions.push(`Scale-down evidence: ${scaleDownAnalysis.evidence.slice(0, 2).join('; ')}`);
+            }
+        }
         // Event pattern analysis
         const eventPatterns = this.analyzeEventPatterns(events);
         suspicions.push(...eventPatterns);
         return suspicions;
     }
     /**
-     * Determine overall health status
+     * Determine overall health status (with scale-down awareness)
      */
-    determineOverallStatus(pods, pvcs, routes, events) {
+    determineOverallStatus(pods, pvcs, routes, events, scaleDownAnalysis) {
+        // Scale-down scenarios should not be considered "failing" if intentional
+        if (scaleDownAnalysis.isScaleDown && scaleDownAnalysis.verdict === 'intentional_scale_down') {
+            // Intentional scale-down is "degraded" not "failing"
+            return 'degraded';
+        }
         // Failing conditions
         if (pods.total === 0 && pvcs.total === 0) {
+            // If this is a scale-down, it might be intentional
+            if (scaleDownAnalysis.isScaleDown) {
+                return 'degraded'; // Scale-down scenario
+            }
             return 'failing'; // Empty namespace or severe issues
         }
         if (pods.ready === 0 && pods.total > 0) {
+            // Check if this is due to scale-down
+            if (scaleDownAnalysis.isScaleDown && scaleDownAnalysis.deploymentStatus.scaledToZero > 0) {
+                return 'degraded'; // Intentional scale-down
+            }
             return 'failing'; // No pods running
         }
         if (pvcs.failed > 0) {
@@ -266,11 +381,29 @@ export class NamespaceHealthChecker {
         return 'healthy';
     }
     /**
-     * Generate human-readable summary
+     * Generate human-readable summary (with scale-down context)
      */
-    generateHumanSummary(namespace, status, pods, pvcs, routes, suspicions) {
+    generateHumanSummary(namespace, status, pods, pvcs, routes, suspicions, scaleDownAnalysis) {
         const parts = [];
-        parts.push(`Namespace ${namespace} is ${status}.`);
+        // Lead with scale-down context if detected
+        if (scaleDownAnalysis.isScaleDown) {
+            switch (scaleDownAnalysis.verdict) {
+                case 'intentional_scale_down':
+                    parts.push(`Namespace ${namespace} appears to be intentionally scaled down (${scaleDownAnalysis.deploymentStatus.scaledToZero}/${scaleDownAnalysis.deploymentStatus.total} deployments at 0 replicas).`);
+                    break;
+                case 'node_failure':
+                    parts.push(`Namespace ${namespace} is ${status} due to apparent node failure.`);
+                    break;
+                case 'resource_pressure':
+                    parts.push(`Namespace ${namespace} is ${status}, possibly due to resource pressure.`);
+                    break;
+                default:
+                    parts.push(`Namespace ${namespace} is ${status} with scale-down activity detected.`);
+            }
+        }
+        else {
+            parts.push(`Namespace ${namespace} is ${status}.`);
+        }
         // Pod summary
         if (pods.total > 0) {
             parts.push(`Pods: ${pods.ready}/${pods.total} ready.`);

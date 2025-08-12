@@ -1,0 +1,17 @@
+{
+  "sessionId": "test-session-123",
+  "domain": "openshift",
+  "timestamp": 1754990455883,
+  "userMessage": "Get pods in default namespace",
+  "assistantResponse": "Found 1 pods: 0 running, 0 pending, 0 failed",
+  "context": [
+    "pods",
+    "namespace",
+    "default"
+  ],
+  "tags": [
+    "read_operation",
+    "pods",
+    "cluster_state"
+  ]
+}

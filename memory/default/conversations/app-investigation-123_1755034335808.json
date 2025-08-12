@@ -1,0 +1,17 @@
+{
+  "sessionId": "app-investigation-123",
+  "domain": "cluster",
+  "timestamp": 1755034335808,
+  "userMessage": "Execute oc_diagnostic_cluster_health with args: {\"sessionId\":\"app-investigation-123\"}",
+  "assistantResponse": "Operation failed: Tool not found: oc_diagnostic_cluster_health. Available tools: cluster_health, namespace_health, pod_health, rca_checklist, get_pods, describe_resource, get_logs, search_memory, store_incident, search_operational, get_workflow_state, memory_stats, search_conversations, knowledge_seed_pattern",
+  "context": [
+    "oc_diagnostic_cluster_health",
+    "sessionId"
+  ],
+  "tags": [
+    "diagnostic_tool",
+    "red_zone_relevant",
+    "execution_failed",
+    "needs_investigation"
+  ]
+}

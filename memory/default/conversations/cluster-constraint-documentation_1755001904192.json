@@ -1,0 +1,14 @@
+{
+  "sessionId": "cluster-constraint-documentation",
+  "domain": "system",
+  "timestamp": 1755001904192,
+  "userMessage": "Execute core_workflow_state with args: {\"sessionId\":\"cluster-constraint-documentation\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "core_workflow_state",
+    "sessionId"
+  ],
+  "tags": [
+    "execution_success"
+  ]
+}

@@ -20,7 +20,8 @@ import { SharedMemoryManager } from './lib/memory/shared-memory.js';
 import { WorkflowEngine } from './lib/workflow/workflow-engine.js';
 import { AutoMemorySystem } from './lib/memory/auto-memory-system.js';
 import { KnowledgeSeedingSystem } from './lib/memory/knowledge-seeding-system.js';
-import { KnowledgeSeedingTool } from './tools/memory/knowledge-seeding-tool.js';
+import { KnowledgeSeedingTool, KnowledgeToolsSuite } from './tools/memory/knowledge-seeding-tool-v2.js';
+import { UnifiedToolRegistry } from './lib/tools/tool-registry.js';
 
 console.error('🚀 Starting MCP-ocs server...');
 
@@ -54,21 +55,30 @@ const autoMemory = new AutoMemorySystem(sharedMemory);
 const knowledgeSeedingSystem = new KnowledgeSeedingSystem(sharedMemory, autoMemory);
 const knowledgeSeedingTool = new KnowledgeSeedingTool(knowledgeSeedingSystem);
 
+// Initialize unified tool registry
+const toolRegistry = new UnifiedToolRegistry();
+
 // Create ALL tool suites
 const diagnosticTools = new DiagnosticToolsV2(openshiftClient, sharedMemory);
 const readOpsTools = new ReadOpsTools(openshiftClient, sharedMemory);
 const stateMgmtTools = new StateMgmtTools(sharedMemory, workflowEngine);
+const knowledgeTools = new KnowledgeToolsSuite(knowledgeSeedingTool);
 
-// Combine all tools including knowledge seeding
-const allTools = [
-  ...diagnosticTools.getTools(),
-  ...readOpsTools.getTools(), 
-  ...stateMgmtTools.getTools(),
-  knowledgeSeedingTool  // Add knowledge seeding capability
-];
+// Register all suites with unified registry
+toolRegistry.registerSuite(diagnosticTools);
+toolRegistry.registerSuite(readOpsTools);
+toolRegistry.registerSuite(stateMgmtTools);
+toolRegistry.registerSuite(knowledgeTools);
+
+// Get all tools for MCP registration
+const allTools = toolRegistry.getMCPTools();
 
 console.error(`✅ Registered ${allTools.length} tools from all suites`);
-console.error('🔧 Debug - Tool names:', allTools.map(t => t.name || t.fullName));
+
+// Print registry statistics
+const stats = toolRegistry.getStats();
+console.error('📈 Registry Stats:', JSON.stringify(stats, null, 2));
+console.error('🔧 Debug - Tool names:', allTools.map(t => t.name));
 
 // Create MCP server
 const server = new Server(
@@ -88,7 +98,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   console.error('📋 Listing all available tools...');
   return {
     tools: allTools.map(tool => ({
-      name: tool.fullName,
+      name: tool.name,
       description: tool.description,
       inputSchema: tool.inputSchema
     }))
@@ -113,23 +123,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   let error: string | undefined;
   
   try {
-    // Route to appropriate tool suite
-    if (name.startsWith('oc_diagnostic_')) {
-      result = await diagnosticTools.executeTool(name, args || {});
-    } else if (name.startsWith('oc_read_')) {
-      result = await readOpsTools.executeTool(name, args || {});
-    } else if (name.startsWith('memory_') || name.startsWith('core_')) {
-      result = await stateMgmtTools.executeTool(name, args || {});
-    } else if (name === 'knowledge_seed_pattern') {
-      // Convert generic args to typed args for knowledge seeding
-      const knowledgeArgs = {
-        operation: 'seed' as const,
-        ...(args || {})
-      };
-      result = await knowledgeSeedingTool.execute(knowledgeArgs as any);
-    } else {
-      throw new Error(`Unknown tool: ${name}`);
-    }
+    // UNIFIED ROUTING - No more prefix checking!
+    result = await toolRegistry.executeTool(name, args || {});
     
   } catch (toolError) {
     success = false;

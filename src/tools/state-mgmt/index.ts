@@ -6,16 +6,24 @@
  */
 
 import { ToolDefinition } from '../../lib/tools/namespace-manager.js';
+import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
 import { WorkflowEngine } from '../../lib/workflow/workflow-engine.js';
 
-export class StateMgmtTools {
+export class StateMgmtTools implements ToolSuite {
+  category = 'workflow';
+  version = 'v2';
   constructor(
     private memoryManager: SharedMemoryManager,
     private workflowEngine: WorkflowEngine
   ) {}
 
-  getTools(): ToolDefinition[] {
+  getTools(): StandardTool[] {
+    const toolDefinitions = this.getToolDefinitions();
+    return toolDefinitions.map(tool => this.convertToStandardTool(tool));
+  }
+
+  private getToolDefinitions(): ToolDefinition[] {
     return [
       {
         name: 'store_incident',
@@ -178,6 +186,18 @@ export class StateMgmtTools {
         priority: 65
       }
     ];
+  }
+
+  private convertToStandardTool(toolDef: ToolDefinition): StandardTool {
+    return {
+      name: toolDef.name,
+      fullName: toolDef.fullName,
+      description: toolDef.description,
+      inputSchema: toolDef.inputSchema,
+      category: 'workflow' as const,
+      version: 'v2' as const,
+      execute: async (args: any) => this.executeTool(toolDef.fullName, args)
+    };
   }
 
   private async storeIncident(args: any): Promise<string> {

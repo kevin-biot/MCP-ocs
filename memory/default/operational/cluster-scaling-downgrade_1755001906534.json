@@ -1,0 +1,24 @@
+{
+  "incidentId": "cluster-scaling-downgrade",
+  "domain": "operations",
+  "timestamp": 1755001906534,
+  "symptoms": [
+    "Cluster resource constraints due to reduced worker nodes"
+  ],
+  "rootCause": "Cost optimization measures reducing cluster capacity from 3 to 1 worker node",
+  "resolution": "Cluster scaled down to 1 worker node for cost reduction",
+  "affectedResources": [
+    "Worker nodes",
+    "Cluster capacity",
+    "Workload scheduling"
+  ],
+  "diagnosticSteps": [
+    "Manual incident storage"
+  ],
+  "tags": [
+    "incident_storage",
+    "manual_entry",
+    "prod"
+  ],
+  "environment": "prod"
+}

@@ -1,0 +1,17 @@
+{
+  "sessionId": "auto-session-1755034264347",
+  "domain": "knowledge",
+  "timestamp": 1755034264344,
+  "userMessage": "Execute memory_search_incidents with args: {\"query\":\"pod health analysis tools\"}",
+  "assistantResponse": "Operation failed: Tool not found: memory_search_incidents. Available tools: cluster_health, namespace_health, pod_health, rca_checklist, get_pods, describe_resource, get_logs, search_memory, store_incident, search_operational, get_workflow_state, memory_stats, search_conversations, knowledge_seed_pattern",
+  "context": [
+    "memory_search_incidents",
+    "query"
+  ],
+  "tags": [
+    "memory_operation",
+    "workflow_tracking",
+    "execution_failed",
+    "needs_investigation"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "incidentId": "rca-checklist-student04-investigation-12345",
+  "domain": "cluster",
+  "timestamp": 1755038400070,
+  "symptoms": [
+    "📉 SCALE-DOWN: Detected scaling activity - verify if intentional",
+    "Scale-down evidence: Deployment code-server intentionally scaled to 0 replicas; Deployment java-webapp intentionally scaled to 0 replicas"
+  ],
+  "affectedResources": [
+    "namespace/student04"
+  ],
+  "diagnosticSteps": [
+    "Cluster connectivity verified"
+  ],
+  "tags": [
+    "rca_checklist",
+    "systematic_diagnostic",
+    "healthy",
+    "student04"
+  ],
+  "environment": "prod"
+}

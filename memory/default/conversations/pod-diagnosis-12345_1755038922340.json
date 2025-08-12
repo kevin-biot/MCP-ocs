@@ -1,0 +1,20 @@
+{
+  "sessionId": "pod-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755038922340,
+  "userMessage": "Execute oc_read_logs with args: {\"podName\":\"tekton-results-postgres-0\",\"namespace\":\"openshift-pipelines\",\"lines\":100,\"sessionId\":\"pod-diagnosis-12345\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_logs",
+    "podName",
+    "namespace",
+    "lines",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-pipelines",
+    "execution_success"
+  ]
+}

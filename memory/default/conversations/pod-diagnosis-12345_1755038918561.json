@@ -1,0 +1,21 @@
+{
+  "sessionId": "pod-diagnosis-12345",
+  "domain": "cluster",
+  "timestamp": 1755038918561,
+  "userMessage": "Execute oc_diagnostic_pod_health with args: {\"sessionId\":\"pod-diagnosis-12345\",\"namespace\":\"openshift-pipelines\",\"podName\":\"tekton-results-postgres-0\",\"includeDependencies\":true,\"includeResourceAnalysis\":true}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_diagnostic_pod_health",
+    "sessionId",
+    "namespace",
+    "podName",
+    "includeDependencies",
+    "includeResourceAnalysis"
+  ],
+  "tags": [
+    "diagnostic_tool",
+    "red_zone_relevant",
+    "namespace:openshift-pipelines",
+    "execution_success"
+  ]
+}

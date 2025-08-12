@@ -1,0 +1,15 @@
+{
+  "sessionId": "auto-session-1754990461064",
+  "domain": "system",
+  "timestamp": 1754990461062,
+  "userMessage": "Execute knowledge_seed_pattern with args: {\"operation\":\"stats\"}",
+  "assistantResponse": "Operation failed: Unknown tool: knowledge_seed_pattern",
+  "context": [
+    "knowledge_seed_pattern",
+    "operation"
+  ],
+  "tags": [
+    "execution_failed",
+    "needs_investigation"
+  ]
+}

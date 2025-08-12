@@ -1,0 +1,24 @@
+{
+  "incidentId": "tool-execution-pod-diagnosis-12345-1755038918561",
+  "domain": "cluster",
+  "timestamp": 1755038918561,
+  "symptoms": [
+    "Operation in namespace: openshift-pipelines"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:openshift-pipelines",
+    "pod:tekton-results-postgres-0"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_diagnostic_pod_health"
+  ],
+  "tags": [
+    "diagnostic_tool",
+    "red_zone_relevant",
+    "namespace:openshift-pipelines",
+    "execution_success"
+  ],
+  "environment": "prod"
+}
