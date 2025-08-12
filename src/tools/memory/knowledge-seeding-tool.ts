@@ -156,30 +156,41 @@ EXAMPLES:
 
   constructor(private knowledgeSeedingSystem: KnowledgeSeedingSystem) {}
 
-  async execute(args: KnowledgeSeedingToolArguments): Promise<any> {
+  async execute(args: KnowledgeSeedingToolArguments): Promise<string> {
     try {
+      let result: any;
+      
       switch (args.operation) {
         case 'quick_seed':
-          return await this.handleQuickSeed(args);
+          result = await this.handleQuickSeed(args);
+          break;
         
         case 'seed':
-          return await this.handleCustomSeed(args);
+          result = await this.handleCustomSeed(args);
+          break;
         
         case 'search':
-          return await this.handleSearch(args);
+          result = await this.handleSearch(args);
+          break;
         
         case 'stats':
-          return await this.handleStats();
+          result = await this.handleStats();
+          break;
         
         default:
           throw new Error(`Unknown operation: ${args.operation}`);
       }
+      
+      // Return formatted string for MCP
+      return JSON.stringify(result, null, 2);
+      
     } catch (error) {
-      return {
+      const errorResult = {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       };
+      return JSON.stringify(errorResult, null, 2);
     }
   }
 

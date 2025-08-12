@@ -121,7 +121,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     } else if (name.startsWith('memory_') || name.startsWith('core_')) {
       result = await stateMgmtTools.executeTool(name, args || {});
     } else if (name === 'knowledge_seed_pattern') {
-      result = await knowledgeSeedingTool.execute(args || {});
+      // Convert generic args to typed args for knowledge seeding
+      const knowledgeArgs = {
+        operation: 'seed' as const,
+        ...(args || {})
+      };
+      result = await knowledgeSeedingTool.execute(knowledgeArgs as any);
     } else {
       throw new Error(`Unknown tool: ${name}`);
     }
