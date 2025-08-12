@@ -204,21 +204,6 @@ export class OpenShiftClient {
   }
 
   /**
-   * Describe a specific resource with detailed information
-   */
-  async describeResource(resourceType: string, name: string, namespace?: string): Promise<string> {
-    const args = ['describe', resourceType, name];
-    
-    if (namespace) {
-      args.push('-n', namespace);
-    } else if (this.config.namespace) {
-      args.push('-n', this.config.namespace);
-    }
-    
-    return await this.executeOcCommand(args);
-  }
-
-  /**
    * Apply configuration from YAML/JSON
    */
   async applyConfig(config: string, namespace?: string): Promise<string> {
