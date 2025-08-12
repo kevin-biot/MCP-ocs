@@ -19,6 +19,8 @@ import { OpenShiftClient } from './lib/openshift-client.js';
 import { SharedMemoryManager } from './lib/memory/shared-memory.js';
 import { WorkflowEngine } from './lib/workflow/workflow-engine.js';
 import { AutoMemorySystem } from './lib/memory/auto-memory-system.js';
+import { KnowledgeSeedingSystem } from './lib/memory/knowledge-seeding-system.js';
+import { KnowledgeSeedingTool } from './tools/memory/knowledge-seeding-tool.js';
 
 console.error('🚀 Starting MCP-ocs server...');
 
@@ -48,16 +50,21 @@ const workflowEngine = new WorkflowEngine({
 // Initialize auto-memory system for intelligent tool tracking
 const autoMemory = new AutoMemorySystem(sharedMemory);
 
+// Initialize knowledge seeding system
+const knowledgeSeedingSystem = new KnowledgeSeedingSystem(sharedMemory, autoMemory);
+const knowledgeSeedingTool = new KnowledgeSeedingTool(knowledgeSeedingSystem);
+
 // Create ALL tool suites
 const diagnosticTools = new DiagnosticToolsV2(openshiftClient, sharedMemory);
 const readOpsTools = new ReadOpsTools(openshiftClient, sharedMemory);
 const stateMgmtTools = new StateMgmtTools(sharedMemory, workflowEngine);
 
-// Combine all tools
+// Combine all tools including knowledge seeding
 const allTools = [
   ...diagnosticTools.getTools(),
   ...readOpsTools.getTools(), 
-  ...stateMgmtTools.getTools()
+  ...stateMgmtTools.getTools(),
+  knowledgeSeedingTool  // Add knowledge seeding capability
 ];
 
 console.error(`✅ Registered ${allTools.length} tools from all suites`);
