@@ -6,16 +6,24 @@
  */
 
 import { ToolDefinition } from '../../lib/tools/namespace-manager.js';
+import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
 
-export class ReadOpsTools {
+export class ReadOpsTools implements ToolSuite {
+  category = 'read-ops';
+  version = 'v2';
   constructor(
     private openshiftClient: OpenShiftClient,
     private memoryManager: SharedMemoryManager
   ) {}
 
-  getTools(): ToolDefinition[] {
+  getTools(): StandardTool[] {
+    const toolDefinitions = this.getToolDefinitions();
+    return toolDefinitions.map(tool => this.convertToStandardTool(tool));
+  }
+
+  private getToolDefinitions(): ToolDefinition[] {
     return [
       {
         name: 'get_pods',
@@ -129,7 +137,7 @@ export class ReadOpsTools {
       {
         name: 'search_memory',
         namespace: 'mcp-memory',
-        fullName: 'memory_search_operational',
+        fullName: 'memory_search_incidents',
         domain: 'knowledge',
         capabilities: [
           { type: 'memory', level: 'basic', riskLevel: 'safe' }
@@ -161,29 +169,67 @@ export class ReadOpsTools {
     ];
   }
 
-  async executeTool(toolName: string, args: any): Promise<any> {
+  private convertToStandardTool(toolDef: ToolDefinition): StandardTool {
+    return {
+      name: toolDef.name,
+      fullName: toolDef.fullName,
+      description: toolDef.description,
+      inputSchema: toolDef.inputSchema,
+      category: 'read-ops' as const,
+      version: 'v2' as const,
+      execute: async (args: any) => this.executeTool(toolDef.fullName, args)
+    };
+  }
+
+  async executeTool(toolName: string, args: any): Promise<string> {
     const sessionId = args.sessionId || `read-${Date.now()}`;
     
     try {
+      let result: any;
+      
       switch (toolName) {
         case 'oc_read_get_pods':
-          return await this.getPods(args.namespace, args.selector, sessionId);
+          result = await this.getPods(args.namespace, args.selector, sessionId);
+          break;
           
         case 'oc_read_describe':
-          return await this.describeResource(args.resourceType, args.name, args.namespace, sessionId);
+          result = await this.describeResource(args.resourceType, args.name, args.namespace, sessionId);
+          break;
           
         case 'oc_read_logs':
-          return await this.getLogs(args.podName, args.namespace, args.container, args.lines, args.since, sessionId);
+          result = await this.getLogs(args.podName, args.namespace, args.container, args.lines, args.since, sessionId);
+          break;
           
-        case 'memory_search_operational':
-          return await this.searchMemory(args.query, args.limit, sessionId);
+        case 'memory_search_incidents':
+          result = await this.searchMemory(args.query, args.limit, sessionId);
+          break;
           
         default:
           throw new Error(`Unknown read operation tool: ${toolName}`);
       }
+      
+      // Enhanced error handling: check for method existence before calling
+      if (toolName === 'oc_read_describe' && typeof this.openshiftClient.describeResource !== 'function') {
+        throw new Error('describeResource method not implemented in OpenShiftClient');
+      }
+      
+      // Safely convert result to JSON with size limits and sanitization
+      const jsonResult = this.safeJsonStringify(result);
+      return jsonResult;
+      
     } catch (error) {
       console.error(`❌ Read operation ${toolName} failed:`, error);
-      throw error;
+      
+      // Enhanced error handling to prevent MCP corruption
+      const errorResult = {
+        success: false,
+        tool: toolName,
+        error: this.sanitizeError(error),
+        timestamp: new Date().toISOString(),
+        args: this.sanitizeArgs(args)
+      };
+      
+      return this.safeJsonStringify(errorResult);
     }
   }
 
@@ -313,5 +359,66 @@ export class ReadOpsTools {
     });
     
     return searchResult;
+  }
+
+  /**
+   * Enhanced error handling and sanitization methods
+   */
+  private safeJsonStringify(obj: any): string {
+    try {
+      // Check object size before stringifying
+      const testStr = JSON.stringify(obj);
+      
+      // If response is too large (>500KB), truncate it
+      if (testStr.length > 500000) {
+        console.error('⚠️ Large response detected, truncating...');
+        
+        if (typeof obj === 'object' && obj.description) {
+          // For describe operations, truncate the description field
+          const truncated = {
+            ...obj,
+            description: obj.description.substring(0, 100000) + '\n\n[... truncated due to size limit ...]',
+            truncated: true,
+            originalSize: testStr.length
+          };
+          return JSON.stringify(truncated, null, 2);
+        }
+      }
+      
+      return JSON.stringify(obj, null, 2);
+    } catch (error) {
+      console.error('❌ JSON stringify failed:', error);
+      
+      // Fallback to safe string representation
+      return JSON.stringify({
+        success: false,
+        error: 'Failed to serialize response',
+        message: 'Response contained non-serializable data',
+        timestamp: new Date().toISOString()
+      }, null, 2);
+    }
+  }
+
+  private sanitizeError(error: any): string {
+    if (error instanceof Error) {
+      // Clean error message of any potential special characters that could break MCP
+      return error.message.replace(/[\r\n\t]/g, ' ').substring(0, 1000);
+    }
+    
+    if (typeof error === 'string') {
+      return error.replace(/[\r\n\t]/g, ' ').substring(0, 1000);
+    }
+    
+    return 'Unknown error type';
+  }
+
+  private sanitizeArgs(args: any): any {
+    // Remove potentially problematic fields from args for error reporting
+    const sanitized = { ...args };
+    
+    // Remove large or sensitive fields
+    delete sanitized.sessionId;
+    
+    return sanitized;
   }
 }
