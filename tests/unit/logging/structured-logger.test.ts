@@ -61,7 +61,7 @@ describe('StructuredLogger', () => {
   describe('Error Handling', () => {
     it('should handle Error objects properly', () => {
       const testError = new Error('Test error');
-      logger.error('Operation failed', {}, testError);
+      logger.error('Operation failed', testError, {});
       
       expect(mockConsoleError).toHaveBeenCalledTimes(1);
       const logCall = mockConsoleError.mock.calls[0][0];
@@ -101,9 +101,9 @@ describe('StructuredLogger', () => {
 describe('withTiming utility', () => {
   it('should time operations', async () => {
     const testFunction = async () => 'success';
-    
-    const result = await withTiming(testFunction, 'test-operation');
-    
+    // withTiming(operation, fn) returns a wrapped function
+    const wrapped = withTiming('test-operation', testFunction);
+    const result = await wrapped();
     expect(result).toBe('success');
   });
 });

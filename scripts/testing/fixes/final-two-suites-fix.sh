@@ -8,7 +8,7 @@ echo "================================="
 echo "1. Investigating config validation functions..."
 grep -A 5 -B 5 "isValidEnvironment\|isValidLogLevel\|isValidToolMode" src/lib/config/schema.ts || echo "Schema file not found or different format"
 
-# 2. Fix logging test with correct method names
+# 2. Fix logging test with correct API usage
 echo "2. Fixing logging test method names..."
 cat > tests/unit/logging/structured-logger.test.ts << 'EOF'
 /**
@@ -74,7 +74,8 @@ describe('StructuredLogger', () => {
   describe('Error Handling', () => {
     it('should handle Error objects properly', () => {
       const testError = new Error('Test error');
-      logger.error('Operation failed', {}, testError);
+      // API is error(message, error?, context?)
+      logger.error('Operation failed', testError, {});
       
       expect(mockConsoleError).toHaveBeenCalledTimes(1);
       const logCall = mockConsoleError.mock.calls[0][0];
@@ -114,9 +115,9 @@ describe('StructuredLogger', () => {
 describe('withTiming utility', () => {
   it('should time operations', async () => {
     const testFunction = async () => 'success';
-    
-    const result = await withTiming(testFunction, 'test-operation');
-    
+    // API is withTiming(operation, fn) -> returns wrapped function
+    const wrapped = withTiming('test-operation', testFunction);
+    const result = await wrapped();
     expect(result).toBe('success');
   });
 });
