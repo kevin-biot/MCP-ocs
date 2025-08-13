@@ -4,7 +4,7 @@
  * Proper process lifecycle management for production deployments
  */
 
-import { logger } from '../logging/structured-logger.js';
+import { logger } from '../logging/structured-logger';
 
 export interface ShutdownHandler {
   name: string;
