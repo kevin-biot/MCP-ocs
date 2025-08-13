@@ -8,7 +8,7 @@ import { OpenShiftClient } from '../openshift-client.js';
 import { SharedMemoryManager } from '../memory/shared-memory.js';
 import { WorkflowEngine } from '../workflow/workflow-engine.js';
 import { ConfigValidator } from '../config/schema.js';
-import { logger } from '../logging/structured-logger.js';
+import { logger } from '../logging/structured-logger';
 
 export type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
 
