@@ -1,0 +1,17 @@
+{
+  "sessionId": "ingress-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755044178718,
+  "userMessage": "Describe ingresscontroller default",
+  "assistantResponse": "Retrieved detailed information for ingresscontroller/default",
+  "context": [
+    "ingresscontroller",
+    "default",
+    "openshift-ingress-operator"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "ingresscontroller"
+  ]
+}

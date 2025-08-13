@@ -1,0 +1,28 @@
+{
+  "incidentId": "cluster-scale-down-impact-2025",
+  "domain": "operations",
+  "timestamp": 1755044322779,
+  "symptoms": [
+    "IngressControllerDegraded",
+    "TektonResultsStorageFailure",
+    "MachineSetScaleDown",
+    "ClusterOperatorDegraded"
+  ],
+  "rootCause": "Infrastructure scale-down in eu-west-1a and eu-west-1b zones caused zone affinity conflicts for storage provisioning, preventing PostgreSQL database from scheduling. This cascaded to ingress router deployment issues and operator degradation.",
+  "resolution": "Identified that MachineSets in eu-west-1a and eu-west-1b zones were scaled to 0 machines, while only eu-west-1c had active worker nodes. This caused zone mismatch where PV required eu-west-1a but no nodes were available in that zone. The root cause was infrastructure scale-down rather than resource exhaustion or application-level scale-down.",
+  "affectedResources": [
+    "openshift-pipelines/tekton-results-postgres-0",
+    "openshift-ingress/router-default-5c65587884-mt5qx",
+    "openshift-machine-api/bootcamp-ocs-cluster-bx85m-worker-eu-west-1a",
+    "openshift-machine-api/bootcamp-ocs-cluster-bx85m-worker-eu-west-1b"
+  ],
+  "diagnosticSteps": [
+    "Manual incident storage"
+  ],
+  "tags": [
+    "incident_storage",
+    "manual_entry",
+    "prod"
+  ],
+  "environment": "prod"
+}

@@ -1,0 +1,17 @@
+{
+  "sessionId": "cluster-health-check-12345",
+  "domain": "openshift",
+  "timestamp": 1755044075008,
+  "userMessage": "Get pods in openshift-pipelines namespace",
+  "assistantResponse": "Found 18 pods: 17 running, 1 pending, 0 failed",
+  "context": [
+    "pods",
+    "namespace",
+    "openshift-pipelines"
+  ],
+  "tags": [
+    "read_operation",
+    "pods",
+    "cluster_state"
+  ]
+}

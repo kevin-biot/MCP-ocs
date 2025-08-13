@@ -1,0 +1,22 @@
+{
+  "sessionId": "memory-store-12345",
+  "domain": "knowledge",
+  "timestamp": 1755044322769,
+  "userMessage": "Execute memory_store_operational with args: {\"incidentId\":\"cluster-scale-down-impact-2025\",\"symptoms\":[\"IngressControllerDegraded\",\"TektonResultsStorageFailure\",\"MachineSetScaleDown\",\"ClusterOperatorDegraded\"],\"rootCause\":\"Infrastructure scale-down in eu-west-1a and eu-west-1b zones caused zone affinity conflicts for storage provisioning, preventing PostgreSQL database from scheduling. This cascaded to ingress router deployment issues and operator degradation.\",\"resolution\":\"Identified that MachineSets in eu-west-1a and eu-west-1b zones were scaled to 0 machines, while only eu-west-1c had active worker nodes. This caused zone mismatch where PV required eu-west-1a but no nodes were available in that zone. The root cause was infrastructure scale-down rather than resource exhaustion or application-level scale-down.\",\"affectedResources\":[\"openshift-pipelines/tekton-results-postgres-0\",\"openshift-ingress/router-default-5c65587884-mt5qx\",\"openshift-machine-api/bootcamp-ocs-cluster-bx85m-worker-eu-west-1a\",\"openshift-machine-api/bootcamp-ocs-cluster-bx85m-worker-eu-west-1b\"],\"environment\":\"prod\",\"sessionId\":\"memory-store-12345\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "memory_store_operational",
+    "incidentId",
+    "symptoms",
+    "rootCause",
+    "resolution",
+    "affectedResources",
+    "environment",
+    "sessionId"
+  ],
+  "tags": [
+    "memory_operation",
+    "workflow_tracking",
+    "execution_success"
+  ]
+}

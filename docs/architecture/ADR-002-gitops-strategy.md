@@ -19,6 +19,9 @@ MCP-ocs will provide write operations (apply, scale, restart) that modify cluste
 - **Structured Diagnostics** - Write operations as part of troubleshooting workflow
 - **Learning Loop** - Capture successful changes for future automation
 - **Multi-Environment** - Different risk tolerance dev vs prod
+- **Operator Deployment** - GitOps integration for multi-pod operator architecture
+- **Emergency Change Capture** - Real-time capture of emergency changes for compliance
+- **Multi-Pod Coordination** - GitOps workflows across MCP server, memory, and GitOps controller pods
 
 ## Decision
 
@@ -223,3 +226,222 @@ Evaluate after 3 months of operation:
 - **Change Success Rate** - GitOps vs direct apply reliability
 - **Team Adoption** - Developer workflow satisfaction
 - **Compliance Value** - Audit and regulatory benefits realized
+
+## Operator Deployment Integration
+
+### Multi-Pod GitOps Architecture
+
+The production operator deployment (ADR-008) requires enhanced GitOps integration across multiple pods:
+
+```typescript
+interface OperatorGitOpsArchitecture {
+  mcpServer: {
+    role: 'Change request creation and workflow coordination';
+    gitPermissions: 'PR creation and status updates';
+    restrictions: 'No direct cluster writes';
+  };
+  
+  gitopsController: {
+    role: 'Git repository management and change application';
+    gitPermissions: 'Repository write access and merge operations';
+    clusterPermissions: 'Limited write access via service account';
+  };
+  
+  vectorMemory: {
+    role: 'Pattern storage for GitOps change recommendations';
+    gitIntegration: 'Change pattern analysis and suggestions';
+  };
+  
+  ragDatabase: {
+    role: 'Best practices and change procedure documentation';
+    gitIntegration: 'Procedure lookup and compliance validation';
+  };
+}
+```
+
+### Emergency Change Capture in Pod Environment
+
+Operator deployment requires sophisticated emergency change capture that works within RBAC constraints:
+
+```typescript
+class OperatorEmergencyCapture {
+  async captureEmergencyChange(
+    emergencySession: EmergencySession,
+    clusterChanges: ClusterChange[]
+  ): Promise<EmergencyGitOpsResult> {
+    
+    // 1. Real-time capture within pod constraints
+    const captureSession = await this.startEnhancedCapture({
+      sessionId: emergencySession.id,
+      podContext: this.getCurrentPodContext(),
+      rbacContext: this.getCurrentRBACContext(),
+      captureLevel: 'comprehensive'
+    });
+    
+    // 2. Execute emergency changes with full monitoring
+    const results = await this.executeWithCapture(clusterChanges, captureSession);
+    
+    // 3. Immediate Git reconciliation draft creation
+    const reconciliationPR = await this.gitopsController.createEmergencyPR({
+      title: `EMERGENCY: ${emergencySession.justification.impact}`,
+      changes: this.translateToGitOpsFormat(results.appliedChanges),
+      emergency: {
+        level: emergencySession.level,
+        justification: emergencySession.justification,
+        approver: emergencySession.approver,
+        timestamp: emergencySession.startTime
+      },
+      deadline: this.calculateReconciliationDeadline(emergencySession.level),
+      labels: ['emergency', 'requires-immediate-review', 'compliance-critical']
+    });
+    
+    // 4. Enhanced audit trail in vector memory
+    await this.vectorMemory.storeEmergencyPattern({
+      emergencyType: emergencySession.justification.level,
+      symptoms: emergencySession.symptoms,
+      appliedChanges: results.appliedChanges,
+      effectiveness: 'pending_validation',
+      gitReconciliation: reconciliationPR
+    });
+    
+    return {
+      captureComplete: true,
+      reconciliationPR,
+      complianceDeadline: reconciliationPR.deadline,
+      auditTrail: captureSession.auditTrail
+    };
+  }
+}
+```
+
+### Integration Points with ADR-008 and ADR-009
+
+#### RBAC-Constrained GitOps
+
+Integration with ADR-009 RBAC strategy:
+
+```yaml
+# GitOps Controller ServiceAccount - Limited Write Permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: gitops-controller-operator
+rules:
+# Standard GitOps operations
+- apiGroups: [""]
+  resources: ["configmaps", "services"]
+  verbs: ["create", "update", "patch", "delete"]
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["create", "update", "patch", "delete"]
+# Emergency break-glass (time-limited)
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+  resourceNames: ["emergency-*"]  # Only emergency-prefixed resources
+# Audit trail requirements
+- apiGroups: ["audit.k8s.io"]
+  resources: ["events"]
+  verbs: ["create"]
+```
+
+#### Memory-Enhanced GitOps Decisions
+
+Integration with ADR-003 memory patterns:
+
+```typescript
+class MemoryEnhancedGitOps {
+  async enhanceChangeRequest(
+    changeRequest: ChangeRequest
+  ): Promise<EnhancedChangeRequest> {
+    
+    // 1. Search for similar changes in vector memory
+    const similarChanges = await this.vectorMemory.searchSimilarChanges({
+      targetResources: changeRequest.targetResources,
+      changeType: changeRequest.changeType,
+      environment: changeRequest.environment
+    });
+    
+    // 2. Analyze outcomes of similar changes
+    const outcomeAnalysis = await this.analyzeChangeOutcomes(similarChanges);
+    
+    // 3. RAG-enhanced risk assessment
+    const riskAssessment = await this.ragDatabase.assessChangeRisk({
+      change: changeRequest,
+      historicalOutcomes: outcomeAnalysis,
+      currentClusterState: await this.getCurrentClusterState()
+    });
+    
+    // 4. Generate enhanced change request
+    return {
+      ...changeRequest,
+      similarChanges,
+      riskAssessment,
+      recommendations: await this.generateChangeRecommendations({
+        change: changeRequest,
+        patterns: similarChanges,
+        risks: riskAssessment
+      }),
+      approvalWorkflow: this.determineApprovalWorkflow(riskAssessment)
+    };
+  }
+}
+```
+
+### Operator-Specific Emergency Procedures
+
+#### Emergency Break-Glass in Pod Environment
+
+```typescript
+class OperatorEmergencyProcedures {
+  async executeEmergencyBreakGlass(
+    request: EmergencyRequest
+  ): Promise<EmergencyResult> {
+    
+    // 1. Validate emergency authorization within RBAC constraints
+    await this.validateEmergencyAuthorization({
+      requester: request.requester,
+      level: request.level,
+      rbacContext: this.getCurrentRBACContext()
+    });
+    
+    // 2. Elevated permissions for emergency session
+    const emergencyServiceAccount = await this.createEmergencyServiceAccount({
+      sessionId: request.sessionId,
+      level: request.level,
+      timeLimit: request.estimatedDuration,
+      auditLevel: 'enhanced'
+    });
+    
+    // 3. Execute with comprehensive capture
+    const emergencyClient = new EmergencyClusterClient(emergencyServiceAccount);
+    const results = await emergencyClient.executeWithCapture(
+      request.changes,
+      this.emergencyAuditCapture
+    );
+    
+    // 4. Immediate reconciliation initiation
+    await this.initiateImmediateReconciliation({
+      emergencySession: request.sessionId,
+      appliedChanges: results,
+      serviceAccount: emergencyServiceAccount,
+      deadline: '1 hour' // Operator emergency deadline
+    });
+    
+    // 5. Cleanup emergency permissions
+    await this.scheduleEmergencyCleanup({
+      serviceAccount: emergencyServiceAccount,
+      sessionId: request.sessionId,
+      cleanupDelay: '24 hours'
+    });
+    
+    return results;
+  }
+}
+```
+
+---
+
+**Updated:** August 13, 2025 - Added operator deployment integration  
+**Dependencies:** ADR-008 (Production Architecture), ADR-009 (RBAC Strategy)  
+**Integration:** Multi-pod GitOps with emergency change capture

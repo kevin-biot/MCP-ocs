@@ -1,0 +1,25 @@
+{
+  "incidentId": "tool-execution-cluster-health-check-12345-1755044091046",
+  "domain": "openshift",
+  "timestamp": 1755044091046,
+  "symptoms": [
+    "Operation in namespace: openshift-machine-api"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:openshift-machine-api"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_get_pods"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-machine-api",
+    "pod_analysis",
+    "pod_count:5",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

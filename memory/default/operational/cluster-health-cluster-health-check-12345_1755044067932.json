@@ -1,0 +1,18 @@
+{
+  "incidentId": "cluster-health-cluster-health-check-12345",
+  "domain": "cluster",
+  "timestamp": 1755044067932,
+  "symptoms": [
+    "cluster_issues_detected"
+  ],
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Enhanced cluster health check completed"
+  ],
+  "tags": [
+    "cluster_health",
+    "diagnostic",
+    "failing"
+  ],
+  "environment": "prod"
+}
