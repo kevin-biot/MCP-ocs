@@ -2,7 +2,7 @@
  * Unit tests for Enhanced OpenShift Client
  */
 
-import { OpenShiftClient } from '../../../src/lib/openshift-client-enhanced.ts';
+import { OpenShiftClient } from '../../../src/lib/openshift-client-enhanced';
 
 jest.mock('child_process');
 jest.mock('util');
