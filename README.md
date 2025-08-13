@@ -1,233 +1,137 @@
 # MCP-ocs: OpenShift Container Platform Operations Server
 
-A production-ready Model Context Protocol (MCP) server for OpenShift operations and diagnostics, implementing structured workflows, memory-guided troubleshooting, and enterprise-grade observability.
+⚠️ **DEVELOPMENT IN PROGRESS** - This repository is undergoing significant architectural changes and active development. Not recommended for production use at this time.
 
-## 🚀 Production Ready Features
+A Model Context Protocol (MCP) server for OpenShift operations and diagnostics, implementing structured workflows, memory-guided troubleshooting, and observability features.
 
-### ✅ Enterprise Architecture
-- **Comprehensive ADR Implementation**: All architectural decisions (ADR-001 through ADR-005) fully implemented
-- **Production Logging**: Structured JSON logging with context and sensitive data protection
-- **Health Monitoring**: Kubernetes-ready liveness/readiness probes with comprehensive system checks
-- **Graceful Shutdown**: Proper signal handling with in-flight operation tracking
-- **Type Safety**: 100% TypeScript strict mode with comprehensive type guards
+## 🚧 Current Development Status
 
-### ✅ Configuration Management
-- **Centralized Schema**: All configuration defaults with validation rules
-- **Multi-Source Loading**: Environment variables, config files, and sensible defaults
-- **Security Validation**: Path sanitization, parameter validation, and security checks
-- **Environment Support**: dev/test/staging/prod with proper overrides
+### ✅ Testing Infrastructure (Recently Completed)
+- **4/5 Test Suites Passing**: Major testing milestone achieved
+- **Jest Configuration**: TypeScript/Jest integration working
+- **Organized Structure**: Complete testing documentation and scripts
+- **Zero Jest Errors**: All configuration issues resolved
 
-### ✅ Observability & Monitoring
-- **Structured Logging**: JSON logs with automatic context extraction and timing
-- **Health Checks**: OpenShift connectivity, memory system, workflow engine, filesystem, system resources
-- **Performance Tracking**: Operation timing, resource usage, and degradation detection
-- **Container Ready**: Kubernetes liveness and readiness probes
+### ✅ Core Architecture Foundation
+- **TypeScript Implementation**: Strict type safety throughout
+- **Configuration Management**: Centralized schema with validation
+- **Logging System**: Structured JSON logging with context preservation
+- **OpenShift Integration**: CLI wrapper with error handling
 
-### ✅ Safety & Reliability
-- **Panic Detection**: Prevents 4 AM disasters with structured workflow enforcement
-- **Memory-Guided Troubleshooting**: Auto-learns from past incidents for pattern recognition
-- **Graceful Degradation**: ChromaDB fallback to JSON, workflow guidance vs blocking modes
-- **Operation Tracking**: Complete audit trail with in-flight operation management
+### 🔄 Active Development Areas
+- **Memory System**: Hybrid ChromaDB + JSON storage implementation
+- **Tool Management**: Namespace-aware tool organization
+- **Health Monitoring**: System health checks and observability
+- **Workflow Engine**: Structured troubleshooting workflows
 
-## Architecture Implementation
+## Architecture Overview
 
-This skeleton implements the complete architectural framework defined in the ADRs:
+This project implements a comprehensive architectural framework:
 
-### ADR-001: OpenShift CLI Wrapper (Phase 1)
-- ✅ `OpenShiftClient` - Wraps `oc` commands for rapid development
-- ✅ Command sanitization and error handling
-- ✅ JSON parsing and type safety
-- 🔮 Future: Kubernetes API client migration (Phase 2)
+### OpenShift Integration (ADR-001)
+- **OpenShiftClient**: Wraps `oc` commands with safety and validation
+- **Command Sanitization**: Input validation and error handling
+- **JSON Processing**: Type-safe OpenShift resource parsing
+- **Future Migration Path**: Planned Kubernetes API client transition
 
-### ADR-003: Hybrid Memory System
-- ✅ `SharedMemoryManager` - ChromaDB + JSON fallback
-- ✅ Conversation and operational memory storage
-- ✅ Vector similarity search with graceful degradation
-- ✅ Auto-context extraction and tagging
+### Memory System (ADR-003)
+- **Hybrid Storage**: ChromaDB for vectors, JSON for reliability
+- **Context Preservation**: Conversation and operational memory
+- **Vector Search**: Similarity-based context retrieval
+- **Graceful Fallback**: Automatic degradation handling
 
-### ADR-004: Tool Namespace Management
-- ✅ `ToolNamespaceManager` - Context-aware tool filtering
-- ✅ Hierarchical namespace architecture (`oc_*`, `memory_*`, etc.)
-- ✅ Three-stream configuration (single/team/router modes)
-- ✅ Tool conflict prevention and domain isolation
+### Tool Organization (ADR-004)
+- **Namespace Management**: Hierarchical tool organization (`oc_*`, `memory_*`)
+- **Context Filtering**: Situation-aware tool availability
+- **Workflow Integration**: Memory-guided tool recommendations
 
-### ADR-005: Workflow State Machine
-- ✅ `WorkflowEngine` - Diagnostic state enforcement
-- ✅ Panic detection system (rapid-fire, bypassing diagnostics)
-- ✅ Evidence-based state transitions
-- ✅ Memory-guided workflow suggestions
+### Configuration & Logging (ADR-005)
+- **Centralized Configuration**: Single source of truth with validation
+- **Environment Support**: Development, test, staging configurations
+- **Structured Logging**: JSON logs with automatic context and timing
+- **Security**: Sensitive data protection and sanitization
 
-## Project Structure
+## 🔧 Development Setup
 
-```
-src/
-├── index.ts                    # Main MCP server entry point
-├── lib/                        # Core architecture components
-│   ├── openshift-client.ts     # ADR-001: CLI wrapper
-│   ├── config/
-│   │   ├── config-manager.ts   # Configuration management
-│   │   └── schema.ts           # NEW: Centralized config schema with validation
-│   ├── logging/
-│   │   └── structured-logger.ts # NEW: Production-ready structured logging
-│   ├── health/
-│   │   ├── health-check.ts     # NEW: Comprehensive system health monitoring
-│   │   └── graceful-shutdown.ts # NEW: Proper process lifecycle management
-│   ├── memory/
-│   │   └── shared-memory.ts    # ADR-003: Hybrid memory
-│   ├── tools/
-│   │   └── namespace-manager.ts # ADR-004: Tool namespacing
-│   └── workflow/
-│       └── workflow-engine.ts  # ADR-005: State machine
-└── tools/                      # Tool implementations
-    ├── diagnostics/            # oc_diagnostic_* tools
-    ├── read-ops/               # oc_read_* tools
-    ├── write-ops/              # oc_write_* tools (workflow-controlled)
-    └── state-mgmt/             # memory_* and core_* tools
-```
-    ├── write-ops/              # oc_write_* tools (workflow-controlled)
-    └── state-mgmt/             # memory_* and core_* tools
-```
+### Prerequisites
+- Node.js 18+ with npm
+- TypeScript 5.0+
+- OpenShift CLI (`oc`) if using OpenShift features
+- ChromaDB (optional - JSON fallback available)
 
-## Key Features
-
-### 🛡️ Panic Prevention (ADR-005)
-- Detects rapid-fire dangerous operations
-- Prevents bypassing diagnostic workflows
-- Provides calming intervention messages
-- Enforces evidence gathering before fixes
-
-### 🧠 Memory-Guided Operations (ADR-003)
-- Stores all conversations and incidents
-- Finds similar past incidents automatically  
-- Suggests next steps based on patterns
-- ChromaDB for vector search + JSON backup
-
-### 🔧 Context-Aware Tools (ADR-004)
-- Tools filtered by operational context
-- Namespace-based organization prevents confusion
-- Single/team/router mode configurations
-- Domain-specific tool prioritization
-
-### 📊 Structured Diagnostics (ADR-005)
-- State machine: gathering → analyzing → hypothesizing → testing → resolving
-- Evidence requirements for each state
-- Memory-guided workflow suggestions
-- Proper authorization for write operations
-
-## Tool Categories
-
-### Diagnostic Tools (`oc_diagnostic_*`)
-- `oc_diagnostic_cluster_health` - Overall cluster status
-- `oc_diagnostic_pod_health` - Pod health analysis
-- `oc_diagnostic_resource_usage` - Resource utilization
-- `oc_diagnostic_events` - Event pattern analysis
-
-### Read Operations (`oc_read_*`)
-- `oc_read_get_pods` - List pods with filtering
-- `oc_read_describe` - Detailed resource information
-- `oc_read_logs` - Container log retrieval
-- `memory_search_operational` - Find similar incidents
-
-### Write Operations (`oc_write_*`) - Workflow Controlled
-- `oc_write_apply` - Apply configurations (requires resolving state)
-- `oc_write_scale` - Scale deployments (requires resolving state)
-- `oc_write_restart` - Restart deployments (requires resolving state)
-
-### State Management (`memory_*`, `core_*`)
-- `memory_store_operational` - Store incident resolutions
-- `memory_search_conversations` - Search conversation history
-- `core_workflow_state` - Get workflow session state
-- `memory_get_stats` - Memory system statistics
-
-## Configuration
-
-The server supports multiple configuration sources:
-
-1. **Environment Variables**:
-   ```bash
-   MCP_TOOL_MODE=single                    # Tool mode (single/team/router)
-   MCP_CHROMA_HOST=127.0.0.1              # ChromaDB host
-   MCP_ENFORCEMENT=guidance                # Workflow enforcement level
-   KUBECONFIG=/path/to/kubeconfig         # OpenShift config
-   ```
-
-2. **Configuration Files**:
-   - `./config/mcp-ocs.json`
-   - `./mcp-ocs.config.json`
-   - `~/.mcp-ocs.json`
-
-3. **Defaults**: Sensible defaults for development
-
-## Workflow States
-
-The system enforces a structured diagnostic workflow:
-
-1. **Gathering** (30s minimum) - Collect symptoms and evidence
-2. **Analyzing** - Search memory for similar patterns  
-3. **Hypothesizing** - Form testable theories
-4. **Testing** - Validate hypotheses with targeted investigation
-5. **Resolving** - Apply approved solutions with proper authorization
-
-Write operations are **blocked** until reaching the Resolving state with sufficient evidence.
-
-## Development Status
-
-### ✅ Completed (Skeleton)
-- Complete architectural framework
-- All ADR implementations
-- Tool namespace management
-- Workflow state machine
-- Memory system (JSON fallback)
-- Basic tool implementations
-- Configuration management
-
-### 🚧 Next Steps
-1. **ChromaDB Integration** - Replace placeholder with real ChromaDB client
-2. **Tool Execution** - Complete OpenShift client method implementations  
-3. **Evidence Extraction** - Auto-extract evidence from tool results
-4. **State Transitions** - Implement automatic state progression
-5. **Advanced Panic Detection** - Domain jumping, permission escalation
-6. **Testing** - Unit and integration tests
-7. **Documentation** - User guides and API documentation
-
-## Quick Start
-
+### Quick Start
 ```bash
-# Install dependencies
+# Clone and install
+git clone <repository>
+cd MCP-ocs
 npm install
 
-# Build the project
-npm run build
+# Run tests
+npm run test:unit
 
-# Start the server
-npm start
-
-# Development mode with auto-rebuild
+# Development mode
 npm run dev
 ```
 
-## Memory System Status
+### Testing
+```bash
+# Run all tests
+npm run test:unit
 
-The memory system is ready with JSON fallback:
-- ✅ Conversation storage and retrieval
-- ✅ Operational incident storage  
-- ✅ Text-based similarity search
-- 🔮 ChromaDB vector search (placeholder ready)
+# Enhanced test analysis
+scripts/test/dual-mode/enhanced-clean.sh
 
-## Workflow Example
-
-```
-🔍 User: "Pod is failing, let me restart it"
-🛑 System: "Let's gather evidence first. What symptoms are you seeing?"
-
-📋 User: Uses oc_read_get_pods
-📊 System: Stores evidence, suggests checking logs
-
-📄 User: Uses oc_read_logs  
-🧠 System: Searches memory, finds similar incident patterns
-
-🎯 System: "This looks like incident INC-2023-45. Try scaling down first."
-✅ User: Uses oc_write_scale (now allowed in resolving state)
+# Individual test debugging
+npm run test:unit -- tests/unit/basic.test.ts --verbose
 ```
 
-This skeleton provides a complete foundation for the MCP-ocs server with all architectural decisions properly implemented.
+## 📚 Documentation
+
+### Testing Documentation
+- [Testing Strategy](docs/testing/strategy/roadmap.md) - 5-phase testing evolution
+- [Current Status](docs/testing/strategy/current-state.md) - Progress tracking
+- [Standards](docs/testing/strategy/standards.md) - Testing conventions
+
+### Architecture Documentation
+- [ADR-001](docs/architecture/ADR-001-openshift-cli-wrapper.md) - OpenShift Integration
+- [ADR-003](docs/architecture/ADR-003-hybrid-memory-system.md) - Memory Architecture  
+- [ADR-004](docs/architecture/ADR-004-tool-namespace-management.md) - Tool Organization
+- [ADR-005](docs/architecture/ADR-005-configuration-logging.md) - Config & Logging
+
+## 🎯 Roadmap
+
+### Phase 1: Foundation (80% Complete)
+- [x] Core TypeScript architecture
+- [x] Testing infrastructure 
+- [x] Configuration system
+- [x] Basic OpenShift integration
+- [ ] Complete test suite (1 test remaining)
+
+### Phase 2: Core Features (Planned)
+- [ ] Memory system implementation
+- [ ] Workflow engine
+- [ ] Tool namespace management
+- [ ] Health monitoring
+
+### Phase 3: Production Readiness (Future)
+- [ ] Performance optimization
+- [ ] Security hardening
+- [ ] Comprehensive monitoring
+- [ ] Documentation completion
+
+## ⚠️ Important Notes
+
+- **Not Production Ready**: Active development with frequent breaking changes
+- **Testing Focus**: Currently prioritizing test infrastructure completion
+- **API Stability**: Interfaces may change significantly
+- **Documentation**: Work in progress, may be incomplete
+
+## 🤝 Contributing
+
+This project is in active development. Please check the testing documentation and current issues before contributing.
+
+---
+
+**Development Status**: Foundation Phase (80% complete)  
+**Last Updated**: August 13, 2025  
+**Test Status**: 4/5 suites passing, Jest errors eliminated
