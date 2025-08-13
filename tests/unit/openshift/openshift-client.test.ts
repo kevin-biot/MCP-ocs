@@ -4,8 +4,30 @@
 
 import { OpenShiftClient } from '../../../src/lib/openshift-client-enhanced';
 
-jest.mock('child_process');
-jest.mock('util');
+// Provide explicit mocks to avoid noisy logs and execAsync errors
+jest.mock('child_process', () => ({ exec: jest.fn() }));
+jest.mock('util', () => ({
+  promisify: (_fn: any) => (
+    ..._args: any[]
+  ) => Promise.resolve({ stdout: '', stderr: '' })
+}));
+
+let restoreConsole: (() => void) | null = null;
+beforeEach(() => {
+  const mocks: jest.SpyInstance[] = [];
+  mocks.push(jest.spyOn(console, 'log').mockImplementation(() => {}));
+  mocks.push(jest.spyOn(console, 'error').mockImplementation(() => {}));
+  mocks.push(jest.spyOn(console, 'warn').mockImplementation(() => {}));
+  mocks.push(jest.spyOn(console, 'debug').mockImplementation(() => {}));
+  restoreConsole = () => {
+    mocks.forEach(m => m.mockRestore());
+    restoreConsole = null;
+  };
+});
+
+afterEach(() => {
+  if (restoreConsole) restoreConsole();
+});
 
 describe('OpenShiftClient', () => {
   let client: OpenShiftClient;
