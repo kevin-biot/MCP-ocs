@@ -1,0 +1,24 @@
+{
+  "incidentId": "tool-execution-monitoring-diagnosis-12345-1755067745015",
+  "domain": "openshift",
+  "timestamp": 1755067745015,
+  "symptoms": [
+    "Operation in namespace: openshift-monitoring"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:openshift-monitoring",
+    "pod:prometheus-operator-admission-webhook-6d4bd68bc5-kjvxv"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_logs"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-monitoring",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

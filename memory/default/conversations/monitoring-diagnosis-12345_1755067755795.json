@@ -1,0 +1,18 @@
+{
+  "sessionId": "monitoring-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755067755795,
+  "userMessage": "Execute oc_read_describe with args: {\"resourceType\":\"node\",\"name\":\"ip-10-0-77-117.eu-west-1.compute.internal\",\"sessionId\":\"monitoring-diagnosis-12345\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_describe",
+    "resourceType",
+    "name",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "execution_success"
+  ]
+}

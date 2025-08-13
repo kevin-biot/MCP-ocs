@@ -1,0 +1,18 @@
+{
+  "sessionId": "final-monitoring-check-12345",
+  "domain": "openshift",
+  "timestamp": 1755067890589,
+  "userMessage": "Execute oc_read_describe with args: {\"resourceType\":\"clusteroperator\",\"name\":\"monitoring\",\"sessionId\":\"final-monitoring-check-12345\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_describe",
+    "resourceType",
+    "name",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "execution_success"
+  ]
+}

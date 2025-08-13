@@ -13,10 +13,10 @@
     "outDir": "dist",
     "rootDir": "src",
     "resolveJsonModule": true,
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": [
-    "src/**/*"
+    "src/**/*", "tests/**/*"
   ],
   "exclude": [
     "node_modules",

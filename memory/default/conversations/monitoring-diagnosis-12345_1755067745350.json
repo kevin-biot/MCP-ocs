@@ -1,0 +1,17 @@
+{
+  "sessionId": "monitoring-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755067745350,
+  "userMessage": "Get logs from pod prometheus-operator-admission-webhook-6d4bd68bc5-kjvxv",
+  "assistantResponse": "Retrieved 1 lines of logs from prometheus-operator-admission-webhook-6d4bd68bc5-kjvxv",
+  "context": [
+    "logs",
+    "prometheus-operator-admission-webhook-6d4bd68bc5-kjvxv",
+    "openshift-monitoring"
+  ],
+  "tags": [
+    "read_operation",
+    "logs",
+    "troubleshooting"
+  ]
+}

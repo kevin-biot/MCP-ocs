@@ -1,0 +1,18 @@
+{
+  "incidentId": "tool-execution-monitoring-diagnosis-12345-1755067696706",
+  "domain": "openshift",
+  "timestamp": 1755067696706,
+  "symptoms": [],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Executed oc_read_describe"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

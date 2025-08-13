@@ -1,0 +1,20 @@
+{
+  "sessionId": "monitoring-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755067745015,
+  "userMessage": "Execute oc_read_logs with args: {\"podName\":\"prometheus-operator-admission-webhook-6d4bd68bc5-kjvxv\",\"namespace\":\"openshift-monitoring\",\"lines\":50,\"sessionId\":\"monitoring-diagnosis-12345\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_logs",
+    "podName",
+    "namespace",
+    "lines",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-monitoring",
+    "execution_success"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "sessionId": "monitoring-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755067731521,
+  "userMessage": "Describe deployment prometheus-operator-admission-webhook",
+  "assistantResponse": "Retrieved detailed information for deployment/prometheus-operator-admission-webhook",
+  "context": [
+    "deployment",
+    "prometheus-operator-admission-webhook",
+    "openshift-monitoring"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "deployment"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "sessionId": "monitoring-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755067749585,
+  "userMessage": "Get pods in openshift-monitoring namespace",
+  "assistantResponse": "Found 2 pods: 1 running, 1 pending, 0 failed",
+  "context": [
+    "pods",
+    "namespace",
+    "openshift-monitoring"
+  ],
+  "tags": [
+    "read_operation",
+    "pods",
+    "cluster_state"
+  ]
+}

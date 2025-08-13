@@ -1,0 +1,17 @@
+{
+  "sessionId": "monitoring-diagnosis-12345",
+  "domain": "openshift",
+  "timestamp": 1755067698514,
+  "userMessage": "Describe clusteroperator monitoring",
+  "assistantResponse": "Retrieved detailed information for clusteroperator/monitoring",
+  "context": [
+    "clusteroperator",
+    "monitoring",
+    "default"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "clusteroperator"
+  ]
+}

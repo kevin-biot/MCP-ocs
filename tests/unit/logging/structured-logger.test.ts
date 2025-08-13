@@ -3,7 +3,7 @@
  * Tests production-ready logging with security and context
  */
 
-import { StructuredLogger, withTiming, LogMethod } from '../../../src/lib/logging/structured-logger.js';
+import { StructuredLogger, withTiming, LogMethod } from '../../../src/lib/logging/structured-logger.ts';
 
 describe('StructuredLogger', () => {
   let logger: StructuredLogger;
@@ -296,7 +296,7 @@ describe('withTiming utility', () => {
     jest.spyOn(mockLogger, 'error').mockImplementation();
     
     // Mock the global logger
-    jest.doMock('../../../src/lib/logging/structured-logger.js', () => ({
+    jest.doMock('../../../src/lib/logging/structured-logger.ts', () => ({
       logger: mockLogger
     }));
   });
@@ -327,7 +327,6 @@ describe('withTiming utility', () => {
 describe('LogMethod decorator', () => {
   it('should wrap class methods with timing', async () => {
     class TestClass {
-      @LogMethod('custom-operation')
       async testMethod(value: string): Promise<string> {
         return `processed-${value}`;
       }

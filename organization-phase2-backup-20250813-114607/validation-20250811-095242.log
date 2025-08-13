@@ -1,0 +1,36 @@
+[09:52:43] ✅ Connected to cluster
+[09:52:43]    Version: 4.18.18
+[09:52:43]    URL: https://api.bootcamp-ocs-cluster.bootcamp.tkmind.net:6443
+[09:52:43]    User: kube:admin
+[09:52:43] Testing namespace: devops
+[09:52:45] 📊 Real cluster data:
+[09:52:45]    Pods: 1
+[09:52:45]    CrashLoops: 0
+[09:52:45]    PVCs: 0
+[09:52:45] ⚠️  check_namespace_health tool not yet implemented
+[09:52:45] Testing namespace: openshift-apiserver
+[09:52:46] 📊 Real cluster data:
+[09:52:46]    Pods: 3
+[09:52:46]    CrashLoops: 0
+[09:52:46]    PVCs: 0
+[09:52:46] ⚠️  check_namespace_health tool not yet implemented
+[09:52:46] Testing namespace: default
+[09:52:47] 📊 Real cluster data:
+[09:52:47]    Pods: 0
+[09:52:47]    CrashLoops: 0
+[09:52:47]    PVCs: 0
+[09:52:47] ⚠️  check_namespace_health tool not yet implemented
+[09:52:47] Testing namespace: kube-system
+[09:52:48] 📊 Real cluster data:
+[09:52:48]    Pods: 0
+[09:52:48]    CrashLoops: 0
+[09:52:48]    PVCs: 0
+[09:52:48] ⚠️  check_namespace_health tool not yet implemented
+[09:52:49] ⏱️  Testing response time for devops
+[09:52:49] 🔧 Testing non-existent namespace handling...
+[09:52:49] ✅ Properly handles non-existent namespace
+[09:52:49] 📊 Test Results:
+[09:52:49]    Total namespaces tested: 4
+[09:52:49]    Checks passed: 2
+[09:52:49]    Checks failed: 0
+[09:52:49] 🎉 ALL VALIDATION TESTS PASSED!

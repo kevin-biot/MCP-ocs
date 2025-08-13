@@ -1,0 +1,342 @@
+/**
+ * Infrastructure Correlation Engine Tests
+ * Testing the real-world tekton-results-postgres scenario
+ */
+
+import { InfrastructureCorrelationChecker } from '../index';
+import { OcWrapperV2 } from '../../../lib/oc-wrapper-v2';
+import { SharedMemoryManager } from '../../../lib/memory/shared-memory-manager';
+
+// Mock data based on the real tekton-results-postgres scenario
+const MOCK_MACHINESETS_SCALE_DOWN = {
+  stdout: JSON.stringify({
+    items: [
+      {
+        metadata: {
+          name: 'bootcamp-ocs-cluster-bx85m-worker-eu-west-1a',
+          labels: { 'machine.openshift.io/zone': 'eu-west-1a' }
+        },
+        spec: { replicas: 0 }, // SCALED TO ZERO
+        status: { readyReplicas: 0 }
+      },
+      {
+        metadata: {
+          name: 'bootcamp-ocs-cluster-bx85m-worker-eu-west-1b',
+          labels: { 'machine.openshift.io/zone': 'eu-west-1b' }
+        },
+        spec: { replicas: 0 }, // SCALED TO ZERO
+        status: { readyReplicas: 0 }
+      },
+      {
+        metadata: {
+          name: 'bootcamp-ocs-cluster-bx85m-worker-eu-west-1c',
+          labels: { 'machine.openshift.io/zone': 'eu-west-1c' }
+        },
+        spec: { replicas: 1 },
+        status: { readyReplicas: 1 }
+      }
+    ]
+  })
+};
+
+const MOCK_NODES_AVAILABLE = {
+  stdout: JSON.stringify({
+    items: [
+      {
+        metadata: {
+          name: 'ip-10-0-77-117.eu-west-1c.compute.internal',
+          labels: { 'topology.kubernetes.io/zone': 'eu-west-1c' }
+        },
+        status: { conditions: [{ type: 'Ready', status: 'True' }] }
+      }
+      // Note: No nodes in eu-west-1a or eu-west-1b zones
+    ]
+  })
+};
+
+const MOCK_PV_REQUIRING_ZONE_A = {
+  stdout: JSON.stringify({
+    items: [
+      {
+        metadata: {
+          name: 'pvc-tekton-results-postgres-volume',
+          namespace: 'tekton-results'
+        },
+        spec: {
+          nodeAffinity: {
+            required: {
+              nodeSelectorTerms: [{
+                matchExpressions: [{
+                  key: 'topology.kubernetes.io/zone',
+                  operator: 'In',
+                  values: ['eu-west-1a'] // REQUIRES UNAVAILABLE ZONE
+                }]
+              }]
+            }
+          }
+        }
+      }
+    ]
+  })
+};
+
+const MOCK_MEMORY_SIMILAR_PATTERNS = [
+  {
+    userMessage: 'tekton-results-postgres stuck in pending for 11 hours',
+    assistantResponse: 'Zone scale-down detected: eu-west-1a unavailable, scale up MachineSet to resolve',
+    relevance: 0.95
+  },
+  {
+    userMessage: 'infrastructure correlation MachineSet zone conflict',
+    assistantResponse: 'Storage zone affinity conflicts resolved by scaling up infrastructure in required zones',
+    relevance: 0.87
+  }
+];
+
+describe('InfrastructureCorrelationChecker', () => {
+  let checker: InfrastructureCorrelationChecker;
+  let mockOcWrapper: jest.Mocked<OcWrapperV2>;
+  let mockMemoryManager: jest.Mocked<SharedMemoryManager>;
+
+  beforeEach(() => {
+    // Create mocks
+    mockOcWrapper = {
+      execute: jest.fn(),
+    } as any;
+
+    mockMemoryManager = {
+      searchConversationMemory: jest.fn(),
+      storeConversationMemory: jest.fn(),
+    } as any;
+
+    checker = new InfrastructureCorrelationChecker(mockOcWrapper, mockMemoryManager);
+  });
+
+  describe('Real-World Scenario: tekton-results-postgres zone conflict', () => {
+    beforeEach(() => {
+      // Mock the exact data from the real scenario
+      mockOcWrapper.execute
+        .mockResolvedValueOnce(MOCK_MACHINESETS_SCALE_DOWN) // get machinesets
+        .mockResolvedValueOnce(MOCK_NODES_AVAILABLE)        // get nodes
+        .mockResolvedValueOnce(MOCK_PV_REQUIRING_ZONE_A);   // get pv
+
+      mockMemoryManager.searchConversationMemory
+        .mockResolvedValue(MOCK_MEMORY_SIMILAR_PATTERNS);
+    });
+
+    test('should detect zone scale-down infrastructure issue', async () => {
+      const result = await checker.checkInfrastructureCorrelation({
+        namespace: 'tekton-results',
+        sessionId: 'test-zone-conflict'
+      });
+
+      // Should detect infrastructure issues
+      expect(result.summary.hasInfrastructureIssues).toBe(true);
+      expect(result.summary.primaryConcern).toContain('zone');
+
+      // Should identify zone availability problems
+      const unavailableZones = result.zoneAnalysis.availableZones.filter(z => z.status === 'unavailable');
+      expect(unavailableZones).toHaveLength(2); // eu-west-1a and eu-west-1b
+      expect(unavailableZones.map(z => z.zone)).toContain('eu-west-1a');
+      expect(unavailableZones.map(z => z.zone)).toContain('eu-west-1b');
+
+      // Should detect critical storage-zone conflict
+      expect(result.zoneAnalysis.zoneConflicts).toHaveLength(1);
+      const conflict = result.zoneAnalysis.zoneConflicts[0];
+      expect(conflict.conflictSeverity).toBe('critical');
+      expect(conflict.requiredZone).toBe('eu-west-1a');
+      expect(conflict.zoneAvailable).toBe(false);
+    });
+
+    test('should provide actionable recommendations', async () => {
+      const result = await checker.checkInfrastructureCorrelation({
+        namespace: 'tekton-results',
+        sessionId: 'test-recommendations'
+      });
+
+      const recommendations = result.zoneAnalysis.infrastructureRecommendations;
+      expect(recommendations).toContain(
+        expect.stringMatching(/scale up.*eu-west-1a/i)
+      );
+    });
+
+    test('should leverage memory insights from similar patterns', async () => {
+      const result = await checker.checkInfrastructureCorrelation({
+        namespace: 'tekton-results',
+        sessionId: 'test-memory-insights'
+      });
+
+      // Should find similar patterns in memory
+      expect(result.memoryInsights.similarPatterns).toHaveLength(2);
+      expect(result.memoryInsights.patternConfidence).toBeGreaterThan(0.8);
+
+      // Should extract historical resolutions
+      const resolutions = result.memoryInsights.historicalResolutions;
+      expect(resolutions).toContain('Scale up MachineSet in affected zone');
+    });
+
+    test('should generate human-readable summary explaining the issue', async () => {
+      const result = await checker.checkInfrastructureCorrelation({
+        namespace: 'tekton-results',
+        sessionId: 'test-human-summary'
+      });
+
+      const summary = result.humanSummary;
+      expect(summary).toContain('1 CRITICAL STORAGE-ZONE CONFLICTS');
+      expect(summary).toContain('PV pvc-tekton-results-postgres-volume requires zone eu-west-1a (unavailable)');
+      expect(summary).toContain('This explains why pods are stuck in "Pending" state');
+    });
+
+    test('should have high confidence score for clear conflicts', async () => {
+      const result = await checker.checkInfrastructureCorrelation({
+        namespace: 'tekton-results',
+        sessionId: 'test-confidence'
+      });
+
+      expect(result.summary.confidenceScore).toBeGreaterThan(0.8);
+      expect(result.summary.analysisTimeMs).toBeLessThan(10000); // Should be fast
+    });
+
+    test('should store analysis results for future learning', async () => {
+      await checker.checkInfrastructureCorrelation({
+        namespace: 'tekton-results',
+        sessionId: 'test-memory-storage'
+      });
+
+      // Should store conversation memory with proper tags
+      expect(mockMemoryManager.storeConversationMemory).toHaveBeenCalledWith(
+        'test-memory-storage',
+        expect.stringContaining('Infrastructure correlation analysis'),
+        expect.stringContaining('Infrastructure Analysis Results'),
+        expect.objectContaining({
+          tags: expect.arrayContaining([
+            'infrastructure-correlation',
+            'zone-analysis',
+            'storage-conflicts',
+            'tekton-results'
+          ]),
+          context: expect.arrayContaining([
+            'OpenShift infrastructure analysis',
+            'Zone availability assessment'
+          ])
+        })
+      );
+    });
+  });
+
+  describe('Healthy Infrastructure Scenario', () => {
+    beforeEach(() => {
+      // Mock healthy infrastructure data
+      const healthyMachineSets = {
+        stdout: JSON.stringify({
+          items: [
+            {
+              metadata: { name: 'worker-eu-west-1a', labels: { 'machine.openshift.io/zone': 'eu-west-1a' } },
+              spec: { replicas: 2 },
+              status: { readyReplicas: 2 }
+            },
+            {
+              metadata: { name: 'worker-eu-west-1b', labels: { 'machine.openshift.io/zone': 'eu-west-1b' } },
+              spec: { replicas: 2 },
+              status: { readyReplicas: 2 }
+            }
+          ]
+        })
+      };
+
+      const healthyNodes = {
+        stdout: JSON.stringify({
+          items: [
+            { metadata: { labels: { 'topology.kubernetes.io/zone': 'eu-west-1a' } } },
+            { metadata: { labels: { 'topology.kubernetes.io/zone': 'eu-west-1a' } } },
+            { metadata: { labels: { 'topology.kubernetes.io/zone': 'eu-west-1b' } } },
+            { metadata: { labels: { 'topology.kubernetes.io/zone': 'eu-west-1b' } } }
+          ]
+        })
+      };
+
+      const noPVConflicts = { stdout: JSON.stringify({ items: [] }) };
+
+      mockOcWrapper.execute
+        .mockResolvedValueOnce(healthyMachineSets)
+        .mockResolvedValueOnce(healthyNodes)
+        .mockResolvedValueOnce(noPVConflicts);
+
+      mockMemoryManager.searchConversationMemory.mockResolvedValue([]);
+    });
+
+    test('should report healthy infrastructure', async () => {
+      const result = await checker.checkInfrastructureCorrelation({
+        sessionId: 'test-healthy-infra'
+      });
+
+      expect(result.summary.hasInfrastructureIssues).toBe(false);
+      expect(result.summary.primaryConcern).toBe('Infrastructure appears healthy');
+      expect(result.zoneAnalysis.zoneConflicts).toHaveLength(0);
+      
+      const healthyZones = result.zoneAnalysis.availableZones.filter(z => z.status === 'healthy');
+      expect(healthyZones.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Error Handling', () => {
+    test('should handle oc command failures gracefully', async () => {
+      mockOcWrapper.execute.mockRejectedValue(new Error('oc command failed'));
+
+      await expect(
+        checker.checkInfrastructureCorrelation({ sessionId: 'test-error' })
+      ).rejects.toThrow('Infrastructure correlation failed: oc command failed');
+    });
+
+    test('should continue analysis even if memory search fails', async () => {
+      mockOcWrapper.execute
+        .mockResolvedValueOnce(MOCK_MACHINESETS_SCALE_DOWN)
+        .mockResolvedValueOnce(MOCK_NODES_AVAILABLE)
+        .mockResolvedValueOnce(MOCK_PV_REQUIRING_ZONE_A);
+
+      mockMemoryManager.searchConversationMemory.mockRejectedValue(new Error('Memory search failed'));
+
+      const result = await checker.checkInfrastructureCorrelation({
+        sessionId: 'test-memory-error'
+      });
+
+      // Should still detect infrastructure issues despite memory failure
+      expect(result.summary.hasInfrastructureIssues).toBe(true);
+      expect(result.memoryInsights.similarPatterns).toHaveLength(0);
+    });
+  });
+
+  describe('Performance Requirements', () => {
+    test('should complete analysis within 30 seconds', async () => {
+      mockOcWrapper.execute
+        .mockResolvedValueOnce(MOCK_MACHINESETS_SCALE_DOWN)
+        .mockResolvedValueOnce(MOCK_NODES_AVAILABLE)
+        .mockResolvedValueOnce(MOCK_PV_REQUIRING_ZONE_A);
+
+      mockMemoryManager.searchConversationMemory.mockResolvedValue([]);
+
+      const startTime = Date.now();
+      await checker.checkInfrastructureCorrelation({ sessionId: 'test-perf' });
+      const duration = Date.now() - startTime;
+
+      expect(duration).toBeLessThan(30000); // 30 seconds
+    });
+  });
+});
+
+/**
+ * Integration Test: Full Workflow
+ * Tests the complete workflow from namespace health check to infrastructure correlation
+ */
+describe('Integration: Enhanced Namespace Health with Infrastructure Correlation', () => {
+  test('should detect tekton-results-postgres root cause via enhanced health check', async () => {
+    // This would test the full integration:
+    // 1. Namespace health detects pending pods
+    // 2. Infrastructure correlation identifies zone conflicts
+    // 3. Enhanced suspicions include infrastructure insights
+    // 4. Human summary explains root cause
+    
+    // Implementation would require EnhancedNamespaceHealthChecker test
+    // with mocked infrastructure correlation results
+  });
+});
