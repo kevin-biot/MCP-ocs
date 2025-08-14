@@ -168,3 +168,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Problem areas addressed by each ADR
   - Implementation status tracking
   - Contributing guidelines for future ADRs
+## [0.8.0-beta-2] - 2025-08-14 - RCA Reliability Improvements (Pending)
+
+### Fixed
+- RCA Checklist: Robust resource parsing
+  - CPU millicores (e.g., 200m) and cores (0.5, 1) parsed consistently (millicores baseline)
+  - Memory units supported: Ki, Mi, Gi, Ti, Pi, Ei and decimal K/M/G/T/P/E
+- Network health: Endpoint availability validation
+  - Fetches Endpoints and flags Services without active addresses
+  - Improves connectivity diagnostics beyond resource existence
+
+### Tests
+- Unit tests for `parseResourceValue` across CPU and memory formats
+- Unit tests for endpoints analysis (services without endpoints)
+
+### Notes
+- No MCP contract changes; performance remains acceptable
+- Cherry-pick to `release/v0.8.0-beta` recommended as v0.8.0-beta-2
