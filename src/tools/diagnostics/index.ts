@@ -760,8 +760,8 @@ export class DiagnosticToolsV2 implements ToolSuite {
 
   private async prioritizePods(opts: {
     scope: 'all'|'system'|'user';
-    focusNamespace?: string;
-    focusPod?: string;
+    focusNamespace?: string | undefined;
+    focusPod?: string | undefined;
     focusStrategy: 'auto'|'events'|'resourcePressure'|'none';
     depth: 'summary'|'detailed';
     maxDetailed: number;

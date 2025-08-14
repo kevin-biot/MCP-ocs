@@ -139,17 +139,26 @@ export class DiagnosticToolsV2 {
                     { type: 'domain_focus', value: 'namespace', required: true },
                     { type: 'domain_focus', value: 'pod', required: true }
                 ],
-                description: 'Enhanced pod health diagnostics with dependency analysis',
+                description: 'Enhanced pod health diagnostics with intelligent prioritization and resource analysis',
                 inputSchema: {
                     type: 'object',
                     properties: {
                         sessionId: { type: 'string' },
-                        namespace: { type: 'string' },
-                        podName: { type: 'string' },
-                        includeDependencies: { anyOf: [{ type: 'boolean' }, { type: 'string' }], default: true },
-                        includeResourceAnalysis: { anyOf: [{ type: 'boolean' }, { type: 'string' }], default: true }
+                        namespace: { type: 'string', description: 'When analyzing a specific pod' },
+                        podName: { type: 'string', description: 'If provided, analyze this pod directly' },
+                        includeDependencies: { type: 'boolean', default: true },
+                        includeResourceAnalysis: { type: 'boolean', default: true },
+                        // Discovery/prioritization parameters (cluster-wide pod scan)
+                        namespaceScope: { type: 'string', enum: ['all', 'system', 'user'], default: 'all' },
+                        focusNamespace: { type: 'string' },
+                        focusPod: { type: 'string' },
+                        focusStrategy: { type: 'string', enum: ['auto', 'events', 'resourcePressure', 'none'], default: 'auto' },
+                        depth: { type: 'string', enum: ['summary', 'detailed'], default: 'summary' },
+                        maxPodsToAnalyze: { type: 'number', default: 10 },
+                        includeLogs: { type: 'boolean', default: false },
+                        logLines: { type: 'number', default: 100 }
                     },
-                    required: ['sessionId', 'namespace', 'podName']
+                    required: ['sessionId']
                 }
             },
             {
@@ -540,51 +549,188 @@ export class DiagnosticToolsV2 {
     async enhancedPodHealth(args) {
         const { sessionId, namespace, podName, includeDependencies = true, includeResourceAnalysis = true } = args;
         try {
-            // Get pod details using v2 wrapper
-            const podData = await this.ocWrapperV2.executeOc(['get', 'pod', podName, '-o', 'json'], { namespace });
-            const pod = JSON.parse(podData.stdout);
-            // Analyze pod health
-            const podAnalysis = this.analyzePodDetails(pod);
-            // Optional dependency analysis
-            let dependencies = null;
-            if (includeDependencies) {
-                dependencies = await this.analyzePodDependencies(namespace, podName);
+            if (namespace && podName) {
+                // Specific pod analysis mode
+                const podData = await this.ocWrapperV2.executeOc(['get', 'pod', podName, '-o', 'json'], { namespace });
+                const pod = JSON.parse(podData.stdout);
+                const podAnalysis = this.analyzePodDetails(pod);
+                let dependencies = null;
+                if (includeDependencies) {
+                    dependencies = await this.analyzePodDependencies(namespace, podName);
+                }
+                let resourceAnalysis = null;
+                if (includeResourceAnalysis) {
+                    resourceAnalysis = await this.analyzePodResources(pod);
+                }
+                // Optional: events and logs
+                const includeLogs = args.includeLogs || false;
+                const logLines = Math.max(1, Math.min(args.logLines || 100, 1000));
+                let podEvents = [];
+                try {
+                    const events = await this.ocWrapperV2.getEvents(namespace);
+                    podEvents = (events.items || [])
+                        .filter((e) => e.involvedObject?.kind === 'Pod' && e.involvedObject?.name === podName)
+                        .slice(0, 10)
+                        .map((e) => `${e.type || 'Warn'}:${e.reason} ${e.message}`);
+                }
+                catch { }
+                let logs;
+                if (includeLogs) {
+                    try {
+                        const logsRes = await this.ocWrapperV2.executeOc(['logs', podName, '--tail', String(logLines)], { namespace, timeout: 10000 });
+                        logs = logsRes.stdout?.slice(0, 5000);
+                    }
+                    catch { }
+                }
+                const response = {
+                    tool: 'oc_diagnostic_pod_health',
+                    sessionId,
+                    namespace,
+                    podName,
+                    timestamp: new Date().toISOString(),
+                    health: podAnalysis,
+                    dependencies,
+                    resources: resourceAnalysis,
+                    events: podEvents,
+                    logs: includeLogs ? logs : undefined,
+                    recommendations: this.generatePodRecommendations(podAnalysis, dependencies, resourceAnalysis),
+                    human: this.generatePodHealthSummary(podName, podAnalysis, dependencies)
+                };
+                await this.memoryManager.storeOperational({
+                    incidentId: `pod-health-${sessionId}`,
+                    domain: 'cluster',
+                    timestamp: Date.now(),
+                    symptoms: podAnalysis.issues.length > 0 ? podAnalysis.issues : ['pod_healthy'],
+                    affectedResources: [`pod/${podName}`, `namespace/${namespace}`],
+                    diagnosticSteps: ['Enhanced pod health check completed'],
+                    tags: ['pod_health', 'diagnostic', namespace, podName],
+                    environment: 'prod'
+                });
+                return JSON.stringify(response, null, 2);
             }
-            // Optional resource analysis
-            let resourceAnalysis = null;
-            if (includeResourceAnalysis) {
-                resourceAnalysis = await this.analyzePodResources(pod);
-            }
-            const response = {
+            // Discovery + prioritization mode (no specific pod provided)
+            const nsScope = args.namespaceScope || 'all';
+            const focusNs = args.focusNamespace;
+            const focusPod = args.focusPod;
+            const strategy = args.focusStrategy || 'auto';
+            const depth = args.depth || 'summary';
+            const maxPods = Math.max(1, Math.min(args.maxPodsToAnalyze || 10, 50));
+            const discovery = await this.prioritizePods({ scope: nsScope, focusNamespace: focusNs, focusPod, focusStrategy: strategy, depth, maxDetailed: maxPods });
+            const out = {
                 tool: 'oc_diagnostic_pod_health',
+                mode: 'discovery',
                 sessionId,
-                namespace,
-                podName,
-                timestamp: nowIso(),
-                health: podAnalysis,
-                dependencies,
-                resources: resourceAnalysis,
-                recommendations: this.generatePodRecommendations(podAnalysis, dependencies, resourceAnalysis),
-                human: this.generatePodHealthSummary(podName, podAnalysis, dependencies)
+                scope: nsScope,
+                depth,
+                analyzedDetailedCount: discovery.detailed.length,
+                totalPods: discovery.totalPods,
+                prioritizedPods: discovery.prioritized,
+                detailed: depth === 'detailed' ? discovery.detailed : undefined,
+                summaries: discovery.summaries
             };
-            // Normalize for schema compatibility
-            const normalized = this.normalizePodHealthOutput(response);
-            // Store pod health check
+            // Store summary
             await this.memoryManager.storeOperational({
-                incidentId: `pod-health-${sessionId}`,
+                incidentId: `pod-health-discovery-${sessionId}`,
                 domain: 'cluster',
-                timestamp: nowEpoch(),
-                symptoms: podAnalysis.issues.length > 0 ? podAnalysis.issues : ['pod_healthy'],
-                affectedResources: [`pod/${podName}`, `namespace/${namespace}`],
-                diagnosticSteps: ['Enhanced pod health check completed'],
-                tags: ['pod_health', 'diagnostic', namespace, podName],
+                timestamp: Date.now(),
+                symptoms: ['pod_health_discovery_completed'],
+                affectedResources: [],
+                diagnosticSteps: ['Cluster-wide pod discovery and prioritization completed'],
+                tags: ['pod_health', 'diagnostic', 'discovery', nsScope],
                 environment: 'prod'
             });
-            return JSON.stringify(normalized, null, 2);
+            return JSON.stringify(out, null, 2);
         }
         catch (error) {
             return this.formatErrorResponse('pod health check', error, sessionId);
         }
+    }
+    async prioritizePods(opts) {
+        const namespaces = await this.listNamespacesByScope(opts.scope);
+        const all = [];
+        for (const ns of namespaces) {
+            try {
+                const pods = await this.ocWrapperV2.getPods(ns);
+                for (const p of (pods.items || [])) {
+                    all.push({ namespace: ns, pod: p });
+                }
+            }
+            catch { }
+        }
+        // Summarize and score
+        const summaries = all.map(({ namespace, pod }) => {
+            const sum = this.summarizePod(pod);
+            const { score, reasons } = this.scorePod(sum, opts.focusStrategy);
+            const boosted = (opts.focusPod && pod.metadata?.name === opts.focusPod) || (opts.focusNamespace && namespace === opts.focusNamespace) ? score + 100 : score;
+            return { namespace, name: pod.metadata?.name, status: sum.status, score: boosted, reasons, summary: sum };
+        }).sort((a, b) => b.score - a.score);
+        const detailedSet = new Set();
+        if (opts.focusPod)
+            detailedSet.add(`${opts.focusNamespace || ''}/${opts.focusPod}`);
+        for (const item of summaries) {
+            if (detailedSet.size >= opts.maxDetailed)
+                break;
+            detailedSet.add(`${item.namespace}/${item.name}`);
+        }
+        const detailed = [];
+        for (const item of summaries) {
+            if (!detailedSet.has(`${item.namespace}/${item.name}`))
+                continue;
+            if (opts.depth !== 'detailed')
+                break;
+            try {
+                const podData = await this.ocWrapperV2.executeOc(['get', 'pod', item.name, '-o', 'json'], { namespace: item.namespace });
+                const pod = JSON.parse(podData.stdout);
+                const analysis = this.analyzePodDetails(pod);
+                detailed.push({ namespace: item.namespace, name: item.name, health: analysis });
+            }
+            catch { }
+        }
+        const sampledSummaries = summaries.filter(i => !detailedSet.has(`${i.namespace}/${i.name}`));
+        return { prioritized: summaries, detailed, summaries: sampledSummaries, totalPods: all.length };
+    }
+    summarizePod(pod) {
+        const name = pod.metadata?.name;
+        const phase = pod.status?.phase;
+        const cs = pod.status?.containerStatuses || [];
+        let crashloops = 0, imagePullErrors = 0, pending = phase === 'Pending' ? 1 : 0, oom = 0, restarts = 0;
+        for (const c of cs) {
+            restarts += c.restartCount || 0;
+            const wait = c.state?.waiting;
+            const term = c.state?.terminated;
+            if (wait?.reason === 'CrashLoopBackOff')
+                crashloops++;
+            if (wait?.reason === 'ImagePullBackOff' || wait?.reason === 'ErrImagePull')
+                imagePullErrors++;
+            if (term?.reason === 'OOMKilled')
+                oom++;
+        }
+        return { name, status: phase || 'Unknown', crashloops, imagePullErrors, pending, oom, restarts };
+    }
+    scorePod(sum, strategy) {
+        let wCrash = 6, wImage = 5, wPending = 3, wOOM = 5, wRestarts = 1, wStatus = 2;
+        if (strategy === 'resourcePressure') {
+            wPending = 5;
+            wOOM = 6;
+        }
+        if (strategy === 'none') {
+            wCrash = wImage = wPending = wOOM = wRestarts = wStatus = 0;
+        }
+        const score = sum.crashloops * wCrash + sum.imagePullErrors * wImage + sum.pending * wPending + sum.oom * wOOM + Math.min(sum.restarts, 20) * wRestarts + (sum.status !== 'Running' ? 1 : 0) * wStatus;
+        const reasons = [];
+        if (sum.crashloops)
+            reasons.push(`crashloops:${sum.crashloops}`);
+        if (sum.imagePullErrors)
+            reasons.push(`imagePull:${sum.imagePullErrors}`);
+        if (sum.pending)
+            reasons.push(`pending:${sum.pending}`);
+        if (sum.oom)
+            reasons.push(`oom:${sum.oom}`);
+        if (sum.restarts)
+            reasons.push(`restarts:${sum.restarts}`);
+        if (sum.status !== 'Running')
+            reasons.push(`status:${sum.status}`);
+        return { score, reasons };
     }
     // Helper methods for enhanced analysis
     normalizeTimestamp(ts) {
