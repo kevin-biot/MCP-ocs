@@ -109,7 +109,11 @@ export class DiagnosticToolsV2 implements ToolSuite {
           properties: {
             sessionId: { type: 'string' },
             includeNamespaceAnalysis: { type: 'boolean', default: false },
-            maxNamespacesToAnalyze: { type: 'number', default: 10 }
+            maxNamespacesToAnalyze: { type: 'number', default: 10 },
+            namespaceScope: { type: 'string', enum: ['all', 'system', 'user'], default: 'all', description: 'Limit namespace analysis to system, user, or all' },
+            focusNamespace: { type: 'string', description: 'Namespace to prioritize for deep analysis' },
+            focusStrategy: { type: 'string', enum: ['auto', 'events', 'resourcePressure', 'none'], default: 'auto' },
+            depth: { type: 'string', enum: ['summary', 'detailed'], default: 'summary' }
           },
           required: ['sessionId']
         }
@@ -250,9 +254,17 @@ export class DiagnosticToolsV2 implements ToolSuite {
     sessionId: string;
     includeNamespaceAnalysis?: boolean;
     maxNamespacesToAnalyze?: number;
+    namespaceScope?: 'all' | 'system' | 'user';
+    focusNamespace?: string;
+    focusStrategy?: 'auto' | 'events' | 'resourcePressure' | 'none';
+    depth?: 'summary' | 'detailed';
   }): Promise<string> {
     const startTime = Date.now();
     const { sessionId, includeNamespaceAnalysis = false, maxNamespacesToAnalyze = 10 } = args;
+    const namespaceScope = args.namespaceScope || 'all';
+    const focusNamespace = args.focusNamespace;
+    const focusStrategy = args.focusStrategy || 'auto';
+    const depth = args.depth || 'summary';
 
     try {
       // Get cluster info using both v1 and v2 capabilities
@@ -263,10 +275,19 @@ export class DiagnosticToolsV2 implements ToolSuite {
       const operatorHealth = await this.analyzeOperatorHealth();
       const systemNamespaceHealth = await this.analyzeSystemNamespaces();
       
-      // Optional namespace analysis
-      let namespaceAnalysis = null;
+      // Namespace analysis with prioritization
+      let namespaceAnalysis: any = null;
+      let prioritization: any = null;
       if (includeNamespaceAnalysis) {
-        namespaceAnalysis = await this.analyzeUserNamespaces(maxNamespacesToAnalyze);
+        const analysis = await this.prioritizeNamespaces({
+          scope: namespaceScope,
+          focusNamespace,
+          focusStrategy,
+          maxDetailed: maxNamespacesToAnalyze,
+          depth
+        });
+        prioritization = analysis.prioritized;
+        namespaceAnalysis = analysis.output;
       }
 
       // Generate comprehensive report
@@ -282,6 +303,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
         operators: operatorHealth,
         systemNamespaces: systemNamespaceHealth,
         userNamespaces: namespaceAnalysis,
+        namespacePrioritization: prioritization,
         overallHealth: this.calculateOverallHealth(nodeHealth, operatorHealth, systemNamespaceHealth),
         duration: `${Date.now() - startTime}ms`,
         recommendations: this.generateClusterRecommendations(nodeHealth, operatorHealth, systemNamespaceHealth)
@@ -304,6 +326,129 @@ export class DiagnosticToolsV2 implements ToolSuite {
     } catch (error) {
       return this.formatErrorResponse('cluster health check', error, sessionId);
     }
+  }
+
+  /**
+   * Prioritize namespaces for analysis and build focused output
+   */
+  private async prioritizeNamespaces(opts: {
+    scope: 'all' | 'system' | 'user';
+    focusNamespace?: string;
+    focusStrategy: 'auto' | 'events' | 'resourcePressure' | 'none';
+    maxDetailed: number;
+    depth: 'summary' | 'detailed';
+  }): Promise<{ prioritized: any[]; output: any }>
+  {
+    const allNamespaces = await this.listNamespacesByScope(opts.scope);
+    const summaries: Array<{ namespace: string; status: string; checks: any; suspicions: any[]; human?: any }>
+      = [];
+
+    // Build summaries (lightweight call)
+    for (const ns of allNamespaces) {
+      try {
+        const health = await this.namespaceHealthChecker.checkHealth({
+          namespace: ns,
+          includeIngressTest: false,
+          maxLogLinesPerPod: 0
+        });
+        summaries.push({ namespace: ns, status: health.status, checks: health.checks, suspicions: health.suspicions, human: health.human });
+      } catch (e) {
+        summaries.push({ namespace: ns, status: 'error', checks: { pods: { total: 0, crashloops: 0, pending: 0, imagePullErrors: 0 }, pvcs: { total: 0, errors: 0 }, routes: { total: 0 }, events: [] }, suspicions: ['error_checking_namespace'] });
+      }
+    }
+
+    // Score and prioritize
+    const scored = summaries.map(s => {
+      const { score, reasons } = this.scoreNamespace(s, opts.focusStrategy);
+      // Boost focused namespace
+      const boosted = (opts.focusNamespace && s.namespace === opts.focusNamespace) ? score + 100 : score;
+      return { namespace: s.namespace, status: s.status, score: boosted, reasons, summary: this.makeNsSummary(s) };
+    }).sort((a, b) => b.score - a.score);
+
+    // Decide detailed set
+    const detailedSet = new Set<string>();
+    if (opts.focusNamespace) detailedSet.add(opts.focusNamespace);
+    for (const item of scored) {
+      if (detailedSet.size >= opts.maxDetailed) break;
+      detailedSet.add(item.namespace);
+    }
+
+    // Build output sections
+    const detailed = summaries
+      .filter(s => detailedSet.has(s.namespace))
+      .map(s => ({ namespace: s.namespace, status: s.status, checks: s.checks, suspicions: s.suspicions, human: s.human }));
+
+    const sampled = summaries
+      .filter(s => !detailedSet.has(s.namespace))
+      .map(s => ({ namespace: s.namespace, status: s.status, summary: this.makeNsSummary(s) }));
+
+    const output = {
+      scope: opts.scope,
+      depth: opts.depth,
+      totalNamespaces: summaries.length,
+      analyzedDetailedCount: detailed.length,
+      detailed: opts.depth === 'detailed' ? detailed : undefined,
+      summaries: sampled
+    };
+
+    return { prioritized: scored, output };
+  }
+
+  private makeNsSummary(s: { checks: any; suspicions: any[] }) {
+    const pods = s.checks?.pods || {};
+    const pvcs = s.checks?.pvcs || {};
+    const routes = s.checks?.routes || {};
+    const events = s.checks?.events || [];
+    return {
+      pods: { ready: pods.ready, total: pods.total, crashloops: pods.crashloops, pending: pods.pending, imagePullErrors: pods.imagePullErrors },
+      pvcs: { total: pvcs.total, bound: pvcs.bound, errors: pvcs.errors },
+      routes: { total: routes.total },
+      criticalEvents: Array.isArray(events) ? events.length : 0,
+      suspicions: s.suspicions?.length || 0
+    };
+  }
+
+  private scoreNamespace(s: { status: string; checks: any; suspicions: any[] }, strategy: 'auto' | 'events' | 'resourcePressure' | 'none') {
+    const pods = s.checks?.pods || {};
+    const pvcs = s.checks?.pvcs || {};
+    const events = s.checks?.events || [];
+
+    // Base weights
+    let wCrash = 5, wImage = 4, wPending = 3, wPVC = 4, wEvents = 1, wStatus = 3, wSusp = 2;
+    if (strategy === 'events') { wEvents = 5; wCrash = 3; wPending = 2; }
+    if (strategy === 'resourcePressure') { wPending = 5; wPVC = 5; wCrash = 4; wEvents = 1; }
+    if (strategy === 'none') { wCrash = wImage = wPending = wPVC = wEvents = wStatus = wSusp = 0; }
+
+    const reasons: string[] = [];
+    const addReason = (cond: boolean, message: string) => { if (cond) reasons.push(message); };
+
+    const score =
+      (pods.crashloops || 0) * wCrash +
+      (pods.imagePullErrors || 0) * wImage +
+      (pods.pending || 0) * wPending +
+      (pvcs.errors || 0) * wPVC +
+      (Array.isArray(events) ? events.length : 0) * wEvents +
+      (s.status && s.status !== 'healthy' ? 1 : 0) * wStatus +
+      (Array.isArray(s.suspicions) ? s.suspicions.length : 0) * wSusp;
+
+    addReason((pods.crashloops || 0) > 0, `crashloops:${pods.crashloops}`);
+    addReason((pods.imagePullErrors || 0) > 0, `imagePullErrors:${pods.imagePullErrors}`);
+    addReason((pods.pending || 0) > 0, `pending:${pods.pending}`);
+    addReason((pvcs.errors || 0) > 0, `pvcErrors:${pvcs.errors}`);
+    addReason((Array.isArray(events) ? events.length : 0) > 0, `events:${events.length}`);
+    addReason(s.status && s.status !== 'healthy', `status:${s.status}`);
+    addReason((Array.isArray(s.suspicions) ? s.suspicions.length : 0) > 0, `suspicions:${s.suspicions.length}`);
+
+    return { score, reasons };
+  }
+
+  private async listNamespacesByScope(scope: 'all' | 'system' | 'user'): Promise<string[]> {
+    const namespacesData = await this.ocWrapperV2.executeOc(['get', 'namespaces', '-o', 'json']);
+    const namespaces = JSON.parse(namespacesData.stdout);
+    const names = (namespaces.items || []).map((ns: any) => ns.metadata?.name).filter((n: any) => !!n);
+    if (scope === 'system') return names.filter((n: string) => n.startsWith('kube-') || n.startsWith('openshift-'));
+    if (scope === 'user') return names.filter((n: string) => !n.startsWith('kube-') && !n.startsWith('openshift-'));
+    return names;
   }
 
   /**
