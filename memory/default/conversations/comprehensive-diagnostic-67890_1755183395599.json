@@ -1,0 +1,14 @@
+{
+  "sessionId": "comprehensive-diagnostic-67890",
+  "domain": "operations",
+  "timestamp": 1755183395599,
+  "userMessage": "Store incident: cluster-health-degraded-operators",
+  "assistantResponse": "Incident stored successfully",
+  "context": [
+    "incident_storage"
+  ],
+  "tags": [
+    "memory_operation",
+    "incident_storage"
+  ]
+}

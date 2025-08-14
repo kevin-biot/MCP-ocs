@@ -1,0 +1,27 @@
+{
+  "incidentId": "cluster-health-degraded-operators",
+  "domain": "operations",
+  "timestamp": 1755183395598,
+  "symptoms": [
+    "Cluster health failing",
+    "2 degraded operators (ingress and monitoring)",
+    "Nodes all healthy (4/4 ready)"
+  ],
+  "rootCause": "The ingress and monitoring operators are degraded due to deployment rollout issues. The monitoring operator has specific issues with the prometheus-operator-admission-webhook deployment timing out during rollout.",
+  "resolution": "Investigate and resolve the ingress controller deployment rollout issues and fix the prometheus-operator-admission-webhook deployment timeout in the monitoring namespace.",
+  "affectedResources": [
+    "ingress operator",
+    "monitoring operator",
+    "openshift-monitoring namespace",
+    "openshift-ingress-operator namespace"
+  ],
+  "diagnosticSteps": [
+    "Manual incident storage"
+  ],
+  "tags": [
+    "incident_storage",
+    "manual_entry",
+    "prod"
+  ],
+  "environment": "prod"
+}

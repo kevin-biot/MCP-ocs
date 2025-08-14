@@ -5,6 +5,9 @@
  * interface for all tool types (v1, v2, individual, collections)
  */
 
+import { ToolMaturity, type ToolDefinitionMeta } from '../../types/tool-maturity.js';
+import { VALIDATED_TOOLS } from '../../registry/validated-tools.js';
+
 export interface StandardTool {
   /** Unique tool identifier */
   name: string;
@@ -33,6 +36,10 @@ export interface StandardTool {
     deprecated?: boolean;
     experimental?: boolean;
     requiredPermissions?: string[];
+    maturity?: ToolMaturity;
+    lastValidated?: string;
+    testCoverage?: number;
+    mcpCompatible?: boolean;
   };
 }
 
@@ -58,6 +65,7 @@ export interface ToolRegistryStats {
   byCategory: Record<string, number>;
   byVersion: Record<string, number>;
   suites: string[];
+  byMaturity: Record<string, number>;
 }
 
 /**
@@ -69,6 +77,7 @@ export interface ToolRegistryStats {
 export class UnifiedToolRegistry {
   private tools: Map<string, StandardTool> = new Map();
   private suites: ToolSuite[] = [];
+  private maturityIndex: Map<string, ToolMaturity> = new Map();
   
   /**
    * Register an entire tool suite
@@ -104,8 +113,23 @@ export class UnifiedToolRegistry {
       throw new Error(`Tool name conflict: ${tool.name} already registered`);
     }
     
+    // Enrich metadata with maturity info if available
+    const validated: ToolDefinitionMeta | undefined = VALIDATED_TOOLS[tool.fullName];
+    const maturity = validated?.maturity ?? ToolMaturity.DEVELOPMENT;
+    const enriched: StandardTool = {
+      ...tool,
+      metadata: {
+        ...tool.metadata,
+        maturity,
+        lastValidated: validated?.lastValidated,
+        testCoverage: validated?.testCoverage,
+        mcpCompatible: validated?.mcpCompatible,
+      }
+    };
+
     // Register the tool
-    this.tools.set(tool.name, tool);
+    this.tools.set(tool.name, enriched);
+    this.maturityIndex.set(tool.fullName, maturity);
     console.error(`🔧 Registered tool: ${tool.name} (${tool.category}-${tool.version})`);
   }
   
@@ -114,6 +138,23 @@ export class UnifiedToolRegistry {
    */
   getAllTools(): StandardTool[] {
     return Array.from(this.tools.values());
+  }
+
+  /**
+   * Get tools by maturity (using fullName metadata)
+   */
+  getToolsByMaturity(maturities: ToolMaturity[]): StandardTool[] {
+    return this.getAllTools().filter(tool => {
+      const m = tool.metadata?.maturity ?? ToolMaturity.DEVELOPMENT;
+      return maturities.includes(m);
+    });
+  }
+
+  /**
+   * Get only PRODUCTION or BETA tools (beta build set)
+   */
+  getBetaTools(): StandardTool[] {
+    return this.getToolsByMaturity([ToolMaturity.PRODUCTION, ToolMaturity.BETA]);
   }
   
   /**
@@ -189,17 +230,21 @@ export class UnifiedToolRegistry {
     
     const byCategory: Record<string, number> = {};
     const byVersion: Record<string, number> = {};
+    const byMaturity: Record<string, number> = {};
     
     for (const tool of tools) {
       byCategory[tool.category] = (byCategory[tool.category] || 0) + 1;
       byVersion[tool.version] = (byVersion[tool.version] || 0) + 1;
+      const m = tool.metadata?.maturity ?? ToolMaturity.DEVELOPMENT;
+      byMaturity[m] = (byMaturity[m] || 0) + 1;
     }
     
     return {
       totalTools: tools.length,
       byCategory,
       byVersion,
-      suites: this.suites.map(s => `${s.category}-${s.version}`)
+      suites: this.suites.map(s => `${s.category}-${s.version}`),
+      byMaturity
     };
   }
   
@@ -208,6 +253,17 @@ export class UnifiedToolRegistry {
    */
   getMCPTools(): Array<{name: string, description: string, inputSchema: any}> {
     return this.getAllTools().map(tool => ({
+      name: tool.fullName,
+      description: tool.description,
+      inputSchema: tool.inputSchema
+    }));
+  }
+
+  /**
+   * Get MCP-formatted tools, filtered by maturity
+   */
+  getMCPToolsByMaturity(maturities: ToolMaturity[]): Array<{name: string, description: string, inputSchema: any}> {
+    return this.getToolsByMaturity(maturities).map(tool => ({
       name: tool.fullName,
       description: tool.description,
       inputSchema: tool.inputSchema

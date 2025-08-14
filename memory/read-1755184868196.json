@@ -1,0 +1,22 @@
+[
+  {
+    "sessionId": "read-1755184868196",
+    "timestamp": 1755184868572,
+    "userMessage": "Tool oc_read_get_pods executed with args: {\"namespace\":\"openshift-apiserver\",\"selector\":\"none\"}",
+    "assistantResponse": "{\"namespace\":\"openshift-apiserver\",\"selector\":\"none\",\"totalPods\":3,\"pods\":[{\"name\":\"apiserver-5c7455f96f-2pvfw\",\"namespace\":\"openshift-apiserver\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"37d\",\"ip\":\"10.129.0.6\",\"node\":\"ip-10-0-5-118.eu-west-1.compute.internal\"},{\"name\":\"apiserver-5c7455f96f-cw2ql\",\"namespace\":\"openshift-apiserver\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"37d\",\"ip\":\"10.128.0.7\",\"node\":\"ip-10-0-65-142.eu-west-1.compute.internal\"},{\"name\":\"apiserver-5c7455f96f-qxf5g\",\"namespace\":\"openshift-apiserver\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"37d\",\"ip\":\"10.130.0.7\",\"node\":\"ip-10-0-40-8.eu-west-1.compute.internal\"}],\"summary\":{\"running\":3,\"pending\":0,\"failed\":0,\"unknown\":0},\"timestamp\":\"2025-08-14T15:21:08.572Z\"}",
+    "context": [],
+    "tags": [
+      "read_operation",
+      "pods",
+      "cluster_state",
+      "tool:oc_read_get_pods",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "resource:unknown"
+    ]
+  }
+]

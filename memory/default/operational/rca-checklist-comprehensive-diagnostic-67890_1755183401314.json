@@ -1,0 +1,23 @@
+{
+  "incidentId": "rca-checklist-comprehensive-diagnostic-67890",
+  "domain": "cluster",
+  "timestamp": 1755183401314,
+  "symptoms": [
+    "Critical namespace openshift-etcd is degraded",
+    "Critical namespace openshift-kube-apiserver is degraded",
+    "Storage binding issues detected",
+    "InternalError: TaskRun/code-server-student-image-46gst-tv4kr",
+    "InternalError: TaskRun/code-server-student-image-4ctb4-7pxhr"
+  ],
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Cluster connectivity verified"
+  ],
+  "tags": [
+    "rca_checklist",
+    "systematic_diagnostic",
+    "degraded",
+    "cluster_wide"
+  ],
+  "environment": "prod"
+}

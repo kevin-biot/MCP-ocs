@@ -1,0 +1,162 @@
+[
+  {
+    "sessionId": "comprehensive-diagnostic-67890",
+    "timestamp": 1755183375498,
+    "userMessage": "Tool oc_diagnostic_cluster_health executed with args: {\"includeNamespaceAnalysis\":false,\"maxNamespacesToAnalyze\":10}",
+    "assistantResponse": "{\"cluster\":{\"status\":\"connected\",\"version\":\"4.18.1\",\"currentUser\":\"kube:admin\",\"serverUrl\":\".clusters[0].cluster.server\",\"timestamp\":\"2025-08-14T14:56:15.489Z\"},\"nodes\":{\"total\":4,\"ready\":4,\"issues\":[]},\"operators\":{\"total\":34,\"degraded\":[\"ingress\",\"monitoring\"]},\"systemNamespaces\":[{\"namespace\":\"openshift-apiserver\",\"status\":\"healthy\",\"issues\":0},{\"namespace\":\"openshift-etcd\",\"status\":\"degraded\",\"issues\":0},{\"namespace\":\"openshift-kube-apiserver\",\"status\":\"degraded\",\"issues\":0}],\"userNamespaces\":null,\"overallHealth\":\"failing\",\"duration\":\"3520ms\",\"recommendations\":[\"Check degraded operators: oc get clusteroperator ingress -o yaml\"]}",
+    "context": [],
+    "tags": [
+      "diagnostic",
+      "cluster_health",
+      "failing",
+      "tool:oc_diagnostic_cluster_health",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "resource:unknown"
+    ]
+  },
+  {
+    "sessionId": "comprehensive-diagnostic-67890",
+    "timestamp": 1755183376933,
+    "userMessage": "Tool oc_read_get_pods executed with args: {\"namespace\":\"default\",\"selector\":\"none\"}",
+    "assistantResponse": "{\"namespace\":\"default\",\"selector\":\"none\",\"totalPods\":1,\"pods\":[{\"name\":\"code-server-student-image-wnkqc-w6ssk-pod\",\"namespace\":\"devops\",\"status\":\"Succeeded\",\"ready\":\"0/1\",\"restarts\":0,\"age\":\"28d\",\"ip\":\"10.129.2.73\",\"node\":\"ip-10-0-77-117.eu-west-1.compute.internal\"}],\"summary\":{\"running\":0,\"pending\":0,\"failed\":0,\"unknown\":1},\"timestamp\":\"2025-08-14T14:56:16.931Z\"}",
+    "context": [],
+    "tags": [
+      "read_operation",
+      "pods",
+      "cluster_state",
+      "tool:oc_read_get_pods",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "resource:unknown"
+    ]
+  },
+  {
+    "sessionId": "comprehensive-diagnostic-67890",
+    "timestamp": 1755183378439,
+    "userMessage": "Tool oc_read_get_pods executed with args: {\"namespace\":\"devops\",\"selector\":\"none\"}",
+    "assistantResponse": "{\"namespace\":\"devops\",\"selector\":\"none\",\"totalPods\":1,\"pods\":[{\"name\":\"code-server-student-image-wnkqc-w6ssk-pod\",\"namespace\":\"devops\",\"status\":\"Succeeded\",\"ready\":\"0/1\",\"restarts\":0,\"age\":\"28d\",\"ip\":\"10.129.2.73\",\"node\":\"ip-10-0-77-117.eu-west-1.compute.internal\"}],\"summary\":{\"running\":0,\"pending\":0,\"failed\":0,\"unknown\":1},\"timestamp\":\"2025-08-14T14:56:18.439Z\"}",
+    "context": [],
+    "tags": [
+      "read_operation",
+      "pods",
+      "cluster_state",
+      "tool:oc_read_get_pods",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "resource:unknown"
+    ]
+  },
+  {
+    "sessionId": "comprehensive-diagnostic-67890",
+    "timestamp": 1755183380139,
+    "userMessage": "Tool oc_read_get_pods executed with args: {\"namespace\":\"openshift-apiserver\",\"selector\":\"none\"}",
+    "assistantResponse": "{\"namespace\":\"openshift-apiserver\",\"selector\":\"none\",\"totalPods\":3,\"pods\":[{\"name\":\"apiserver-5c7455f96f-2pvfw\",\"namespace\":\"openshift-apiserver\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"37d\",\"ip\":\"10.129.0.6\",\"node\":\"ip-10-0-5-118.eu-west-1.compute.internal\"},{\"name\":\"apiserver-5c7455f96f-cw2ql\",\"namespace\":\"openshift-apiserver\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"37d\",\"ip\":\"10.128.0.7\",\"node\":\"ip-10-0-65-142.eu-west-1.compute.internal\"},{\"name\":\"apiserver-5c7455f96f-qxf5g\",\"namespace\":\"openshift-apiserver\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"37d\",\"ip\":\"10.130.0.7\",\"node\":\"ip-10-0-40-8.eu-west-1.compute.internal\"}],\"summary\":{\"running\":3,\"pending\":0,\"failed\":0,\"unknown\":0},\"timestamp\":\"2025-08-14T14:56:20.139Z\"}",
+    "context": [],
+    "tags": [
+      "read_operation",
+      "pods",
+      "cluster_state",
+      "tool:oc_read_get_pods",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "resource:unknown"
+    ]
+  },
+  {
+    "sessionId": "comprehensive-diagnostic-67890",
+    "timestamp": 1755183382206,
+    "userMessage": "Tool oc_read_get_pods executed with args: {\"namespace\":\"openshift-monitoring\",\"selector\":\"none\"}",
+    "assistantResponse": "{\"namespace\":\"openshift-monitoring\",\"selector\":\"none\",\"totalPods\":21,\"pods\":[{\"name\":\"alertmanager-main-0\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"27d\",\"ip\":\"10.129.2.135\",\"node\":\"ip-10-0-77-117.eu-west-1.compute.internal\"},{\"name\":\"alertmanager-main-1\",\"namespace\":\"openshift-monitoring\",\"status\":\"Pending\",\"ready\":\"0/1\",\"restarts\":0,\"age\":\"2d\"},{\"name\":\"cluster-monitoring-operator-647784cff8-4px82\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"37d\",\"ip\":\"10.130.0.33\",\"node\":\"ip-10-0-40-8.eu-west-1.compute.internal\"},{\"name\":\"kube-state-metrics-755559754d-vl6vf\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"2d\",\"ip\":\"10.129.3.38\",\"node\":\"ip-10-0-77-117.eu-west-1.compute.internal\"},{\"name\":\"metrics-server-7b89bdfb5b-2qf4v\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"8d\",\"ip\":\"10.129.3.19\",\"node\":\"ip-10-0-77-117.eu-west-1.compute.internal\"},{\"name\":\"metrics-server-7b89bdfb5b-m5jlm\",\"namespace\":\"openshift-monitoring\",\"status\":\"Pending\",\"ready\":\"0/1\",\"restarts\":0,\"age\":\"2d\"},{\"name\":\"monitoring-plugin-66b5c59489-p5wgs\",\"namespace\":\"openshift-monitoring\",\"status\":\"Pending\",\"ready\":\"0/1\",\"restarts\":0,\"age\":\"2d\"},{\"name\":\"monitoring-plugin-66b5c59489-xwxz4\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"27d\",\"ip\":\"10.129.2.129\",\"node\":\"ip-10-0-77-117.eu-west-1.compute.internal\"},{\"name\":\"node-exporter-2px7f\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":2,\"age\":\"37d\",\"ip\":\"10.0.5.118\",\"node\":\"ip-10-0-5-118.eu-west-1.compute.internal\"},{\"name\":\"node-exporter-4dlkl\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":2,\"age\":\"37d\",\"ip\":\"10.0.65.142\",\"node\":\"ip-10-0-65-142.eu-west-1.compute.internal\"},{\"name\":\"node-exporter-4gmj6\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":2,\"age\":\"37d\",\"ip\":\"10.0.77.117\",\"node\":\"ip-10-0-77-117.eu-west-1.compute.internal\"},{\"name\":\"node-exporter-b5srg\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":2,\"age\":\"37d\",\"ip\":\"10.0.40.8\",\"node\":\"ip-10-0-40-8.eu-west-1.compute.internal\"},{\"name\":\"openshift-state-metrics-5fc79db65d-n2znj\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"2d\",\"ip\":\"10.129.3.23\",\"node\":\"ip-10-0-77-117.eu-west-1.compute.internal\"},{\"name\":\"prometheus-k8s-0\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"2d\",\"ip\":\"10.129.3.31\",\"node\":\"ip-10-0-77-117.eu-west-1.compute.internal\"},{\"name\":\"prometheus-k8s-1\",\"namespace\":\"openshift-monitoring\",\"status\":\"Pending\",\"ready\":\"0/1\",\"restarts\":0,\"age\":\"2d\"},{\"name\":\"prometheus-operator-78dbb6c878-zwm7m\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"37d\",\"ip\":\"10.130.0.35\",\"node\":\"ip-10-0-40-8.eu-west-1.compute.internal\"},{\"name\":\"prometheus-operator-admission-webhook-6d4bd68bc5-7vlgx\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"27d\",\"ip\":\"10.129.2.125\",\"node\":\"ip-10-0-77-117.eu-west-1.compute.internal\"},{\"name\":\"prometheus-operator-admission-webhook-6d4bd68bc5-kjvxv\",\"namespace\":\"openshift-monitoring\",\"status\":\"Pending\",\"ready\":\"0/1\",\"restarts\":0,\"age\":\"2d\"},{\"name\":\"telemeter-client-54895c8f6b-sbsqw\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"2d\",\"ip\":\"10.129.3.22\",\"node\":\"ip-10-0-77-117.eu-west-1.compute.internal\"},{\"name\":\"thanos-querier-6f98bc54ff-w5vpd\",\"namespace\":\"openshift-monitoring\",\"status\":\"Pending\",\"ready\":\"0/1\",\"restarts\":0,\"age\":\"2d\"},{\"name\":\"thanos-querier-6f98bc54ff-z7k7t\",\"namespace\":\"openshift-monitoring\",\"status\":\"Running\",\"ready\":\"1/1\",\"restarts\":0,\"age\":\"2d\",\"ip\":\"10.129.3.21\",\"node\":\"ip-10-0-77-117.eu-west-1.compute.internal\"}],\"summary\":{\"running\":15,\"pending\":6,\"failed\":0,\"unknown\":0},\"timestamp\":\"2025-08-14T14:56:22.206Z\"}",
+    "context": [],
+    "tags": [
+      "read_operation",
+      "pods",
+      "cluster_state",
+      "tool:oc_read_get_pods",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "resource:unknown"
+    ]
+  },
+  {
+    "sessionId": "comprehensive-diagnostic-67890",
+    "timestamp": 1755183386950,
+    "userMessage": "Tool oc_read_describe executed with args: {\"resourceType\":\"clusteroperator\",\"name\":\"ingress\",\"namespace\":\"default\"}",
+    "assistantResponse": "{\"resourceType\":\"clusteroperator\",\"name\":\"ingress\",\"namespace\":\"default\",\"description\":\"Name:         ingress\\nNamespace:    \\nLabels:       <none>\\nAnnotations:  capability.openshift.io/name: Ingress\\n              include.release.openshift.io/ibm-cloud-managed: true\\n              include.release.openshift.io/self-managed-high-availability: true\\n              include.release.openshift.io/single-node-developer: true\\nAPI Version:  config.openshift.io/v1\\nKind:         ClusterOperator\\nMetadata:\\n  Creation Timestamp:  2025-07-04T21:06:48Z\\n  Generation:          1\\n  Owner References:\\n    API Version:     config.openshift.io/v1\\n    Controller:      true\\n    Kind:            ClusterVersion\\n    Name:            version\\n    UID:             aeb3134b-c8a8-47dd-a88b-b3ddfbf24976\\n  Resource Version:  35923844\\n  UID:               c1ef26ce-828e-461b-8ce4-8b6a00993dec\\nSpec:\\nStatus:\\n  Conditions:\\n    Last Transition Time:  2025-07-18T12:19:02Z\\n    Message:               The \\\"default\\\" ingress controller reports Available=True.\\n    Reason:                IngressAvailable\\n    Status:                True\\n    Type:                  Available\\n    Last Transition Time:  2025-08-12T11:09:48Z\\n    Message:               ingresscontroller \\\"default\\\" is progressing: IngressControllerProgressing: One or more status conditions indicate progressing: DeploymentRollingOut=True (DeploymentRollingOut: Waiting for router deployment rollout to finish: 1 of 2 updated replica(s) are available...\\n).\\n    Reason:                Reconciling\\n    Status:                True\\n    Type:                  Progressing\\n    Last Transition Time:  2025-08-12T12:09:48Z\\n    Message:               The \\\"default\\\" ingress controller reports Degraded=True: DegradedConditions: One or more other status conditions indicate a degraded state: DeploymentReplicasAllAvailable=False (DeploymentReplicasNotAvailable: 1/2 of replicas are available)\\n    Reason:                IngressDegraded\\n    Status:                True\\n    Type:                  Degraded\\n    Last Transition Time:  2025-07-04T21:15:10Z\\n    Reason:                Upgradeable\\n    Status:                True\\n    Type:                  Upgradeable\\n    Last Transition Time:  2025-07-04T21:15:10Z\\n    Reason:                AsExpected\\n    Status:                False\\n    Type:                  EvaluationConditionsDetected\\n  Extension:               <nil>\\n  Related Objects:\\n    Group:      \\n    Name:       openshift-ingress-operator\\n    Resource:   namespaces\\n    Group:      operator.openshift.io\\n    Name:       \\n    Namespace:  openshift-ingress-operator\\n    Resource:   ingresscontrollers\\n    Group:      ingress.operator.openshift.io\\n    Name:       \\n    Namespace:  openshift-ingress-operator\\n    Resource:   dnsrecords\\n    Group:      \\n    Name:       openshift-ingress\\n    Resource:   namespaces\\n    Group:      \\n    Name:       openshift-ingress-canary\\n    Resource:   namespaces\\n  Versions:\\n    Name:     operator\\n    Version:  4.18.18\\n    Name:     ingress-controller\\n    Version:  quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:b6fdca02f2da9e6dc456d8b49d8b40d0610a3e3741f9ee85d94f45d4e446c0fe\\n    Name:     canary-server\\n    Version:  quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:19ae50834a74993271505af6da5611d5b10170a2376908fd41bd0eba2f03eb71\\nEvents:       <none>\\n\",\"timestamp\":\"2025-08-14T14:56:26.950Z\"}",
+    "context": [],
+    "tags": [
+      "read_operation",
+      "describe",
+      "clusteroperator",
+      "tool:oc_read_describe",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "resource:unknown"
+    ]
+  },
+  {
+    "sessionId": "comprehensive-diagnostic-67890",
+    "timestamp": 1755183390427,
+    "userMessage": "Tool oc_read_describe executed with args: {\"resourceType\":\"clusteroperator\",\"name\":\"monitoring\",\"namespace\":\"default\"}",
+    "assistantResponse": "{\"resourceType\":\"clusteroperator\",\"name\":\"monitoring\",\"namespace\":\"default\",\"description\":\"Name:         monitoring\\nNamespace:    \\nLabels:       <none>\\nAnnotations:  include.release.openshift.io/hypershift: true\\n              include.release.openshift.io/ibm-cloud-managed: true\\n              include.release.openshift.io/self-managed-high-availability: true\\n              include.release.openshift.io/single-node-developer: true\\nAPI Version:  config.openshift.io/v1\\nKind:         ClusterOperator\\nMetadata:\\n  Creation Timestamp:  2025-07-04T21:06:48Z\\n  Generation:          1\\n  Owner References:\\n    API Version:     config.openshift.io/v1\\n    Controller:      true\\n    Kind:            ClusterVersion\\n    Name:            version\\n    UID:             aeb3134b-c8a8-47dd-a88b-b3ddfbf24976\\n  Resource Version:  35905403\\n  UID:               aa958c90-6c9a-4e55-98dd-277575b01c57\\nSpec:\\nStatus:\\n  Conditions:\\n    Last Transition Time:  2025-08-12T11:26:56Z\\n    Message:               UpdatingPrometheusOperator: reconciling Prometheus Operator Admission Webhook Deployment failed: updating Deployment object failed: waiting for DeploymentRollout of openshift-monitoring/prometheus-operator-admission-webhook: context deadline exceeded: got 1 unavailable replicas\\n    Reason:                UpdatingPrometheusOperatorFailed\\n    Status:                False\\n    Type:                  Available\\n    Last Transition Time:  2025-08-12T11:26:56Z\\n    Message:               UpdatingPrometheusOperator: reconciling Prometheus Operator Admission Webhook Deployment failed: updating Deployment object failed: waiting for DeploymentRollout of openshift-monitoring/prometheus-operator-admission-webhook: context deadline exceeded: got 1 unavailable replicas\\n    Reason:                UpdatingPrometheusOperatorFailed\\n    Status:                True\\n    Type:                  Degraded\\n    Last Transition Time:  2025-08-12T11:26:56Z\\n    Message:               Rolling out the stack.\\n    Reason:                RollOutInProgress\\n    Status:                True\\n    Type:                  Progressing\\n    Last Transition Time:  2025-07-04T21:30:21Z\\n    Status:                True\\n    Type:                  Upgradeable\\n  Extension:               <nil>\\n  Related Objects:\\n    Group:     \\n    Name:      openshift-monitoring\\n    Resource:  namespaces\\n    Group:     \\n    Name:      openshift-user-workload-monitoring\\n    Resource:  namespaces\\n    Group:     monitoring.coreos.com\\n    Name:      \\n    Resource:  servicemonitors\\n    Group:     monitoring.coreos.com\\n    Name:      \\n    Resource:  podmonitors\\n    Group:     monitoring.coreos.com\\n    Name:      \\n    Resource:  prometheusrules\\n    Group:     monitoring.coreos.com\\n    Name:      \\n    Resource:  alertmanagers\\n    Group:     monitoring.coreos.com\\n    Name:      \\n    Resource:  prometheuses\\n    Group:     monitoring.coreos.com\\n    Name:      \\n    Resource:  thanosrulers\\n    Group:     monitoring.coreos.com\\n    Name:      \\n    Resource:  alertmanagerconfigs\\n  Versions:\\n    Name:     operator\\n    Version:  4.18.18\\nEvents:       <none>\\n\",\"timestamp\":\"2025-08-14T14:56:30.427Z\"}",
+    "context": [],
+    "tags": [
+      "read_operation",
+      "describe",
+      "clusteroperator",
+      "tool:oc_read_describe",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "resource:unknown"
+    ]
+  },
+  {
+    "sessionId": "comprehensive-diagnostic-67890",
+    "timestamp": 1755183406874,
+    "userMessage": "Tool oc_read_logs executed with args: {\"podName\":\"prometheus-operator-admission-webhook-6d4bd68bc5-7vlgx\",\"namespace\":\"openshift-monitoring\",\"container\":\"default\",\"lines\":100}",
+    "assistantResponse": "{\"podName\":\"prometheus-operator-admission-webhook-6d4bd68bc5-7vlgx\",\"namespace\":\"openshift-monitoring\",\"container\":\"default\",\"lines\":100,\"logs\":\"ts=2025-07-18T12:18:27.520534101Z level=info caller=/go/src/github.com/coreos/prometheus-operator/internal/goruntime/cpu.go:27 msg=\\\"Leaving GOMAXPROCS=4: CPU quota undefined\\\"\\nts=2025-07-18T12:18:27.521126294Z level=warn caller=/go/src/github.com/coreos/prometheus-operator/pkg/server/server.go:164 msg=\\\"server TLS client verification disabled\\\" client_ca_file=/etc/tls/private/tls-ca.crt err=\\\"stat /etc/tls/private/tls-ca.crt: no such file or directory\\\"\\nts=2025-07-18T12:18:27.521602125Z level=info caller=/go/src/github.com/coreos/prometheus-operator/pkg/server/server.go:301 msg=\\\"starting secure server\\\" address=[::]:8443 http2=false\\nI0718 12:18:27.521934       1 tlsconfig.go:243] \\\"Starting DynamicServingCertificateController\\\"\\nI0718 12:18:27.521953       1 dynamic_serving_content.go:135] \\\"Starting controller\\\" name=\\\"servingCert::/etc/tls/private/tls.crt::/etc/tls/private/tls.key\\\"\\nts=2025-07-20T23:40:34.652744214Z level=error caller=/usr/lib/golang/src/net/http/server.go:3416 msg=\\\"http: TLS handshake error from 10.129.0.2:37734: EOF\\\"\\nts=2025-07-24T23:33:58.275246852Z level=error caller=/usr/lib/golang/src/net/http/server.go:3416 msg=\\\"http: TLS handshake error from 10.129.0.2:51078: EOF\\\"\\nts=2025-07-26T21:27:17.891635399Z level=error caller=/usr/lib/golang/src/net/http/server.go:3416 msg=\\\"http: TLS handshake error from 10.129.0.2:36594: EOF\\\"\\nts=2025-07-29T13:22:40.991948978Z level=error caller=/usr/lib/golang/src/net/http/server.go:3416 msg=\\\"http: TLS handshake error from 10.129.0.2:40306: read tcp 10.129.2.125:8443->10.129.0.2:40306: read: connection reset by peer\\\"\\nts=2025-07-29T18:11:59.583162143Z level=error caller=/usr/lib/golang/src/net/http/server.go:3416 msg=\\\"http: TLS handshake error from 10.129.0.2:34432: EOF\\\"\\nts=2025-07-30T13:52:41.114373776Z level=error caller=/usr/lib/golang/src/net/http/server.go:3416 msg=\\\"http: TLS handshake error from 10.129.0.2:33410: EOF\\\"\\nts=2025-08-02T23:22:41.399221421Z level=error caller=/usr/lib/golang/src/net/http/server.go:3416 msg=\\\"http: TLS handshake error from 10.129.0.2:47808: EOF\\\"\\nts=2025-08-04T10:42:00.157138904Z level=error caller=/usr/lib/golang/src/net/http/server.go:3416 msg=\\\"http: TLS handshake error from 10.129.0.2:42496: EOF\\\"\\nts=2025-08-09T08:37:56.062554376Z level=error caller=/usr/lib/golang/src/net/http/server.go:3416 msg=\\\"http: TLS handshake error from 10.129.0.2:44022: EOF\\\"\\n\",\"logLines\":1,\"timestamp\":\"2025-08-14T14:56:46.874Z\"}",
+    "context": [],
+    "tags": [
+      "read_operation",
+      "logs",
+      "troubleshooting",
+      "tool:oc_read_logs",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "resource:unknown"
+    ]
+  }
+]

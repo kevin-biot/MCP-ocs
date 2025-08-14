@@ -1,0 +1,23 @@
+[
+  {
+    "sessionId": "namespace-health-report-12345",
+    "timestamp": 1755184866832,
+    "userMessage": "Tool oc_diagnostic_namespace_health executed with args: {\"namespace\":\"devops\",\"includeIngressTest\":false}",
+    "assistantResponse": "{\"tool\":\"check_namespace_health_v2\",\"sessionId\":\"namespace-health-report-12345\",\"timestamp\":\"2025-08-14T15:21:06.832Z\",\"duration\":\"589ms\",\"namespace\":\"devops\",\"status\":\"failing\",\"summary\":{\"pods\":\"0/1 ready\",\"pvcs\":\"0/0 bound\",\"routes\":\"0 configured\",\"criticalEvents\":0},\"issues\":{\"crashLoopPods\":[],\"imagePullErrors\":[],\"pendingPods\":[],\"oomKilledPods\":[],\"pvcErrors\":[],\"recentEvents\":[]},\"suspicions\":[],\"connectivity\":{\"tested\":false},\"human\":\"Namespace devops is failing. Pods: 0/1 ready.\",\"nextActions\":[\"Run detailed diagnostics: oc describe namespace devops\"],\"performance\":{\"responseTime\":\"589ms\",\"cacheStats\":{\"size\":5,\"hitRate\":0.85}}}",
+    "context": [],
+    "tags": [
+      "diagnostic",
+      "namespace_health",
+      "devops",
+      "failing",
+      "tool:oc_diagnostic_namespace_health",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "resource:unknown"
+    ]
+  }
+]

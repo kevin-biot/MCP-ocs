@@ -1,6 +1,6 @@
 {
   "name": "mcp-ocs",
-  "version": "0.1.0",
+  "version": "0.8.0-beta",
   "description": "Model Context Protocol server for OpenShift Container Platform operations and diagnostics",
   "keywords": [
     "mcp",
@@ -35,10 +35,17 @@
   },
   "scripts": {
     "build": "tsc && mkdir -p dist && (chmod -f +x dist/*.js || true)",
+    "build:beta": "tsc src/index.beta.ts --outDir dist/beta && mkdir -p dist/beta",
+    "build:production": "npm run build",
     "dev": "tsc --watch",
     "start": "node dist/index.js",
+    "start:beta": "tsx src/index.beta.ts",
     "start:dev": "./scripts/dev/start-dev.sh",
     "test": "jest",
+    "validate:beta": "jest --testPathPattern=beta",
+    "beta:tools": "tsx src/cli/list-beta-tools.ts",
+    "beta:tools:node": "node scripts/beta-list.js",
+    "beta:tools:generate": "node scripts/generate-beta-config.mjs",
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration",
     "test:e2e": "cypress run",
@@ -57,7 +64,9 @@
     "prepare": "npm run build",
     "clean": "rm -rf dist && rm -rf logs/* && rm -rf tmp/* && rm -rf coverage",
     "docker:build": "docker build -t mcp-ocs .",
-    "docker:test": "docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit"
+    "docker:test": "docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit",
+    "preversion": "npm run beta:tools:generate && git add config/beta-tools.json",
+    "release:beta": "npm run beta:tools:generate && git add config/beta-tools.json && git commit -m 'chore: sync beta tools JSON' && git tag v0.8.0-beta"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.8",

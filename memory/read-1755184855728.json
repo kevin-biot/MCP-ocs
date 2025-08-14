@@ -1,0 +1,22 @@
+[
+  {
+    "sessionId": "read-1755184855728",
+    "timestamp": 1755184856672,
+    "userMessage": "Tool oc_read_get_pods executed with args: {\"namespace\":\"default\",\"selector\":\"none\"}",
+    "assistantResponse": "{\"namespace\":\"default\",\"selector\":\"none\",\"totalPods\":1,\"pods\":[{\"name\":\"code-server-student-image-wnkqc-w6ssk-pod\",\"namespace\":\"devops\",\"status\":\"Succeeded\",\"ready\":\"0/1\",\"restarts\":0,\"age\":\"28d\",\"ip\":\"10.129.2.73\",\"node\":\"ip-10-0-77-117.eu-west-1.compute.internal\"}],\"summary\":{\"running\":0,\"pending\":0,\"failed\":0,\"unknown\":1},\"timestamp\":\"2025-08-14T15:20:56.658Z\"}",
+    "context": [],
+    "tags": [
+      "read_operation",
+      "pods",
+      "cluster_state",
+      "tool:oc_read_get_pods",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "domain:openshift",
+      "environment:prod",
+      "severity:low",
+      "resource:unknown"
+    ]
+  }
+]
