@@ -393,6 +393,13 @@ export class RCAChecklistEngine {
       const servicesResult = await this.ocWrapper.executeOc(servicesArgs, namespace ? { namespace } : {});
       const services = JSON.parse(servicesResult.stdout);
       
+      // Fetch endpoints to validate service backends
+      const endpointsArgs = namespace ?
+        ['get', 'endpoints', '-o', 'json'] :
+        ['get', 'endpoints', '-A', '-o', 'json'];
+      const endpointsResult = await this.ocWrapper.executeOc(endpointsArgs, namespace ? { namespace } : {});
+      const endpoints = JSON.parse(endpointsResult.stdout);
+      
       // Check routes (OpenShift specific)
       let routes = { items: [] };
       try {
@@ -406,7 +413,7 @@ export class RCAChecklistEngine {
         // Routes not available (vanilla Kubernetes)
       }
       
-      const networkAnalysis = this.analyzeNetworkHealth(services, routes);
+      const networkAnalysis = this.analyzeNetworkHealth(services, routes, endpoints);
       
       const check: ChecklistItem = {
         name: checkName,
@@ -661,14 +668,31 @@ export class RCAChecklistEngine {
     return { totalPVCs, boundPvc: boundPVCs, pendingPVCs, issues };
   }
 
-  private analyzeNetworkHealth(services: any, routes: any) {
+  private analyzeNetworkHealth(services: any, routes: any, endpoints: any) {
     const totalServices = services.items.length;
     const totalRoutes = routes.items.length;
     let servicesWithoutEndpoints = 0;
     const issues: string[] = [];
 
-    // Placeholder for endpoint analysis
-    // Would need to check endpoints for each service
+    // Build endpoint index by namespace/name
+    const epIndex = new Map<string, any>();
+    for (const ep of (endpoints.items || [])) {
+      const key = `${ep.metadata?.namespace || ''}/${ep.metadata?.name || ''}`;
+      epIndex.set(key, ep);
+    }
+    
+    for (const svc of (services.items || [])) {
+      const ns = svc.metadata?.namespace || '';
+      const name = svc.metadata?.name || '';
+      const key = `${ns}/${name}`;
+      const ep = epIndex.get(key);
+      const subsets = ep?.subsets || [];
+      const addresses = subsets.flatMap((s: any) => s.addresses || []);
+      if (!ep || addresses.length === 0) {
+        servicesWithoutEndpoints++;
+        issues.push(`Service ${ns}/${name} has no active endpoints`);
+      }
+    }
     
     return { totalServices, totalRoutes, servicesWithoutEndpoints, issues };
   }
@@ -724,33 +748,42 @@ export class RCAChecklistEngine {
   }
 
   private parseResourceValue(value: string): number | null {
-    // Simple parser for Kubernetes resource values
+    // Robust parser for Kubernetes resource values
     if (!value || typeof value !== 'string') return null;
-    
-    // Handle memory units (Ki, Mi, Gi, Ti)
-    const memoryMatch = value.match(/^(\\d+(?:\\.\\d+)?)(Ki|Mi|Gi|Ti|k|M|G|T)?$/);
-    if (memoryMatch) {
-      const num = parseFloat(memoryMatch[1]);
-      const unit = memoryMatch[2] || '';
-      
-      const multipliers: { [key: string]: number } = {
-        'Ki': 1024, 'Mi': 1024 * 1024, 'Gi': 1024 * 1024 * 1024, 'Ti': 1024 * 1024 * 1024 * 1024,
-        'k': 1000, 'M': 1000 * 1000, 'G': 1000 * 1000 * 1000, 'T': 1000 * 1000 * 1000 * 1000
-      };
-      
-      return num * (multipliers[unit] || 1);
+
+    const v = value.trim();
+
+    // CPU: millicores (e.g., 200m) or cores (e.g., 0.5, 1)
+    if (/m$/.test(v)) {
+      const n = parseFloat(v.slice(0, -1));
+      return isNaN(n) ? null : n; // already in millicores
     }
-    
-    // Handle CPU units (m for millicores)
-    const cpuMatch = value.match(/^(\\d+(?:\\.\\d+)?)m?$/);
-    if (cpuMatch) {
-      const num = parseFloat(cpuMatch[1]);
-      return value.includes('m') ? num : num * 1000; // Convert to millicores
+    if (/^\d+(?:\.\d+)?$/.test(v)) {
+      // No unit; could be CPU cores or bytes depending on context.
+      // For quota parsing, k8s reports plain numbers for CPU as cores.
+      // Convert cores to millicores for consistent comparisons.
+      const n = parseFloat(v);
+      return isNaN(n) ? null : n * 1000;
     }
-    
-    // Plain numbers
-    const num = parseFloat(value);
-    return isNaN(num) ? null : num;
+
+    // Memory: binary (Ki, Mi, Gi, Ti, Pi, Ei) or decimal (k, K, M, G, T, P, E)
+    const memMatch = v.match(/^(\d+(?:\.\d+)?)(Ki|Mi|Gi|Ti|Pi|Ei|k|K|M|G|T|P|E)$/);
+    if (memMatch) {
+      const num = parseFloat(memMatch[1]);
+      const unit = memMatch[2];
+      const pow2: Record<string, number> = { Ki: 10, Mi: 20, Gi: 30, Ti: 40, Pi: 50, Ei: 60 };
+      if (unit in pow2) {
+        return num * Math.pow(2, pow2[unit]);
+      }
+      const dec: Record<string, number> = { k: 1e3, K: 1e3, M: 1e6, G: 1e9, T: 1e12, P: 1e15, E: 1e18 };
+      if (unit in dec) {
+        return num * dec[unit];
+      }
+    }
+
+    // Fallback: try parse float
+    const f = parseFloat(v);
+    return isNaN(f) ? null : f;
   }
 
   private extractEventPatterns(events: any[]): string[] {
