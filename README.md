@@ -102,6 +102,15 @@ npm run validate:beta
 npm run real:sanity
 ```
 
+### **Connect with AI Client**
+
+After adding MCP-OCS to your AI client configuration:
+
+1. **Restart your AI client** (Claude Desktop, LM Studio, etc.)
+2. **Verify connection**: Ask your AI "What MCP tools are available?"
+3. **Test a diagnostic**: Try "Check the health of my OpenShift cluster"
+4. **Explore capabilities**: "What can you tell me about namespace openshift-monitoring?"
+
 ## 🔧 Configuration
 
 ### **Prerequisites**
@@ -109,6 +118,41 @@ npm run real:sanity
 - **Node.js 18+** - For running the MCP server
 - **KUBECONFIG** - Pointing to your OpenShift cluster
 - **Read Access** - To cluster resources (no write permissions needed)
+- **MCP-Compatible AI Client** - Claude Desktop, LM Studio, or other MCP clients
+
+### **MCP Client Setup**
+
+**For Claude Desktop (`claude_desktop_config.json`):**
+```json
+{
+  "mcpServers": {
+    "mcp-ocs": {
+      "command": "npm",
+      "args": ["run", "start:beta"],
+      "cwd": "/path/to/MCP-ocs",
+      "env": {
+        "KUBECONFIG": "/path/to/your/kubeconfig"
+      }
+    }
+  }
+}
+```
+
+**For LM Studio:**
+```json
+{
+  "mcpServers": {
+    "mcp-ocs": {
+      "command": "npx",
+      "args": ["tsx", "src/index.beta.ts"],
+      "cwd": "/path/to/MCP-ocs",
+      "env": {
+        "KUBECONFIG": "/path/to/your/kubeconfig"
+      }
+    }
+  }
+}
+```
 
 ### **Environment Setup**
 ```bash
@@ -145,10 +189,15 @@ oc_diagnostic_cluster_health({
 
 ### **Fast Namespace Analysis**
 ```bash
-# Quick namespace health check
+# Quick namespace health check (direct CLI)
 npm run itest:real:ns -- --ns openshift-monitoring
 npm run itest:real:ns -- --ns student03
 ```
+
+**Or via AI client:**
+- "Analyze the health of namespace openshift-monitoring"
+- "What's wrong with namespace student03?"
+- "Show me pod issues in openshift-dns namespace"
 
 ### **Systematic Incident Response**
 ```bash
