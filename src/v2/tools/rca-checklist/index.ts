@@ -13,9 +13,9 @@
  * 6. Generate structured findings and next steps
  */
 
-import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
-import { NamespaceHealthChecker } from '../check-namespace-health/index';
-import { ToolMemoryGateway } from '../../../lib/tools/tool-memory-gateway';
+import { OcWrapperV2 } from '../../lib/oc-wrapper-v2.js';
+import { NamespaceHealthChecker } from '../check-namespace-health/index.js';
+import { ToolMemoryGateway } from '../../../lib/tools/tool-memory-gateway.js';
 
 export interface RCAChecklistInput {
   namespace?: string;           // Target namespace (optional for cluster-wide)

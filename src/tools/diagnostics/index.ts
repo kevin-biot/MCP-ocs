@@ -12,11 +12,11 @@ import { ToolDefinition } from '../../lib/tools/tool-types.js';
 import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
-import { ToolMemoryGateway } from '../../lib/tools/tool-memory-gateway';
-import { OcWrapperV2 } from '../../v2/lib/oc-wrapper-v2';
-import { NamespaceHealthChecker } from '../../v2/tools/check-namespace-health/index';
-import { RCAChecklistEngine } from '../../v2/tools/rca-checklist/index';
-import { checkNamespaceHealthV2Tool } from '../../v2-integration';
+import { ToolMemoryGateway } from '../../lib/tools/tool-memory-gateway.js';
+import { OcWrapperV2 } from '../../v2/lib/oc-wrapper-v2.js';
+import { NamespaceHealthChecker } from '../../v2/tools/check-namespace-health/index.js';
+import { RCAChecklistEngine } from '../../v2/tools/rca-checklist/index.js';
+import { checkNamespaceHealthV2Tool } from '../../v2-integration.js';
 
 export class DiagnosticToolsV2 implements ToolSuite {
   category = 'diagnostic';
@@ -436,7 +436,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
     addReason((pods.pending || 0) > 0, `pending:${pods.pending}`);
     addReason((pvcs.errors || 0) > 0, `pvcErrors:${pvcs.errors}`);
     addReason((Array.isArray(events) ? events.length : 0) > 0, `events:${events.length}`);
-    addReason(s.status && s.status !== 'healthy', `status:${s.status}`);
+    addReason(s.status !== 'healthy', `status:${s.status}`);
     addReason((Array.isArray(s.suspicions) ? s.suspicions.length : 0) > 0, `suspicions:${s.suspicions.length}`);
 
     return { score, reasons };
