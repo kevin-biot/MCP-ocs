@@ -82,4 +82,45 @@ describe('RCA intelligent root cause derivation', () => {
     (engine as any).deriveRootCause(res);
     expect(res.rootCause.type).toBe('dns_resolution_failure');
   });
+
+  test('quota exceeded and probe failures detected', () => {
+    const engine = new RCAChecklistEngine({} as any);
+    const res: any = {
+      checksPerformed: [
+        mkCheck('Resource Constraints and Quotas', [
+          'Quota violations: 2',
+          'Resource quotas: 3 configured'
+        ]),
+        mkCheck('Recent Events', [
+          'Liveness probe failed',
+          'Readiness probe failed'
+        ])
+      ],
+      summary: { totalChecks: 2, passed: 0, failed: 0, warnings: 2 },
+      overallStatus: 'degraded'
+    };
+    (engine as any).deriveRootCause(res);
+    // Quota exceeded has priority over generic probe failures in our current order
+    expect(['resource_quota_exceeded', 'probe_failures']).toContain(res.rootCause.type);
+  });
+
+  test('markdown includes root cause section', () => {
+    const engine = new RCAChecklistEngine({} as any);
+    const result: any = {
+      reportId: 'r1',
+      timestamp: new Date().toISOString(),
+      duration: 10,
+      overallStatus: 'degraded',
+      summary: { totalChecks: 1, passed: 0, failed: 0, warnings: 1 },
+      checksPerformed: [],
+      criticalIssues: [],
+      nextActions: [],
+      human: '',
+      rootCause: { type: 'service_no_backends', summary: 'Missing endpoints', confidence: 0.75, evidence: ['2 services without endpoints'] }
+    };
+    const md = (engine as any).generateMarkdownReport(result);
+    expect(md).toContain('## Root Cause');
+    expect(md).toContain('service_no_backends');
+    expect(md).toContain('Missing endpoints');
+  });
 });

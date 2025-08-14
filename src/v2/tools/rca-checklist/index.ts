@@ -1052,6 +1052,20 @@ export class RCAChecklistEngine {
     markdown += `- **Checks**: ${result.summary.passed}/${result.summary.totalChecks} passed\\n`;
     markdown += `- **Warnings**: ${result.summary.warnings}\\n`;
     markdown += `- **Failures**: ${result.summary.failed}\\n\\n`;
+
+    if (result.rootCause) {
+      markdown += `## Root Cause\\n`;
+      markdown += `- **Type**: ${result.rootCause.type}\\n`;
+      markdown += `- **Summary**: ${result.rootCause.summary}\\n`;
+      markdown += `- **Confidence**: ${(Math.round(result.rootCause.confidence * 100))}%\\n`;
+      if (Array.isArray(result.rootCause.evidence) && result.rootCause.evidence.length > 0) {
+        markdown += `- **Evidence**:\\n`;
+        result.rootCause.evidence.slice(0, 5).forEach(e => {
+          markdown += `  - ${e}\\n`;
+        });
+      }
+      markdown += `\\n`;
+    }
     
     if (result.criticalIssues.length > 0) {
       markdown += `## Critical Issues\\n`;
