@@ -902,6 +902,12 @@ export class RCAChecklistEngine {
         result.rootCause = { type: 'storage_no_default_storageclass', summary: 'Missing default StorageClass causing PVCs to remain pending', confidence: 0.9, evidence };
         return;
       }
+      // NetworkPolicy blocking provisioner
+      if (/NetworkPolicy|denied by policy|blocked by network/i.test(eventsTxt)) {
+        evidence.push('Events indicate NetworkPolicy denial');
+        result.rootCause = { type: 'storage_provisioner_blocked_by_network_policy', summary: 'NetworkPolicy blocking storage provisioner communication', confidence: 0.85, evidence };
+        return;
+      }
       if (/FailedMount/i.test(eventsTxt) || /provision/i.test(storageTxt) || /provision/i.test(eventsTxt)) {
         evidence.push('FailedMount/provisioner related evidence');
         result.rootCause = { type: 'storage_provisioner_unreachable', summary: 'Storage provisioner unreachable or misconfigured', confidence: 0.8, evidence };
@@ -917,6 +923,13 @@ export class RCAChecklistEngine {
       const count = parseInt(svcNoEpMatch[1], 10);
       evidence.push(`${count} services without endpoints`);
       result.rootCause = { type: 'service_no_backends', summary: 'Services have no active endpoints (backends not ready or selector mismatch)', confidence: 0.75, evidence };
+      return;
+    }
+
+    // NetworkPolicy general block (non-storage)
+    if (/NetworkPolicy|denied by policy|blocked by network/i.test(eventsTxt)) {
+      evidence.push('NetworkPolicy denies traffic');
+      result.rootCause = { type: 'network_policy_block', summary: 'Traffic blocked by NetworkPolicy (review ingress/egress rules and labels)', confidence: 0.75, evidence };
       return;
     }
 
@@ -945,6 +958,29 @@ export class RCAChecklistEngine {
     if (/not ready|MemoryPressure|DiskPressure|PIDPressure/i.test(nodeTxt)) {
       evidence.push('Node readiness/pressure issues');
       result.rootCause = { type: 'node_instability', summary: 'Node instability impacting workloads', confidence: 0.7, evidence };
+      return;
+    }
+
+    // Quota exceeded patterns
+    const quotaCheck = result.checksPerformed.find(c => c.name.startsWith('Resource Constraints and Quotas'));
+    const quotaTxt = quotaCheck?.findings?.join(' ') || '';
+    if (/Quota violations:\s*[1-9]/i.test(quotaTxt) || /exceeded quota|quota exceeded/i.test(eventsTxt)) {
+      evidence.push('Resource quota exceeded');
+      result.rootCause = { type: 'resource_quota_exceeded', summary: 'ResourceQuota limits reached for namespace/project', confidence: 0.7, evidence };
+      return;
+    }
+
+    // DNS resolution failures
+    if (/no such host|Temporary failure in name resolution|NXDOMAIN|SERVFAIL|i\/o timeout/i.test(eventsTxt)) {
+      evidence.push('DNS resolution failures');
+      result.rootCause = { type: 'dns_resolution_failure', summary: 'DNS resolution failures affecting service connectivity', confidence: 0.65, evidence };
+      return;
+    }
+
+    // Probe failures
+    if (/Liveness probe failed|Readiness probe failed/i.test(eventsTxt)) {
+      evidence.push('Probe failures detected');
+      result.rootCause = { type: 'probe_failures', summary: 'Liveness/Readiness probe failures indicating app or dependency issues', confidence: 0.6, evidence };
       return;
     }
 
