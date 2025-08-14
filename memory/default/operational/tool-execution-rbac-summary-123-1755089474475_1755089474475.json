@@ -1,0 +1,25 @@
+{
+  "incidentId": "tool-execution-rbac-summary-123-1755089474475",
+  "domain": "openshift",
+  "timestamp": 1755089474475,
+  "symptoms": [
+    "Operation in namespace: openshift-gitops"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:openshift-gitops"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_get_pods"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-gitops",
+    "pod_analysis",
+    "pod_count:8",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

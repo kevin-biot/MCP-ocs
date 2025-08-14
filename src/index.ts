@@ -20,7 +20,7 @@ import { SharedMemoryManager } from './lib/memory/shared-memory.js';
 import { WorkflowEngine } from './lib/workflow/workflow-engine.js';
 import { AutoMemorySystem } from './lib/memory/auto-memory-system.js';
 import { KnowledgeSeedingSystem } from './lib/memory/knowledge-seeding-system.js';
-import { KnowledgeSeedingTool, KnowledgeToolsSuite } from './tools/memory/knowledge-seeding-tool-v2.js';
+// TEMP DISABLED: import { KnowledgeSeedingTool, KnowledgeToolsSuite } from './tools/memory/knowledge-seeding-tool-v2.js';
 import { UnifiedToolRegistry } from './lib/tools/tool-registry.js';
 
 console.error('🚀 Starting MCP-ocs server...');
@@ -53,7 +53,7 @@ const autoMemory = new AutoMemorySystem(sharedMemory);
 
 // Initialize knowledge seeding system
 const knowledgeSeedingSystem = new KnowledgeSeedingSystem(sharedMemory, autoMemory);
-const knowledgeSeedingTool = new KnowledgeSeedingTool(knowledgeSeedingSystem);
+// TEMP DISABLED: const knowledgeSeedingTool = new KnowledgeSeedingTool(knowledgeSeedingSystem);
 
 // Initialize unified tool registry
 const toolRegistry = new UnifiedToolRegistry();
@@ -62,13 +62,13 @@ const toolRegistry = new UnifiedToolRegistry();
 const diagnosticTools = new DiagnosticToolsV2(openshiftClient, sharedMemory);
 const readOpsTools = new ReadOpsTools(openshiftClient, sharedMemory);
 const stateMgmtTools = new StateMgmtTools(sharedMemory, workflowEngine);
-const knowledgeTools = new KnowledgeToolsSuite(knowledgeSeedingTool);
+// TEMP DISABLED: const knowledgeTools = new KnowledgeToolsSuite(knowledgeSeedingTool);
 
 // Register all suites with unified registry
 toolRegistry.registerSuite(diagnosticTools);
 toolRegistry.registerSuite(readOpsTools);
 toolRegistry.registerSuite(stateMgmtTools);
-toolRegistry.registerSuite(knowledgeTools);
+// TEMP DISABLED: toolRegistry.registerSuite(knowledgeTools);
 
 // Get all tools for MCP registration
 const allTools = toolRegistry.getMCPTools();
@@ -164,3 +164,7 @@ const transport = new StdioServerTransport();
 await server.connect(transport);
 
 console.error('✅ MCP-ocs server connected and ready!');
+
+// Re-exports for library consumers
+export { MCPOcsMemoryAdapter } from './lib/memory/mcp-ocs-memory-adapter.js';
+export type { OCSIncidentMemory } from './lib/memory/mcp-ocs-memory-adapter.js';

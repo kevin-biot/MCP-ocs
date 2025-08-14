@@ -13,7 +13,8 @@ export default {
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@tests/(.*)$': '<rootDir>/tests/$1'
+    '^@tests/(.*)$': '<rootDir>/tests/$1',
+    '^../../../MCP-files/src/memory-extension\\.ts$': '<rootDir>/tests/mocks/memory-extension.ts'
   },
   extensionsToTreatAsEsm: ['.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],

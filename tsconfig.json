@@ -21,11 +21,17 @@
     }
   },
   "include": [
-    "src/**/*", 
-    "tests/**/*"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "tests",
+    "MCP-files/**",
+    "src/tools/**",
+    "src/index.ts",
+    "src/lib/tools/**",
+    "src/build-test.ts",
+    "src/v2/tools/infrastructure-correlation/enhanced-infrastructure-tools.ts.backup"
   ]
 }

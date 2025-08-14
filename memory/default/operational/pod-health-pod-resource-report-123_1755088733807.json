@@ -1,0 +1,22 @@
+{
+  "incidentId": "pod-health-pod-resource-report-123",
+  "domain": "cluster",
+  "timestamp": 1755088733807,
+  "symptoms": [
+    "pod_healthy"
+  ],
+  "affectedResources": [
+    "pod/code-server-student-image-wnkqc-w6ssk-pod",
+    "namespace/devops"
+  ],
+  "diagnosticSteps": [
+    "Enhanced pod health check completed"
+  ],
+  "tags": [
+    "pod_health",
+    "diagnostic",
+    "devops",
+    "code-server-student-image-wnkqc-w6ssk-pod"
+  ],
+  "environment": "prod"
+}

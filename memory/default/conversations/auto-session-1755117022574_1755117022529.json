@@ -1,0 +1,15 @@
+{
+  "sessionId": "auto-session-1755117022574",
+  "domain": "knowledge",
+  "timestamp": 1755117022529,
+  "userMessage": "Execute memory_get_stats with args: {}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "memory_get_stats"
+  ],
+  "tags": [
+    "memory_operation",
+    "workflow_tracking",
+    "execution_success"
+  ]
+}

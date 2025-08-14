@@ -1,0 +1,15 @@
+{
+  "sessionId": "test-session-123",
+  "domain": "knowledge",
+  "timestamp": 1755181945130,
+  "userMessage": "Search conversations for: test conversation",
+  "assistantResponse": "Found 0 relevant conversations",
+  "context": [
+    "conversation_search",
+    "test conversation"
+  ],
+  "tags": [
+    "memory_operation",
+    "conversation_search"
+  ]
+}

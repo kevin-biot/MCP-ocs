@@ -1,0 +1,15 @@
+{
+  "sessionId": "test-session-123",
+  "domain": "knowledge",
+  "timestamp": 1755181512308,
+  "userMessage": "Search conversations for: cluster authentication",
+  "assistantResponse": "Found 0 relevant conversations",
+  "context": [
+    "conversation_search",
+    "cluster authentication"
+  ],
+  "tags": [
+    "memory_operation",
+    "conversation_search"
+  ]
+}

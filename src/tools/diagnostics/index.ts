@@ -12,10 +12,11 @@ import { ToolDefinition } from '../../lib/tools/tool-types.js';
 import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
-import { OcWrapperV2 } from '../../v2/lib/oc-wrapper-v2.js';
-import { NamespaceHealthChecker } from '../../v2/tools/check-namespace-health/index.js';
-import { RCAChecklistEngine } from '../../v2/tools/rca-checklist/index.js';
-import { checkNamespaceHealthV2Tool } from '../../v2-integration.js';
+import { ToolMemoryGateway } from '../../lib/tools/tool-memory-gateway';
+import { OcWrapperV2 } from '../../v2/lib/oc-wrapper-v2';
+import { NamespaceHealthChecker } from '../../v2/tools/check-namespace-health/index';
+import { RCAChecklistEngine } from '../../v2/tools/rca-checklist/index';
+import { checkNamespaceHealthV2Tool } from '../../v2-integration';
 
 export class DiagnosticToolsV2 implements ToolSuite {
   category = 'diagnostic';
@@ -23,6 +24,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
   private ocWrapperV2: OcWrapperV2;
   private namespaceHealthChecker: NamespaceHealthChecker;
   private rcaChecklistEngine: RCAChecklistEngine;
+  private memoryGateway: ToolMemoryGateway;
 
   constructor(
     private openshiftClient: OpenShiftClient,
@@ -32,6 +34,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
     this.ocWrapperV2 = new OcWrapperV2();
     this.namespaceHealthChecker = new NamespaceHealthChecker(this.ocWrapperV2);
     this.rcaChecklistEngine = new RCAChecklistEngine(this.ocWrapperV2);
+    this.memoryGateway = new ToolMemoryGateway('./memory');
   }
 
   /**
@@ -51,8 +54,32 @@ export class DiagnosticToolsV2 implements ToolSuite {
         includeIngressTest: args.includeIngressTest || false,
         maxLogLinesPerPod: args.maxLogLinesPerPod || 0
       };
-      
-      return await checkNamespaceHealthV2Tool.handler(v2Args);
+
+      const raw = await checkNamespaceHealthV2Tool.handler(v2Args);
+      // Ensure we have a JSON object to persist
+      let payload: any;
+      try {
+        payload = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      } catch {
+        payload = { result: raw };
+      }
+
+      // Persist via adapter-backed gateway for consistent Chroma v2 integration
+      if (!this.memoryGateway) {
+        this.memoryGateway = new ToolMemoryGateway('./memory');
+      }
+      await this.memoryGateway.storeToolExecution(
+        'oc_diagnostic_namespace_health',
+        { namespace: args.namespace, includeIngressTest: !!args.includeIngressTest },
+        payload,
+        args.sessionId,
+        ['diagnostic', 'namespace_health', args.namespace, String(payload?.status || 'unknown')],
+        'openshift',
+        'prod',
+        payload?.status === 'healthy' ? 'low' : 'medium'
+      );
+
+      return typeof raw === 'string' ? raw : JSON.stringify(raw);
     } catch (error) {
       return this.formatErrorResponse('enhanced namespace health check', error, args.sessionId);
     }
@@ -260,17 +287,17 @@ export class DiagnosticToolsV2 implements ToolSuite {
         recommendations: this.generateClusterRecommendations(nodeHealth, operatorHealth, systemNamespaceHealth)
       };
 
-      // Store diagnostic results in memory
-      await this.memoryManager.storeOperational({
-        incidentId: `cluster-health-${sessionId}`,
-        domain: 'cluster',
-        timestamp: Date.now(),
-        symptoms: healthSummary.overallHealth === 'healthy' ? ['cluster_healthy'] : ['cluster_issues_detected'],
-        affectedResources: [],
-        diagnosticSteps: ['Enhanced cluster health check completed'],
-        tags: ['cluster_health', 'diagnostic', healthSummary.overallHealth],
-        environment: 'prod'
-      });
+      // Store diagnostic results via adapter-backed gateway (Chroma v2 aware)
+      await this.memoryGateway.storeToolExecution(
+        'oc_diagnostic_cluster_health',
+        { includeNamespaceAnalysis, maxNamespacesToAnalyze },
+        healthSummary,
+        sessionId,
+        ['diagnostic', 'cluster_health', String(healthSummary.overallHealth)],
+        'openshift',
+        'prod',
+        healthSummary.overallHealth === 'healthy' ? 'low' : 'medium'
+      );
 
       return this.formatClusterHealthResponse(healthSummary, sessionId);
 

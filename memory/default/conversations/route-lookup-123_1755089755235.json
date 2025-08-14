@@ -1,0 +1,20 @@
+{
+  "sessionId": "route-lookup-123",
+  "domain": "openshift",
+  "timestamp": 1755089755235,
+  "userMessage": "Execute oc_read_describe with args: {\"resourceType\":\"route\",\"name\":\"console-openshift-console\",\"namespace\":\"openshift-console\",\"sessionId\":\"route-lookup-123\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_describe",
+    "resourceType",
+    "name",
+    "namespace",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-console",
+    "execution_success"
+  ]
+}

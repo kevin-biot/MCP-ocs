@@ -1,0 +1,22 @@
+[
+  {
+    "sessionId": "default-session-12345",
+    "timestamp": 1755182967103,
+    "userMessage": "Tool oc_diagnostic_cluster_health executed with args: {\"includeNamespaceAnalysis\":false,\"maxNamespacesToAnalyze\":10}",
+    "assistantResponse": "{\"cluster\":{\"status\":\"connected\",\"version\":\"4.18.1\",\"currentUser\":\"kube:admin\",\"serverUrl\":\".clusters[0].cluster.server\",\"timestamp\":\"2025-08-14T14:49:27.093Z\"},\"nodes\":{\"total\":4,\"ready\":4,\"issues\":[]},\"operators\":{\"total\":34,\"degraded\":[\"ingress\",\"monitoring\"]},\"systemNamespaces\":[{\"namespace\":\"openshift-apiserver\",\"status\":\"healthy\",\"issues\":0},{\"namespace\":\"openshift-etcd\",\"status\":\"degraded\",\"issues\":0},{\"namespace\":\"openshift-kube-apiserver\",\"status\":\"degraded\",\"issues\":0}],\"userNamespaces\":null,\"overallHealth\":\"failing\",\"duration\":\"4005ms\",\"recommendations\":[\"Check degraded operators: oc get clusteroperator ingress -o yaml\"]}",
+    "context": [],
+    "tags": [
+      "diagnostic",
+      "cluster_health",
+      "failing",
+      "tool:oc_diagnostic_cluster_health",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "resource:unknown"
+    ]
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "sessionId": "node-info-124",
+  "domain": "openshift",
+  "timestamp": 1755088540246,
+  "userMessage": "Execute oc_read_describe with args: {\"resourceType\":\"node\",\"name\":\"ip-10-0-78-123.eu-west-1.compute.internal\",\"sessionId\":\"node-info-124\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_describe",
+    "resourceType",
+    "name",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "execution_success"
+  ]
+}

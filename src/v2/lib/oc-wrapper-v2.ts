@@ -267,6 +267,11 @@ export class OcWrapperV2 {
   private async executeWithTimeout(args: string[], timeout: number): Promise<{ stdout: string; stderr: string }> {
     const command = `${this.ocPath} ${args.join(' ')}`;
     
+    // DEBUG: Log environment information
+    console.error(`🔧 Executing: ${command}`);
+    console.error(`🔧 KUBECONFIG: ${process.env.KUBECONFIG || 'NOT SET'}`);
+    console.error(`🔧 Current working directory: ${process.cwd()}`);
+    
     try {
       const result = await execAsync(command, { 
         timeout,
@@ -274,6 +279,9 @@ export class OcWrapperV2 {
       });
       return result;
     } catch (error: any) {
+      console.error(`❌ Command failed: ${command}`);
+      console.error(`❌ Error: ${error.message}`);
+      
       if (error.code === 'ETIMEDOUT') {
         throw new Error(`Command timed out after ${timeout}ms: ${command}`);
       }

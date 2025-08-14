@@ -1,0 +1,17 @@
+{
+  "sessionId": "running-pod-123",
+  "domain": "openshift",
+  "timestamp": 1755088768949,
+  "userMessage": "Describe pod java-webapp-75c946b785-k5wgj",
+  "assistantResponse": "Retrieved detailed information for pod/java-webapp-75c946b785-k5wgj",
+  "context": [
+    "pod",
+    "java-webapp-75c946b785-k5wgj",
+    "student01"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "pod"
+  ]
+}

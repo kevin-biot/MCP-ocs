@@ -1,0 +1,17 @@
+{
+  "sessionId": "route-analysis-123",
+  "domain": "openshift",
+  "timestamp": 1755089701230,
+  "userMessage": "Get pods in openshift-ingress-canary namespace",
+  "assistantResponse": "Found 1 pods: 1 running, 0 pending, 0 failed",
+  "context": [
+    "pods",
+    "namespace",
+    "openshift-ingress-canary"
+  ],
+  "tags": [
+    "read_operation",
+    "pods",
+    "cluster_state"
+  ]
+}

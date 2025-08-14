@@ -1,0 +1,16 @@
+{
+  "sessionId": "test-session-123",
+  "domain": "knowledge",
+  "timestamp": 1755181938221,
+  "userMessage": "Search memory for: test incident",
+  "assistantResponse": "Found 5 relevant incidents in operational memory",
+  "context": [
+    "memory_search",
+    "test incident"
+  ],
+  "tags": [
+    "memory_operation",
+    "knowledge_retrieval",
+    "pattern_matching"
+  ]
+}

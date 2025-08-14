@@ -1,0 +1,20 @@
+{
+  "sessionId": "pod-details-123",
+  "domain": "openshift",
+  "timestamp": 1755088736276,
+  "userMessage": "Execute oc_read_describe with args: {\"resourceType\":\"pod\",\"name\":\"code-server-student-image-wnkqc-w6ssk-pod\",\"namespace\":\"devops\",\"sessionId\":\"pod-details-123\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_describe",
+    "resourceType",
+    "name",
+    "namespace",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:devops",
+    "execution_success"
+  ]
+}

@@ -1,0 +1,21 @@
+[
+  {
+    "sessionId": "test-cluster-1755179351391",
+    "timestamp": 1755179351391,
+    "userMessage": "Tool pre_mcp_cluster_health executed with args: {}",
+    "assistantResponse": "{\"clusterInfo\":{\"version\":\"4.18.1\",\"serverUrl\":\".clusters[0].cluster.server\",\"currentUser\":\"kube:admin\",\"currentProject\":\"devops\",\"status\":\"connected\"},\"nodes\":[{\"name\":\"ip-10-0-40-8.eu-west-1.compute.internal\",\"status\":\"True\",\"roles\":[\"node-role.kubernetes.io/control-plane\",\"node-role.kubernetes.io/master\"]},{\"name\":\"ip-10-0-5-118.eu-west-1.compute.internal\",\"status\":\"True\",\"roles\":[\"node-role.kubernetes.io/control-plane\",\"node-role.kubernetes.io/master\"]},{\"name\":\"ip-10-0-65-142.eu-west-1.compute.internal\",\"status\":\"True\",\"roles\":[\"node-role.kubernetes.io/control-plane\",\"node-role.kubernetes.io/master\"]},{\"name\":\"ip-10-0-77-117.eu-west-1.compute.internal\",\"status\":\"True\",\"roles\":[\"node-role.kubernetes.io/worker\"]}],\"systemPods\":[]}",
+    "context": [],
+    "tags": [
+      "test",
+      "cluster-health",
+      "tool:pre_mcp_cluster_health",
+      "domain:openshift",
+      "environment:test",
+      "severity:low",
+      "domain:openshift",
+      "environment:test",
+      "severity:low",
+      "resource:unknown"
+    ]
+  }
+]

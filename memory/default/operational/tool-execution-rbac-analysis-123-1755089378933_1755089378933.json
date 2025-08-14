@@ -1,0 +1,25 @@
+{
+  "incidentId": "tool-execution-rbac-analysis-123-1755089378933",
+  "domain": "openshift",
+  "timestamp": 1755089378933,
+  "symptoms": [
+    "Operation in namespace: openshift-monitoring"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:openshift-monitoring"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_describe"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-monitoring",
+    "execution_success",
+    "slow_execution",
+    "performance_concern"
+  ],
+  "environment": "prod"
+}

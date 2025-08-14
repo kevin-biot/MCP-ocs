@@ -1,0 +1,17 @@
+{
+  "sessionId": "rbac-analysis-123",
+  "domain": "openshift",
+  "timestamp": 1755089386038,
+  "userMessage": "Describe pod alertmanager-main-0",
+  "assistantResponse": "Retrieved detailed information for pod/alertmanager-main-0",
+  "context": [
+    "pod",
+    "alertmanager-main-0",
+    "openshift-monitoring"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "pod"
+  ]
+}

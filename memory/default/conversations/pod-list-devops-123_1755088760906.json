@@ -1,0 +1,17 @@
+{
+  "sessionId": "pod-list-devops-123",
+  "domain": "openshift",
+  "timestamp": 1755088760906,
+  "userMessage": "Get pods in devops namespace",
+  "assistantResponse": "Found 1 pods: 0 running, 0 pending, 0 failed",
+  "context": [
+    "pods",
+    "namespace",
+    "devops"
+  ],
+  "tags": [
+    "read_operation",
+    "pods",
+    "cluster_state"
+  ]
+}

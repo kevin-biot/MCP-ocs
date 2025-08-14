@@ -34,7 +34,7 @@
     "mcp-ocs": "dist/index.js"
   },
   "scripts": {
-    "build": "tsc && chmod +x dist/*.js",
+    "build": "tsc && mkdir -p dist && (chmod -f +x dist/*.js || true)",
     "dev": "tsc --watch",
     "start": "node dist/index.js",
     "start:dev": "./scripts/dev/start-dev.sh",
@@ -47,6 +47,8 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --ci --coverage --watchAll=false",
+    "test:adapter": "jest tests/unit/memory/mcp-ocs-memory-adapter.spec.ts --collectCoverage=false --runInBand",
+    "itest:adapter": "tsx tests/integration/adapter-chroma-integration.ts",
     "lint": "eslint src/**/*.ts tests/**/*.ts",
     "lint:fix": "eslint src/**/*.ts tests/**/*.ts --fix",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
@@ -58,8 +60,10 @@
     "docker:test": "docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit"
   },
   "dependencies": {
+    "@chroma-core/default-embed": "^0.1.8",
     "@kubernetes/client-node": "^0.21.0",
     "@modelcontextprotocol/sdk": "^1.12.3",
+    "chromadb": "^3.0.10",
     "express": "^4.18.0",
     "js-yaml": "^4.1.0",
     "mcp-shared-memory": "file:../MCP-router/src/memory",
@@ -82,6 +86,7 @@
     "testcontainers": "^10.2.1",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.1",
+    "tsx": "^4.20.4",
     "typescript": "^5.9.2"
   }
 }

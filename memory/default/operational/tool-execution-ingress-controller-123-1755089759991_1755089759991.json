@@ -1,0 +1,23 @@
+{
+  "incidentId": "tool-execution-ingress-controller-123-1755089759991",
+  "domain": "openshift",
+  "timestamp": 1755089759991,
+  "symptoms": [
+    "Operation in namespace: openshift-ingress-operator"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:openshift-ingress-operator"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_describe"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-ingress-operator",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

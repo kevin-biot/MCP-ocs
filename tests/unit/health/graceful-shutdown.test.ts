@@ -1,6 +1,9 @@
 /**
  * Unit tests for GracefulShutdown, OperationTracker, and decorators
  */
+jest.mock('../../../src/lib/logging/structured-logger', () => ({
+  logger: { info: jest.fn(), debug: jest.fn(), warn: jest.fn(), error: jest.fn() }
+}));
 
 let restoreConsole: (() => void) | null = null;
 beforeEach(() => {

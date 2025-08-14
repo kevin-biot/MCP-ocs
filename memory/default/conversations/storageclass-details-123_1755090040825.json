@@ -1,0 +1,18 @@
+{
+  "sessionId": "storageclass-details-123",
+  "domain": "openshift",
+  "timestamp": 1755090040825,
+  "userMessage": "Execute oc_read_describe with args: {\"resourceType\":\"storageclass\",\"name\":\"gp3-csi\",\"sessionId\":\"storageclass-details-123\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_describe",
+    "resourceType",
+    "name",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "execution_success"
+  ]
+}

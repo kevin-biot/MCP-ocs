@@ -1,0 +1,25 @@
+{
+  "incidentId": "tool-execution-all-namespaces-routes-123-1755089750513",
+  "domain": "openshift",
+  "timestamp": 1755089750513,
+  "symptoms": [
+    "Operation in namespace: all"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:all"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_get_pods"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:all",
+    "pod_analysis",
+    "pod_count:0",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

@@ -1,17 +1,10 @@
 /**
  * Memory System Entry Point
- * 
- * Exports all memory-related functionality for the MCP-ocs system.
+ *
+ * Streamlined exports for the stability-first rebuild.
  */
 
-export { VectorMemoryManager } from './vector-memory-manager.js';
-export { VectorStore } from './vector-store.js';
 export { SharedMemoryManager } from './shared-memory.js';
-export { AutoMemorySystem } from './auto-memory-system.js';
-export { 
-  KnowledgeSeedingSystem, 
-  KnowledgeSourceClass, 
-  KnowledgeSeedTemplate, 
-  EnhancedMemoryRecord,
-  ENGINEER_TEMPLATES 
-} from './knowledge-seeding-system.js';
+export { MCPOcsMemoryAdapter } from './mcp-ocs-memory-adapter.js';
+export type { OCSIncidentMemory } from './mcp-ocs-memory-adapter.js';
+export { createOcsAdapter } from './adapter-entry.js';

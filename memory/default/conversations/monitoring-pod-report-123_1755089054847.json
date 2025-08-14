@@ -1,0 +1,17 @@
+{
+  "sessionId": "monitoring-pod-report-123",
+  "domain": "openshift",
+  "timestamp": 1755089054847,
+  "userMessage": "Get pods in openshift-monitoring namespace",
+  "assistantResponse": "Found 21 pods: 15 running, 6 pending, 0 failed",
+  "context": [
+    "pods",
+    "namespace",
+    "openshift-monitoring"
+  ],
+  "tags": [
+    "read_operation",
+    "pods",
+    "cluster_state"
+  ]
+}

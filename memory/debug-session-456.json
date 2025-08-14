@@ -1,0 +1,22 @@
+[
+  {
+    "sessionId": "debug-session-456",
+    "timestamp": 1755182781705,
+    "userMessage": "Tool oc_diagnostic_cluster_health executed with args: {\"includeNamespaceAnalysis\":true,\"maxNamespacesToAnalyze\":10}",
+    "assistantResponse": "{\"cluster\":{\"status\":\"error\",\"version\":\"unknown\",\"currentUser\":\"unknown\",\"serverUrl\":\"unknown\",\"timestamp\":\"2025-08-14T14:46:21.692Z\"},\"nodes\":{\"total\":0,\"ready\":0,\"issues\":[\"Failed to get node status: Error: oc command failed after 1 attempts: Command failed: oc get nodes -o json - Command failed: oc get nodes -o json\\nerror: You must be logged in to the server (Unauthorized)\\n\"]},\"operators\":{\"total\":0,\"degraded\":[\"Failed to get operator status: Error: oc command failed after 1 attempts: Command failed: oc get clusteroperators -o json - Command failed: oc get clusteroperators -o json\\nerror: You must be logged in to the server (Unauthorized)\\n\"]},\"systemNamespaces\":[{\"namespace\":\"openshift-apiserver\",\"status\":\"failing\",\"issues\":1},{\"namespace\":\"openshift-etcd\",\"status\":\"failing\",\"issues\":1},{\"namespace\":\"openshift-kube-apiserver\",\"status\":\"failing\",\"issues\":1}],\"userNamespaces\":[\"Failed to analyze user namespaces: Error: oc command failed after 1 attempts: Command failed: oc get namespaces -o json - Command failed: oc get namespaces -o json\\nerror: You must be logged in to the server (Unauthorized)\\n\"],\"overallHealth\":\"failing\",\"duration\":\"2892ms\",\"recommendations\":[\"Check node issues: oc describe node Failed to get node status: Error: oc command failed after 1 attempts: Command failed: oc get nodes -o json - Command failed: oc get nodes -o json\\nerror: You must be logged in to the server (Unauthorized)\\n\",\"Check degraded operators: oc get clusteroperator Failed to get operator status: Error: oc command failed after 1 attempts: Command failed: oc get clusteroperators -o json - Command failed: oc get clusteroperators -o json\\nerror: You must be logged in to the server (Unauthorized)\\n -o yaml\",\"Check system namespace: oc get pods -n openshift-apiserver\"]}",
+    "context": [],
+    "tags": [
+      "diagnostic",
+      "cluster_health",
+      "failing",
+      "tool:oc_diagnostic_cluster_health",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "resource:unknown"
+    ]
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "incidentId": "tool-execution-route-details-123-1755089706025",
+  "domain": "openshift",
+  "timestamp": 1755089706025,
+  "symptoms": [
+    "Operation in namespace: openshift-console"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:openshift-console"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_describe"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-console",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

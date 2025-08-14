@@ -1,0 +1,17 @@
+{
+  "sessionId": "pod-details-123",
+  "domain": "openshift",
+  "timestamp": 1755088736775,
+  "userMessage": "Describe pod code-server-student-image-wnkqc-w6ssk-pod",
+  "assistantResponse": "Retrieved detailed information for pod/code-server-student-image-wnkqc-w6ssk-pod",
+  "context": [
+    "pod",
+    "code-server-student-image-wnkqc-w6ssk-pod",
+    "devops"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "pod"
+  ]
+}

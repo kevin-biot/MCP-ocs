@@ -1,0 +1,20 @@
+{
+  "sessionId": "resource-analysis-123",
+  "domain": "cluster",
+  "timestamp": 1755088775660,
+  "userMessage": "Execute oc_diagnostic_rca_checklist with args: {\"sessionId\":\"resource-analysis-123\",\"outputFormat\":\"markdown\",\"includeDeepAnalysis\":true}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_diagnostic_rca_checklist",
+    "sessionId",
+    "outputFormat",
+    "includeDeepAnalysis"
+  ],
+  "tags": [
+    "diagnostic_tool",
+    "red_zone_relevant",
+    "execution_success",
+    "slow_execution",
+    "performance_concern"
+  ]
+}

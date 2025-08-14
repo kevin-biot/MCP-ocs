@@ -1,0 +1,17 @@
+{
+  "sessionId": "node-info-123",
+  "domain": "openshift",
+  "timestamp": 1755088529410,
+  "userMessage": "Describe node ip-10-0-77-117.eu-west-1.compute.internal",
+  "assistantResponse": "Retrieved detailed information for node/ip-10-0-77-117.eu-west-1.compute.internal",
+  "context": [
+    "node",
+    "ip-10-0-77-117.eu-west-1.compute.internal",
+    "default"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "node"
+  ]
+}

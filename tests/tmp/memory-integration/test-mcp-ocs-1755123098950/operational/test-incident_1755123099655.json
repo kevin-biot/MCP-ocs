@@ -1,0 +1,15 @@
+{
+  "incidentId": "test-incident",
+  "domain": "cluster",
+  "timestamp": 1755123099655,
+  "symptoms": [
+    "Test symptom"
+  ],
+  "rootCause": "Test root cause",
+  "resolution": "Test resolution",
+  "environment": "test",
+  "tags": [
+    "test",
+    "incident"
+  ]
+}

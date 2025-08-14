@@ -1,0 +1,20 @@
+{
+  "incidentId": "rca-checklist-test-session-123",
+  "domain": "cluster",
+  "timestamp": 1755181930883,
+  "symptoms": [
+    "Cluster connectivity issues",
+    "Critical namespace openshift-apiserver is failing",
+    "Critical namespace openshift-etcd is failing",
+    "Critical namespace openshift-kube-apiserver is failing"
+  ],
+  "affectedResources": [],
+  "diagnosticSteps": [],
+  "tags": [
+    "rca_checklist",
+    "systematic_diagnostic",
+    "failing",
+    "cluster_wide"
+  ],
+  "environment": "prod"
+}

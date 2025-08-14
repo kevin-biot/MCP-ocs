@@ -1,0 +1,18 @@
+{
+  "incidentId": "tool-execution-pod-check-123-1755088481523",
+  "domain": "openshift",
+  "timestamp": 1755088481523,
+  "symptoms": [],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Executed oc_read_get_pods"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

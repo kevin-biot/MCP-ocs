@@ -1,0 +1,23 @@
+[
+  {
+    "sessionId": "test-session-789",
+    "timestamp": 1755182160328,
+    "userMessage": "Tool oc_diagnostic_namespace_health executed with args: {\"namespace\":\"openshift-apiserver\",\"includeIngressTest\":true}",
+    "assistantResponse": "{\"tool\":\"check_namespace_health_v2\",\"sessionId\":\"test-session-789\",\"timestamp\":\"2025-08-14T14:36:00.328Z\",\"duration\":\"242ms\",\"namespace\":\"openshift-apiserver\",\"status\":\"failing\",\"summary\":{\"pods\":\"0/0 ready\",\"pvcs\":\"0/0 bound\",\"routes\":\"0 configured\",\"criticalEvents\":0},\"issues\":{\"crashLoopPods\":[],\"imagePullErrors\":[],\"pendingPods\":[],\"oomKilledPods\":[],\"pvcErrors\":[],\"recentEvents\":[]},\"suspicions\":[\"Namespace does not exist or is not accessible\"],\"connectivity\":{\"tested\":false},\"human\":\"Namespace openshift-apiserver health check failed: Namespace does not exist or is not accessible\",\"nextActions\":[\"Run detailed diagnostics: oc describe namespace openshift-apiserver\"],\"performance\":{\"responseTime\":\"242ms\",\"cacheStats\":{\"size\":0,\"hitRate\":0.85}}}",
+    "context": [],
+    "tags": [
+      "diagnostic",
+      "namespace_health",
+      "openshift-apiserver",
+      "failing",
+      "tool:oc_diagnostic_namespace_health",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "resource:unknown"
+    ]
+  }
+]

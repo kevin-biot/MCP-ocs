@@ -1,0 +1,17 @@
+{
+  "sessionId": "storageclass-details-123",
+  "domain": "openshift",
+  "timestamp": 1755090041762,
+  "userMessage": "Describe storageclass gp3-csi",
+  "assistantResponse": "Retrieved detailed information for storageclass/gp3-csi",
+  "context": [
+    "storageclass",
+    "gp3-csi",
+    "default"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "storageclass"
+  ]
+}

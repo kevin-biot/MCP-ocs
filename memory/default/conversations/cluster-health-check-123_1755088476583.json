@@ -1,0 +1,16 @@
+{
+  "sessionId": "cluster-health-check-123",
+  "domain": "cluster",
+  "timestamp": 1755088476583,
+  "userMessage": "Execute oc_diagnostic_cluster_health with args: {\"sessionId\":\"cluster-health-check-123\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_diagnostic_cluster_health",
+    "sessionId"
+  ],
+  "tags": [
+    "diagnostic_tool",
+    "red_zone_relevant",
+    "execution_success"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "sessionId": "pvc-storage-123",
+  "domain": "openshift",
+  "timestamp": 1755090035516,
+  "userMessage": "Describe pvc shared-pvc",
+  "assistantResponse": "Retrieved detailed information for pvc/shared-pvc",
+  "context": [
+    "pvc",
+    "shared-pvc",
+    "student03"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "pvc"
+  ]
+}

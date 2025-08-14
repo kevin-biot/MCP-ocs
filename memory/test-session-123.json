@@ -1,0 +1,104 @@
+[
+  {
+    "sessionId": "test-session-123",
+    "timestamp": 1755181493284,
+    "userMessage": "Tool oc_diagnostic_cluster_health executed with args: {\"includeNamespaceAnalysis\":false,\"maxNamespacesToAnalyze\":10}",
+    "assistantResponse": "{\"cluster\":{\"status\":\"error\",\"version\":\"unknown\",\"currentUser\":\"unknown\",\"serverUrl\":\"unknown\",\"timestamp\":\"2025-08-14T14:24:53.272Z\"},\"nodes\":{\"total\":0,\"ready\":0,\"issues\":[\"Failed to get node status: Error: oc command failed after 1 attempts: Command failed: oc get nodes -o json - Command failed: oc get nodes -o json\\nerror: You must be logged in to the server (Unauthorized)\\n\"]},\"operators\":{\"total\":0,\"degraded\":[\"Failed to get operator status: Error: oc command failed after 1 attempts: Command failed: oc get clusteroperators -o json - Command failed: oc get clusteroperators -o json\\nerror: You must be logged in to the server (Unauthorized)\\n\"]},\"systemNamespaces\":[{\"namespace\":\"openshift-apiserver\",\"status\":\"failing\",\"issues\":1},{\"namespace\":\"openshift-etcd\",\"status\":\"failing\",\"issues\":1},{\"namespace\":\"openshift-kube-apiserver\",\"status\":\"failing\",\"issues\":1}],\"userNamespaces\":null,\"overallHealth\":\"failing\",\"duration\":\"2415ms\",\"recommendations\":[\"Check node issues: oc describe node Failed to get node status: Error: oc command failed after 1 attempts: Command failed: oc get nodes -o json - Command failed: oc get nodes -o json\\nerror: You must be logged in to the server (Unauthorized)\\n\",\"Check degraded operators: oc get clusteroperator Failed to get operator status: Error: oc command failed after 1 attempts: Command failed: oc get clusteroperators -o json - Command failed: oc get clusteroperators -o json\\nerror: You must be logged in to the server (Unauthorized)\\n -o yaml\",\"Check system namespace: oc get pods -n openshift-apiserver\"]}",
+    "context": [],
+    "tags": [
+      "diagnostic",
+      "cluster_health",
+      "failing",
+      "tool:oc_diagnostic_cluster_health",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "resource:unknown"
+    ]
+  },
+  {
+    "sessionId": "test-session-123",
+    "timestamp": 1755181495074,
+    "userMessage": "Tool oc_diagnostic_namespace_health executed with args: {\"namespace\":\"test-namespace\",\"includeIngressTest\":false}",
+    "assistantResponse": "{\"tool\":\"check_namespace_health_v2\",\"sessionId\":\"test-session-123\",\"timestamp\":\"2025-08-14T14:24:55.074Z\",\"duration\":\"289ms\",\"namespace\":\"test-namespace\",\"status\":\"failing\",\"summary\":{\"pods\":\"0/0 ready\",\"pvcs\":\"0/0 bound\",\"routes\":\"0 configured\",\"criticalEvents\":0},\"issues\":{\"crashLoopPods\":[],\"imagePullErrors\":[],\"pendingPods\":[],\"oomKilledPods\":[],\"pvcErrors\":[],\"recentEvents\":[]},\"suspicions\":[\"Namespace does not exist or is not accessible\"],\"connectivity\":{\"tested\":false},\"human\":\"Namespace test-namespace health check failed: Namespace does not exist or is not accessible\",\"nextActions\":[\"Run detailed diagnostics: oc describe namespace test-namespace\"],\"performance\":{\"responseTime\":\"289ms\",\"cacheStats\":{\"size\":0,\"hitRate\":0.85}}}",
+    "context": [],
+    "tags": [
+      "diagnostic",
+      "namespace_health",
+      "test-namespace",
+      "failing",
+      "tool:oc_diagnostic_namespace_health",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "resource:unknown"
+    ]
+  },
+  {
+    "sessionId": "test-session-123",
+    "timestamp": 1755181924110,
+    "userMessage": "Tool oc_diagnostic_cluster_health executed with args: {\"includeNamespaceAnalysis\":false,\"maxNamespacesToAnalyze\":10}",
+    "assistantResponse": "{\"cluster\":{\"status\":\"error\",\"version\":\"unknown\",\"currentUser\":\"unknown\",\"serverUrl\":\"unknown\",\"timestamp\":\"2025-08-14T14:32:04.099Z\"},\"nodes\":{\"total\":0,\"ready\":0,\"issues\":[\"Failed to get node status: Error: oc command failed after 1 attempts: Command failed: oc get nodes -o json - Command failed: oc get nodes -o json\\nerror: You must be logged in to the server (Unauthorized)\\n\"]},\"operators\":{\"total\":0,\"degraded\":[\"Failed to get operator status: Error: oc command failed after 1 attempts: Command failed: oc get clusteroperators -o json - Command failed: oc get clusteroperators -o json\\nerror: You must be logged in to the server (Unauthorized)\\n\"]},\"systemNamespaces\":[{\"namespace\":\"openshift-apiserver\",\"status\":\"failing\",\"issues\":1},{\"namespace\":\"openshift-etcd\",\"status\":\"failing\",\"issues\":1},{\"namespace\":\"openshift-kube-apiserver\",\"status\":\"failing\",\"issues\":1}],\"userNamespaces\":null,\"overallHealth\":\"failing\",\"duration\":\"2950ms\",\"recommendations\":[\"Check node issues: oc describe node Failed to get node status: Error: oc command failed after 1 attempts: Command failed: oc get nodes -o json - Command failed: oc get nodes -o json\\nerror: You must be logged in to the server (Unauthorized)\\n\",\"Check degraded operators: oc get clusteroperator Failed to get operator status: Error: oc command failed after 1 attempts: Command failed: oc get clusteroperators -o json - Command failed: oc get clusteroperators -o json\\nerror: You must be logged in to the server (Unauthorized)\\n -o yaml\",\"Check system namespace: oc get pods -n openshift-apiserver\"]}",
+    "context": [],
+    "tags": [
+      "diagnostic",
+      "cluster_health",
+      "failing",
+      "tool:oc_diagnostic_cluster_health",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "resource:unknown"
+    ]
+  },
+  {
+    "sessionId": "test-session-123",
+    "timestamp": 1755181926132,
+    "userMessage": "Tool oc_diagnostic_namespace_health executed with args: {\"namespace\":\"test-namespace\",\"includeIngressTest\":false}",
+    "assistantResponse": "{\"tool\":\"check_namespace_health_v2\",\"sessionId\":\"test-session-123\",\"timestamp\":\"2025-08-14T14:32:06.131Z\",\"duration\":\"236ms\",\"namespace\":\"test-namespace\",\"status\":\"failing\",\"summary\":{\"pods\":\"0/0 ready\",\"pvcs\":\"0/0 bound\",\"routes\":\"0 configured\",\"criticalEvents\":0},\"issues\":{\"crashLoopPods\":[],\"imagePullErrors\":[],\"pendingPods\":[],\"oomKilledPods\":[],\"pvcErrors\":[],\"recentEvents\":[]},\"suspicions\":[\"Namespace does not exist or is not accessible\"],\"connectivity\":{\"tested\":false},\"human\":\"Namespace test-namespace health check failed: Namespace does not exist or is not accessible\",\"nextActions\":[\"Run detailed diagnostics: oc describe namespace test-namespace\"],\"performance\":{\"responseTime\":\"236ms\",\"cacheStats\":{\"size\":0,\"hitRate\":0.85}}}",
+    "context": [],
+    "tags": [
+      "diagnostic",
+      "namespace_health",
+      "test-namespace",
+      "failing",
+      "tool:oc_diagnostic_namespace_health",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "resource:unknown"
+    ]
+  },
+  {
+    "sessionId": "test-session-123",
+    "timestamp": 1755182473275,
+    "userMessage": "Tool oc_diagnostic_cluster_health executed with args: {\"includeNamespaceAnalysis\":false,\"maxNamespacesToAnalyze\":10}",
+    "assistantResponse": "{\"cluster\":{\"status\":\"error\",\"version\":\"unknown\",\"currentUser\":\"unknown\",\"serverUrl\":\"unknown\",\"timestamp\":\"2025-08-14T14:41:13.267Z\"},\"nodes\":{\"total\":0,\"ready\":0,\"issues\":[\"Failed to get node status: Error: oc command failed after 1 attempts: Command failed: oc get nodes -o json - Command failed: oc get nodes -o json\\nerror: You must be logged in to the server (Unauthorized)\\n\"]},\"operators\":{\"total\":0,\"degraded\":[\"Failed to get operator status: Error: oc command failed after 1 attempts: Command failed: oc get clusteroperators -o json - Command failed: oc get clusteroperators -o json\\nerror: You must be logged in to the server (Unauthorized)\\n\"]},\"systemNamespaces\":[{\"namespace\":\"openshift-apiserver\",\"status\":\"failing\",\"issues\":1},{\"namespace\":\"openshift-etcd\",\"status\":\"failing\",\"issues\":1},{\"namespace\":\"openshift-kube-apiserver\",\"status\":\"failing\",\"issues\":1}],\"userNamespaces\":null,\"overallHealth\":\"failing\",\"duration\":\"2991ms\",\"recommendations\":[\"Check node issues: oc describe node Failed to get node status: Error: oc command failed after 1 attempts: Command failed: oc get nodes -o json - Command failed: oc get nodes -o json\\nerror: You must be logged in to the server (Unauthorized)\\n\",\"Check degraded operators: oc get clusteroperator Failed to get operator status: Error: oc command failed after 1 attempts: Command failed: oc get clusteroperators -o json - Command failed: oc get clusteroperators -o json\\nerror: You must be logged in to the server (Unauthorized)\\n -o yaml\",\"Check system namespace: oc get pods -n openshift-apiserver\"]}",
+    "context": [],
+    "tags": [
+      "diagnostic",
+      "cluster_health",
+      "failing",
+      "tool:oc_diagnostic_cluster_health",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "domain:openshift",
+      "environment:prod",
+      "severity:medium",
+      "resource:unknown"
+    ]
+  }
+]

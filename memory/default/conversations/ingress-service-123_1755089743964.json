@@ -1,0 +1,17 @@
+{
+  "sessionId": "ingress-service-123",
+  "domain": "openshift",
+  "timestamp": 1755089743964,
+  "userMessage": "Describe service router-default",
+  "assistantResponse": "Retrieved detailed information for service/router-default",
+  "context": [
+    "service",
+    "router-default",
+    "openshift-ingress"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "service"
+  ]
+}

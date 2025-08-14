@@ -1,0 +1,18 @@
+{
+  "sessionId": "auto-session-1755117522244",
+  "domain": "system",
+  "timestamp": 1755117522230,
+  "userMessage": "Execute knowledge_seed_pattern with args: {\"operation\":\"seed\",\"title\":\"Test Knowledge Entry\",\"content\":\"This is a test knowledge entry for demonstration purposes\",\"sourceClass\":\"engineer_added\",\"tags\":[\"test\",\"knowledge\"]}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "knowledge_seed_pattern",
+    "operation",
+    "title",
+    "content",
+    "sourceClass",
+    "tags"
+  ],
+  "tags": [
+    "execution_success"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "sessionId": "test-session",
+  "domain": "test",
+  "timestamp": 1755122848742,
+  "userMessage": "How to scale deployment?",
+  "assistantResponse": "Use oc scale deployment --replicas=3",
+  "context": [
+    "test",
+    "context"
+  ],
+  "tags": [
+    "deployment",
+    "scaling",
+    "operations"
+  ]
+}

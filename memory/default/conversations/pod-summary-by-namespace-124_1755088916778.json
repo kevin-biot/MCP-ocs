@@ -1,0 +1,17 @@
+{
+  "sessionId": "pod-summary-by-namespace-124",
+  "domain": "openshift",
+  "timestamp": 1755088916778,
+  "userMessage": "Get pods in student01 namespace",
+  "assistantResponse": "Found 2 pods: 2 running, 0 pending, 0 failed",
+  "context": [
+    "pods",
+    "namespace",
+    "student01"
+  ],
+  "tags": [
+    "read_operation",
+    "pods",
+    "cluster_state"
+  ]
+}

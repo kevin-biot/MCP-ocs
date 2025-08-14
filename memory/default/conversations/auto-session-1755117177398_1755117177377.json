@@ -1,0 +1,17 @@
+{
+  "sessionId": "auto-session-1755117177398",
+  "domain": "knowledge",
+  "timestamp": 1755117177377,
+  "userMessage": "Execute memory_search_operational with args: {\"query\":\"cluster\",\"limit\":3}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "memory_search_operational",
+    "query",
+    "limit"
+  ],
+  "tags": [
+    "memory_operation",
+    "workflow_tracking",
+    "execution_success"
+  ]
+}

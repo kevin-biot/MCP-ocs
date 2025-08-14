@@ -1,0 +1,17 @@
+{
+  "sessionId": "rbac-clusterrole-123",
+  "domain": "openshift",
+  "timestamp": 1755089463553,
+  "userMessage": "Describe clusterrole monitoring-edit",
+  "assistantResponse": "Retrieved detailed information for clusterrole/monitoring-edit",
+  "context": [
+    "clusterrole",
+    "monitoring-edit",
+    "default"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "clusterrole"
+  ]
+}

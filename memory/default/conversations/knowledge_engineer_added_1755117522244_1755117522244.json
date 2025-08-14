@@ -1,0 +1,19 @@
+{
+  "sessionId": "knowledge_engineer_added_1755117522244",
+  "domain": "knowledge-seeding",
+  "timestamp": 1755117522244,
+  "userMessage": "Knowledge Seed: Test Knowledge Entry",
+  "assistantResponse": "{\"id\":\"knowledge_engineer_added_1755117522244\",\"sourceClass\":\"engineer_added\",\"content\":\"This is a test knowledge entry for demonstration purposes\",\"tags\":[\"source:engineer_added\",\"test\",\"knowledge\",\"knowledge_seed\",\"vector_memory\",\"seeded_knowledge\"],\"context\":{\"title\":\"Test Knowledge Entry\",\"seedType\":\"manual_knowledge_seeding\",\"engineerAdded\":true},\"metadata\":{\"sourceType\":\"engineer_added\",\"author\":\"engineer\",\"creationDate\":\"2025-08-13T20:38:42.244Z\",\"reliability\":85,\"references\":[]}}",
+  "context": [
+    "Knowledge seeded by engineer",
+    "Source: engineer_added"
+  ],
+  "tags": [
+    "source:engineer_added",
+    "test",
+    "knowledge",
+    "knowledge_seed",
+    "vector_memory",
+    "seeded_knowledge"
+  ]
+}

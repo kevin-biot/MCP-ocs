@@ -1,0 +1,17 @@
+{
+  "sessionId": "rbac-summary-123",
+  "domain": "openshift",
+  "timestamp": 1755089474910,
+  "userMessage": "Get pods in openshift-gitops namespace",
+  "assistantResponse": "Found 8 pods: 7 running, 1 pending, 0 failed",
+  "context": [
+    "pods",
+    "namespace",
+    "openshift-gitops"
+  ],
+  "tags": [
+    "read_operation",
+    "pods",
+    "cluster_state"
+  ]
+}

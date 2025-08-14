@@ -1,0 +1,18 @@
+{
+  "incidentId": "tool-execution-cluster-health-check-123-1755088476583",
+  "domain": "cluster",
+  "timestamp": 1755088476583,
+  "symptoms": [],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Executed oc_diagnostic_cluster_health"
+  ],
+  "tags": [
+    "diagnostic_tool",
+    "red_zone_relevant",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

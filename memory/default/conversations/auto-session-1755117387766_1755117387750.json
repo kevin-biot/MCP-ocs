@@ -1,0 +1,21 @@
+{
+  "sessionId": "auto-session-1755117387766",
+  "domain": "knowledge",
+  "timestamp": 1755117387750,
+  "userMessage": "Execute memory_store_operational with args: {\"incidentId\":\"test-incident-001\",\"symptoms\":[\"Test system message\"],\"rootCause\":\"Test root cause\",\"resolution\":\"Test resolution\",\"affectedResources\":[\"test-resource-1\"],\"environment\":\"test\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "memory_store_operational",
+    "incidentId",
+    "symptoms",
+    "rootCause",
+    "resolution",
+    "affectedResources",
+    "environment"
+  ],
+  "tags": [
+    "memory_operation",
+    "workflow_tracking",
+    "execution_success"
+  ]
+}

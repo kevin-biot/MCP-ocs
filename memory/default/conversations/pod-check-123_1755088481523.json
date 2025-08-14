@@ -1,0 +1,16 @@
+{
+  "sessionId": "pod-check-123",
+  "domain": "openshift",
+  "timestamp": 1755088481523,
+  "userMessage": "Execute oc_read_get_pods with args: {\"sessionId\":\"pod-check-123\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_get_pods",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "execution_success"
+  ]
+}

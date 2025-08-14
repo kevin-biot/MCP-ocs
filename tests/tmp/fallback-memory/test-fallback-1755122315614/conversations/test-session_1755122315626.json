@@ -1,0 +1,15 @@
+{
+  "sessionId": "test-session",
+  "domain": "test",
+  "timestamp": 1755122315626,
+  "userMessage": "Test user message",
+  "assistantResponse": "Test assistant response",
+  "context": [
+    "test",
+    "context"
+  ],
+  "tags": [
+    "test",
+    "memory"
+  ]
+}

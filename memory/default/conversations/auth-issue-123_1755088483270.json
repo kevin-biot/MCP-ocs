@@ -1,0 +1,16 @@
+{
+  "sessionId": "auth-issue-123",
+  "domain": "knowledge",
+  "timestamp": 1755088483270,
+  "userMessage": "Search memory for: cluster authentication issues OpenShift",
+  "assistantResponse": "Found 2 relevant incidents in operational memory",
+  "context": [
+    "memory_search",
+    "cluster authentication issues OpenShift"
+  ],
+  "tags": [
+    "memory_operation",
+    "knowledge_retrieval",
+    "pattern_matching"
+  ]
+}

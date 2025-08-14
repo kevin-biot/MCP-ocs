@@ -1,0 +1,22 @@
+{
+  "incidentId": "test-incident-002",
+  "domain": "operations",
+  "timestamp": 1755117520551,
+  "symptoms": [
+    "Second test system message"
+  ],
+  "rootCause": "Second test root cause",
+  "resolution": "Second test resolution",
+  "affectedResources": [
+    "test-resource-2"
+  ],
+  "diagnosticSteps": [
+    "Manual incident storage"
+  ],
+  "tags": [
+    "incident_storage",
+    "manual_entry",
+    "dev"
+  ],
+  "environment": "dev"
+}

@@ -1,0 +1,23 @@
+{
+  "incidentId": "tool-execution-ingress-service-123-1755089742320",
+  "domain": "openshift",
+  "timestamp": 1755089742320,
+  "symptoms": [
+    "Operation in namespace: openshift-ingress"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:openshift-ingress"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_describe"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-ingress",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

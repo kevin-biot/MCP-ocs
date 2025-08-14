@@ -1,0 +1,18 @@
+{
+  "incidentId": "tool-execution-node-info-124-1755088540246",
+  "domain": "openshift",
+  "timestamp": 1755088540246,
+  "symptoms": [],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Executed oc_read_describe"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

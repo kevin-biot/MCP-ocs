@@ -1,0 +1,17 @@
+{
+  "sessionId": "router-pod-analysis-123",
+  "domain": "openshift",
+  "timestamp": 1755089719302,
+  "userMessage": "Describe pod router-default-5c65587884-f5vzx",
+  "assistantResponse": "Retrieved detailed information for pod/router-default-5c65587884-f5vzx",
+  "context": [
+    "pod",
+    "router-default-5c65587884-f5vzx",
+    "openshift-ingress"
+  ],
+  "tags": [
+    "read_operation",
+    "describe",
+    "pod"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "incidentId": "test-incident-001",
+  "domain": "operations",
+  "timestamp": 1755117387765,
+  "symptoms": [
+    "Test system message"
+  ],
+  "rootCause": "Test root cause",
+  "resolution": "Test resolution",
+  "affectedResources": [
+    "test-resource-1"
+  ],
+  "diagnosticSteps": [
+    "Manual incident storage"
+  ],
+  "tags": [
+    "incident_storage",
+    "manual_entry",
+    "test"
+  ],
+  "environment": "test"
+}

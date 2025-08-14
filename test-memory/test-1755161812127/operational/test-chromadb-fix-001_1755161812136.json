@@ -1,0 +1,24 @@
+{
+  "incidentId": "test-chromadb-fix-001",
+  "domain": "test",
+  "timestamp": 1755161812136,
+  "symptoms": [
+    "Pod not starting",
+    "ImagePullBackOff error"
+  ],
+  "rootCause": "Invalid image tag",
+  "resolution": "Updated image tag in deployment",
+  "environment": "test",
+  "affectedResources": [
+    "test-pod"
+  ],
+  "diagnosticSteps": [
+    "Check pod logs",
+    "Verify image tag"
+  ],
+  "tags": [
+    "pod",
+    "image",
+    "deployment"
+  ]
+}

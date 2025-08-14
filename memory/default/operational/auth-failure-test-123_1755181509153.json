@@ -1,0 +1,24 @@
+{
+  "incidentId": "auth-failure-test-123",
+  "domain": "operations",
+  "timestamp": 1755181509153,
+  "symptoms": [
+    "Unauthorized access to OpenShift cluster"
+  ],
+  "rootCause": "Authentication failure preventing cluster diagnostics",
+  "resolution": "User must authenticate to the OpenShift/Kubernetes cluster",
+  "affectedResources": [
+    "cluster",
+    "nodes",
+    "operators"
+  ],
+  "diagnosticSteps": [
+    "Manual incident storage"
+  ],
+  "tags": [
+    "incident_storage",
+    "manual_entry",
+    "test"
+  ],
+  "environment": "test"
+}

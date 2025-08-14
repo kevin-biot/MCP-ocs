@@ -1,0 +1,16 @@
+{
+  "sessionId": "test-session",
+  "domain": "test",
+  "timestamp": 1755123099094,
+  "userMessage": "Test message 48 about pod issues",
+  "assistantResponse": "Response 48 about troubleshooting",
+  "context": [
+    "test",
+    "context"
+  ],
+  "tags": [
+    "test-48",
+    "performance",
+    "pod"
+  ]
+}

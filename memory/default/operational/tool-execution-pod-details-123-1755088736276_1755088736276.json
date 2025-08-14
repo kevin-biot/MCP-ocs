@@ -1,0 +1,23 @@
+{
+  "incidentId": "tool-execution-pod-details-123-1755088736276",
+  "domain": "openshift",
+  "timestamp": 1755088736276,
+  "symptoms": [
+    "Operation in namespace: devops"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:devops"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_describe"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:devops",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

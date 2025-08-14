@@ -1,0 +1,15 @@
+{
+  "sessionId": "test-session",
+  "domain": "test",
+  "timestamp": 1755123265847,
+  "userMessage": "service mesh configuration problem",
+  "assistantResponse": "Review mesh policies",
+  "context": [
+    "test",
+    "context"
+  ],
+  "tags": [
+    "test",
+    "memory"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "incidentId": "tool-execution-cluster-pod-summary-123-1755088611310",
+  "domain": "openshift",
+  "timestamp": 1755088611310,
+  "symptoms": [
+    "Operation in namespace: all"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:all"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_get_pods"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:all",
+    "pod_analysis",
+    "pod_count:0",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

@@ -1,0 +1,19 @@
+[
+  {
+    "sessionId": "itest-1755173200607",
+    "timestamp": 1755173200607,
+    "userMessage": "Pod entering CrashLoopBackOff after rollout",
+    "assistantResponse": "Check logs, events, and resource limits",
+    "context": [
+      "ns/default",
+      "deploy/example"
+    ],
+    "tags": [
+      "itest",
+      "domain:openshift",
+      "environment:dev",
+      "severity:high",
+      "resource:pod"
+    ]
+  }
+]

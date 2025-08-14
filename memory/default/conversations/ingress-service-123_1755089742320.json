@@ -1,0 +1,20 @@
+{
+  "sessionId": "ingress-service-123",
+  "domain": "openshift",
+  "timestamp": 1755089742320,
+  "userMessage": "Execute oc_read_describe with args: {\"resourceType\":\"service\",\"name\":\"router-default\",\"namespace\":\"openshift-ingress\",\"sessionId\":\"ingress-service-123\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_describe",
+    "resourceType",
+    "name",
+    "namespace",
+    "sessionId"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-ingress",
+    "execution_success"
+  ]
+}

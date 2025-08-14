@@ -1,0 +1,20 @@
+{
+  "sessionId": "ingress-pod-details-123",
+  "domain": "openshift",
+  "timestamp": 1755089709765,
+  "userMessage": "Execute oc_read_get_pods with args: {\"sessionId\":\"ingress-pod-details-123\",\"namespace\":\"openshift-ingress\"}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "oc_read_get_pods",
+    "sessionId",
+    "namespace"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-ingress",
+    "pod_analysis",
+    "pod_count:2",
+    "execution_success"
+  ]
+}

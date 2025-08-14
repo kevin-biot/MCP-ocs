@@ -1,0 +1,24 @@
+{
+  "incidentId": "rca-checklist-resource-analysis-123",
+  "domain": "cluster",
+  "timestamp": 1755088791340,
+  "symptoms": [
+    "Critical namespace openshift-etcd is degraded",
+    "Critical namespace openshift-kube-apiserver is degraded",
+    "Storage binding issues detected",
+    "FailedScheduling: Pod/openshift-gitops-repo-server-5cddfbc756-gdcd4",
+    "FailedScheduling: Pod/image-registry-7597c54445-6dr62",
+    "Resource quota constraints detected"
+  ],
+  "affectedResources": [],
+  "diagnosticSteps": [
+    "Cluster connectivity verified"
+  ],
+  "tags": [
+    "rca_checklist",
+    "systematic_diagnostic",
+    "degraded",
+    "cluster_wide"
+  ],
+  "environment": "prod"
+}

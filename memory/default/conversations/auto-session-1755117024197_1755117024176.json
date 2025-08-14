@@ -1,0 +1,17 @@
+{
+  "sessionId": "auto-session-1755117024197",
+  "domain": "knowledge",
+  "timestamp": 1755117024176,
+  "userMessage": "Execute memory_search_operational with args: {\"query\":\"test\",\"limit\":1}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "memory_search_operational",
+    "query",
+    "limit"
+  ],
+  "tags": [
+    "memory_operation",
+    "workflow_tracking",
+    "execution_success"
+  ]
+}

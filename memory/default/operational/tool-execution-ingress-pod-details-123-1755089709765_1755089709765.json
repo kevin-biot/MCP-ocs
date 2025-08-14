@@ -1,0 +1,25 @@
+{
+  "incidentId": "tool-execution-ingress-pod-details-123-1755089709765",
+  "domain": "openshift",
+  "timestamp": 1755089709765,
+  "symptoms": [
+    "Operation in namespace: openshift-ingress"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:openshift-ingress"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_get_pods"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:openshift-ingress",
+    "pod_analysis",
+    "pod_count:2",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

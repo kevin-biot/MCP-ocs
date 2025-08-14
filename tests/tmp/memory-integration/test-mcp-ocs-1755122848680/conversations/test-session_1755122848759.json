@@ -1,0 +1,15 @@
+{
+  "sessionId": "test-session",
+  "domain": "test",
+  "timestamp": 1755122848759,
+  "userMessage": "The nginx deployment in production namespace is failing",
+  "assistantResponse": "Let me check the deployment status and logs for nginx",
+  "context": [
+    "deployment",
+    "production"
+  ],
+  "tags": [
+    "test",
+    "memory"
+  ]
+}

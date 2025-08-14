@@ -13,8 +13,8 @@
  * 6. Generate structured findings and next steps
  */
 
-import { OcWrapperV2 } from '../../lib/oc-wrapper-v2.js';
-import { NamespaceHealthChecker } from '../check-namespace-health/index.js';
+import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+import { NamespaceHealthChecker } from '../check-namespace-health/index';
 
 export interface RCAChecklistInput {
   namespace?: string;           // Target namespace (optional for cluster-wide)

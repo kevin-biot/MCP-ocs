@@ -1,0 +1,24 @@
+{
+  "incidentId": "test-incident-123",
+  "domain": "operations",
+  "timestamp": 1755181940982,
+  "symptoms": [
+    "test symptom 1",
+    "test symptom 2"
+  ],
+  "rootCause": "test root cause",
+  "resolution": "test resolution",
+  "affectedResources": [
+    "test-resource-1",
+    "test-resource-2"
+  ],
+  "diagnosticSteps": [
+    "Manual incident storage"
+  ],
+  "tags": [
+    "incident_storage",
+    "manual_entry",
+    "dev"
+  ],
+  "environment": "dev"
+}

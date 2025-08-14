@@ -1,0 +1,17 @@
+{
+  "sessionId": "ingress-pod-details-123",
+  "domain": "openshift",
+  "timestamp": 1755089711115,
+  "userMessage": "Get pods in openshift-ingress namespace",
+  "assistantResponse": "Found 2 pods: 1 running, 1 pending, 0 failed",
+  "context": [
+    "pods",
+    "namespace",
+    "openshift-ingress"
+  ],
+  "tags": [
+    "read_operation",
+    "pods",
+    "cluster_state"
+  ]
+}

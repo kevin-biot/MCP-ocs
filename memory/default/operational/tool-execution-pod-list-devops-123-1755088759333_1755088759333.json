@@ -1,0 +1,28 @@
+{
+  "incidentId": "tool-execution-pod-list-devops-123-1755088759333",
+  "domain": "openshift",
+  "timestamp": 1755088759333,
+  "symptoms": [
+    "Operation in namespace: devops"
+  ],
+  "rootCause": "successful_operation",
+  "resolution": "completed_successfully",
+  "affectedResources": [
+    "namespace:devops"
+  ],
+  "diagnosticSteps": [
+    "Executed oc_read_get_pods"
+  ],
+  "tags": [
+    "read_operation",
+    "data_gathering",
+    "namespace:devops",
+    "pod_analysis",
+    "pod_count:1",
+    "build_artifacts_pattern",
+    "pods_succeeded_not_ready",
+    "ci_cd_pattern",
+    "execution_success"
+  ],
+  "environment": "prod"
+}

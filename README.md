@@ -85,6 +85,31 @@ scripts/test/dual-mode/enhanced-clean.sh
 npm run test:unit -- tests/unit/basic.test.ts --verbose
 ```
 
+#### Integration tests: Chroma and Storage Intelligence
+
+Some integration tests are opt-in to keep CI and sandbox runs fast and reliable. Enable them locally via environment flags.
+
+- External Chroma mode (no Docker required):
+  - Start Chroma locally:
+    - `chroma run --host 127.0.0.1 --port 8000`
+  - Run only the Chroma integration suite:
+    - `CHROMA_EXTERNAL=1 CHROMA_HOST=127.0.0.1 CHROMA_PORT=8000 npx jest tests/integration/memory/chroma-integration.test.ts`
+  - Or run the full test run with external Chroma enabled:
+    - `CHROMA_EXTERNAL=1 CHROMA_HOST=127.0.0.1 CHROMA_PORT=8000 npm run test:unit`
+
+- Testcontainers mode (requires Docker/Podman):
+  - Enable container-backed tests explicitly:
+    - `TESTCONTAINERS=1 npx jest tests/integration/memory/chroma-integration.test.ts`
+  - Notes: environment must have a working container runtime and network access to pull `chromadb/chroma:latest`.
+
+- Storage Intelligence integration (lightweight, opt-in):
+  - Default is skipped to avoid unexpected CI failures.
+  - Enable with:
+    - `STORAGE_INTELLIGENCE_IT=1 npx jest tests/integration/storage-intelligence.test.ts`
+  - Validates tool registration and execution wiring with mocked engines.
+
+If these flags are not set, the corresponding integration suites are skipped and will not affect the 16/16 unit test success rate.
+
 ## 📚 Documentation
 
 ### Testing Documentation

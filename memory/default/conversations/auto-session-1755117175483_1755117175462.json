@@ -1,0 +1,17 @@
+{
+  "sessionId": "auto-session-1755117175483",
+  "domain": "knowledge",
+  "timestamp": 1755117175462,
+  "userMessage": "Execute memory_search_operational with args: {\"query\":\"kubernetes namespace\",\"limit\":5}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "memory_search_operational",
+    "query",
+    "limit"
+  ],
+  "tags": [
+    "memory_operation",
+    "workflow_tracking",
+    "execution_success"
+  ]
+}

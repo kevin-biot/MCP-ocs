@@ -1,0 +1,15 @@
+{
+  "sessionId": "concurrent-18",
+  "domain": "test",
+  "timestamp": 1755122849101,
+  "userMessage": "Concurrent message 18",
+  "assistantResponse": "Concurrent response 18",
+  "context": [
+    "test",
+    "context"
+  ],
+  "tags": [
+    "test",
+    "memory"
+  ]
+}

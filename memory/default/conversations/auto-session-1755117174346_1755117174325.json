@@ -1,0 +1,17 @@
+{
+  "sessionId": "auto-session-1755117174346",
+  "domain": "knowledge",
+  "timestamp": 1755117174325,
+  "userMessage": "Execute memory_search_operational with args: {\"query\":\"openshift namespace\",\"limit\":5}",
+  "assistantResponse": "Operation completed successfully",
+  "context": [
+    "memory_search_operational",
+    "query",
+    "limit"
+  ],
+  "tags": [
+    "memory_operation",
+    "workflow_tracking",
+    "execution_success"
+  ]
+}
