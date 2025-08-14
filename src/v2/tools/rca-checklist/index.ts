@@ -65,6 +65,14 @@ export interface RCAChecklistResult {
   // Output formats
   human: string;
   markdown?: string;
+
+  // Intelligent RCA (Phase 2)
+  rootCause?: {
+    type: string;            // classification key
+    summary: string;         // human-readable root cause
+    confidence: number;      // 0..1 confidence score
+    evidence: string[];      // distilled evidence
+  };
 }
 
 export class RCAChecklistEngine {
@@ -111,6 +119,8 @@ export class RCAChecklistEngine {
       this.analyzeChecklistResults(result);
       this.generateNextActions(result);
       this.generateHumanSummary(result);
+      // Derive intelligent root cause from findings
+      this.deriveRootCause(result);
       
       if (outputFormat === 'markdown') {
         result.markdown = this.generateMarkdownReport(result);
@@ -124,7 +134,7 @@ export class RCAChecklistEngine {
           input,
           result,
           `rca-${startTime}`,
-          ['rca_checklist', result.overallStatus],
+          ['rca_checklist', result.overallStatus, result.rootCause ? `root_cause:${result.rootCause.type}` : 'root_cause:unknown'],
           'openshift',
           'prod',
           result.overallStatus === 'healthy' ? 'low' : (result.overallStatus === 'degraded' ? 'medium' : 'high')
@@ -863,6 +873,91 @@ export class RCAChecklistEngine {
     result.criticalIssues = checksPerformed
       .filter(c => c.severity === 'critical' || c.status === 'fail')
       .flatMap(c => c.findings);
+  }
+
+  /**
+   * Derive an intelligent root cause classification from checklist findings
+   */
+  private deriveRootCause(result: RCAChecklistResult): void {
+    const evidence: string[] = [];
+    const getCheck = (prefix: string) => result.checksPerformed.find(c => c.name.startsWith(prefix));
+
+    const storage = getCheck('Storage and PVC Health');
+    const network = getCheck('Network and Service Health');
+    const node = getCheck('Node Health and Capacity');
+    const ns = result.checksPerformed.find(c => c.name.startsWith('Namespace Health:'));
+    const events = getCheck('Recent Events');
+
+    const storageTxt = storage?.findings?.join(' ') || '';
+    const networkTxt = network?.findings?.join(' ') || '';
+    const nodeTxt = node?.findings?.join(' ') || '';
+    const nsTxt = ns?.findings?.join(' ') || '';
+    const eventsTxt = events?.findings?.join(' ') || '';
+
+    // Storage related
+    if (/Pending PVCs:\s*[1-9]/i.test(storageTxt)) {
+      evidence.push('Pending PVCs detected');
+      if (/Default storage class:\s*NONE/i.test(storageTxt)) {
+        evidence.push('No default StorageClass');
+        result.rootCause = { type: 'storage_no_default_storageclass', summary: 'Missing default StorageClass causing PVCs to remain pending', confidence: 0.9, evidence };
+        return;
+      }
+      if (/FailedMount/i.test(eventsTxt) || /provision/i.test(storageTxt) || /provision/i.test(eventsTxt)) {
+        evidence.push('FailedMount/provisioner related evidence');
+        result.rootCause = { type: 'storage_provisioner_unreachable', summary: 'Storage provisioner unreachable or misconfigured', confidence: 0.8, evidence };
+        return;
+      }
+      result.rootCause = { type: 'storage_binding_issues', summary: 'PVCs pending due to binding/provisioning issues', confidence: 0.6, evidence };
+      return;
+    }
+
+    // Services without endpoints
+    const svcNoEpMatch = networkTxt.match(/Services without endpoints:\s*(\d+)/i);
+    if (svcNoEpMatch && parseInt(svcNoEpMatch[1], 10) > 0) {
+      const count = parseInt(svcNoEpMatch[1], 10);
+      evidence.push(`${count} services without endpoints`);
+      result.rootCause = { type: 'service_no_backends', summary: 'Services have no active endpoints (backends not ready or selector mismatch)', confidence: 0.75, evidence };
+      return;
+    }
+
+    // Image pull
+    if (/ImagePullBackOff|ErrImagePull/i.test(eventsTxt)) {
+      evidence.push('Image pull failures');
+      result.rootCause = { type: 'image_pull_failures', summary: 'Image registry/credentials problems or image unavailable', confidence: 0.7, evidence };
+      return;
+    }
+
+    // Crash loops / OOM
+    if (/CrashLoopBackOff|OOMKilled/i.test(eventsTxt)) {
+      evidence.push('Crash loops or OOMKilled events');
+      result.rootCause = { type: 'application_instability', summary: 'Application instability or insufficient resource limits', confidence: 0.65, evidence };
+      return;
+    }
+
+    // Scheduling/resource pressure
+    if (/FailedScheduling|Insufficient/i.test(eventsTxt)) {
+      evidence.push('Scheduling failures due to insufficient resources');
+      result.rootCause = { type: 'resource_pressure', summary: 'Cluster resource pressure causing scheduling failures', confidence: 0.7, evidence };
+      return;
+    }
+
+    // Node conditions
+    if (/not ready|MemoryPressure|DiskPressure|PIDPressure/i.test(nodeTxt)) {
+      evidence.push('Node readiness/pressure issues');
+      result.rootCause = { type: 'node_instability', summary: 'Node instability impacting workloads', confidence: 0.7, evidence };
+      return;
+    }
+
+    // Namespace health degraded/failing
+    if (/Namespace status:\s*(degraded|failing)/i.test(nsTxt)) {
+      evidence.push('Namespace degraded/failing');
+      result.rootCause = { type: 'namespace_health_degraded', summary: 'Namespace health is degraded; see suspicions/events', confidence: 0.5, evidence };
+      return;
+    }
+
+    if (result.overallStatus !== 'healthy') {
+      result.rootCause = { type: 'unknown', summary: 'Root cause not determined from available signals', confidence: 0.3, evidence };
+    }
   }
 
   private generateNextActions(result: RCAChecklistResult): void {
