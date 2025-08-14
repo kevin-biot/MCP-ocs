@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["podName", "namespace", "logs", "logLines", "timestamp"],
+  "properties": {
+    "podName": { "type": "string" },
+    "namespace": { "type": "string" },
+    "container": { "type": "string" },
+    "lines": { "type": "number" },
+    "since": { "type": ["string", "null"] },
+    "logs": { "type": "string" },
+    "logLines": { "type": "number" },
+    "timestamp": { "type": "string" }
+  }
+}
+

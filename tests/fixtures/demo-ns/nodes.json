@@ -1,0 +1,21 @@
+{
+  "items": [
+    {
+      "metadata": { "name": "node-1" },
+      "status": {
+        "conditions": [
+          { "type": "Ready", "status": "True" }
+        ]
+      }
+    },
+    {
+      "metadata": { "name": "node-2" },
+      "status": {
+        "conditions": [
+          { "type": "Ready", "status": "True" }
+        ]
+      }
+    }
+  ]
+}
+

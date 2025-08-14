@@ -1,0 +1,15 @@
+{
+  "items": [
+    {
+      "metadata": { "name": "app-1", "namespace": "demo-ns", "creationTimestamp": "2024-08-14T00:00:00Z" },
+      "status": { "phase": "Running", "conditions": [{"type":"Ready","status":"True"}], "podIP": "10.0.0.1" },
+      "spec": { "nodeName": "node-1" }
+    },
+    {
+      "metadata": { "name": "app-2", "namespace": "demo-ns", "creationTimestamp": "2024-08-14T00:05:00Z" },
+      "status": { "phase": "Pending", "conditions": [{"type":"Ready","status":"False"}] },
+      "spec": { "nodeName": "node-2" }
+    }
+  ]
+}
+

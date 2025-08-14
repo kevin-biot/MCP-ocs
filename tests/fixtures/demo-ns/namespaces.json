@@ -1,0 +1,8 @@
+{
+  "items": [
+    { "metadata": { "name": "kube-system" } },
+    { "metadata": { "name": "openshift-monitoring" } },
+    { "metadata": { "name": "demo-ns" } }
+  ]
+}
+

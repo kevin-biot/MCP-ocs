@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["sessionId", "currentState", "timestamp"],
+  "properties": {
+    "sessionId": { "type": "string" },
+    "currentState": { "type": "string" },
+    "evidence": { "type": "array" },
+    "hypotheses": { "type": "array" },
+    "panicSignals": { "type": "array" },
+    "timestamp": { "type": "string" }
+  }
+}
+
