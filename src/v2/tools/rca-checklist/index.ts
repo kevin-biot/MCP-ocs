@@ -15,6 +15,7 @@
 
 import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
 import { NamespaceHealthChecker } from '../check-namespace-health/index';
+import { ToolMemoryGateway } from '../../../lib/tools/tool-memory-gateway';
 
 export interface RCAChecklistInput {
   namespace?: string;           // Target namespace (optional for cluster-wide)
@@ -69,10 +70,12 @@ export interface RCAChecklistResult {
 export class RCAChecklistEngine {
   private ocWrapper: OcWrapperV2;
   private namespaceHealthChecker: NamespaceHealthChecker;
+  private memoryGateway: ToolMemoryGateway;
 
-  constructor(ocWrapper: OcWrapperV2) {
+  constructor(ocWrapper: OcWrapperV2, memoryGateway?: ToolMemoryGateway) {
     this.ocWrapper = ocWrapper;
     this.namespaceHealthChecker = new NamespaceHealthChecker(ocWrapper);
+    this.memoryGateway = memoryGateway || new ToolMemoryGateway('./memory');
   }
 
   /**
@@ -114,6 +117,21 @@ export class RCAChecklistEngine {
       }
 
       result.duration = Date.now() - startTime;
+      // Persist RCA result via modern memory gateway
+      try {
+        await this.memoryGateway.storeToolExecution(
+          'oc_diagnostic_rca_checklist',
+          input,
+          result,
+          `rca-${startTime}`,
+          ['rca_checklist', result.overallStatus],
+          'openshift',
+          'prod',
+          result.overallStatus === 'healthy' ? 'low' : (result.overallStatus === 'degraded' ? 'medium' : 'high')
+        );
+      } catch {
+        // Non-fatal if storage unavailable
+      }
       return result;
 
     } catch (error) {
@@ -121,6 +139,18 @@ export class RCAChecklistEngine {
       result.overallStatus = 'failing';
       result.criticalIssues.push(`RCA checklist failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       result.human = `RCA checklist failed after ${result.duration}ms: ${error instanceof Error ? error.message : 'Unknown error'}`;
+      try {
+        await this.memoryGateway.storeToolExecution(
+          'oc_diagnostic_rca_checklist',
+          input,
+          result,
+          `rca-${startTime}`,
+          ['rca_checklist', 'failure'],
+          'openshift',
+          'prod',
+          'high'
+        );
+      } catch {}
       return result;
     }
   }
@@ -697,19 +727,29 @@ export class RCAChecklistEngine {
     return { totalServices, totalRoutes, servicesWithoutEndpoints, issues };
   }
 
-  private analyzeRecentEvents(events: any) {
-    const totalEvents = events.items.length;
-    const criticalEvents = events.items.filter((e: any) => 
-      e.type === 'Warning' && 
-      ['Failed', 'Error', 'FailedMount', 'FailedScheduling'].some(reason => 
-        e.reason.includes(reason)
-      )
+  private analyzeRecentEvents(events: any, context?: { quotaIssues?: string[] }) {
+    const items = events.items || [];
+    const totalEvents = items.length;
+
+    // Expanded patterns
+    const criticalReasons = [
+      'Failed', 'Error', 'FailedMount', 'FailedScheduling', 'BackOff', 'ImagePullBackOff',
+      'ErrImagePull', 'CrashLoopBackOff', 'OOMKilled', 'Evicted', 'Unhealthy'
+    ];
+    const criticalEvents = items.filter((e: any) =>
+      e.type === 'Warning' && criticalReasons.some(r => (e.reason || '').includes(r))
     ).length;
-    
-    const commonPatterns = this.extractEventPatterns(events.items);
-    const topEvents = events.items.slice(0, 5).map((e: any) => 
+
+    // Context-aware hints (e.g., quota issues)
+    const commonPatterns = this.extractEventPatterns(items);
+    const topEvents = items.slice(0, 5).map((e: any) =>
       `${e.reason}: ${e.involvedObject?.kind}/${e.involvedObject?.name}`
     );
+
+    // Correlate with quota signals if provided
+    if (context?.quotaIssues && context.quotaIssues.length > 0) {
+      commonPatterns.unshift('ResourceQuotaExceeded');
+    }
 
     return { totalEvents, criticalEvents, commonPatterns, topEvents };
   }
