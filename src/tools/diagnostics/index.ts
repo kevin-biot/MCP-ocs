@@ -491,27 +491,35 @@ export class DiagnosticToolsV2 implements ToolSuite {
   }
 
   private async analyzeSystemNamespaces() {
-    const systemNamespaces = ['openshift-apiserver', 'openshift-etcd', 'openshift-kube-apiserver'];
-    const results = [];
+    try {
+      // Discover all namespaces and include system namespaces (kube-*, openshift-*)
+      const nsData = await this.ocWrapperV2.executeOc(['get', 'namespaces', '-o', 'json']);
+      const nsJson = JSON.parse(nsData.stdout);
 
-    for (const ns of systemNamespaces) {
-      try {
-        const health = await this.namespaceHealthChecker.checkHealth({ namespace: ns });
-        results.push({
-          namespace: ns,
-          status: health.status,
-          issues: health.suspicions.length
-        });
-      } catch (error) {
-        results.push({
-          namespace: ns,
-          status: 'error',
-          issues: 1
-        });
+      const systemNs: string[] = (nsJson.items || [])
+        .map((n: any) => n.metadata?.name)
+        .filter((name: string) => !!name)
+        .filter((name: string) => name.startsWith('kube-') || name.startsWith('openshift-'))
+        .sort();
+
+      const results: any[] = [];
+      for (const ns of systemNs) {
+        try {
+          const health = await this.namespaceHealthChecker.checkHealth({ namespace: ns });
+          results.push({
+            namespace: ns,
+            status: health.status,
+            issues: health.suspicions.length
+          });
+        } catch (error) {
+          results.push({ namespace: ns, status: 'error', issues: 1 });
+        }
       }
-    }
 
-    return results;
+      return results;
+    } catch (error) {
+      return [{ namespace: 'system', status: 'error', issues: 1, note: `Failed to list namespaces: ${error}` }];
+    }
   }
 
   private async analyzeUserNamespaces(maxCount: number) {
@@ -520,8 +528,8 @@ export class DiagnosticToolsV2 implements ToolSuite {
       const namespaces = JSON.parse(namespacesData.stdout);
       
       const userNamespaces = namespaces.items
-        .filter((ns: any) => !ns.metadata.name.startsWith('openshift-') && 
-                           !ns.metadata.name.startsWith('kube-'))
+        .filter((ns: any) => !ns.metadata.name.startsWith('openshift-') &&
+                             !ns.metadata.name.startsWith('kube-'))
         .slice(0, maxCount);
 
       const results = [];
