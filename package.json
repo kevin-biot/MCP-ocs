@@ -69,7 +69,8 @@
     "release:beta": "npm run beta:tools:generate && git add config/beta-tools.json && git commit -m 'chore: sync beta tools JSON' && git tag v0.8.0-beta",
     "real:sanity": "bash scripts/real-oc-sanity.sh",
     "itest:real:cluster-health": "tsx tests/integration/real/cluster-health-real.ts",
-    "itest:real:ns": "tsx tests/integration/real/namespace-health-real.ts"
+    "itest:real:ns": "tsx tests/integration/real/namespace-health-real.ts",
+    "itest:real:rca": "tsx tests/integration/real/rca-real.ts"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.8",

@@ -933,6 +933,13 @@ export class RCAChecklistEngine {
       return;
     }
 
+    // Route/TLS certificate failures
+    if (/x509|certificate|tls|handshake|verify failed|unknown authority/i.test(eventsTxt)) {
+      evidence.push('TLS/certificate errors observed');
+      result.rootCause = { type: 'route_tls_failure', summary: 'TLS/certificate issues affecting route/service connectivity', confidence: 0.65, evidence };
+      return;
+    }
+
     // Image pull
     if (/ImagePullBackOff|ErrImagePull/i.test(eventsTxt)) {
       evidence.push('Image pull failures');
