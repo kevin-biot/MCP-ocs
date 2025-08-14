@@ -1,0 +1,8 @@
+{
+  "name": "image_pull_failures",
+  "checks": [
+    { "name": "Recent Events", "findings": ["ImagePullBackOff"] }
+  ],
+  "overallStatus": "degraded",
+  "expected": "image_pull_failures"
+}

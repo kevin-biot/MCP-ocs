@@ -1,0 +1,8 @@
+{
+  "name": "service_no_backends",
+  "checks": [
+    { "name": "Network and Service Health", "findings": ["Services without endpoints: 2"] }
+  ],
+  "overallStatus": "degraded",
+  "expected": "service_no_backends"
+}

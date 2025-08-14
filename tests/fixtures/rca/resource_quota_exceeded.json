@@ -1,0 +1,8 @@
+{
+  "name": "resource_quota_exceeded",
+  "checks": [
+    { "name": "Resource Constraints and Quotas", "findings": ["Quota violations: 2"] }
+  ],
+  "overallStatus": "degraded",
+  "expected": "resource_quota_exceeded"
+}

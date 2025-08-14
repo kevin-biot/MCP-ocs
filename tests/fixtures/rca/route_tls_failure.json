@@ -1,0 +1,8 @@
+{
+  "name": "route_tls_failure",
+  "checks": [
+    { "name": "Recent Events", "findings": ["x509: certificate signed by unknown authority"] }
+  ],
+  "overallStatus": "degraded",
+  "expected": "route_tls_failure"
+}

@@ -1,0 +1,8 @@
+{
+  "name": "network_policy_block",
+  "checks": [
+    { "name": "Recent Events", "findings": ["NetworkPolicy: denied by policy"] }
+  ],
+  "overallStatus": "degraded",
+  "expected": "network_policy_block"
+}
