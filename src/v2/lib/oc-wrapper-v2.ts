@@ -134,8 +134,9 @@ export class OcWrapperV2 {
    * Get events in namespace
    */
   async getEvents(namespace: string): Promise<any> {
+    // Reduce volume by excluding Normal events (focus on warnings/errors)
     const result = await this.executeOc(
-      ['get', 'events', '-o', 'json'],
+      ['get', 'events', '--field-selector', 'type!=Normal', '-o', 'json'],
       { 
         namespace,
         cacheKey: `events:${namespace}`,
@@ -275,6 +276,7 @@ export class OcWrapperV2 {
     try {
       const result = await execAsync(command, { 
         timeout,
+        maxBuffer: 16 * 1024 * 1024, // 16MB to handle large JSON outputs
         env: { ...process.env, KUBECONFIG: process.env.KUBECONFIG }
       });
       return result;

@@ -20,7 +20,12 @@ function arg(flag: string, def?: string) {
 
 async function main() {
   const sessionId = arg('session', `real-${Date.now()}`)!;
-  const scope = (arg('scope', 'all') as 'all'|'system'|'user');
+  let scope = (arg('scope', 'all') as 'all'|'system'|'user');
+  const allowedScopes = new Set(['all','system','user']);
+  if (!allowedScopes.has(scope)) {
+    console.error(`[warn] Invalid scope '${scope}', defaulting to 'all'`);
+    scope = 'all';
+  }
   const focus = arg('focus');
   const strategy = (arg('strategy', 'auto') as 'auto'|'events'|'resourcePressure'|'none');
   const depth = (arg('depth', 'summary') as 'summary'|'detailed');
@@ -64,4 +69,3 @@ main().catch(err => {
   console.error('Real integration run failed:', err?.message || err);
   process.exit(1);
 });
-
