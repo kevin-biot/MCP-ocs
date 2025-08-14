@@ -5,3 +5,5 @@ docs/real-examples/*.raw
 docs/real-examples/*.log
 memory/**
 tmp/startup.*
+memory/real-*.json
+tests/tmp/
