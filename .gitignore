@@ -1,2 +1,5 @@
 
 memory/real-*.json
+
+tests/tmp/
+
