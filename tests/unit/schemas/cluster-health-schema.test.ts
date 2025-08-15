@@ -5,6 +5,7 @@ import path from 'path';
 import { DiagnosticToolsV2 } from '@/tools/diagnostics/index.js';
 import { SharedMemoryManager } from '@/lib/memory/shared-memory.js';
 import { MockOcWrapperV2 } from '../../mocks/mock-oc-wrapper-v2';
+import { NamespaceHealthChecker } from '@/v2/tools/check-namespace-health/index.js';
 
 const ajv = new Ajv({ allErrors: true });
 const schema = JSON.parse(fs.readFileSync(path.join(__dirname, '../../schemas/oc_diagnostic_cluster_health.schema.json'), 'utf8'));
@@ -26,6 +27,7 @@ describe('Cluster health schema (AJV)', () => {
 
     const tools = new DiagnosticToolsV2(mockClient, memory) as any;
     tools.ocWrapperV2 = mockOc;
+    tools.namespaceHealthChecker = new NamespaceHealthChecker(mockOc as any);
 
     const json = await tools.enhancedClusterHealth({
       sessionId: 's-1',

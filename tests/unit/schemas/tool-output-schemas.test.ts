@@ -8,6 +8,9 @@ import { StateMgmtTools } from '@/tools/state-mgmt/index.js';
 import { SharedMemoryManager } from '@/lib/memory/shared-memory.js';
 import { MockOcWrapperV2 } from '../../mocks/mock-oc-wrapper-v2';
 import { MockOpenShiftClient } from '../../mocks/mock-openshift-client';
+import { NamespaceHealthChecker } from '@/v2/tools/check-namespace-health/index.js';
+import fs from 'fs';
+import path from 'path';
 
 const ajv = new Ajv({ allErrors: true });
 const loadSchema = (name: string) => JSON.parse(fs.readFileSync(path.join(__dirname, '../../schemas', name), 'utf8'));
@@ -35,7 +38,9 @@ describe('Tool output schemas (AJV validation with mocks)', () => {
 
   test('namespace health (diagnostic) matches schema', async () => {
     const diag = new DiagnosticToolsV2(new MockOpenShiftClient() as any, memory);
-    (diag as any).ocWrapperV2 = new MockOcWrapperV2(fixturesDir);
+    const mock = new MockOcWrapperV2(fixturesDir);
+    (diag as any).ocWrapperV2 = mock as any;
+    (diag as any).namespaceHealthChecker = new NamespaceHealthChecker(mock as any);
     const json = await (diag as any).enhancedNamespaceHealth({ sessionId: 't1', namespace: 'demo-ns', includeIngressTest: false, deepAnalysis: false });
     const obj = JSON.parse(json);
     expect(schemas.ns(obj)).toBe(true);
@@ -63,6 +68,7 @@ describe('Tool output schemas (AJV validation with mocks)', () => {
 
   test('state/memory operations match schemas', async () => {
     const state = new StateMgmtTools(memory, {} as any);
+    fs.mkdirSync(path.join('memory','test','operational'), { recursive: true });
     const stored = JSON.parse(await state.executeTool('memory_store_operational', {
       incidentId: 'u1', symptoms: ['demo'], environment: 'prod', rootCause: 'resource_pressure', resolution: 'scaled', affectedResources: []
     }));
