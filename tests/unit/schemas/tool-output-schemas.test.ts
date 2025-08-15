@@ -67,6 +67,7 @@ describe('Tool output schemas (AJV validation with mocks)', () => {
   test('state/memory operations match schemas', async () => {
     const state = new StateMgmtTools(memory, {} as any);
     fs.mkdirSync(path.join('memory','test','operational'), { recursive: true });
+    fs.mkdirSync(path.join('memory','test','conversations'), { recursive: true });
     const stored = JSON.parse(await state.executeTool('memory_store_operational', {
       incidentId: 'u1', symptoms: ['demo'], environment: 'prod', rootCause: 'resource_pressure', resolution: 'scaled', affectedResources: []
     }));
