@@ -1,0 +1,10 @@
+{
+  "namespace": "openshift-monitoring",
+  "status": "degraded",
+  "duration": "1767ms",
+  "pods": "15/21 ready",
+  "pvcs": "0/0 bound",
+  "routes": "4 configured",
+  "criticalEvents": 0,
+  "suspicionsCount": 1
+}

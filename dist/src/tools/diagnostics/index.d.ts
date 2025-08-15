@@ -47,6 +47,9 @@ export declare class DiagnosticToolsV2 implements ToolSuite {
      * Enhanced pod health with dependency analysis
      */
     private enhancedPodHealth;
+    private normalizeTimestamp;
+    private normalizeNamespaceHealthOutput;
+    private normalizePodHealthOutput;
     private analyzeNodeHealth;
     private analyzeOperatorHealth;
     private analyzeSystemNamespaces;

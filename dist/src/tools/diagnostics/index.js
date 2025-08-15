@@ -434,6 +434,8 @@ export class DiagnosticToolsV2 {
                 // Integration with existing memory system
                 memoryStored: true
             };
+            // Normalize for schema compatibility
+            const normalized = this.normalizeNamespaceHealthOutput(response);
             // Store in operational memory
             await this.memoryManager.storeOperational({
                 incidentId: `namespace-health-${sessionId}`,
@@ -445,7 +447,7 @@ export class DiagnosticToolsV2 {
                 tags: ['namespace_health', 'diagnostic', namespace, healthResult.status],
                 environment: 'prod'
             });
-            return JSON.stringify(response, null, 2);
+            return JSON.stringify(normalized, null, 2);
         }
         catch (error) {
             return this.formatErrorResponse('namespace health check', error, sessionId);
@@ -484,6 +486,8 @@ export class DiagnosticToolsV2 {
                 recommendations: this.generatePodRecommendations(podAnalysis, dependencies, resourceAnalysis),
                 human: this.generatePodHealthSummary(podName, podAnalysis, dependencies)
             };
+            // Normalize for schema compatibility
+            const normalized = this.normalizePodHealthOutput(response);
             // Store pod health check
             await this.memoryManager.storeOperational({
                 incidentId: `pod-health-${sessionId}`,
@@ -495,13 +499,72 @@ export class DiagnosticToolsV2 {
                 tags: ['pod_health', 'diagnostic', namespace, podName],
                 environment: 'prod'
             });
-            return JSON.stringify(response, null, 2);
+            return JSON.stringify(normalized, null, 2);
         }
         catch (error) {
             return this.formatErrorResponse('pod health check', error, sessionId);
         }
     }
     // Helper methods for enhanced analysis
+    normalizeTimestamp(ts) {
+        if (typeof ts === 'string')
+            return ts;
+        if (typeof ts === 'number') {
+            try {
+                return new Date(ts).toISOString();
+            }
+            catch { }
+        }
+        return new Date().toISOString();
+    }
+    normalizeNamespaceHealthOutput(resp) {
+        const out = { ...resp };
+        out.timestamp = this.normalizeTimestamp(out.timestamp);
+        // Ensure summary exists and types are stable
+        out.summary = out.summary || {};
+        const podsReady = String(out.summary.pods ?? '0/0 ready');
+        const pvcsBound = String(out.summary.pvcs ?? '0/0 bound');
+        const routes = String(out.summary.routes ?? '0 configured');
+        const critical = Number(typeof out.summary.criticalEvents === 'number' ? out.summary.criticalEvents : 0);
+        out.summary = {
+            pods: podsReady,
+            pvcs: pvcsBound,
+            routes,
+            criticalEvents: Number.isFinite(critical) ? critical : 0
+        };
+        return out;
+    }
+    normalizePodHealthOutput(resp) {
+        const out = { ...resp };
+        out.timestamp = this.normalizeTimestamp(out.timestamp);
+        const deps = out.dependencies;
+        if (deps && !Array.isArray(deps) && typeof deps === 'object') {
+            // ok
+        }
+        else if (Array.isArray(deps)) {
+            out.dependencies = { items: deps };
+        }
+        else if (deps == null) {
+            out.dependencies = null;
+        }
+        else {
+            out.dependencies = { value: deps };
+        }
+        const res = out.resources;
+        if (res && !Array.isArray(res) && typeof res === 'object') {
+            // ok
+        }
+        else if (Array.isArray(res)) {
+            out.resources = { items: res };
+        }
+        else if (res == null) {
+            out.resources = null;
+        }
+        else {
+            out.resources = { value: res };
+        }
+        return out;
+    }
     async analyzeNodeHealth() {
         try {
             const nodesData = await this.ocWrapperV2.executeOc(['get', 'nodes', '-o', 'json']);

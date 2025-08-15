@@ -24,6 +24,7 @@ export declare class ChromaMemoryManager {
     private collection;
     private memoryDir;
     private initialized;
+    private log;
     constructor(memoryDir: string);
     initialize(): Promise<void>;
     isAvailable(): Promise<boolean>;
