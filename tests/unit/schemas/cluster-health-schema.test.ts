@@ -12,6 +12,17 @@ const schema = JSON.parse(fs.readFileSync(path.join(__dirname, '../../schemas/oc
 const validate = ajv.compile(schema);
 
 describe('Cluster health schema (AJV)', () => {
+  const orig = { log: console.log, error: console.error, warn: console.warn };
+  beforeAll(() => {
+    console.log = () => {} as any;
+    console.error = () => {} as any;
+    console.warn = () => {} as any;
+  });
+  afterAll(() => {
+    console.log = orig.log;
+    console.error = orig.error;
+    console.warn = orig.warn;
+  });
   const memory = new SharedMemoryManager({
     domain: 'mcp-ocs', namespace: 'test', memoryDir: './memory',
     enableCompression: false, retentionDays: 1, chromaHost: '127.0.0.1', chromaPort: 8000
