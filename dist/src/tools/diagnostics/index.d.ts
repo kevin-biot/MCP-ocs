@@ -18,6 +18,7 @@ export declare class DiagnosticToolsV2 implements ToolSuite {
     private ocWrapperV2;
     private namespaceHealthChecker;
     private rcaChecklistEngine;
+    private memoryGateway;
     constructor(openshiftClient: OpenShiftClient, memoryManager: SharedMemoryManager);
     /**
      * Execute the enhanced namespace health tool
@@ -32,6 +33,13 @@ export declare class DiagnosticToolsV2 implements ToolSuite {
      */
     private enhancedClusterHealth;
     /**
+     * Prioritize namespaces for analysis and build focused output
+     */
+    private prioritizeNamespaces;
+    private makeNsSummary;
+    private scoreNamespace;
+    private listNamespacesByScope;
+    /**
      * Enhanced namespace health using v2 implementation
      */
     private enhancedNamespaceHealth;
@@ -39,6 +47,9 @@ export declare class DiagnosticToolsV2 implements ToolSuite {
      * Enhanced pod health with dependency analysis
      */
     private enhancedPodHealth;
+    private normalizeTimestamp;
+    private normalizeNamespaceHealthOutput;
+    private normalizePodHealthOutput;
     private analyzeNodeHealth;
     private analyzeOperatorHealth;
     private analyzeSystemNamespaces;

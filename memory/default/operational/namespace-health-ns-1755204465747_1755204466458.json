@@ -1,0 +1,23 @@
+{
+  "incidentId": "namespace-health-ns-1755204465747",
+  "domain": "cluster",
+  "timestamp": 1755204466458,
+  "symptoms": [
+    "📉 SCALE-DOWN: Detected scaling activity - verify if intentional",
+    "Missing or invalid StorageClass - create default StorageClass or specify in PVC",
+    "Scale-down evidence: Deployment code-server intentionally scaled to 0 replicas"
+  ],
+  "affectedResources": [
+    "namespace/student03"
+  ],
+  "diagnosticSteps": [
+    "Enhanced namespace health check completed"
+  ],
+  "tags": [
+    "namespace_health",
+    "diagnostic",
+    "student03",
+    "degraded"
+  ],
+  "environment": "prod"
+}

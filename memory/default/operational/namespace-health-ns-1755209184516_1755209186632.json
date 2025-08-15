@@ -1,0 +1,21 @@
+{
+  "incidentId": "namespace-health-ns-1755209184516",
+  "domain": "cluster",
+  "timestamp": 1755209186632,
+  "symptoms": [
+    "Pods stuck in pending - check node resources and scheduling constraints"
+  ],
+  "affectedResources": [
+    "namespace/openshift-monitoring"
+  ],
+  "diagnosticSteps": [
+    "Enhanced namespace health check completed"
+  ],
+  "tags": [
+    "namespace_health",
+    "diagnostic",
+    "openshift-monitoring",
+    "degraded"
+  ],
+  "environment": "prod"
+}

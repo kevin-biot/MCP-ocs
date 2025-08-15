@@ -12,13 +12,21 @@ export default {
     }],
   },
   moduleNameMapper: {
+    // Map alias to TS sources, prefer .ts when .js is imported in source
+    '^@/(.*)\\.js$': '<rootDir>/src/$1.ts',
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@tests/(.*)$': '<rootDir>/tests/$1',
     '^../../../MCP-files/src/memory-extension\\.ts$': '<rootDir>/tests/mocks/memory-extension.ts',
     // Map ESM-style .js internal imports in TS to .ts for tests
     '^\\.\\./\\.\\./types/(.*)\\.js$': '<rootDir>/src/types/$1.ts',
     '^\\.\\./\\.\\./registry/(.*)\\.js$': '<rootDir>/src/registry/$1.ts',
-    '^\\.\\./types/(.*)\\.js$': '<rootDir>/src/types/$1.ts'
+    '^\\.\\./types/(.*)\\.js$': '<rootDir>/src/types/$1.ts',
+    '^\\.\\./\\.\\./lib/(.*)\\.js$': '<rootDir>/src/lib/$1.ts',
+    '^\\.\\./\\.\\./v2/(.*)\\.js$': '<rootDir>/src/v2/$1.ts',
+    '^\\.\\./check-namespace-health/(.*)\\.js$': '<rootDir>/src/v2/tools/check-namespace-health/$1.ts',
+    '^\\.\\./\\.\\./\\.\\./lib/(.*)\\.js$': '<rootDir>/src/lib/$1.ts',
+    '^\\.\\./\\.\\./v2-integration\\.js$': '<rootDir>/src/v2-integration.ts',
+    '^\\./v2/(.*)\\.js$': '<rootDir>/src/v2/$1.ts'
   },
   extensionsToTreatAsEsm: ['.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],

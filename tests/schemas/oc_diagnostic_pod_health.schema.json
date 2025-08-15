@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["namespace", "podName", "health", "timestamp"],
+  "properties": {
+    "tool": { "type": "string" },
+    "namespace": { "type": "string" },
+    "podName": { "type": "string" },
+    "health": { "type": "object" },
+    "dependencies": { "type": ["object", "null"] },
+    "resources": { "type": ["object", "null"] },
+    "recommendations": { "type": "array" },
+    "human": { "type": "string" },
+    "timestamp": { "type": "string" }
+  }
+}
+

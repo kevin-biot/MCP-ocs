@@ -99,7 +99,10 @@ export class MCPFilesChromaAdapter {
   async addDocuments(collectionName: string, documents: any[]): Promise<void> {
     // This is handled internally by storeConversation/storeOperational
     // Just a compatibility method
-    console.log(`📝 Adding ${documents.length} documents to ${collectionName} via MCP-files adapter`);
+    const v = process.env.CAPTURE_MODE;
+    const cap = v && ['1','true','yes','on'].includes(String(v).toLowerCase());
+    const log = cap ? console.error : console.log;
+    log(`📝 Adding ${documents.length} documents to ${collectionName} via MCP-files adapter`);
   }
   
   async queryCollection(collectionName: string, queryText: string, limit: number = 5): Promise<any[]> {

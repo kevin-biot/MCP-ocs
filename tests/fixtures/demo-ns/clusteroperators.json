@@ -1,0 +1,21 @@
+{
+  "items": [
+    {
+      "metadata": { "name": "kube-apiserver" },
+      "status": {
+        "conditions": [
+          { "type": "Degraded", "status": "False" }
+        ]
+      }
+    },
+    {
+      "metadata": { "name": "authentication" },
+      "status": {
+        "conditions": [
+          { "type": "Degraded", "status": "False" }
+        ]
+      }
+    }
+  ]
+}
+

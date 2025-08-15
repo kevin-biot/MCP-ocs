@@ -1,0 +1,2 @@
+{ "items": [ { "type": "Warning", "reason": "FailedScheduling", "involvedObject": { "kind": "Pod", "name": "app-2" }, "message": "0/3 nodes are available", "firstTimestamp": "2024-08-14T00:10:00Z", "source": { "component": "scheduler" } } ] }
+

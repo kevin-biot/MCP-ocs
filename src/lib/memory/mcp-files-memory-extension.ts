@@ -32,6 +32,15 @@ export class ChromaMemoryManager {
   private collection: any;
   private memoryDir: string;
   private initialized = false;
+  
+  // Safe logger available on instances; typed for TS
+  private log(...args: any[]): void {
+    if (isCaptureMode()) {
+      try { console.error(...args); } catch {}
+      return;
+    }
+    try { console.log(...args); } catch {}
+  }
 
   constructor(memoryDir: string) {
     this.memoryDir = memoryDir;
@@ -43,7 +52,7 @@ export class ChromaMemoryManager {
         port: 8000
       });
       
-      console.log("✓ ChromaDB client initialized");
+      this.log("✓ ChromaDB client initialized");
     } catch (error) {
       console.error('ChromaDB initialization failed, will use JSON-only mode:', error);
       this.client = null;
@@ -66,9 +75,9 @@ export class ChromaMemoryManager {
               name: "llm_conversation_memory",
               embeddingFunction: new DefaultEmbeddingFunction()
             });
-            console.log("✓ Connected to existing ChromaDB collection");
+            this.log("✓ Connected to existing ChromaDB collection");
           } catch (getError) {
-            console.log("ℹ No existing collection found, creating new one");
+            this.log("ℹ No existing collection found, creating new one");
             
             // Only create new if collection doesn't exist
             this.collection = await this.client.createCollection({
@@ -78,15 +87,15 @@ export class ChromaMemoryManager {
                 "hnsw:space": "cosine"
               }
             });
-            console.log("✓ Created new ChromaDB collection with cosine distance");
+            this.log("✓ Created new ChromaDB collection with cosine distance");
           }
         } catch (error) {
           console.error("ChromaDB collection creation failed:", error);
           throw error;
         }
-        console.log("✓ Chroma memory manager initialized with vector search");
+        this.log("✓ Chroma memory manager initialized with vector search");
       } else {
-        console.log("✓ Memory manager initialized (JSON-only mode)");
+        this.log("✓ Memory manager initialized (JSON-only mode)");
       }
 
       this.initialized = true;
@@ -118,7 +127,7 @@ export class ChromaMemoryManager {
       const id = `${memory.sessionId}_${memory.timestamp}`;
       const document = `User: ${memory.userMessage}\nAssistant: ${memory.assistantResponse}`;
       
-      console.log('💾 Storing to ChromaDB:', {
+      this.log('💾 Storing to ChromaDB:', {
         id,
         documentLength: document.length,
         sessionId: memory.sessionId
@@ -138,7 +147,7 @@ export class ChromaMemoryManager {
         }]
       });
       
-      console.log('✅ Successfully stored to ChromaDB');
+      this.log('✅ Successfully stored to ChromaDB');
       return true;
     } catch (error) {
       console.error('ChromaDB storage failed, but JSON backup succeeded:', error);
@@ -169,19 +178,19 @@ export class ChromaMemoryManager {
   }
 
   async searchRelevantMemories(query: string, sessionId?: string, limit: number = 5): Promise<MemorySearchResult[]> {
-    console.log(`🔍 Searching for: "${query}" (sessionId: ${sessionId || 'all'}, limit: ${limit})`);
+    this.log(`🔍 Searching for: "${query}" (sessionId: ${sessionId || 'all'}, limit: ${limit})`);
     
     // First try vector search
     if (this.collection && this.client) {
       try {
-        console.log('📊 Attempting ChromaDB vector search...');
+        this.log('📊 Attempting ChromaDB vector search...');
         const results = await this.collection.query({
           queryTexts: [query],
           nResults: limit,
           where: sessionId ? { sessionId } : undefined
         });
 
-        console.log('✅ ChromaDB search successful:', {
+        this.log('✅ ChromaDB search successful:', {
           documentsCount: results.documents[0]?.length || 0,
           hasDistances: !!results.distances[0],
           distances: results.distances[0]?.slice(0, 3), // Show first 3 distances
@@ -198,19 +207,19 @@ export class ChromaMemoryManager {
             distance: results.distances[0][index]
           }));
         } else {
-          console.log('⚠️ ChromaDB returned no results, falling back to JSON search');
+          this.log('⚠️ ChromaDB returned no results, falling back to JSON search');
         }
       } catch (error) {
         console.error('❌ Chroma search failed, falling back to JSON search:', error);
       }
     } else {
-      console.log('⚠️ ChromaDB not available, using JSON search directly');
+      this.log('⚠️ ChromaDB not available, using JSON search directly');
     }
 
     // Fallback to JSON search
-    console.log('📄 Using JSON search fallback...');
+    this.log('📄 Using JSON search fallback...');
     const jsonResults = await this.searchJsonMemories(query, sessionId, limit);
-    console.log(`📄 JSON search returned ${jsonResults.length} results`);
+    this.log(`📄 JSON search returned ${jsonResults.length} results`);
     return jsonResults;
   }
 
@@ -364,7 +373,7 @@ export class ChromaMemoryManager {
       let loaded = 0;
       let errors = 0;
       
-      console.log(`🔄 Starting bulk reload of ${sessionFiles.length} session files into ChromaDB...`);
+      this.log(`🔄 Starting bulk reload of ${sessionFiles.length} session files into ChromaDB...`);
       
       for (const file of sessionFiles) {
         if (!file.endsWith('.json')) continue;
@@ -394,14 +403,14 @@ export class ChromaMemoryManager {
             loaded++;
           }
           
-          console.log(`✓ Loaded ${memories.length} memories from ${file}`);
+          this.log(`✓ Loaded ${memories.length} memories from ${file}`);
         } catch (error) {
           console.error(`✗ Failed to load ${file}:`, error);
           errors++;
         }
       }
       
-      console.log(`🎉 Bulk reload complete: ${loaded} memories loaded, ${errors} errors`);
+      this.log(`🎉 Bulk reload complete: ${loaded} memories loaded, ${errors} errors`);
       return { loaded, errors };
     } catch (error) {
       console.error('Bulk reload failed:', error);
@@ -440,4 +449,12 @@ export function extractContext(text: string): string[] {
   }
   
   return [...new Set(context)];
+}
+
+// Local helper to detect capture mode; module scoped
+function isCaptureMode(): boolean {
+  const v = process.env.CAPTURE_MODE;
+  if (!v) return false;
+  const s = String(v).toLowerCase();
+  return s === '1' || s === 'true' || s === 'yes' || s === 'on';
 }

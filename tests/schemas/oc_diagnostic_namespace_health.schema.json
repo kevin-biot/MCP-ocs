@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["namespace", "status", "summary", "timestamp"],
+  "properties": {
+    "tool": { "type": "string" },
+    "namespace": { "type": "string" },
+    "status": { "type": "string" },
+    "duration": { "type": "string" },
+    "summary": { "type": "object" },
+    "suspicions": { "type": "array" },
+    "nextActions": { "type": "array" },
+    "timestamp": { "type": "string" }
+  }
+}
+

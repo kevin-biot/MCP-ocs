@@ -4,6 +4,7 @@
  * Following ADR-004 namespace conventions: oc_read_*
  * Read-only operations for information gathering
  */
+import { ToolMemoryGateway } from '../../lib/tools/tool-memory-gateway.js';
 export class ReadOpsTools {
     openshiftClient;
     memoryManager;
@@ -12,7 +13,9 @@ export class ReadOpsTools {
     constructor(openshiftClient, memoryManager) {
         this.openshiftClient = openshiftClient;
         this.memoryManager = memoryManager;
+        this.memoryGateway = new ToolMemoryGateway('./memory');
     }
+    memoryGateway;
     getTools() {
         const toolDefinitions = this.getToolDefinitions();
         return toolDefinitions.map(tool => this.convertToStandardTool(tool));
@@ -146,6 +149,11 @@ export class ReadOpsTools {
                             type: 'string',
                             description: 'Search query for finding similar incidents'
                         },
+                        domainFilter: {
+                            type: 'string',
+                            description: 'Optional domain filter',
+                            enum: ['openshift', 'kubernetes', 'devops', 'production']
+                        },
                         limit: {
                             type: 'number',
                             description: 'Maximum number of results (default: 5)',
@@ -188,7 +196,7 @@ export class ReadOpsTools {
                     result = await this.getLogs(args.podName, args.namespace, args.container, args.lines, args.since, sessionId);
                     break;
                 case 'memory_search_incidents':
-                    result = await this.searchMemory(args.query, args.limit, sessionId);
+                    result = await this.searchMemory(args.query, args.limit, sessionId, args.domainFilter);
                     break;
                 default:
                     throw new Error(`Unknown read operation tool: ${toolName}`);
@@ -230,16 +238,8 @@ export class ReadOpsTools {
             },
             timestamp: new Date().toISOString()
         };
-        // Store in memory for future reference
-        await this.memoryManager.storeConversation({
-            sessionId: sessionId || 'unknown',
-            domain: 'openshift',
-            timestamp: Date.now(),
-            userMessage: `Get pods in ${namespace || 'default'} namespace`,
-            assistantResponse: `Found ${pods.length} pods: ${result.summary.running} running, ${result.summary.pending} pending, ${result.summary.failed} failed`,
-            context: ['pods', 'namespace', namespace || 'default'],
-            tags: ['read_operation', 'pods', 'cluster_state']
-        });
+        // Store via adapter-backed gateway for Chroma v2 integration
+        await this.memoryGateway.storeToolExecution('oc_read_get_pods', { namespace: namespace || 'default', selector: selector || 'none' }, result, sessionId || 'unknown', ['read_operation', 'pods', 'cluster_state'], 'openshift', 'prod', 'low');
         return result;
     }
     async describeResource(resourceType, name, namespace, sessionId) {
@@ -252,16 +252,8 @@ export class ReadOpsTools {
             description,
             timestamp: new Date().toISOString()
         };
-        // Store in memory
-        await this.memoryManager.storeConversation({
-            sessionId: sessionId || 'unknown',
-            domain: 'openshift',
-            timestamp: Date.now(),
-            userMessage: `Describe ${resourceType} ${name}`,
-            assistantResponse: `Retrieved detailed information for ${resourceType}/${name}`,
-            context: [resourceType, name, namespace || 'default'],
-            tags: ['read_operation', 'describe', resourceType]
-        });
+        // Store via adapter-backed gateway for Chroma v2 integration
+        await this.memoryGateway.storeToolExecution('oc_read_describe', { resourceType, name, namespace: namespace || 'default' }, result, sessionId || 'unknown', ['read_operation', 'describe', resourceType], 'openshift', 'prod', 'low');
         return result;
     }
     async getLogs(podName, namespace, container, lines, since, sessionId) {
@@ -281,32 +273,26 @@ export class ReadOpsTools {
             logLines: logs.split('\\n').length,
             timestamp: new Date().toISOString()
         };
-        // Store in memory
-        await this.memoryManager.storeConversation({
-            sessionId: sessionId || 'unknown',
-            domain: 'openshift',
-            timestamp: Date.now(),
-            userMessage: `Get logs from pod ${podName}`,
-            assistantResponse: `Retrieved ${result.logLines} lines of logs from ${podName}`,
-            context: ['logs', podName, namespace || 'default'],
-            tags: ['read_operation', 'logs', 'troubleshooting']
-        });
+        // Store via adapter-backed gateway for Chroma v2 integration
+        await this.memoryGateway.storeToolExecution('oc_read_logs', { podName, namespace: namespace || 'default', container: container || 'default', lines: lines || 100, since }, result, sessionId || 'unknown', ['read_operation', 'logs', 'troubleshooting'], 'openshift', 'prod', 'low');
         return result;
     }
-    async searchMemory(query, limit, sessionId) {
+    async searchMemory(query, limit, sessionId, domainFilter) {
         console.error(`🧠 Searching operational memory for: ${query}`);
-        const results = await this.memoryManager.searchOperational(query, limit || 5);
+        // Use adapter-backed gateway for incidents search (domain filtering supported)
+        const results = await this.memoryGateway.searchToolIncidents(query, domainFilter, limit || 5);
         const searchResult = {
             query,
             limit: limit || 5,
             resultsFound: results.length,
-            results: results.map(r => ({
-                similarity: r.similarity,
-                relevance: r.relevance,
-                incidentId: 'incidentId' in r.memory ? r.memory.incidentId : '',
-                symptoms: 'symptoms' in r.memory ? r.memory.symptoms : [],
-                resolution: 'resolution' in r.memory ? r.memory.resolution : '',
-                timestamp: r.memory.timestamp
+            results: results.map((r) => ({
+                // Approximate similarity from distance if present
+                similarity: typeof r.distance === 'number' ? (1 - r.distance) : 0.5,
+                relevance: typeof r.distance === 'number' ? (1 - r.distance) * 100 : 50,
+                incidentId: r.metadata?.incidentId || '',
+                symptoms: [],
+                resolution: '',
+                timestamp: r.metadata?.timestamp || Date.now()
             })),
             timestamp: new Date().toISOString()
         };

@@ -12,11 +12,11 @@ import { ToolDefinition } from '../../lib/tools/tool-types.js';
 import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
-import { ToolMemoryGateway } from '../../lib/tools/tool-memory-gateway';
-import { OcWrapperV2 } from '../../v2/lib/oc-wrapper-v2';
-import { NamespaceHealthChecker } from '../../v2/tools/check-namespace-health/index';
-import { RCAChecklistEngine } from '../../v2/tools/rca-checklist/index';
-import { checkNamespaceHealthV2Tool } from '../../v2-integration';
+import { ToolMemoryGateway } from '../../lib/tools/tool-memory-gateway.js';
+import { OcWrapperV2 } from '../../v2/lib/oc-wrapper-v2.js';
+import { NamespaceHealthChecker } from '../../v2/tools/check-namespace-health/index.js';
+import { RCAChecklistEngine } from '../../v2/tools/rca-checklist/index.js';
+import { checkNamespaceHealthV2Tool } from '../../v2-integration.js';
 
 export class DiagnosticToolsV2 implements ToolSuite {
   category = 'diagnostic';
@@ -446,7 +446,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
     addReason((pods.pending || 0) > 0, `pending:${pods.pending}`);
     addReason((pvcs.errors || 0) > 0, `pvcErrors:${pvcs.errors}`);
     addReason((Array.isArray(events) ? events.length : 0) > 0, `events:${events.length}`);
-    addReason(s.status && s.status !== 'healthy', `status:${s.status}`);
+    addReason(s.status !== 'healthy', `status:${s.status}`);
     addReason((Array.isArray(s.suspicions) ? s.suspicions.length : 0) > 0, `suspicions:${s.suspicions.length}`);
 
     return { score, reasons };
@@ -522,6 +522,9 @@ export class DiagnosticToolsV2 implements ToolSuite {
         memoryStored: true
       };
 
+      // Normalize for schema compatibility
+      const normalized = this.normalizeNamespaceHealthOutput(response);
+
       // Store in operational memory
       await this.memoryManager.storeOperational({
         incidentId: `namespace-health-${sessionId}`,
@@ -534,7 +537,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
         environment: 'prod'
       });
 
-      return JSON.stringify(response, null, 2);
+      return JSON.stringify(normalized, null, 2);
 
     } catch (error) {
       return this.formatErrorResponse('namespace health check', error, sessionId);
@@ -752,6 +755,60 @@ export class DiagnosticToolsV2 implements ToolSuite {
 
   // Helper methods for enhanced analysis
 
+  private normalizeTimestamp(ts: any): string {
+    if (typeof ts === 'string') return ts;
+    if (typeof ts === 'number') {
+      try { return new Date(ts).toISOString(); } catch {}
+    }
+    return new Date().toISOString();
+  }
+
+  private normalizeNamespaceHealthOutput(resp: any): any {
+    const out = { ...resp };
+    out.timestamp = this.normalizeTimestamp(out.timestamp);
+    // Ensure summary exists and types are stable
+    out.summary = out.summary || {};
+    const podsReady = String(out.summary.pods ?? '0/0 ready');
+    const pvcsBound = String(out.summary.pvcs ?? '0/0 bound');
+    const routes = String(out.summary.routes ?? '0 configured');
+    const critical = Number(
+      typeof out.summary.criticalEvents === 'number' ? out.summary.criticalEvents : 0
+    );
+    out.summary = {
+      pods: podsReady,
+      pvcs: pvcsBound,
+      routes,
+      criticalEvents: Number.isFinite(critical) ? critical : 0
+    };
+    return out;
+  }
+
+  private normalizePodHealthOutput(resp: any): any {
+    const out = { ...resp };
+    out.timestamp = this.normalizeTimestamp(out.timestamp);
+    const deps = out.dependencies;
+    if (deps && !Array.isArray(deps) && typeof deps === 'object') {
+      // ok
+    } else if (Array.isArray(deps)) {
+      out.dependencies = { items: deps };
+    } else if (deps == null) {
+      out.dependencies = null;
+    } else {
+      out.dependencies = { value: deps };
+    }
+    const res = out.resources;
+    if (res && !Array.isArray(res) && typeof res === 'object') {
+      // ok
+    } else if (Array.isArray(res)) {
+      out.resources = { items: res };
+    } else if (res == null) {
+      out.resources = null;
+    } else {
+      out.resources = { value: res };
+    }
+    return out;
+  }
+
   private async analyzeNodeHealth() {
     try {
       const nodesData = await this.ocWrapperV2.executeOc(['get', 'nodes', '-o', 'json']);
@@ -788,27 +845,35 @@ export class DiagnosticToolsV2 implements ToolSuite {
   }
 
   private async analyzeSystemNamespaces() {
-    const systemNamespaces = ['openshift-apiserver', 'openshift-etcd', 'openshift-kube-apiserver'];
-    const results = [];
+    try {
+      // Discover all namespaces and include system namespaces (kube-*, openshift-*)
+      const nsData = await this.ocWrapperV2.executeOc(['get', 'namespaces', '-o', 'json']);
+      const nsJson = JSON.parse(nsData.stdout);
 
-    for (const ns of systemNamespaces) {
-      try {
-        const health = await this.namespaceHealthChecker.checkHealth({ namespace: ns });
-        results.push({
-          namespace: ns,
-          status: health.status,
-          issues: health.suspicions.length
-        });
-      } catch (error) {
-        results.push({
-          namespace: ns,
-          status: 'error',
-          issues: 1
-        });
+      const systemNs: string[] = (nsJson.items || [])
+        .map((n: any) => n.metadata?.name)
+        .filter((name: string) => !!name)
+        .filter((name: string) => name.startsWith('kube-') || name.startsWith('openshift-'))
+        .sort();
+
+      const results: any[] = [];
+      for (const ns of systemNs) {
+        try {
+          const health = await this.namespaceHealthChecker.checkHealth({ namespace: ns });
+          results.push({
+            namespace: ns,
+            status: health.status,
+            issues: health.suspicions.length
+          });
+        } catch (error) {
+          results.push({ namespace: ns, status: 'error', issues: 1 });
+        }
       }
-    }
 
-    return results;
+      return results;
+    } catch (error) {
+      return [{ namespace: 'system', status: 'error', issues: 1, note: `Failed to list namespaces: ${error}` }];
+    }
   }
 
   private async analyzeUserNamespaces(maxCount: number) {
@@ -817,8 +882,8 @@ export class DiagnosticToolsV2 implements ToolSuite {
       const namespaces = JSON.parse(namespacesData.stdout);
       
       const userNamespaces = namespaces.items
-        .filter((ns: any) => !ns.metadata.name.startsWith('openshift-') && 
-                           !ns.metadata.name.startsWith('kube-'))
+        .filter((ns: any) => !ns.metadata.name.startsWith('openshift-') &&
+                             !ns.metadata.name.startsWith('kube-'))
         .slice(0, maxCount);
 
       const results = [];

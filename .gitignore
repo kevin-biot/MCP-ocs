@@ -1,5 +1,9 @@
-
 memory/real-*.json
-
 tests/tmp/
-
+build-errors.log
+startup-errors.log
+# Ignore runtime/capture noise
+docs/real-examples/*.raw
+docs/real-examples/*.log
+memory/**
+tmp/startup.*

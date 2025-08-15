@@ -29,16 +29,16 @@
     "node": ">=18.0.0"
   },
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "bin": {
-    "mcp-ocs": "dist/index.js"
+    "mcp-ocs": "dist/src/index.js"
   },
   "scripts": {
-    "build": "tsc && mkdir -p dist && (chmod -f +x dist/*.js || true)",
+    "build": "tsc && mkdir -p dist",
     "build:beta": "tsc src/index.beta.ts --outDir dist/beta && mkdir -p dist/beta",
     "build:production": "npm run build",
     "dev": "tsc --watch",
-    "start": "node dist/index.js",
+    "start": "node dist/src/index.js",
     "start:beta": "tsx src/index.beta.ts",
     "start:dev": "./scripts/dev/start-dev.sh",
     "test": "jest",
@@ -69,7 +69,23 @@
     "release:beta": "npm run beta:tools:generate && git add config/beta-tools.json && git commit -m 'chore: sync beta tools JSON' && git tag v0.8.0-beta",
     "real:sanity": "bash scripts/real-oc-sanity.sh",
     "itest:real:cluster-health": "tsx tests/integration/real/cluster-health-real.ts",
-    "itest:real:ns": "tsx tests/integration/real/namespace-health-real.ts"
+    "itest:real:ns": "tsx tests/integration/real/namespace-health-real.ts",
+    "itest:real:rca": "tsx tests/integration/real/rca-real.ts",
+    "itest:beta:pod-health": "tsx tmp/pod-health.ts",
+    "itest:beta:get-pods": "tsx tmp/get-pods.ts",
+    "itest:beta:describe": "tsx tmp/describe.ts",
+    "itest:beta:logs": "tsx tmp/logs.ts",
+    "itest:beta:search-incidents": "tsx tmp/search-incidents.ts",
+    "itest:beta:store-incident": "tsx tmp/store-incident.ts",
+    "itest:beta:search-operational": "tsx tmp/search-operational.ts",
+    "itest:beta:workflow-state": "tsx tmp/workflow-state.ts",
+    "itest:beta:memory-stats": "tsx tmp/memory-stats.ts",
+    "itest:beta:search-conversations": "tsx tmp/search-conversations.ts",
+    "test:schemas": "jest tests/unit/schemas tests/unit/contract",
+    "capture:real:init": "mkdir -p docs/real-examples",
+    "capture:real:cluster": "bash scripts/capture-real.sh cluster -- --scope all --strategy auto --depth summary --max 5",
+    "capture:real:ns": "bash scripts/capture-real.sh ns",
+    "capture:real:rca": "bash scripts/capture-real.sh rca"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.8",
@@ -99,6 +115,7 @@
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.1",
     "tsx": "^4.20.4",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "ajv": "^8.12.0"
   }
 }

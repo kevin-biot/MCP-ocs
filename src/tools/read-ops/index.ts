@@ -9,7 +9,7 @@ import { ToolDefinition } from '../../lib/tools/namespace-manager.js';
 import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
-import { ToolMemoryGateway } from '../../lib/tools/tool-memory-gateway';
+import { ToolMemoryGateway } from '../../lib/tools/tool-memory-gateway.js';
 
 export class ReadOpsTools implements ToolSuite {
   category = 'read-ops';

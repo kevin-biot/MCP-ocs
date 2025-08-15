@@ -187,7 +187,7 @@ export class OpenShiftClient {
                 encoding: 'utf8',
                 timeout,
                 env: { ...process.env, ...this.envVars },
-                maxBuffer: 10 * 1024 * 1024 // 10MB buffer
+                maxBuffer: 64 * 1024 * 1024 // 64MB buffer for large outputs
             });
             return output.toString();
         }

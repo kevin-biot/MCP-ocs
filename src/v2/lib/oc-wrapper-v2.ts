@@ -49,7 +49,7 @@ export class OcWrapperV2 {
     const {
       timeout = this.defaultTimeout,
       namespace,
-      retries = 1,
+      retries = 3,
       cacheKey,
       cacheTTL = 30000
     } = options;

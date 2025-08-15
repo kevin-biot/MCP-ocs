@@ -1,0 +1,9 @@
+{
+  "name": "precedence_service_vs_np",
+  "checks": [
+    { "name": "Network and Service Health", "findings": ["Services without endpoints: 1"] },
+    { "name": "Recent Events", "findings": ["NetworkPolicy denied egress traffic"] }
+  ],
+  "overallStatus": "degraded",
+  "expected": "service_no_backends"
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["nodes", "operators", "overallHealth", "duration"],
+  "properties": {
+    "cluster": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string" },
+        "serverUrl": { "type": "string" },
+        "currentUser": { "type": "string" },
+        "timestamp": { "type": "string" }
+      }
+    },
+    "nodes": {
+      "type": "object",
+      "required": ["total", "ready"],
+      "properties": {
+        "total": { "type": "number" },
+        "ready": { "type": "number" },
+        "issues": { "type": "array" }
+      }
+    },
+    "operators": {
+      "type": "object",
+      "required": ["total"],
+      "properties": {
+        "total": { "type": "number" },
+        "degraded": { "type": "array" }
+      }
+    },
+    "systemNamespaces": { "type": "array" },
+    "userNamespaces": { "type": ["object", "null"] },
+    "namespacePrioritization": { "type": ["array", "null"] },
+    "overallHealth": { "type": "string" },
+    "duration": { "type": "string" },
+    "recommendations": { "type": "array" }
+  }
+}
+

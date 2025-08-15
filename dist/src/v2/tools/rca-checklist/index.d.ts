@@ -12,7 +12,8 @@
  * 5. Storage and PVC analysis
  * 6. Generate structured findings and next steps
  */
-import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+import { OcWrapperV2 } from '../../lib/oc-wrapper-v2.js';
+import { ToolMemoryGateway } from '../../../lib/tools/tool-memory-gateway.js';
 export interface RCAChecklistInput {
     namespace?: string;
     outputFormat?: 'json' | 'markdown';
@@ -49,11 +50,18 @@ export interface RCAChecklistResult {
     };
     human: string;
     markdown?: string;
+    rootCause?: {
+        type: string;
+        summary: string;
+        confidence: number;
+        evidence: string[];
+    };
 }
 export declare class RCAChecklistEngine {
     private ocWrapper;
     private namespaceHealthChecker;
-    constructor(ocWrapper: OcWrapperV2);
+    private memoryGateway;
+    constructor(ocWrapper: OcWrapperV2, memoryGateway?: ToolMemoryGateway);
     /**
      * Execute the complete RCA checklist
      */
@@ -102,6 +110,10 @@ export declare class RCAChecklistEngine {
     private parseResourceValue;
     private extractEventPatterns;
     private analyzeChecklistResults;
+    /**
+     * Derive an intelligent root cause classification from checklist findings
+     */
+    private deriveRootCause;
     private generateNextActions;
     private generateHumanSummary;
     private generateMarkdownReport;
