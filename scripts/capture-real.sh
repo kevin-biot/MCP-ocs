@@ -12,8 +12,15 @@ timestamp() { date +%Y%m%d-%H%M%S; }
 case "$MODE" in
   cluster|clusters|cluster-health)
     outfile="$OUTDIR/cluster-health-$(timestamp).json"
+    rawfile="$outfile.raw"
+    logfile="$outfile.log"
     echo "[capture] Writing cluster health to $outfile" >&2
-    tsx tests/integration/real/cluster-health-real.ts "$@" | jq '.' > "$outfile"
+    CAPTURE_MODE=1 tsx tests/integration/real/cluster-health-real.ts "$@" >"$rawfile" 2>"$logfile" || true
+    if jq -e . "$rawfile" > "$outfile" 2>>"$logfile"; then
+      rm -f "$rawfile"
+    else
+      echo "[capture] Non-JSON output detected; keeping raw at $rawfile (see $logfile)" >&2
+    fi
     ;;
   ns|namespace)
     # require --ns <namespace>
@@ -30,8 +37,15 @@ case "$MODE" in
       exit 2
     fi
     outfile="$OUTDIR/ns-${ns}-$(timestamp).json"
+    rawfile="$outfile.raw"
+    logfile="$outfile.log"
     echo "[capture] Writing namespace health for $ns to $outfile" >&2
-    tsx tests/integration/real/namespace-health-real.ts --ns "$ns" "$@" | jq '.' > "$outfile"
+    CAPTURE_MODE=1 tsx tests/integration/real/namespace-health-real.ts --ns "$ns" "$@" >"$rawfile" 2>"$logfile" || true
+    if jq -e . "$rawfile" > "$outfile" 2>>"$logfile"; then
+      rm -f "$rawfile"
+    else
+      echo "[capture] Non-JSON output detected; keeping raw at $rawfile (see $logfile)" >&2
+    fi
     ;;
   rca)
     # require --ns <namespace>
@@ -48,8 +62,15 @@ case "$MODE" in
       exit 2
     fi
     outfile="$OUTDIR/rca-${ns}-$(timestamp).json"
+    rawfile="$outfile.raw"
+    logfile="$outfile.log"
     echo "[capture] Writing RCA result for $ns to $outfile" >&2
-    tsx tests/integration/real/rca-real.ts --ns "$ns" "$@" | jq '.' > "$outfile"
+    CAPTURE_MODE=1 tsx tests/integration/real/rca-real.ts --ns "$ns" "$@" >"$rawfile" 2>"$logfile" || true
+    if jq -e . "$rawfile" > "$outfile" 2>>"$logfile"; then
+      rm -f "$rawfile"
+    else
+      echo "[capture] Non-JSON output detected; keeping raw at $rawfile (see $logfile)" >&2
+    fi
     ;;
   *)
     echo "Usage: $0 {cluster|ns|rca} [args...]" >&2
@@ -58,4 +79,3 @@ case "$MODE" in
 esac
 
 echo "[capture] Done: $outfile" >&2
-
