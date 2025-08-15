@@ -29,6 +29,13 @@ Convenience NPM Scripts (Harness)
   - `npm run itest:beta:memory-stats -- [true|false]`
   - `npm run itest:beta:search-conversations -- [query]`
 
+Real Examples
+- Capture real cluster outputs into `docs/real-examples/`:
+  - Cluster health: `npm run capture:real:init && npm run capture:real:cluster`
+  - Namespace health: `npm run capture:real:init && npm run capture:real:ns -- --ns <namespace> [--deep true] [--ingress true]`
+  - RCA checklist: `npm run capture:real:init && npm run capture:real:rca -- --ns <namespace> [--deep true]`
+- Files are timestamped (JSON), easy to diff and share.
+
 Tool Map (13 total)
 - Diagnostics: `oc_diagnostic_cluster_health`, `oc_diagnostic_namespace_health`, `oc_diagnostic_pod_health`, `oc_diagnostic_rca_checklist`
 - Read Ops: `oc_read_get_pods`, `oc_read_describe`, `oc_read_logs`, `memory_search_incidents`
