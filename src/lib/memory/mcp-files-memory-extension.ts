@@ -32,6 +32,15 @@ export class ChromaMemoryManager {
   private collection: any;
   private memoryDir: string;
   private initialized = false;
+  
+  // Safe logger available on instances; typed for TS
+  private log(...args: any[]): void {
+    if (isCaptureMode()) {
+      try { console.error(...args); } catch {}
+      return;
+    }
+    try { console.log(...args); } catch {}
+  }
 
   constructor(memoryDir: string) {
     this.memoryDir = memoryDir;
@@ -442,20 +451,10 @@ export function extractContext(text: string): string[] {
   return [...new Set(context)];
 }
 
-// Local logger that avoids stdout in capture mode
+// Local helper to detect capture mode; module scoped
 function isCaptureMode(): boolean {
   const v = process.env.CAPTURE_MODE;
   if (!v) return false;
   const s = String(v).toLowerCase();
   return s === '1' || s === 'true' || s === 'yes' || s === 'on';
 }
-
-// Patch prototype to use a safe logger without changing external API
-(ChromaMemoryManager.prototype as any).log = function (...args: any[]) {
-  if (isCaptureMode()) {
-    // Send to stderr to avoid breaking stdout JSON pipes
-    try { console.error(...args); } catch {}
-    return;
-  }
-  try { console.log(...args); } catch {}
-};
