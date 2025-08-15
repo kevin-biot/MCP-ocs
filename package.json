@@ -81,7 +81,11 @@
     "itest:beta:workflow-state": "tsx tmp/workflow-state.ts",
     "itest:beta:memory-stats": "tsx tmp/memory-stats.ts",
     "itest:beta:search-conversations": "tsx tmp/search-conversations.ts",
-    "test:schemas": "jest tests/unit/schemas tests/unit/contract"
+    "test:schemas": "jest tests/unit/schemas tests/unit/contract",
+    "capture:real:init": "mkdir -p docs/real-examples",
+    "capture:real:cluster": "bash scripts/capture-real.sh cluster -- --scope all --strategy auto --depth summary --max 5",
+    "capture:real:ns": "bash scripts/capture-real.sh ns",
+    "capture:real:rca": "bash scripts/capture-real.sh rca"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.8",
