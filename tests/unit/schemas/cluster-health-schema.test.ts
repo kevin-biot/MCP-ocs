@@ -2,8 +2,8 @@ import Ajv from 'ajv';
 import fs from 'fs';
 import path from 'path';
 
-import { DiagnosticToolsV2 } from '../../../dist/src/tools/diagnostics/index.js';
-import { SharedMemoryManager } from '../../../dist/src/lib/memory/shared-memory.js';
+import { DiagnosticToolsV2 } from '@/tools/diagnostics/index.js';
+import { SharedMemoryManager } from '@/lib/memory/shared-memory.js';
 import { MockOcWrapperV2 } from '../../mocks/mock-oc-wrapper-v2';
 
 const ajv = new Ajv({ allErrors: true });

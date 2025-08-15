@@ -2,10 +2,10 @@ import Ajv from 'ajv';
 import fs from 'fs';
 import path from 'path';
 
-import { DiagnosticToolsV2 } from '../../../dist/src/tools/diagnostics/index.js';
-import { ReadOpsTools } from '../../../dist/src/tools/read-ops/index.js';
-import { StateMgmtTools } from '../../../dist/src/tools/state-mgmt/index.js';
-import { SharedMemoryManager } from '../../../dist/src/lib/memory/shared-memory.js';
+import { DiagnosticToolsV2 } from '@/tools/diagnostics/index.js';
+import { ReadOpsTools } from '@/tools/read-ops/index.js';
+import { StateMgmtTools } from '@/tools/state-mgmt/index.js';
+import { SharedMemoryManager } from '@/lib/memory/shared-memory.js';
 import { MockOcWrapperV2 } from '../../mocks/mock-oc-wrapper-v2';
 import { MockOpenShiftClient } from '../../mocks/mock-openshift-client';
 
