@@ -9,8 +9,6 @@ import { SharedMemoryManager } from '@/lib/memory/shared-memory.js';
 import { MockOcWrapperV2 } from '../../mocks/mock-oc-wrapper-v2';
 import { MockOpenShiftClient } from '../../mocks/mock-openshift-client';
 import { NamespaceHealthChecker } from '@/v2/tools/check-namespace-health/index.js';
-import fs from 'fs';
-import path from 'path';
 
 const ajv = new Ajv({ allErrors: true });
 const loadSchema = (name: string) => JSON.parse(fs.readFileSync(path.join(__dirname, '../../schemas', name), 'utf8'));
