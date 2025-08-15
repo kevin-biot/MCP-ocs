@@ -2,11 +2,11 @@ import Ajv from 'ajv';
 import fs from 'fs';
 import path from 'path';
 
-import { DiagnosticToolsV2 } from '../../../src/tools/diagnostics/index.js';
-import { SharedMemoryManager } from '../../../src/lib/memory/shared-memory.js';
+import { DiagnosticToolsV2 } from '@/tools/diagnostics/index.js';
+import { SharedMemoryManager } from '@/lib/memory/shared-memory.js';
 import { MockOcWrapperV2 } from '../../mocks/mock-oc-wrapper-v2';
 
-const ajv = new Ajv({ allErrors: true, strict: false });
+const ajv = new Ajv({ allErrors: true });
 const schema = JSON.parse(fs.readFileSync(path.join(__dirname, '../../schemas/oc_diagnostic_cluster_health.schema.json'), 'utf8'));
 const validate = ajv.compile(schema);
 
@@ -43,4 +43,3 @@ describe('Cluster health schema (AJV)', () => {
     expect(ok).toBe(true);
   });
 });
-

@@ -2,14 +2,14 @@ import Ajv from 'ajv';
 import fs from 'fs';
 import path from 'path';
 
-import { DiagnosticToolsV2 } from '../../../src/tools/diagnostics/index.js';
-import { ReadOpsTools } from '../../../src/tools/read-ops/index.js';
-import { StateMgmtTools } from '../../../src/tools/state-mgmt/index.js';
-import { SharedMemoryManager } from '../../../src/lib/memory/shared-memory.js';
+import { DiagnosticToolsV2 } from '@/tools/diagnostics/index.js';
+import { ReadOpsTools } from '@/tools/read-ops/index.js';
+import { StateMgmtTools } from '@/tools/state-mgmt/index.js';
+import { SharedMemoryManager } from '@/lib/memory/shared-memory.js';
 import { MockOcWrapperV2 } from '../../mocks/mock-oc-wrapper-v2';
 import { MockOpenShiftClient } from '../../mocks/mock-openshift-client';
 
-const ajv = new Ajv({ allErrors: true, strict: false });
+const ajv = new Ajv({ allErrors: true });
 const loadSchema = (name: string) => JSON.parse(fs.readFileSync(path.join(__dirname, '../../schemas', name), 'utf8'));
 
 const schemas = {
@@ -81,4 +81,3 @@ describe('Tool output schemas (AJV validation with mocks)', () => {
     expect(schemas.searchConv(searchConv)).toBe(true);
   });
 });
-

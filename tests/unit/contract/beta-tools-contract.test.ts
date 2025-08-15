@@ -1,5 +1,5 @@
-import { VALIDATED_TOOLS } from '../../../src/registry/validated-tools.js';
-import { ToolMaturity } from '../../../src/types/tool-maturity.js';
+import { VALIDATED_TOOLS } from '@/registry/validated-tools.js';
+import { ToolMaturity } from '@/types/tool-maturity.js';
 
 describe('Beta tool contract', () => {
   it('validated tools set remains stable', () => {
@@ -24,4 +24,3 @@ describe('Beta tool contract', () => {
     }
   });
 });
-
