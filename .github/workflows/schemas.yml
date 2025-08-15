@@ -1,0 +1,27 @@
+name: Schema + Contract
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  test-schemas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - name: Run schema + contract tests (mocks)
+        run: npm run test:schemas -- --ci --runInBand
+        env:
+          USE_MOCK_OC: '1'
+      - name: Mock harness smoke
+        run: |
+          USE_MOCK_OC=1 npm run itest:beta:get-pods -- demo-ns
+          USE_MOCK_OC=1 npm run itest:beta:pod-health -- demo-ns app-1
