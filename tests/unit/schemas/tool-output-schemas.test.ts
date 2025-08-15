@@ -31,9 +31,9 @@ const fixturesDir = path.join(__dirname, '../../fixtures');
 describe('Tool output schemas (AJV validation with mocks)', () => {
   const orig = { log: console.log, error: console.error, warn: console.warn };
   beforeAll(() => {
-    console.log = () => {} as any;
-    console.error = () => {} as any;
-    console.warn = () => {} as any;
+    console.log = (() => {}) as any;
+    console.error = (() => {}) as any;
+    console.warn = (() => {}) as any;
   });
   afterAll(() => {
     console.log = orig.log;

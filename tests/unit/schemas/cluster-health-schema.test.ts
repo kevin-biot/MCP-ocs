@@ -14,9 +14,9 @@ const validate = ajv.compile(schema);
 describe('Cluster health schema (AJV)', () => {
   const orig = { log: console.log, error: console.error, warn: console.warn };
   beforeAll(() => {
-    console.log = () => {} as any;
-    console.error = () => {} as any;
-    console.warn = () => {} as any;
+    console.log = (() => {}) as any;
+    console.error = (() => {}) as any;
+    console.warn = (() => {}) as any;
   });
   afterAll(() => {
     console.log = orig.log;
