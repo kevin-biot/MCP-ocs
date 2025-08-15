@@ -4,6 +4,8 @@
  * Eliminates inconsistent registration patterns and provides unified
  * interface for all tool types (v1, v2, individual, collections)
  */
+import { ToolMaturity } from '../../types/tool-maturity.js';
+import { VALIDATED_TOOLS } from '../../registry/validated-tools.js';
 /**
  * Unified Tool Registry
  *
@@ -13,6 +15,7 @@
 export class UnifiedToolRegistry {
     tools = new Map();
     suites = [];
+    maturityIndex = new Map();
     /**
      * Register an entire tool suite
      */
@@ -42,8 +45,22 @@ export class UnifiedToolRegistry {
         if (this.tools.has(tool.name)) {
             throw new Error(`Tool name conflict: ${tool.name} already registered`);
         }
+        // Enrich metadata with maturity info if available
+        const validated = VALIDATED_TOOLS[tool.fullName];
+        const maturity = validated?.maturity ?? ToolMaturity.DEVELOPMENT;
+        const enriched = {
+            ...tool,
+            metadata: {
+                ...tool.metadata,
+                maturity,
+                lastValidated: validated?.lastValidated,
+                testCoverage: validated?.testCoverage,
+                mcpCompatible: validated?.mcpCompatible,
+            }
+        };
         // Register the tool
-        this.tools.set(tool.name, tool);
+        this.tools.set(tool.name, enriched);
+        this.maturityIndex.set(tool.fullName, maturity);
         console.error(`🔧 Registered tool: ${tool.name} (${tool.category}-${tool.version})`);
     }
     /**
@@ -51,6 +68,21 @@ export class UnifiedToolRegistry {
      */
     getAllTools() {
         return Array.from(this.tools.values());
+    }
+    /**
+     * Get tools by maturity (using fullName metadata)
+     */
+    getToolsByMaturity(maturities) {
+        return this.getAllTools().filter(tool => {
+            const m = tool.metadata?.maturity ?? ToolMaturity.DEVELOPMENT;
+            return maturities.includes(m);
+        });
+    }
+    /**
+     * Get only PRODUCTION or BETA tools (beta build set)
+     */
+    getBetaTools() {
+        return this.getToolsByMaturity([ToolMaturity.PRODUCTION, ToolMaturity.BETA]);
     }
     /**
      * Get tools by category
@@ -112,15 +144,19 @@ export class UnifiedToolRegistry {
         const tools = this.getAllTools();
         const byCategory = {};
         const byVersion = {};
+        const byMaturity = {};
         for (const tool of tools) {
             byCategory[tool.category] = (byCategory[tool.category] || 0) + 1;
             byVersion[tool.version] = (byVersion[tool.version] || 0) + 1;
+            const m = tool.metadata?.maturity ?? ToolMaturity.DEVELOPMENT;
+            byMaturity[m] = (byMaturity[m] || 0) + 1;
         }
         return {
             totalTools: tools.length,
             byCategory,
             byVersion,
-            suites: this.suites.map(s => `${s.category}-${s.version}`)
+            suites: this.suites.map(s => `${s.category}-${s.version}`),
+            byMaturity
         };
     }
     /**
@@ -128,6 +164,16 @@ export class UnifiedToolRegistry {
      */
     getMCPTools() {
         return this.getAllTools().map(tool => ({
+            name: tool.fullName,
+            description: tool.description,
+            inputSchema: tool.inputSchema
+        }));
+    }
+    /**
+     * Get MCP-formatted tools, filtered by maturity
+     */
+    getMCPToolsByMaturity(maturities) {
+        return this.getToolsByMaturity(maturities).map(tool => ({
             name: tool.fullName,
             description: tool.description,
             inputSchema: tool.inputSchema

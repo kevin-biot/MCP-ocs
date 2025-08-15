@@ -13,6 +13,7 @@ export declare class ReadOpsTools implements ToolSuite {
     category: string;
     version: string;
     constructor(openshiftClient: OpenShiftClient, memoryManager: SharedMemoryManager);
+    private memoryGateway;
     getTools(): StandardTool[];
     private getToolDefinitions;
     private convertToStandardTool;

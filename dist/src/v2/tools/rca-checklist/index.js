@@ -12,13 +12,16 @@
  * 5. Storage and PVC analysis
  * 6. Generate structured findings and next steps
  */
-import { NamespaceHealthChecker } from '../check-namespace-health/index';
+import { NamespaceHealthChecker } from '../check-namespace-health/index.js';
+import { ToolMemoryGateway } from '../../../lib/tools/tool-memory-gateway.js';
 export class RCAChecklistEngine {
     ocWrapper;
     namespaceHealthChecker;
-    constructor(ocWrapper) {
+    memoryGateway;
+    constructor(ocWrapper, memoryGateway) {
         this.ocWrapper = ocWrapper;
         this.namespaceHealthChecker = new NamespaceHealthChecker(ocWrapper);
+        this.memoryGateway = memoryGateway || new ToolMemoryGateway('./memory');
     }
     /**
      * Execute the complete RCA checklist
@@ -50,10 +53,19 @@ export class RCAChecklistEngine {
             this.analyzeChecklistResults(result);
             this.generateNextActions(result);
             this.generateHumanSummary(result);
+            // Derive intelligent root cause from findings
+            this.deriveRootCause(result);
             if (outputFormat === 'markdown') {
                 result.markdown = this.generateMarkdownReport(result);
             }
             result.duration = Date.now() - startTime;
+            // Persist RCA result via modern memory gateway
+            try {
+                await this.memoryGateway.storeToolExecution('oc_diagnostic_rca_checklist', input, result, `rca-${startTime}`, ['rca_checklist', result.overallStatus, result.rootCause ? `root_cause:${result.rootCause.type}` : 'root_cause:unknown'], 'openshift', 'prod', result.overallStatus === 'healthy' ? 'low' : (result.overallStatus === 'degraded' ? 'medium' : 'high'));
+            }
+            catch {
+                // Non-fatal if storage unavailable
+            }
             return result;
         }
         catch (error) {
@@ -61,6 +73,10 @@ export class RCAChecklistEngine {
             result.overallStatus = 'failing';
             result.criticalIssues.push(`RCA checklist failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
             result.human = `RCA checklist failed after ${result.duration}ms: ${error instanceof Error ? error.message : 'Unknown error'}`;
+            try {
+                await this.memoryGateway.storeToolExecution('oc_diagnostic_rca_checklist', input, result, `rca-${startTime}`, ['rca_checklist', 'failure'], 'openshift', 'prod', 'high');
+            }
+            catch { }
             return result;
         }
     }
@@ -291,6 +307,12 @@ export class RCAChecklistEngine {
                 ['get', 'services', '-A', '-o', 'json'];
             const servicesResult = await this.ocWrapper.executeOc(servicesArgs, namespace ? { namespace } : {});
             const services = JSON.parse(servicesResult.stdout);
+            // Fetch endpoints to validate service backends
+            const endpointsArgs = namespace ?
+                ['get', 'endpoints', '-o', 'json'] :
+                ['get', 'endpoints', '-A', '-o', 'json'];
+            const endpointsResult = await this.ocWrapper.executeOc(endpointsArgs, namespace ? { namespace } : {});
+            const endpoints = JSON.parse(endpointsResult.stdout);
             // Check routes (OpenShift specific)
             let routes = { items: [] };
             try {
@@ -303,7 +325,7 @@ export class RCAChecklistEngine {
             catch {
                 // Routes not available (vanilla Kubernetes)
             }
-            const networkAnalysis = this.analyzeNetworkHealth(services, routes);
+            const networkAnalysis = this.analyzeNetworkHealth(services, routes, endpoints);
             const check = {
                 name: checkName,
                 status: networkAnalysis.issues.length === 0 ? 'pass' : 'warning',
@@ -523,21 +545,47 @@ export class RCAChecklistEngine {
         }
         return { totalPVCs, boundPvc: boundPVCs, pendingPVCs, issues };
     }
-    analyzeNetworkHealth(services, routes) {
+    analyzeNetworkHealth(services, routes, endpoints) {
         const totalServices = services.items.length;
         const totalRoutes = routes.items.length;
         let servicesWithoutEndpoints = 0;
         const issues = [];
-        // Placeholder for endpoint analysis
-        // Would need to check endpoints for each service
+        // Build endpoint index by namespace/name
+        const epIndex = new Map();
+        for (const ep of (endpoints.items || [])) {
+            const key = `${ep.metadata?.namespace || ''}/${ep.metadata?.name || ''}`;
+            epIndex.set(key, ep);
+        }
+        for (const svc of (services.items || [])) {
+            const ns = svc.metadata?.namespace || '';
+            const name = svc.metadata?.name || '';
+            const key = `${ns}/${name}`;
+            const ep = epIndex.get(key);
+            const subsets = ep?.subsets || [];
+            const addresses = subsets.flatMap((s) => s.addresses || []);
+            if (!ep || addresses.length === 0) {
+                servicesWithoutEndpoints++;
+                issues.push(`Service ${ns}/${name} has no active endpoints`);
+            }
+        }
         return { totalServices, totalRoutes, servicesWithoutEndpoints, issues };
     }
-    analyzeRecentEvents(events) {
-        const totalEvents = events.items.length;
-        const criticalEvents = events.items.filter((e) => e.type === 'Warning' &&
-            ['Failed', 'Error', 'FailedMount', 'FailedScheduling'].some(reason => e.reason.includes(reason))).length;
-        const commonPatterns = this.extractEventPatterns(events.items);
-        const topEvents = events.items.slice(0, 5).map((e) => `${e.reason}: ${e.involvedObject?.kind}/${e.involvedObject?.name}`);
+    analyzeRecentEvents(events, context) {
+        const items = events.items || [];
+        const totalEvents = items.length;
+        // Expanded patterns
+        const criticalReasons = [
+            'Failed', 'Error', 'FailedMount', 'FailedScheduling', 'BackOff', 'ImagePullBackOff',
+            'ErrImagePull', 'CrashLoopBackOff', 'OOMKilled', 'Evicted', 'Unhealthy'
+        ];
+        const criticalEvents = items.filter((e) => e.type === 'Warning' && criticalReasons.some(r => (e.reason || '').includes(r))).length;
+        // Context-aware hints (e.g., quota issues)
+        const commonPatterns = this.extractEventPatterns(items);
+        const topEvents = items.slice(0, 5).map((e) => `${e.reason}: ${e.involvedObject?.kind}/${e.involvedObject?.name}`);
+        // Correlate with quota signals if provided
+        if (context?.quotaIssues && context.quotaIssues.length > 0) {
+            commonPatterns.unshift('ResourceQuotaExceeded');
+        }
         return { totalEvents, criticalEvents, commonPatterns, topEvents };
     }
     analyzeResourceConstraints(quotas, limits) {
@@ -569,29 +617,39 @@ export class RCAChecklistEngine {
         return { totalQuotas, totalLimits, constraintsViolated, issues };
     }
     parseResourceValue(value) {
-        // Simple parser for Kubernetes resource values
+        // Robust parser for Kubernetes resource values
         if (!value || typeof value !== 'string')
             return null;
-        // Handle memory units (Ki, Mi, Gi, Ti)
-        const memoryMatch = value.match(/^(\\d+(?:\\.\\d+)?)(Ki|Mi|Gi|Ti|k|M|G|T)?$/);
-        if (memoryMatch) {
-            const num = parseFloat(memoryMatch[1]);
-            const unit = memoryMatch[2] || '';
-            const multipliers = {
-                'Ki': 1024, 'Mi': 1024 * 1024, 'Gi': 1024 * 1024 * 1024, 'Ti': 1024 * 1024 * 1024 * 1024,
-                'k': 1000, 'M': 1000 * 1000, 'G': 1000 * 1000 * 1000, 'T': 1000 * 1000 * 1000 * 1000
-            };
-            return num * (multipliers[unit] || 1);
+        const v = value.trim();
+        // CPU: millicores (e.g., 200m) or cores (e.g., 0.5, 1)
+        if (/m$/.test(v)) {
+            const n = parseFloat(v.slice(0, -1));
+            return isNaN(n) ? null : n; // already in millicores
         }
-        // Handle CPU units (m for millicores)
-        const cpuMatch = value.match(/^(\\d+(?:\\.\\d+)?)m?$/);
-        if (cpuMatch) {
-            const num = parseFloat(cpuMatch[1]);
-            return value.includes('m') ? num : num * 1000; // Convert to millicores
+        if (/^\d+(?:\.\d+)?$/.test(v)) {
+            // No unit; could be CPU cores or bytes depending on context.
+            // For quota parsing, k8s reports plain numbers for CPU as cores.
+            // Convert cores to millicores for consistent comparisons.
+            const n = parseFloat(v);
+            return isNaN(n) ? null : n * 1000;
         }
-        // Plain numbers
-        const num = parseFloat(value);
-        return isNaN(num) ? null : num;
+        // Memory: binary (Ki, Mi, Gi, Ti, Pi, Ei) or decimal (k, K, M, G, T, P, E)
+        const memMatch = v.match(/^(\d+(?:\.\d+)?)(Ki|Mi|Gi|Ti|Pi|Ei|k|K|M|G|T|P|E)$/);
+        if (memMatch) {
+            const num = parseFloat(memMatch[1]);
+            const unit = memMatch[2];
+            const pow2 = { Ki: 10, Mi: 20, Gi: 30, Ti: 40, Pi: 50, Ei: 60 };
+            if (unit in pow2) {
+                return num * Math.pow(2, pow2[unit]);
+            }
+            const dec = { k: 1e3, K: 1e3, M: 1e6, G: 1e9, T: 1e12, P: 1e15, E: 1e18 };
+            if (unit in dec) {
+                return num * dec[unit];
+            }
+        }
+        // Fallback: try parse float
+        const f = parseFloat(v);
+        return isNaN(f) ? null : f;
     }
     extractEventPatterns(events) {
         const patternCounts = new Map();
@@ -626,6 +684,118 @@ export class RCAChecklistEngine {
         result.criticalIssues = checksPerformed
             .filter(c => c.severity === 'critical' || c.status === 'fail')
             .flatMap(c => c.findings);
+    }
+    /**
+     * Derive an intelligent root cause classification from checklist findings
+     */
+    deriveRootCause(result) {
+        const evidence = [];
+        const getCheck = (prefix) => result.checksPerformed.find(c => c.name.startsWith(prefix));
+        const storage = getCheck('Storage and PVC Health');
+        const network = getCheck('Network and Service Health');
+        const node = getCheck('Node Health and Capacity');
+        const ns = result.checksPerformed.find(c => c.name.startsWith('Namespace Health:'));
+        const events = getCheck('Recent Events');
+        const storageTxt = storage?.findings?.join(' ') || '';
+        const networkTxt = network?.findings?.join(' ') || '';
+        const nodeTxt = node?.findings?.join(' ') || '';
+        const nsTxt = ns?.findings?.join(' ') || '';
+        const eventsTxt = events?.findings?.join(' ') || '';
+        // Storage related
+        if (/Pending PVCs:\s*[1-9]/i.test(storageTxt)) {
+            evidence.push('Pending PVCs detected');
+            if (/Default storage class:\s*NONE/i.test(storageTxt)) {
+                evidence.push('No default StorageClass');
+                result.rootCause = { type: 'storage_no_default_storageclass', summary: 'Missing default StorageClass causing PVCs to remain pending', confidence: 0.9, evidence };
+                return;
+            }
+            // NetworkPolicy blocking provisioner
+            if (/NetworkPolicy|denied by policy|blocked by network/i.test(eventsTxt)) {
+                evidence.push('Events indicate NetworkPolicy denial');
+                result.rootCause = { type: 'storage_provisioner_blocked_by_network_policy', summary: 'NetworkPolicy blocking storage provisioner communication', confidence: 0.85, evidence };
+                return;
+            }
+            if (/FailedMount/i.test(eventsTxt) || /provision/i.test(storageTxt) || /provision/i.test(eventsTxt)) {
+                evidence.push('FailedMount/provisioner related evidence');
+                result.rootCause = { type: 'storage_provisioner_unreachable', summary: 'Storage provisioner unreachable or misconfigured', confidence: 0.8, evidence };
+                return;
+            }
+            result.rootCause = { type: 'storage_binding_issues', summary: 'PVCs pending due to binding/provisioning issues', confidence: 0.6, evidence };
+            return;
+        }
+        // Services without endpoints
+        const svcNoEpMatch = networkTxt.match(/Services without endpoints:\s*(\d+)/i);
+        if (svcNoEpMatch && parseInt(svcNoEpMatch[1], 10) > 0) {
+            const count = parseInt(svcNoEpMatch[1], 10);
+            evidence.push(`${count} services without endpoints`);
+            result.rootCause = { type: 'service_no_backends', summary: 'Services have no active endpoints (backends not ready or selector mismatch)', confidence: 0.75, evidence };
+            return;
+        }
+        // NetworkPolicy general block (non-storage)
+        if (/NetworkPolicy|denied by policy|blocked by network/i.test(eventsTxt)) {
+            evidence.push('NetworkPolicy denies traffic');
+            result.rootCause = { type: 'network_policy_block', summary: 'Traffic blocked by NetworkPolicy (review ingress/egress rules and labels)', confidence: 0.75, evidence };
+            return;
+        }
+        // Route/TLS certificate failures
+        if (/x509|certificate|tls|handshake|verify failed|unknown authority/i.test(eventsTxt)) {
+            evidence.push('TLS/certificate errors observed');
+            result.rootCause = { type: 'route_tls_failure', summary: 'TLS/certificate issues affecting route/service connectivity', confidence: 0.65, evidence };
+            return;
+        }
+        // Image pull
+        if (/ImagePullBackOff|ErrImagePull/i.test(eventsTxt)) {
+            evidence.push('Image pull failures');
+            result.rootCause = { type: 'image_pull_failures', summary: 'Image registry/credentials problems or image unavailable', confidence: 0.7, evidence };
+            return;
+        }
+        // Crash loops / OOM
+        if (/CrashLoopBackOff|OOMKilled/i.test(eventsTxt)) {
+            evidence.push('Crash loops or OOMKilled events');
+            result.rootCause = { type: 'application_instability', summary: 'Application instability or insufficient resource limits', confidence: 0.65, evidence };
+            return;
+        }
+        // Scheduling/resource pressure
+        if (/FailedScheduling|Insufficient/i.test(eventsTxt)) {
+            evidence.push('Scheduling failures due to insufficient resources');
+            result.rootCause = { type: 'resource_pressure', summary: 'Cluster resource pressure causing scheduling failures', confidence: 0.7, evidence };
+            return;
+        }
+        // Node conditions
+        if (/not ready|MemoryPressure|DiskPressure|PIDPressure/i.test(nodeTxt)) {
+            evidence.push('Node readiness/pressure issues');
+            result.rootCause = { type: 'node_instability', summary: 'Node instability impacting workloads', confidence: 0.7, evidence };
+            return;
+        }
+        // Quota exceeded patterns
+        const quotaCheck = result.checksPerformed.find(c => c.name.startsWith('Resource Constraints and Quotas'));
+        const quotaTxt = quotaCheck?.findings?.join(' ') || '';
+        if (/Quota violations:\s*[1-9]/i.test(quotaTxt) || /exceeded quota|quota exceeded/i.test(eventsTxt)) {
+            evidence.push('Resource quota exceeded');
+            result.rootCause = { type: 'resource_quota_exceeded', summary: 'ResourceQuota limits reached for namespace/project', confidence: 0.7, evidence };
+            return;
+        }
+        // DNS resolution failures
+        if (/no such host|Temporary failure in name resolution|NXDOMAIN|SERVFAIL|i\/o timeout/i.test(eventsTxt)) {
+            evidence.push('DNS resolution failures');
+            result.rootCause = { type: 'dns_resolution_failure', summary: 'DNS resolution failures affecting service connectivity', confidence: 0.65, evidence };
+            return;
+        }
+        // Probe failures
+        if (/Liveness probe failed|Readiness probe failed/i.test(eventsTxt)) {
+            evidence.push('Probe failures detected');
+            result.rootCause = { type: 'probe_failures', summary: 'Liveness/Readiness probe failures indicating app or dependency issues', confidence: 0.6, evidence };
+            return;
+        }
+        // Namespace health degraded/failing
+        if (/Namespace status:\s*(degraded|failing)/i.test(nsTxt)) {
+            evidence.push('Namespace degraded/failing');
+            result.rootCause = { type: 'namespace_health_degraded', summary: 'Namespace health is degraded; see suspicions/events', confidence: 0.5, evidence };
+            return;
+        }
+        if (result.overallStatus !== 'healthy') {
+            result.rootCause = { type: 'unknown', summary: 'Root cause not determined from available signals', confidence: 0.3, evidence };
+        }
     }
     generateNextActions(result) {
         const actions = [];
@@ -673,6 +843,19 @@ export class RCAChecklistEngine {
         markdown += `- **Checks**: ${result.summary.passed}/${result.summary.totalChecks} passed\\n`;
         markdown += `- **Warnings**: ${result.summary.warnings}\\n`;
         markdown += `- **Failures**: ${result.summary.failed}\\n\\n`;
+        if (result.rootCause) {
+            markdown += `## Root Cause\\n`;
+            markdown += `- **Type**: ${result.rootCause.type}\\n`;
+            markdown += `- **Summary**: ${result.rootCause.summary}\\n`;
+            markdown += `- **Confidence**: ${(Math.round(result.rootCause.confidence * 100))}%\\n`;
+            if (Array.isArray(result.rootCause.evidence) && result.rootCause.evidence.length > 0) {
+                markdown += `- **Evidence**:\\n`;
+                result.rootCause.evidence.slice(0, 5).forEach(e => {
+                    markdown += `  - ${e}\\n`;
+                });
+            }
+            markdown += `\\n`;
+        }
         if (result.criticalIssues.length > 0) {
             markdown += `## Critical Issues\\n`;
             result.criticalIssues.forEach(issue => {

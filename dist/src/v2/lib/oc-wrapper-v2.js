@@ -23,7 +23,7 @@ export class OcWrapperV2 {
      * Execute oc command with safety and performance optimizations
      */
     async executeOc(args, options = {}) {
-        const { timeout = this.defaultTimeout, namespace, retries = 1, cacheKey, cacheTTL = 30000 } = options;
+        const { timeout = this.defaultTimeout, namespace, retries = 3, cacheKey, cacheTTL = 30000 } = options;
         // Input validation and sanitization
         this.validateArgs(args);
         // Add namespace if specified
@@ -94,7 +94,8 @@ export class OcWrapperV2 {
      * Get events in namespace
      */
     async getEvents(namespace) {
-        const result = await this.executeOc(['get', 'events', '-o', 'json'], {
+        // Reduce volume by excluding Normal events (focus on warnings/errors)
+        const result = await this.executeOc(['get', 'events', '--field-selector', 'type!=Normal', '-o', 'json'], {
             namespace,
             cacheKey: `events:${namespace}`,
             cacheTTL: 10000 // 10s cache for events
@@ -204,14 +205,21 @@ export class OcWrapperV2 {
     // Private helper methods
     async executeWithTimeout(args, timeout) {
         const command = `${this.ocPath} ${args.join(' ')}`;
+        // DEBUG: Log environment information
+        console.error(`🔧 Executing: ${command}`);
+        console.error(`🔧 KUBECONFIG: ${process.env.KUBECONFIG || 'NOT SET'}`);
+        console.error(`🔧 Current working directory: ${process.cwd()}`);
         try {
             const result = await execAsync(command, {
                 timeout,
+                maxBuffer: 16 * 1024 * 1024, // 16MB to handle large JSON outputs
                 env: { ...process.env, KUBECONFIG: process.env.KUBECONFIG }
             });
             return result;
         }
         catch (error) {
+            console.error(`❌ Command failed: ${command}`);
+            console.error(`❌ Error: ${error.message}`);
             if (error.code === 'ETIMEDOUT') {
                 throw new Error(`Command timed out after ${timeout}ms: ${command}`);
             }

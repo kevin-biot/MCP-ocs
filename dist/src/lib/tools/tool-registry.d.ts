@@ -4,6 +4,7 @@
  * Eliminates inconsistent registration patterns and provides unified
  * interface for all tool types (v1, v2, individual, collections)
  */
+import { ToolMaturity } from '../../types/tool-maturity.js';
 export interface StandardTool {
     /** Unique tool identifier */
     name: string;
@@ -25,6 +26,10 @@ export interface StandardTool {
         deprecated?: boolean;
         experimental?: boolean;
         requiredPermissions?: string[];
+        maturity?: ToolMaturity;
+        lastValidated?: string;
+        testCoverage?: number;
+        mcpCompatible?: boolean;
     };
 }
 export interface ToolSuite {
@@ -45,6 +50,7 @@ export interface ToolRegistryStats {
     byCategory: Record<string, number>;
     byVersion: Record<string, number>;
     suites: string[];
+    byMaturity: Record<string, number>;
 }
 /**
  * Unified Tool Registry
@@ -55,6 +61,7 @@ export interface ToolRegistryStats {
 export declare class UnifiedToolRegistry {
     private tools;
     private suites;
+    private maturityIndex;
     /**
      * Register an entire tool suite
      */
@@ -67,6 +74,14 @@ export declare class UnifiedToolRegistry {
      * Get all registered tools
      */
     getAllTools(): StandardTool[];
+    /**
+     * Get tools by maturity (using fullName metadata)
+     */
+    getToolsByMaturity(maturities: ToolMaturity[]): StandardTool[];
+    /**
+     * Get only PRODUCTION or BETA tools (beta build set)
+     */
+    getBetaTools(): StandardTool[];
     /**
      * Get tools by category
      */
@@ -91,6 +106,14 @@ export declare class UnifiedToolRegistry {
      * Get tools formatted for MCP registration
      */
     getMCPTools(): Array<{
+        name: string;
+        description: string;
+        inputSchema: any;
+    }>;
+    /**
+     * Get MCP-formatted tools, filtered by maturity
+     */
+    getMCPToolsByMaturity(maturities: ToolMaturity[]): Array<{
         name: string;
         description: string;
         inputSchema: any;
