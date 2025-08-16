@@ -24,6 +24,7 @@ export declare class EnhancedSequentialThinkingOrchestrator {
     private executeToolWithNetworkHandling;
     private isNetworkResetError;
     private storeToolExecutionInMemory;
+    private storePlanStrategyInMemory;
     private reflectOnExecution;
     private reflectOnResults;
     private shouldReviseStrategy;

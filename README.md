@@ -102,6 +102,32 @@ npm run start:sequential
 ENABLE_SEQUENTIAL_THINKING=true npm run start:sequential
 ```
 
+#### Using `sequential_thinking`
+- Entrypoint: `npx tsx src/index.ts` (standard) or `ENABLE_SEQUENTIAL_THINKING=true npx tsx src/index-sequential.ts`
+- Flags: set `bounded=true` to avoid sweeps; set `firstStepOnly=true` to execute one planned step and reflect.
+- Timeouts: increase `OC_TIMEOUT_MS` (e.g., `120000`) if you see timeouts.
+
+Natural prompts (MCP client-side examples):
+- Safe start (bounded + one step)
+  - "Use sequential thinking to investigate API latency in openshift-monitoring. Plan: namespace health (skip ingress), then list Prometheus pods. Bounded mode; execute one step only and reflect. Session: seq-demo-aws."
+- Continue plan
+  - "Continue the plan for session seq-demo-aws. Stay bounded; execute only the next planned step and reflect."
+- Ingress 503 (new session)
+  - "Start a bounded, step-by-step plan focused only on ingress troubleshooting. 503s for external users. First check ingress operator (openshift-ingress-operator), then router pods (openshift-ingress), then ingress resources. Execute one step only and reflect. Session: ingress-503-debug."
+- Verify capture
+  - "Search operational memory for recent tool executions in session seq-demo-aws and summarize the last 5 actions."
+
+Direct tool calls (if your LLM struggles with tool formatting):
+- `oc_read_get_pods({ sessionId: "ingress-503-debug", namespace: "openshift-ingress-operator" })`
+- `oc_read_get_pods({ sessionId: "ingress-503-debug", namespace: "openshift-ingress" })`
+- `oc_read_describe({ sessionId: "ingress-503-debug", resourceType: "ingresscontroller", name: "default", namespace: "openshift-ingress-operator" })`
+- After listing router pods, describe one pod: `oc_read_describe({ sessionId: "ingress-503-debug", resourceType: "pod", name: "<router-pod>", namespace: "openshift-ingress" })`
+
+Heuristics in bounded mode:
+- Defaults to `includeIngressTest=false` and `deepAnalysis=false` unless explicitly overridden.
+- If your prompt contains "skip ingress", the orchestrator disables ingress testing.
+- Avoids broad `pod_health` calls without a specific pod; lists pods first in the likely namespace.
+
 Example MCP messages over stdio:
 
 ```json

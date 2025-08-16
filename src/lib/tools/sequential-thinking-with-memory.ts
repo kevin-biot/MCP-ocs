@@ -169,6 +169,8 @@ export class EnhancedSequentialThinkingOrchestrator {
     const steps: ToolStep[] = [];
     const input = context.userInput;
     const suggestions: string[] = [];
+    const t = input.toLowerCase();
+    const skipIngress = t.includes('skip ingress');
     // Derive recent tools executed from session context
     let recentTools = new Set<string>();
     try {
@@ -214,10 +216,16 @@ export class EnhancedSequentialThinkingOrchestrator {
           });
         }
       } else {
+        // Heuristics & defaults: in bounded mode, avoid deep/ingress unless explicitly stated
         steps.push({
           sequenceNumber: context.thoughtNumber++,
           tool: 'oc_diagnostic_namespace_health',
-          parameters: { sessionId: context.sessionId, namespace: 'openshift-monitoring', includeIngressTest: true, deepAnalysis: true },
+          parameters: {
+            sessionId: context.sessionId,
+            namespace: 'openshift-monitoring',
+            includeIngressTest: skipIngress ? false : (context.bounded ? false : true),
+            deepAnalysis: context.bounded ? false : true
+          },
           rationale: 'Focus on monitoring stack namespace based on symptoms',
           dependencies: context.bounded ? [] : ['oc_diagnostic_cluster_health'],
           memoryContext: mem.slice(0, 3),
@@ -238,15 +246,20 @@ export class EnhancedSequentialThinkingOrchestrator {
       confidence = Math.min(1.0, confidence + 0.15);
     }
 
+    // Pod issue heuristics: avoid broad pod_health; list pods in likely namespace first
     if (this.isPodIssue(input)) {
+      const ns = t.includes('ingress') || t.includes('router')
+        ? 'openshift-ingress'
+        : (t.includes('monitoring') ? 'openshift-monitoring' : undefined);
       steps.push({
         sequenceNumber: context.thoughtNumber++,
-        tool: 'oc_diagnostic_pod_health',
-        parameters: { sessionId: context.sessionId, namespaceScope: 'all', focusStrategy: 'auto', depth: 'detailed' },
-        rationale: 'Investigate pod-level health for reported issues',
+        tool: 'oc_read_get_pods',
+        parameters: { sessionId: context.sessionId, ...(ns ? { namespace: ns } : {}) },
+        rationale: ns ? `List pods in likely affected namespace (${ns}) before deep diagnostics` : 'List pods to identify target for pod health diagnostics',
         dependencies: [],
         memoryContext: mem.slice(0, 2),
       });
+      suggestions.push('After listing pods, run oc_diagnostic_pod_health on failing pod');
     }
 
     if (this.isNetworkProblem(input)) {
@@ -260,8 +273,50 @@ export class EnhancedSequentialThinkingOrchestrator {
       });
     }
 
+    // Ingress-focused routing: map ingress/router/503 signals to targeted steps
+    if (t.includes('ingress') || t.includes('router') || t.includes('503') || t.includes('openshift-ingress')) {
+      // 1) Get operator pods
+      if (!recentTools.has('oc_read_get_pods')) {
+        steps.push({
+          sequenceNumber: context.thoughtNumber++,
+          tool: 'oc_read_get_pods',
+          parameters: { sessionId: context.sessionId, namespace: 'openshift-ingress-operator' },
+          rationale: 'Check ingress operator pod status for controller health',
+          dependencies: [],
+          memoryContext: mem.slice(0, 2),
+        });
+      } else {
+        suggestions.push('Operator pods recently listed; consider describing operator if issues found');
+      }
+      // 2) Get router pods
+      steps.push({
+        sequenceNumber: context.thoughtNumber++,
+        tool: 'oc_read_get_pods',
+        parameters: { sessionId: context.sessionId, namespace: 'openshift-ingress' },
+        rationale: 'List router pods to verify replicas and readiness',
+        dependencies: [],
+        memoryContext: mem.slice(0, 2),
+      });
+      // 3) Describe default ingresscontroller
+      steps.push({
+        sequenceNumber: context.thoughtNumber++,
+        tool: 'oc_read_describe',
+        parameters: { sessionId: context.sessionId, resourceType: 'ingresscontroller', name: 'default', namespace: 'openshift-ingress-operator' },
+        rationale: 'Inspect default ingresscontroller configuration and status',
+        dependencies: [],
+        memoryContext: mem.slice(0, 2),
+      });
+      suggestions.push('After listing routers, describe a router pod with oc_read_describe');
+    }
+
+    // Smart plan diffing: skip steps matching recently executed tools in-session
+    const filteredSteps = steps.filter(s => !recentTools.has(s.tool));
+    if (filteredSteps.length < steps.length) {
+      suggestions.push('Skipped steps recently executed in this session');
+    }
+
     const strategy: ToolStrategy = {
-      steps,
+      steps: filteredSteps,
       estimatedSteps: steps.length,
       rationale: `Generated tool strategy for: "${context.userInput}" with ${steps.length} steps. Memory-aware: ${mem.length > 0 ? 'yes' : 'no'}.`,
       confidenceScore: Math.min(1.0, confidence),
@@ -275,6 +330,8 @@ export class EnhancedSequentialThinkingOrchestrator {
       });
     } catch {}
     try { if (suggestions.length) logger.info('Orchestrator suggestions', { sessionId: context.sessionId, suggestions }); } catch {}
+    // Persist last strategy for plan continuity
+    try { await this.storePlanStrategyInMemory(strategy, context.sessionId); } catch {}
     return { strategy, suggestions };
   }
 
@@ -367,6 +424,25 @@ export class EnhancedSequentialThinkingOrchestrator {
       } as any);
     } catch (e) {
       console.error('Failed to store tool execution in memory:', e);
+    }
+  }
+
+  private async storePlanStrategyInMemory(strategy: ToolStrategy, sessionId: string): Promise<void> {
+    try {
+      await this.memoryManager.storeOperational({
+        incidentId: `plan-strategy-${sessionId}`,
+        domain: 'cluster',
+        timestamp: Date.now(),
+        symptoms: ['plan_strategy', sessionId],
+        affectedResources: strategy.steps.map(s => s.tool),
+        diagnosticSteps: strategy.steps.map(s => `Planned ${s.tool}`),
+        tags: ['plan_strategy', sessionId],
+        environment: 'prod',
+        // @ts-ignore - metadata accepted by storeOperational
+        metadata: { steps: strategy.steps }
+      } as any);
+    } catch (e) {
+      // Non-fatal
     }
   }
 
