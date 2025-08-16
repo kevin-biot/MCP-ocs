@@ -317,6 +317,34 @@ export class DiagnosticToolsV2 {
             };
             // Store diagnostic results via adapter-backed gateway (Chroma v2 aware)
             await this.memoryGateway.storeToolExecution('oc_diagnostic_cluster_health', { includeNamespaceAnalysis, maxNamespacesToAnalyze, bounded, namespaceList }, healthSummary, sessionId, ['diagnostic', 'cluster_health', String(healthSummary.overallHealth)], 'openshift', 'prod', healthSummary.overallHealth === 'healthy' ? 'low' : 'medium');
+            // Persist deterministic mini-plan when ingress namespace shows pending pods under bounded sweep
+            try {
+                if (bounded && healthSummary?.userNamespaces?.detailed) {
+                    const detailed = Array.isArray(healthSummary.userNamespaces?.detailed) ? healthSummary.userNamespaces.detailed : [];
+                    const ingress = detailed.find((d) => d?.namespace === 'openshift-ingress');
+                    const pending = Number(ingress?.checks?.pods?.pending || 0);
+                    if (pending > 0) {
+                        const steps = [
+                            { sequenceNumber: 1, tool: 'oc_read_get_pods', parameters: { sessionId, namespace: 'openshift-ingress' }, rationale: 'List router pods to locate pending', dependencies: [], memoryContext: [] },
+                            { sequenceNumber: 2, tool: 'oc_read_describe', parameters: { sessionId, resourceType: 'pod', namespace: 'openshift-ingress', name: '<FIRST_PENDING_ROUTER_POD>' }, rationale: 'Describe pending router pod to capture FailedScheduling causes', dependencies: [], memoryContext: [] },
+                            { sequenceNumber: 3, tool: 'oc_read_describe', parameters: { sessionId, resourceType: 'ingresscontroller', namespace: 'openshift-ingress-operator', name: 'default' }, rationale: 'Confirm ingresscontroller nodePlacement/tolerations and status', dependencies: [], memoryContext: [] }
+                        ];
+                        await this.memoryManager.storeOperational({
+                            incidentId: `plan-strategy-${sessionId}`,
+                            domain: 'cluster',
+                            timestamp: Date.now(),
+                            symptoms: ['plan_strategy', sessionId, 'mini_plan'],
+                            affectedResources: steps.map((s) => s.tool),
+                            diagnosticSteps: steps.map((s) => `Planned ${s.tool}`),
+                            tags: ['plan_strategy', sessionId, 'mini_plan', 'ingress_pending'],
+                            environment: 'prod',
+                            // @ts-ignore
+                            metadata: { steps, plan_id: sessionId, plan_phase: 'continue', step_budget: 3, trigger: 'ingress_pending' }
+                        });
+                    }
+                }
+            }
+            catch { }
             return this.formatClusterHealthResponse(healthSummary, sessionId);
         }
         catch (error) {

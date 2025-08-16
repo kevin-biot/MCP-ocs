@@ -145,6 +145,39 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             const ns = Array.isArray(list) ? list.join(', ') : (typeof list === 'string' ? list : 'ingress-related namespaces');
             const thought = `Capped triage requested for ${ns}. Use bounded approach with first step only to avoid timeouts. Original tool: ${name}.`;
             const resp = await sequentialThinkingOrchestrator.handleUserRequest(thought, String(sessionId), { bounded: true, firstStepOnly: true });
+            // Telemetry: record shim engagement
+            try {
+                await sharedMemory.storeOperational({
+                    incidentId: `shim-engagement-${sessionId}-${Date.now()}`,
+                    domain: 'cluster',
+                    timestamp: Date.now(),
+                    symptoms: ['shim_engagement', 'triage_pre_orchestration'],
+                    affectedResources: [String(name)],
+                    diagnosticSteps: ['sequential_thinking(planOnly|firstStepOnly) invoked via shim'],
+                    tags: ['shim_engagement', String(sessionId)],
+                    environment: 'prod',
+                    // @ts-ignore
+                    metadata: { plan_id: sessionId, plan_phase: 'plan', engagement: 'early' }
+                });
+            }
+            catch { }
+            // Also execute the originally requested diagnostic tool to keep logs consistent
+            try {
+                const diagStart = Date.now();
+                const diagRes = await toolRegistry.executeTool(name, args || {});
+                await autoMemory.captureToolExecution({
+                    toolName: name,
+                    arguments: args || {},
+                    result: diagRes,
+                    sessionId: String(sessionId),
+                    timestamp: diagStart,
+                    duration: Date.now() - diagStart,
+                    success: true,
+                });
+            }
+            catch (e) {
+                // Non-fatal; continue returning orchestrator plan output
+            }
             result = JSON.stringify(resp, null, 2);
         }
         else {

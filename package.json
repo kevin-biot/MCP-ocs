@@ -101,7 +101,10 @@
     "retest:setup": "bash scripts/retest-llm-setup.sh",
     "retest:smoke:ingress": "tsx scripts/smoke/smoke-sequential-ingress.ts",
     "retest:smoke:rca": "tsx scripts/smoke/smoke-sequential-rca.ts",
-    "retest:smoke:all": "npm run -s retest:smoke:ingress && npm run -s retest:smoke:rca"
+    "retest:smoke:all": "npm run -s retest:smoke:ingress && npm run -s retest:smoke:rca",
+    "retest:smoke:plan-continue": "tsx scripts/smoke/smoke-seq-plan-continue.ts",
+    "retest:smoke:ingress-multistep": "tsx scripts/smoke/smoke-seq-ingress-multistep.ts",
+    "retest:smoke:redflag-mini-plan": "tsx scripts/smoke/smoke-seq-redflag-mini-plan.ts"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.8",

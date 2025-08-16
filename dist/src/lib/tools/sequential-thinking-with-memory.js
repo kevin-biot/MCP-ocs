@@ -671,7 +671,7 @@ export class EnhancedSequentialThinkingOrchestrator {
                 tags: ['plan_strategy', sessionId],
                 environment: 'prod',
                 // @ts-ignore - metadata accepted by storeOperational
-                metadata: { steps: strategy.steps }
+                metadata: { steps: strategy.steps, plan_id: sessionId, plan_phase: 'plan', step_budget: 0 }
             });
         }
         catch (e) {
