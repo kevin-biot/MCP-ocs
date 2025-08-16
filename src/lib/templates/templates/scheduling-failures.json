@@ -1,0 +1,25 @@
+{
+  "id": "scheduling-failures-v1",
+  "name": "Pod Scheduling Failure Analysis",
+  "version": "1.0.0",
+  "triageTarget": "scheduling-failures",
+  "triggers": [ { "type": "static_target", "target": "scheduling-failures", "confidence": 1.0 } ],
+  "blocks": [],
+  "composition": { "infrastructure": [], "workload": [], "correlation": [] },
+  "steps": [
+    { "tool": "oc_read_describe", "params": { "resourceType": "pod", "namespace": "<ns>", "name": "<pendingPod>" }, "rationale": "Capture FailedScheduling events" },
+    { "tool": "oc_read_describe", "params": { "resourceType": "ingresscontroller", "namespace": "openshift-ingress-operator", "name": "default" }, "rationale": "Controller placement/conditions" },
+    { "tool": "oc_read_describe", "params": { "resourceType": "node", "name": "<nodeFromEvent>" }, "rationale": "Node taints/labels" }
+  ],
+  "evidenceContract": {
+    "version": "v1.0.0",
+    "required": ["schedulingEvents", "controllerStatus", "nodeTaints"],
+    "selectors": {
+      "schedulingEvents": [ { "type": "eventsRegex", "path": "(?i)FailedScheduling" } ],
+      "controllerStatus": [ { "type": "yq", "path": ".status.conditions[] | {type,status,reason,message}" } ],
+      "nodeTaints": [ { "type": "jsonpath", "path": "{.spec.taints[*].key}" } ]
+    },
+    "completenessThreshold": 0.9
+  },
+  "boundaries": { "maxSteps": 3, "timeoutMs": 20000 }
+}

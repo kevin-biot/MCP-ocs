@@ -1,0 +1,25 @@
+{
+  "id": "pvc-binding-v1",
+  "name": "PVC Binding Analysis",
+  "version": "1.0.0",
+  "triageTarget": "pvc-binding",
+  "triggers": [ { "type": "static_target", "target": "pvc-binding", "confidence": 1.0 } ],
+  "blocks": [],
+  "composition": { "infrastructure": [], "workload": [] },
+  "steps": [
+    { "tool": "oc_read_describe", "params": { "resourceType": "pvc", "namespace": "<ns>", "name": "<pvc>" }, "rationale": "PVC spec and events" },
+    { "tool": "oc_read_describe", "params": { "resourceType": "storageclass", "name": "<sc|default>" }, "rationale": "Storage class capabilities" },
+    { "tool": "oc_read_describe", "params": { "resourceType": "resourcequota", "namespace": "<ns>" }, "rationale": "Quota limits" }
+  ],
+  "evidenceContract": {
+    "version": "v1.0.0",
+    "required": ["pvcSpec", "scInfo", "quota"],
+    "selectors": {
+      "pvcSpec": [ { "type": "yq", "path": ".spec" } ],
+      "scInfo": [ { "type": "yq", "path": ".parameters" } ],
+      "quota": [ { "type": "yq", "path": ".status.hard" } ]
+    },
+    "completenessThreshold": 0.8
+  },
+  "boundaries": { "maxSteps": 3, "timeoutMs": 20000 }
+}

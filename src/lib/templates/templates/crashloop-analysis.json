@@ -1,0 +1,24 @@
+{
+  "id": "crashloop-analysis-v1",
+  "name": "CrashLoopBackOff Analysis",
+  "version": "1.0.0",
+  "triageTarget": "crashloopbackoff",
+  "triggers": [ { "type": "static_target", "target": "crashloopbackoff", "confidence": 1.0 } ],
+  "blocks": [],
+  "composition": { "workload": [] },
+  "steps": [
+    { "tool": "oc_read_get_pods", "params": { "namespace": "<ns>", "selector": "<selector>" }, "rationale": "Find failing pod" },
+    { "tool": "oc_read_logs", "params": { "namespace": "<ns>", "podName": "<pod>", "container": "<container>", "since": "2h", "lines": 2000 }, "rationale": "Capture last crashes" },
+    { "tool": "oc_read_describe", "params": { "resourceType": "pod", "namespace": "<ns>", "name": "<pod>" }, "rationale": "Probe settings and conditions" }
+  ],
+  "evidenceContract": {
+    "version": "v1.0.0",
+    "required": ["lastLogs", "probeConfig"],
+    "selectors": {
+      "lastLogs": [ { "type": "dsl", "path": "logs.tail" } ],
+      "probeConfig": [ { "type": "yq", "path": ".spec.containers[].livenessProbe" } ]
+    },
+    "completenessThreshold": 0.8
+  },
+  "boundaries": { "maxSteps": 3, "timeoutMs": 20000 }
+}

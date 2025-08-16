@@ -1,0 +1,24 @@
+{
+  "id": "route-5xx-v1",
+  "name": "Route 5xx Analysis",
+  "version": "1.0.0",
+  "triageTarget": "route-5xx",
+  "triggers": [ { "type": "static_target", "target": "route-5xx", "confidence": 1.0 } ],
+  "blocks": [],
+  "composition": { "infrastructure": [], "workload": [] },
+  "steps": [
+    { "tool": "oc_read_describe", "params": { "resourceType": "endpoints", "namespace": "<ns>", "name": "<service>" }, "rationale": "Service endpoints health" },
+    { "tool": "oc_read_describe", "params": { "resourceType": "route", "namespace": "<ns>", "name": "<route>" }, "rationale": "Route spec and TLS" },
+    { "tool": "oc_read_describe", "params": { "resourceType": "pod", "namespace": "<ns>", "name": "<backendPod>" }, "rationale": "Probe configuration" }
+  ],
+  "evidenceContract": {
+    "version": "v1.0.0",
+    "required": ["endpoints", "routeSpec"],
+    "selectors": {
+      "endpoints": [ { "type": "yq", "path": ".subsets[].addresses[]?.ip" } ],
+      "routeSpec": [ { "type": "yq", "path": ".spec" } ]
+    },
+    "completenessThreshold": 0.7
+  },
+  "boundaries": { "maxSteps": 3, "timeoutMs": 20000 }
+}
