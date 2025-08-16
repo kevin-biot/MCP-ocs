@@ -102,6 +102,75 @@ npm run start:sequential
 ENABLE_SEQUENTIAL_THINKING=true npm run start:sequential
 ```
 
+### Deterministic Template Engine (Preview)
+
+The Template Engine executes deterministic triage templates (bounded, read-only) so evidence collection is consistent across models.
+
+- Enable (standard entry):
+  - `ENABLE_TEMPLATE_ENGINE=true OC_TIMEOUT_MS=120000 npx tsx src/index.ts`
+- Call with a triage target (MCP tools/call):
+  - name: any registered tool (e.g., `oc_diagnostic_namespace_health`)
+  - arguments:
+    - `{"sessionId":"demo-1","triageTarget":"ingress-pending","bounded":true,"stepBudget":3}`
+  - The server detects `triageTarget` and runs a deterministic plan for the target.
+
+Supported targets (initial):
+- `ingress-pending`: router pods → pending pod describe → ingresscontroller describe
+- `scheduling-failures`: pod events (FailedScheduling) → controller → node describe
+- `crashloopbackoff`: pods by selector → logs(previous) → pod describe
+- `pvc-binding`: pvc describe → storageclass → quota
+- `route-5xx`: endpoints → route describe → backend pod describe
+
+Notes:
+- Templates are JSON in `src/lib/templates/templates/` (easy to diff/review).
+- The engine enforces step budgets (`stepBudget`) and respects `bounded=true`.
+- Sequential Thinking remains available for constrained post-template enhancement.
+
+### Template Target Reference (Evidence Selectors)
+
+This appendix lists the standardized evidence selectors (yq/jsonpath/regex) the reporter should extract for each triageTarget. These are deterministic and used for completeness scoring.
+
+- ingress-pending
+  - routerPods:
+    - jsonpath: `{.items[*].metadata.name}`
+  - schedulingEvents:
+    - eventsRegex: `(?i)FailedScheduling`
+  - controllerStatus (ingresscontroller/default):
+    - yq: `.status.conditions[] | {type,status,reason,message}`
+
+- scheduling-failures
+  - schedulingEvents (pod describe):
+    - eventsRegex: `(?i)FailedScheduling`
+  - controllerStatus (controller):
+    - yq: `.status.conditions[] | {type,status,reason,message}`
+  - nodeTaints (node describe):
+    - jsonpath: `{.spec.taints[*].key}`
+
+- crashloopbackoff
+  - lastLogs (failing container):
+    - dsl: `logs.tail` (tool returns structured logs with tail segment)
+  - probeConfig (pod describe):
+    - yq: `.spec.containers[].livenessProbe`
+
+- pvc-binding
+  - pvcSpec (pvc describe):
+    - yq: `.spec`
+  - scInfo (storageclass describe):
+    - yq: `.parameters`
+  - quota (resourcequota describe):
+    - yq: `.status.hard`
+
+- route-5xx
+  - endpoints (service endpoints):
+    - yq: `.subsets[].addresses[]?.ip`
+  - routeSpec (route describe):
+    - yq: `.spec`
+
+Reporter rules
+- Completeness=high only when all required evidence blocks per target are present.
+- Analysis-only runs MUST NOT emit write actions (patch/taint/scale); include “Optional Admin Commands” for manual verification only.
+
+
 #### Reviewer Template (10/10) and Smokes
 - Template: see `docs/CODEX_REVIEWER_TEMPLATE.md` for the standardized, deterministic structure used by the reporter (triggers, mini-plans, telemetry, replay controls).
 

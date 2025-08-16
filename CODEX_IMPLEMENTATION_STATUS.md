@@ -23,24 +23,24 @@
 **Blockers**: None  
 **Notes**: Core template framework scaffolded with initial targets (scheduling-failures, ingress-pending, crashloop-analysis, pvc-binding, route-5xx)
 
-#### Task 1.2: Composable Block System ❌
-**Status**: Not Started  
+#### Task 1.2: Composable Block System 🚧
+**Status**: In Progress  
 **Location**: `src/lib/templates/blocks/`  
 **Files Needed**:
-- [ ] infrastructure-blocks.ts
-- [ ] workload-blocks.ts
-- [ ] correlation-blocks.ts  
-- [ ] block-registry.ts
+- [x] infrastructure-blocks.ts
+- [x] workload-blocks.ts
+- [x] correlation-blocks.ts  
+- [x] block-registry.ts
 
 **Dependencies**: Task 1.1 (Template Registry)  
 **Blockers**: None  
 **Notes**: Reusable diagnostic blocks to prevent template sprawl
 
-#### Task 1.3: Enhanced Execution Boundaries ❌
-**Status**: Not Started  
+#### Task 1.3: Enhanced Execution Boundaries 🚧
+**Status**: In Progress  
 **Location**: `src/lib/enforcement/`  
 **Files Needed**:
-- [ ] boundary-enforcer.ts
+- [x] boundary-enforcer.ts
 - [ ] execution-guards.ts
 - [ ] tool-contract-validator.ts
 - [ ] telemetry-tracker.ts
