@@ -171,6 +171,10 @@ export class EnhancedSequentialThinkingOrchestrator {
     const suggestions: string[] = [];
     const t = input.toLowerCase();
     const skipIngress = t.includes('skip ingress');
+    const isSpecific = this.isSpecificRequest(input);
+    const isExplicitComprehensive = this.isExplicitComprehensiveRequest(input);
+    const isComplexUnclear = this.isComplexOrUnclear(input);
+    const inferredNs = this.inferNamespaceFromInput(input);
     // Derive recent tools executed from session context
     let recentTools = new Set<string>();
     try {
@@ -234,16 +238,50 @@ export class EnhancedSequentialThinkingOrchestrator {
       if (mem.some((m) => m.problem.includes('monitor'))) confidence += 0.1;
     }
 
-    if (this.isIncidentResponse(input)) {
-      steps.push({
-        sequenceNumber: context.thoughtNumber++,
-        tool: 'oc_diagnostic_rca_checklist',
-        parameters: { sessionId: context.sessionId, outputFormat: 'json', includeDeepAnalysis: true },
-        rationale: 'Run systematic RCA for incident response',
-        dependencies: [],
-        memoryContext: mem.slice(0, 2),
-      });
-      confidence = Math.min(1.0, confidence + 0.15);
+    // RCA positioning & gating
+    // - Specific request: do NOT trigger RCA initially.
+    // - Explicit comprehensive or complex/unclear + unbounded: allow RCA.
+    // - Bounded mode: prefer bounded RCA (subset, time-limited, optionally namespace-scoped).
+    if (!isSpecific) {
+      if (isExplicitComprehensive && !context.bounded) {
+        steps.push({
+          sequenceNumber: context.thoughtNumber++,
+          tool: 'oc_diagnostic_rca_checklist',
+          parameters: { sessionId: context.sessionId, outputFormat: 'json', includeDeepAnalysis: true },
+          rationale: 'Comprehensive RCA requested by user',
+          dependencies: [],
+          memoryContext: mem.slice(0, 2),
+        });
+        confidence = Math.min(1.0, confidence + 0.15);
+      } else if ((isExplicitComprehensive || isComplexUnclear) && context.bounded) {
+        // Bounded RCA subset
+        steps.push({
+          sequenceNumber: context.thoughtNumber++,
+          tool: 'oc_diagnostic_rca_checklist',
+          parameters: {
+            sessionId: context.sessionId,
+            outputFormat: 'json',
+            includeDeepAnalysis: false,
+            maxCheckTime: 15000,
+            ...(inferredNs ? { namespace: inferredNs } : {})
+          },
+          rationale: 'Bounded RCA (subset) due to performance constraints',
+          dependencies: [],
+          memoryContext: mem.slice(0, 2),
+        });
+        suggestions.push('Used bounded RCA (subset, time-limited) to respect bounded mode');
+        confidence = Math.min(1.0, confidence + 0.1);
+      } else if (isComplexUnclear && !context.bounded) {
+        steps.push({
+          sequenceNumber: context.thoughtNumber++,
+          tool: 'oc_diagnostic_rca_checklist',
+          parameters: { sessionId: context.sessionId, outputFormat: 'json', includeDeepAnalysis: true },
+          rationale: 'Complex/unclear problem warrants comprehensive RCA',
+          dependencies: [],
+          memoryContext: mem.slice(0, 2),
+        });
+        confidence = Math.min(1.0, confidence + 0.15);
+      }
     }
 
     // Pod issue heuristics: avoid broad pod_health; list pods in likely namespace first
@@ -464,9 +502,39 @@ export class EnhancedSequentialThinkingOrchestrator {
     if (step.memoryContext && step.memoryContext.length > 0) {
       memoryInsights = `\n\nMemory Insights:\n` + step.memoryContext.slice(0, 2).map((m, i) => `${i + 1}. ${m.problem} -> ${m.solutionPath}`).join('\n');
     }
+    // Escalation logic: detect red flags and propose RCA (bounded or unbounded)
+    const redFlags = this.detectRedFlags(result);
+    if (redFlags.length > 0) {
+      const ns = this.inferNamespaceFromInput(context.userInput) || (typeof step.parameters?.namespace === 'string' ? step.parameters.namespace : undefined);
+      const boundedEscalation = context.bounded;
+      const escalationParams: any = {
+        sessionId: context.sessionId,
+        outputFormat: 'json',
+        includeDeepAnalysis: !boundedEscalation,
+        ...(boundedEscalation ? { maxCheckTime: 15000 } : {}),
+        ...(ns ? { namespace: ns } : {})
+      };
+      try {
+        // Persist an escalation plan memory so a follow-up "continue" can schedule it
+        await this.memoryManager.storeOperational({
+          incidentId: `plan-escalation-${context.sessionId}-${Date.now()}`,
+          domain: 'cluster',
+          timestamp: Date.now(),
+          symptoms: ['escalation_planned', ...redFlags],
+          affectedResources: [step.tool],
+          diagnosticSteps: ['Planned oc_diagnostic_rca_checklist'],
+          tags: ['plan_escalation', context.sessionId],
+          environment: 'prod',
+          // @ts-ignore
+          metadata: { tool: 'oc_diagnostic_rca_checklist', params: escalationParams }
+        } as any);
+      } catch {}
+    }
     return {
       thoughtNumber: context.thoughtNumber++,
-      thought: `Result from ${step.tool}: ${resultSummary}.${memoryInsights}`,
+      thought: `Result from ${step.tool}: ${resultSummary}.` +
+        (redFlags.length ? ` Escalation signals detected: ${redFlags.join(', ')}. RCA planned${context.bounded ? ' (bounded)' : ''}.` : '') +
+        `${memoryInsights}`,
       timestamp: new Date(),
       nextThoughtNeeded: false,
       needsMoreThoughts: this.shouldReviseStrategy(result, step),
@@ -476,7 +544,7 @@ export class EnhancedSequentialThinkingOrchestrator {
 
   private shouldReviseStrategy(result: any, step: ToolStep): boolean {
     const s = typeof result === 'string' ? result.toLowerCase() : JSON.stringify(result).toLowerCase();
-    const failureIndicators = ['error', 'fail', 'degraded', 'timeout', 'connection reset'];
+    const failureIndicators = ['error', 'fail', 'degraded', 'timeout', 'connection reset', 'imagepullbackoff', 'not ready', 'pending', '503'];
     const hasFailure = failureIndicators.some((i) => s.includes(i));
     const memSignals = step.memoryContext?.some((m) => m.problem.toLowerCase().includes('requires adjustment')) || false;
     return hasFailure || memSignals;
@@ -506,5 +574,60 @@ export class EnhancedSequentialThinkingOrchestrator {
   }
   private listAvailableTools(registry: UnifiedToolRegistry): string {
     return registry.getAllTools().map((t) => t.name).join(', ');
+  }
+
+  private isSpecificRequest(input: string): boolean {
+    const t = input.toLowerCase();
+    const verbs = /(check|describe|get|list|show|inspect)\b/;
+    const entities = /(ingress|router|pod|namespace|prometheus|ingresscontroller|route|service)/;
+    return verbs.test(t) && entities.test(t);
+  }
+
+  private isExplicitComprehensiveRequest(input: string): boolean {
+    const t = input.toLowerCase();
+    return [
+      'full cluster analysis',
+      'complete incident report',
+      'comprehensive analysis',
+      'overall cluster health',
+      'cluster-wide',
+      'run rca',
+      'root cause analysis'
+    ].some(p => t.includes(p));
+  }
+
+  private isComplexOrUnclear(input: string): boolean {
+    const t = input.toLowerCase();
+    return [
+      'we don\'t know why',
+      'unknown cause',
+      'multiple apps failing',
+      'widespread',
+      'outage',
+      'everything is slow',
+    ].some(p => t.includes(p));
+  }
+
+  private inferNamespaceFromInput(input: string): string | undefined {
+    const t = input.toLowerCase();
+    if (t.includes('openshift-ingress-operator')) return 'openshift-ingress-operator';
+    if (t.includes('openshift-ingress') || t.includes('router')) return 'openshift-ingress';
+    if (t.includes('monitoring') || t.includes('prometheus') || t.includes('grafana')) return 'openshift-monitoring';
+    return undefined;
+  }
+
+  private detectRedFlags(result: any): string[] {
+    const s = typeof result === 'string' ? result.toLowerCase() : JSON.stringify(result).toLowerCase();
+    const flags = [
+      { k: 'degraded', m: 'degraded' },
+      { k: 'failing', m: 'failing' },
+      { k: 'pending', m: 'pending' },
+      { k: 'not_ready', m: 'not ready' },
+      { k: 'imagepullbackoff', m: 'imagepullbackoff' },
+      { k: 'crashloop', m: 'crashloop' },
+      { k: '503', m: '503' },
+      { k: 'tls', m: 'tls' }
+    ];
+    return flags.filter(f => s.includes(f.m)).map(f => f.k);
   }
 }
