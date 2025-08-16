@@ -110,39 +110,6 @@ toolRegistry.registerTool({
 allTools = toolRegistry.getMCPTools();
 console.error('🔧 Debug - Tool names (sequential):', allTools.map(t => t.name));
 
-// Expose an explicit MCP tool for orchestrated reasoning so LLMs can call it directly
-toolRegistry.registerTool({
-  name: 'sequential_thinking',
-  fullName: 'sequential_thinking',
-  description: 'Facilitates detailed, step-by-step thinking for problem-solving: plan → execute → reflect with memory.',
-  inputSchema: {
-    type: 'object',
-    properties: {
-      sessionId: { type: 'string', description: 'Conversation/session identifier' },
-      thought: { type: 'string' },
-      nextThoughtNeeded: { type: 'boolean' },
-      thoughtNumber: { type: 'integer' },
-      totalThoughts: { type: 'integer' },
-      isRevision: { type: 'boolean' },
-      revisesThought: { type: 'integer' },
-      branchFromThought: { type: 'integer' },
-      branchId: { type: 'string' },
-      needsMoreThoughts: { type: 'boolean' }
-    },
-    required: ['thought', 'nextThoughtNeeded', 'thoughtNumber', 'totalThoughts'],
-    additionalProperties: true
-  },
-  async execute(args: any): Promise<string> {
-    const userInput = String(args?.thought ?? args?.userInput ?? '');
-    const session = String(args?.sessionId || `session-${Date.now()}`);
-    const result = await sequentialThinkingOrchestrator.handleUserRequest(userInput, session);
-    return JSON.stringify(result, null, 2);
-  },
-  category: 'workflow',
-  version: 'v2',
-  metadata: { experimental: true, mcpCompatible: true }
-});
-
 // Create MCP server
 const server = new Server(
   { name: 'mcp-ocs', version: '1.0.0' },
