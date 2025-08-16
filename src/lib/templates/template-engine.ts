@@ -43,49 +43,56 @@ export class TemplateEngine {
     return { planId: context.sessionId, steps, boundaries: { maxSteps: budget, timeoutMs: template.boundaries.timeoutMs } };
   }
 
-  evaluateEvidence(template: DiagnosticTemplate, executed: PlannedStep[]): { completeness: number; missing: string[]; present: string[] } {
-    const req = template.evidenceContract?.required || [];
-    const present: string[] = [];
-    const ran = (tool: string, resource?: string) => executed.some(s => s.tool === tool && (!resource || String(s.params?.resourceType||'').toLowerCase() === resource));
-    for (const key of req) {
-      switch (key) {
-        case 'routerPods':
-          if (ran('oc_read_get_pods')) present.push(key);
-          break;
-        case 'schedulingEvents':
-          if (ran('oc_read_describe', 'pod')) present.push(key);
-          break;
-        case 'controllerStatus':
-          if (ran('oc_read_describe', 'ingresscontroller')) present.push(key);
-          break;
-        case 'nodeTaints':
-          if (ran('oc_read_describe', 'node')) present.push(key);
-          break;
-        case 'lastLogs':
-          if (ran('oc_read_logs')) present.push(key);
-          break;
-        case 'probeConfig':
-          if (ran('oc_read_describe', 'pod')) present.push(key);
-          break;
-        case 'pvcSpec':
-          if (ran('oc_read_describe', 'pvc')) present.push(key);
-          break;
-        case 'scInfo':
-          if (ran('oc_read_describe', 'storageclass')) present.push(key);
-          break;
-        case 'quota':
-          if (ran('oc_read_describe', 'resourcequota')) present.push(key);
-          break;
-        case 'endpoints':
-          if (ran('oc_read_describe', 'endpoints')) present.push(key);
-          break;
-        case 'routeSpec':
-          if (ran('oc_read_describe', 'route')) present.push(key);
-          break;
-        default:
-          break;
+  private tryParse(result: any): { obj: any; text: string } {
+    if (typeof result === 'string') {
+      try { const obj = JSON.parse(result); return { obj, text: result }; } catch { return { obj: null, text: result }; }
+    }
+    return { obj: result, text: JSON.stringify(result) };
+  }
+
+  private selectJsonPath(obj: any, path: string): any {
+    // Very small subset: paths like { .spec.taints[*].key } or {.spec.taints}
+    const m = path.match(/^\{\.(.*)\}$/);
+    const dot = m ? m[1] : path.replace(/^\./,'');
+    const segs = dot.split('.').filter(Boolean).map(s=>s.replace(/\[\*\]/g,'').replace(/\[\d+\]/g,''));
+    let cur: any = obj;
+    for (const seg of segs) {
+      if (cur == null) return undefined;
+      if (Array.isArray(cur)) {
+        // flatten arrays of objects by key
+        cur = cur.map(x=> (x ? x[seg] : undefined)).filter(x=> typeof x !== 'undefined');
+        if (cur.length === 1) cur = cur[0];
+      } else {
+        cur = cur[seg];
       }
     }
+    return cur;
+  }
+
+  evaluateEvidence(template: DiagnosticTemplate, executed: Array<{ step: PlannedStep; result: any }>): { completeness: number; missing: string[]; present: string[] } {
+    const req = template.evidenceContract?.required || [];
+    const selectors = template.evidenceContract?.selectors || {} as any;
+    const present: string[] = [];
+    const results = executed.map(x => this.tryParse(x.result));
+    const textAll = results.map(r => r.text).join('\n');
+    const anyMatch = (key: string): boolean => {
+      const sels = selectors[key] || [];
+      for (const sel of sels) {
+        if (sel.type === 'eventsRegex') {
+          try { const re = new RegExp(sel.path); if (re.test(textAll)) return true; } catch { continue; }
+        } else if (sel.type === 'jsonpath') {
+          for (const r of results) { if (r.obj && typeof this.selectJsonPath(r.obj, sel.path) !== 'undefined') return true; }
+        } else if (sel.type === 'yq') {
+          const p = sel.path.replace(/^\./,'');
+          for (const r of results) { if (r.obj && typeof this.selectJsonPath(r.obj, `{.${p}}`) !== 'undefined') return true; }
+        } else if (sel.type === 'dsl') {
+          // For now, consider presence if any result contains the key string
+          if (textAll.includes(sel.path)) return true;
+        }
+      }
+      return false;
+    };
+    for (const key of req) { if (anyMatch(key)) present.push(key); }
     const missing = req.filter(k => !present.includes(k));
     const completeness = req.length === 0 ? 1 : (req.length - missing.length) / req.length;
     return { completeness, missing, present };
