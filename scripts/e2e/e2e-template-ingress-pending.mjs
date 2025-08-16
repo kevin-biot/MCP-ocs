@@ -4,8 +4,7 @@ const SERVER_CMD = process.env.SERVER_CMD || 'npx';
 const SERVER_ARGS = process.env.SERVER_ARGS ? process.env.SERVER_ARGS.split(' ') : ['tsx','src/index.ts'];
 
 function send(proc, obj){
-  const line = JSON.stringify(obj) + "
-";
+  const line = JSON.stringify(obj) + "\n";
   proc.stdin.write(line);
 }
 
@@ -13,8 +12,7 @@ function waitFor(proc, id, timeoutMs=8000){
   return new Promise((resolve, reject)=>{
     const timer=setTimeout(()=>reject(new Error('timeout')), timeoutMs);
     const onData=(chunk)=>{
-      const lines=chunk.toString().split('
-').filter(Boolean);
+      const lines=chunk.toString().split("\n").filter(Boolean);
       for(const line of lines){
         try{
           const msg=JSON.parse(line);
