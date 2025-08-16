@@ -82,16 +82,16 @@ toolRegistry.registerTool({
     properties: {
       sessionId: { type: 'string', description: 'Conversation/session identifier' },
       thought: { type: 'string' },
-      nextThoughtNeeded: { type: 'boolean' },
-      thoughtNumber: { type: 'integer' },
-      totalThoughts: { type: 'integer' },
-      isRevision: { type: 'boolean' },
-      revisesThought: { type: 'integer' },
-      branchFromThought: { type: 'integer' },
+      nextThoughtNeeded: { anyOf: [{ type: 'boolean' }, { type: 'string' }] },
+      thoughtNumber: { anyOf: [{ type: 'integer' }, { type: 'string' }] },
+      totalThoughts: { anyOf: [{ type: 'integer' }, { type: 'string' }] },
+      isRevision: { anyOf: [{ type: 'boolean' }, { type: 'string' }] },
+      revisesThought: { anyOf: [{ type: 'integer' }, { type: 'string' }] },
+      branchFromThought: { anyOf: [{ type: 'integer' }, { type: 'string' }] },
       branchId: { type: 'string' },
-      needsMoreThoughts: { type: 'boolean' },
-      bounded: { type: 'boolean', description: 'Avoid expensive cluster-wide sweeps' },
-      firstStepOnly: { type: 'boolean', description: 'Execute only the first planned step' }
+      needsMoreThoughts: { anyOf: [{ type: 'boolean' }, { type: 'string' }] },
+      bounded: { anyOf: [{ type: 'boolean' }, { type: 'string' }], description: 'Avoid expensive cluster-wide sweeps' },
+      firstStepOnly: { anyOf: [{ type: 'boolean' }, { type: 'string' }], description: 'Execute only the first planned step' }
     },
     required: ['thought', 'nextThoughtNeeded', 'thoughtNumber', 'totalThoughts'],
     additionalProperties: true
@@ -99,8 +99,9 @@ toolRegistry.registerTool({
   async execute(args: any): Promise<string> {
     const userInput = String(args?.thought ?? args?.userInput ?? '');
     const session = String(args?.sessionId || `session-${Date.now()}`);
-    const bounded = Boolean(args?.bounded);
-    const firstStepOnly = Boolean(args?.firstStepOnly);
+    const coerceBool = (v: any) => typeof v === 'string' ? ['true','1','yes','on'].includes(v.toLowerCase()) : Boolean(v);
+    const bounded = coerceBool(args?.bounded);
+    const firstStepOnly = coerceBool(args?.firstStepOnly);
     const result = await sequentialThinkingOrchestrator.handleUserRequest(userInput, session, { bounded, firstStepOnly });
     return JSON.stringify(result, null, 2);
   },
