@@ -34,13 +34,32 @@ export class TemplateEngine {
   }
 
   buildPlan(template: DiagnosticTemplate, context: { sessionId: string; bounded?: boolean; stepBudget?: number; vars?: Record<string, any> }): PlanResult {
-    const baseSteps = (template.steps || []).map(s => ({ tool: s.tool, params: { sessionId: context.sessionId, ...s.params }, rationale: s.rationale }));
+    const baseSteps = (template.steps || []).map(s => ({ tool: s.tool, params: this.replaceVars({ sessionId: context.sessionId, ...s.params }, context.vars || {}), rationale: s.rationale }));
     const blockSteps = this.expandBlocks(template, { sessionId: context.sessionId, ...(context.vars || {}) });
     const combined = [...baseSteps, ...blockSteps];
     const max = combined.length || 1;
     const budget = Math.max(1, Math.min(context.stepBudget || template.boundaries.maxSteps || max, max));
     const steps = combined.slice(0, budget);
     return { planId: context.sessionId, steps, boundaries: { maxSteps: budget, timeoutMs: template.boundaries.timeoutMs } };
+  }
+
+  private replaceVars(obj: any, vars: Record<string, any>): any {
+    if (obj == null) return obj;
+    if (typeof obj === 'string') {
+      const m = obj.match(/^<([^>]+)>$/);
+      if (m) {
+        const k = m[1];
+        return typeof vars[k] !== 'undefined' ? vars[k] : obj;
+      }
+      return obj;
+    }
+    if (Array.isArray(obj)) return obj.map(v => this.replaceVars(v, vars));
+    if (typeof obj === 'object') {
+      const out: any = {};
+      for (const [k, v] of Object.entries(obj)) out[k] = this.replaceVars(v, vars);
+      return out;
+    }
+    return obj;
   }
 
   private tryParse(result: any): { obj: any; text: string } {

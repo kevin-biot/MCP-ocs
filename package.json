@@ -105,7 +105,11 @@
     "retest:smoke:plan-continue": "tsx scripts/smoke/smoke-seq-plan-continue.ts",
     "retest:smoke:ingress-multistep": "tsx scripts/smoke/smoke-seq-ingress-multistep.ts",
     "retest:smoke:redflag-mini-plan": "tsx scripts/smoke/smoke-seq-redflag-mini-plan.ts",
-    "retest:smoke:te-ingress": "tsx scripts/smoke/smoke-template-ingress-pending.ts"
+    "retest:smoke:te-ingress": "tsx scripts/smoke/smoke-template-ingress-pending.ts",
+    "retest:smoke:te-sched": "tsx scripts/smoke/smoke-template-scheduling-failures.ts",
+    "retest:smoke:te-crash": "tsx scripts/smoke/smoke-template-crashloop.ts",
+    "retest:smoke:te-pvc": "tsx scripts/smoke/smoke-template-pvc-binding.ts",
+    "retest:smoke:te-route": "tsx scripts/smoke/smoke-template-route-5xx.ts"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.8",
