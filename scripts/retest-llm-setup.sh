@@ -31,8 +31,8 @@ npm run -s build
 
 echo "-- Sequential smoke tests (no cluster required) --"
 if command -v npx >/dev/null 2>&1; then
-  npx -y tsx tmp/smoke-sequential-ingress.ts || true
-  npx -y tsx tmp/smoke-sequential-rca.ts || true
+  npx -y tsx scripts/smoke/smoke-sequential-ingress.ts || true
+  npx -y tsx scripts/smoke/smoke-sequential-rca.ts || true
 else
   echo "npx not available; skipping smoke tests."
 fi
@@ -51,4 +51,3 @@ Next steps:
 3) If tool-calling fails, try direct calls listed in the checklist.
 
 EOF
-
