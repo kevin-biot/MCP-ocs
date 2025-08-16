@@ -11,17 +11,25 @@ function send(proc, obj){
 function waitFor(proc, id, timeoutMs=8000){
   return new Promise((resolve, reject)=>{
     const timer=setTimeout(()=>reject(new Error('timeout')), timeoutMs);
+    let buf = '';
     const onData=(chunk)=>{
-      const lines=chunk.toString().split("\n").filter(Boolean);
-      for(const line of lines){
+      buf += chunk.toString();
+      let idx;
+      while((idx = buf.indexOf("\n")) !== -1){
+        const line = buf.slice(0, idx);
+        buf = buf.slice(idx+1);
+        if(!line.trim()) continue;
         try{
           const msg=JSON.parse(line);
           if(msg.id===id){
             clearTimeout(timer);
             proc.stdout.off('data',onData);
             resolve(msg);
+            return;
           }
-        }catch{}
+        }catch{
+          // keep buffering
+        }
       }
     };
     proc.stdout.on('data',onData);
