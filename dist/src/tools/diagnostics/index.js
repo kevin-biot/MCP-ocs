@@ -89,7 +89,11 @@ export class DiagnosticToolsV2 {
                         namespaceScope: { type: 'string', enum: ['all', 'system', 'user'], default: 'all', description: 'Limit namespace analysis to system, user, or all' },
                         focusNamespace: { type: 'string', description: 'Namespace to prioritize for deep analysis' },
                         focusStrategy: { type: 'string', enum: ['auto', 'events', 'resourcePressure', 'none'], default: 'auto' },
-                        depth: { type: 'string', enum: ['summary', 'detailed'], default: 'summary' }
+                        depth: { type: 'string', enum: ['summary', 'detailed'], default: 'summary' },
+                        // New: bounded-mode compatibility and scoping
+                        bounded: { type: 'boolean', default: false, description: 'Enable performance-bounded execution (skips cluster-wide sweeps)' },
+                        namespaceList: { type: 'array', items: { type: 'string' }, description: 'Explicit list of namespaces to analyze (bounded triage)' },
+                        maxRuntimeMs: { type: 'number', description: 'Hard cap on execution time; triage loops stop when exceeded' }
                     },
                     required: ['sessionId']
                 }
@@ -226,17 +230,24 @@ export class DiagnosticToolsV2 {
         const focusNamespace = args.focusNamespace;
         const focusStrategy = args.focusStrategy || 'auto';
         const depth = args.depth || 'summary';
+        const bounded = Boolean(args.bounded) || (typeof args.maxRuntimeMs === 'number' && args.maxRuntimeMs > 0) || (typeof maxNamespacesToAnalyze === 'number' && maxNamespacesToAnalyze <= 3);
+        const maxRuntimeMs = typeof args.maxRuntimeMs === 'number' && args.maxRuntimeMs > 0 ? args.maxRuntimeMs : (bounded ? 20000 : 0);
+        const namespaceList = Array.isArray(args.namespaceList) ? args.namespaceList.filter(Boolean) : [];
         try {
             // Get cluster info using both v1 and v2 capabilities
             const clusterInfo = await this.openshiftClient.getClusterInfo();
             // Enhanced analysis using v2 wrapper
             const nodeHealth = await this.analyzeNodeHealth();
             const operatorHealth = await this.analyzeOperatorHealth();
-            const systemNamespaceHealth = await this.analyzeSystemNamespaces();
+            // Bounded path: avoid cluster-wide system namespace probes unless explicitly requested
+            let systemNamespaceHealth = [];
+            if (!bounded) {
+                systemNamespaceHealth = await this.analyzeSystemNamespaces();
+            }
             // Namespace analysis with prioritization
             let namespaceAnalysis = null;
             let prioritization = null;
-            if (includeNamespaceAnalysis) {
+            if (includeNamespaceAnalysis && !bounded) {
                 const analysis = await this.prioritizeNamespaces({
                     scope: namespaceScope,
                     focusNamespace,
@@ -246,6 +257,38 @@ export class DiagnosticToolsV2 {
                 });
                 prioritization = analysis.prioritized;
                 namespaceAnalysis = analysis.output;
+            }
+            else if (bounded) {
+                // Bounded triage: prefer explicit namespaceList, else infer small set from scope/strategy
+                const targets = namespaceList.length > 0
+                    ? namespaceList.slice(0, Math.max(1, Math.min(maxNamespacesToAnalyze || 3, namespaceList.length)))
+                    : await (async () => {
+                        // Heuristic: select up to N likely ingress namespaces
+                        const allNs = await this.listNamespacesByScope('all');
+                        const likely = allNs.filter(n => /^(openshift-ingress(-operator)?|cert-manager)$/.test(n));
+                        return likely.slice(0, Math.max(1, Math.min(maxNamespacesToAnalyze || 3, likely.length)));
+                    })();
+                // Run quick checks on targets with time cap
+                const detailed = [];
+                for (const ns of targets) {
+                    if (maxRuntimeMs && Date.now() - startTime > maxRuntimeMs)
+                        break;
+                    try {
+                        const health = await this.namespaceHealthChecker.checkHealth({ namespace: ns, includeIngressTest: false, maxLogLinesPerPod: 0 });
+                        detailed.push({ namespace: ns, status: health.status, checks: health.checks, suspicions: health.suspicions, human: health.human });
+                    }
+                    catch {
+                        detailed.push({ namespace: ns, status: 'error', issues: 1 });
+                    }
+                }
+                namespaceAnalysis = {
+                    scope: 'bounded',
+                    depth: 'summary',
+                    totalNamespaces: detailed.length,
+                    analyzedDetailedCount: detailed.length,
+                    detailed,
+                    summaries: []
+                };
             }
             // Generate comprehensive report
             const healthSummary = {
@@ -263,10 +306,12 @@ export class DiagnosticToolsV2 {
                 namespacePrioritization: prioritization,
                 overallHealth: this.calculateOverallHealth(nodeHealth, operatorHealth, systemNamespaceHealth),
                 duration: `${Date.now() - startTime}ms`,
-                recommendations: this.generateClusterRecommendations(nodeHealth, operatorHealth, systemNamespaceHealth)
+                recommendations: this.generateClusterRecommendations(nodeHealth, operatorHealth, systemNamespaceHealth),
+                mode: bounded ? 'bounded' : 'comprehensive',
+                bounded: bounded ? { namespaceList: namespaceList, maxNamespacesToAnalyze, maxRuntimeMs } : undefined
             };
             // Store diagnostic results via adapter-backed gateway (Chroma v2 aware)
-            await this.memoryGateway.storeToolExecution('oc_diagnostic_cluster_health', { includeNamespaceAnalysis, maxNamespacesToAnalyze }, healthSummary, sessionId, ['diagnostic', 'cluster_health', String(healthSummary.overallHealth)], 'openshift', 'prod', healthSummary.overallHealth === 'healthy' ? 'low' : 'medium');
+            await this.memoryGateway.storeToolExecution('oc_diagnostic_cluster_health', { includeNamespaceAnalysis, maxNamespacesToAnalyze, bounded, namespaceList }, healthSummary, sessionId, ['diagnostic', 'cluster_health', String(healthSummary.overallHealth)], 'openshift', 'prod', healthSummary.overallHealth === 'healthy' ? 'low' : 'medium');
             return this.formatClusterHealthResponse(healthSummary, sessionId);
         }
         catch (error) {
