@@ -38,6 +38,8 @@ const sharedMemory = new SharedMemoryManager({
   chromaHost: process.env.CHROMA_HOST || '127.0.0.1',
   chromaPort: process.env.CHROMA_PORT ? Number(process.env.CHROMA_PORT) : 8000,
 });
+// Ensure memory directories exist (conversations/operational)
+try { await sharedMemory.initialize(); } catch {}
 
 const workflowEngine = new WorkflowEngine({
   enablePanicDetection: true,
