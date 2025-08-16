@@ -22,23 +22,24 @@ import { AutoMemorySystem } from './lib/memory/auto-memory-system.js';
 import { KnowledgeSeedingSystem } from './lib/memory/knowledge-seeding-system.js';
 // TEMP DISABLED: import { KnowledgeSeedingTool, KnowledgeToolsSuite } from './tools/memory/knowledge-seeding-tool-v2.js';
 import { UnifiedToolRegistry } from './lib/tools/tool-registry.js';
+import { EnhancedSequentialThinkingOrchestrator } from './lib/tools/sequential-thinking-with-memory.js';
 
 console.error('🚀 Starting MCP-ocs server...');
 
 // Initialize core components
 const openshiftClient = new OpenShiftClient({
   ocPath: 'oc',
-  timeout: 30000
+  timeout: process.env.OC_TIMEOUT_MS ? Number(process.env.OC_TIMEOUT_MS) : 30000
 });
 
 const sharedMemory = new SharedMemoryManager({
   domain: 'mcp-ocs',
   namespace: 'default',
-  memoryDir: './memory',
+  memoryDir: process.env.SHARED_MEMORY_DIR || './memory',
   enableCompression: true,
   retentionDays: 30,
-  chromaHost: '127.0.0.1',
-  chromaPort: 8000
+  chromaHost: process.env.CHROMA_HOST || '127.0.0.1',
+  chromaPort: process.env.CHROMA_PORT ? Number(process.env.CHROMA_PORT) : 8000
 });
 
 const workflowEngine = new WorkflowEngine({
@@ -70,8 +71,46 @@ toolRegistry.registerSuite(readOpsTools);
 toolRegistry.registerSuite(stateMgmtTools);
 // TEMP DISABLED: toolRegistry.registerSuite(knowledgeTools);
 
-// Get all tools for MCP registration
-const allTools = toolRegistry.getMCPTools();
+// Register an explicit orchestrator tool so LLMs can opt-in to planning in the standard entrypoint
+const sequentialThinkingOrchestrator = new EnhancedSequentialThinkingOrchestrator(toolRegistry, sharedMemory);
+toolRegistry.registerTool({
+  name: 'sequential_thinking',
+  fullName: 'sequential_thinking',
+  description: 'Facilitates detailed, step-by-step thinking for problem-solving: plan → execute → reflect with memory.',
+  inputSchema: {
+    type: 'object',
+    properties: {
+      sessionId: { type: 'string', description: 'Conversation/session identifier' },
+      thought: { type: 'string' },
+      nextThoughtNeeded: { type: 'boolean' },
+      thoughtNumber: { type: 'integer' },
+      totalThoughts: { type: 'integer' },
+      isRevision: { type: 'boolean' },
+      revisesThought: { type: 'integer' },
+      branchFromThought: { type: 'integer' },
+      branchId: { type: 'string' },
+      needsMoreThoughts: { type: 'boolean' },
+      bounded: { type: 'boolean', description: 'Avoid expensive cluster-wide sweeps' },
+      firstStepOnly: { type: 'boolean', description: 'Execute only the first planned step' }
+    },
+    required: ['thought', 'nextThoughtNeeded', 'thoughtNumber', 'totalThoughts'],
+    additionalProperties: true
+  },
+  async execute(args: any): Promise<string> {
+    const userInput = String(args?.thought ?? args?.userInput ?? '');
+    const session = String(args?.sessionId || `session-${Date.now()}`);
+    const bounded = Boolean(args?.bounded);
+    const firstStepOnly = Boolean(args?.firstStepOnly);
+    const result = await sequentialThinkingOrchestrator.handleUserRequest(userInput, session, { bounded, firstStepOnly });
+    return JSON.stringify(result, null, 2);
+  },
+  category: 'workflow',
+  version: 'v2',
+  metadata: { experimental: true, mcpCompatible: true }
+});
+
+// Get all tools for MCP registration (after any dynamic registrations)
+let allTools = toolRegistry.getMCPTools();
 
 console.error(`✅ Registered ${allTools.length} tools from all suites`);
 
@@ -96,6 +135,8 @@ const server = new Server(
 // Register tools/list handler
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   console.error('📋 Listing all available tools...');
+  // Always reflect the latest registrations
+  allTools = toolRegistry.getMCPTools();
   return {
     tools: allTools.map(tool => ({
       name: tool.name,

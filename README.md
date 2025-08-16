@@ -89,6 +89,108 @@ oc whoami && oc cluster-info
 npm run start:beta
 ```
 
+### Sequential Thinking Mode (Experimental)
+
+- Feature flag: set `ENABLE_SEQUENTIAL_THINKING=true` to enable memory‑enhanced orchestration.
+- Parallel entrypoint: run the sequential server without touching the legacy entrypoint.
+
+```bash
+# Start the sequential entrypoint (feature-flag off by default)
+npm run start:sequential
+
+# Enable the orchestrator (recommended for testing)
+ENABLE_SEQUENTIAL_THINKING=true npm run start:sequential
+```
+
+Example MCP messages over stdio:
+
+```json
+{ "jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {
+  "protocolVersion": "2024-11-05", "capabilities": {},
+  "clientInfo": { "name": "example", "version": "1.0.0" }
+}}
+
+{ "jsonrpc": "2.0", "id": 2, "method": "tools/list" }
+
+{ "jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": {
+  "name": "oc_diagnostic_cluster_health",
+  "arguments": { "sessionId": "seq-demo-1", "userInput": "monitoring alerts and timeouts" }
+}}
+```
+
+Expected response includes `toolStrategy` with planned steps and `finalResult.summary` such as
+"Executed N tools with memory-aware reasoning". Structured logs on stdout include `memory_search_operational`,
+`sequential_strategy`, `tool_execution`, and (on retries) `tool_retry`.
+
+### Memory System (Client-side Embeddings)
+
+- Uses a single Chroma collection: `llm_conversation_memory`.
+- Always writes JSON backup + vector (when Chroma is reachable).
+- Always queries vector first; falls back to JSON when vector returns none or server is down.
+
+Note: Recent updates, cleanup commands, diagnostics, and ranking tweaks are documented in `CHROMA_CHANGELOG.md`.
+
+Dependencies:
+- `@xenova/transformers` (optional but recommended).
+- `node-fetch@3` only if your Node version lacks `fetch` (Node 18+ includes `fetch`).
+
+Install/cleanup:
+```bash
+npm install @xenova/transformers node-fetch@3
+npm uninstall chromadb
+```
+
+Health + reload CLI:
+```bash
+# Health (checks Chroma REST v2 is reachable)
+npm run memory:health            # uses CHROMA_HOST/CHROMA_PORT or defaults
+
+# Reload JSON -> vector DB (client embeddings)
+npm run memory:reload            # migrates ./memory/default/*.json into vector DB
+
+# Optional overrides
+CHROMA_HOST=127.0.0.1 CHROMA_PORT=8000 npm run memory:health
+CHROMA_HOST=127.0.0.1 CHROMA_PORT=8000 npm run memory:reload
+```
+
+Memory search CLI:
+```bash
+# Conversation memories (vector-first, JSON fallback)
+npm run memory:search "chromadb victory"           # [limit=5] [sessionId]
+npm run memory:search "kubernetes deployment" 10   # top 10
+
+# Operational memories (incident-style)
+npm run memory:find "imagepullbackoff troubleshooting" 5
+
+# Recommended env
+export SHARED_MEMORY_DIR=/Users/kevinbrown/memory/consolidated
+export CHROMA_HOST=127.0.0.1
+export CHROMA_PORT=8000
+
+# Optional: silence Xenova warning in CI and force hashing fallback
+export TRANSFORMERS_CACHE=~/.cache/transformers
+export MCP_OCS_FORCE_JSON=true
+```
+
+Cleanup and collections:
+```bash
+# Remove synthetic benchmark data from vector store (bench-*)
+npm run memory:clean-bench
+
+# Delete by custom session/document pattern
+npm run memory:delete-pattern -- "your-pattern"
+
+# Inspect/switch collections (Chroma v2)
+npm run memory:collections:list
+npm run memory:collections:switch benchmark_test_data
+
+# Benchmark now uses a dedicated collection, not production
+export BENCHMARK_COLLECTION=benchmark_test_data
+```
+
+CI tip:
+- Force JSON fallback for deterministic CI: `MCP_OCS_FORCE_JSON=true npm test`
+
 ### **Verify Beta Tools**
 
 ```bash

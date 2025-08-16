@@ -1,0 +1,17 @@
+[
+  {
+    "sessionId": "test-session",
+    "timestamp": 1755263757053,
+    "userMessage": "How do I check pod status?",
+    "assistantResponse": "How do I check pod status?\nUse oc get pods to check pod status",
+    "context": [
+      "test",
+      "context"
+    ],
+    "tags": [
+      "pods",
+      "status",
+      "basic"
+    ]
+  }
+]

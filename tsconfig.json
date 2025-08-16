@@ -31,6 +31,7 @@
     "src/tools/**",
     "src/index.ts",
     "src/lib/tools/**",
+    "src/lib/memory/chromadb-client-fixed.ts",
     "src/build-test.ts",
     "src/v2/tools/infrastructure-correlation/enhanced-infrastructure-tools.ts.backup"
   ]

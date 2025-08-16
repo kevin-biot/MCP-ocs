@@ -8,8 +8,6 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { createHash } from 'crypto';
-import { ChromaClient } from 'chromadb';
-import { DefaultEmbeddingFunction } from '@chroma-core/default-embed';
 import { MCPFilesChromaAdapter } from '@/lib/memory/mcp-files-adapter';
 
 // Types
@@ -742,7 +740,7 @@ export class SharedMemoryManager {
     try {
       const results = await this.chromaClient.queryCollection('conversations', query, limit);
       
-      return results.map(result => ({
+      const mapped = results.map(result => ({
         memory: {
           sessionId: result.metadata.sessionId || 'unknown',
           domain: result.metadata.domain || 'general',
@@ -755,9 +753,14 @@ export class SharedMemoryManager {
         similarity: result.similarity,
         relevance: result.similarity * 100
       }));
+      if (!mapped || mapped.length === 0) {
+        throw new Error('No vector results');
+      }
+      return mapped;
     } catch (error) {
       console.error('Vector search conversations failed:', error);
-      return [];
+      // Rethrow so caller can fallback to JSON
+      throw error;
     }
   }
 
@@ -765,7 +768,7 @@ export class SharedMemoryManager {
     try {
       const results = await this.chromaClient.queryCollection('operational', query, limit);
       
-      return results.map(result => ({
+      const mapped = results.map(result => ({
         memory: {
           incidentId: result.metadata.incidentId || 'unknown',
           domain: result.metadata.domain || 'storage',
@@ -780,9 +783,14 @@ export class SharedMemoryManager {
         similarity: result.similarity,
         relevance: result.similarity * 100
       }));
+      if (!mapped || mapped.length === 0) {
+        throw new Error('No vector results');
+      }
+      return mapped;
     } catch (error) {
       console.error('Vector search operational failed:', error);
-      return [];
+      // Rethrow so caller can fallback to JSON
+      throw error;
     }
   }
 

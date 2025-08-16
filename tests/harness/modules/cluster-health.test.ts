@@ -68,3 +68,10 @@ export async function testClusterHealth(): Promise<TestResult> {
     };
   }
 }
+
+// This module is used by the harness runner, not by Jest directly.
+// Provide a skipped container to satisfy Jest's requirement that a test file
+// contains at least one test when discovered by patterns.
+describe && describe.skip && describe.skip('harness: cluster-health module container', () => {
+  it('placeholder', () => {});
+});

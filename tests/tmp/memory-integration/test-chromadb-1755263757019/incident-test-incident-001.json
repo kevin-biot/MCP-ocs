@@ -1,0 +1,15 @@
+[
+  {
+    "sessionId": "incident-test-incident-001",
+    "timestamp": 1755263757080,
+    "userMessage": "Pod not starting ImagePullBackOff error Invalid image tag Updated image tag in deployment",
+    "assistantResponse": "Root Cause: Invalid image tag\nResolution: Pending",
+    "context": [],
+    "tags": [
+      "pod",
+      "image",
+      "deployment",
+      "operational"
+    ]
+  }
+]

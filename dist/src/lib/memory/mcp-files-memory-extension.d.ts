@@ -20,18 +20,53 @@ export interface MemorySearchResult {
     distance: number;
 }
 export declare class ChromaMemoryManager {
-    private client;
-    private collection;
+    private collectionName;
     private memoryDir;
     private initialized;
+    private host;
+    private port;
+    private serverAvailable;
+    private embedder;
+    private tenant;
+    private database;
+    private collectionIdCache;
     private log;
     constructor(memoryDir: string);
+    setCollectionName(name: string): void;
+    getCollectionName(): string;
+    private ensureServerSideEmbeddings;
     initialize(): Promise<void>;
     isAvailable(): Promise<boolean>;
     storeConversation(memory: ConversationMemory): Promise<boolean>;
     storeConversationToJson(memory: ConversationMemory): Promise<boolean>;
     searchRelevantMemories(query: string, sessionId?: string, limit?: number): Promise<MemorySearchResult[]>;
     searchJsonMemories(query: string, sessionId?: string, limit?: number): Promise<MemorySearchResult[]>;
+    private pingChroma;
+    private ensureCollection;
+    listCollections(): Promise<{
+        id: string;
+        name: string;
+    }[]>;
+    createCollection(name: string): Promise<void>;
+    switchCollection(name: string): Promise<void>;
+    private restAdd;
+    private restDelete;
+    deleteBySessionPattern(pattern: string): Promise<{
+        ok: boolean;
+        deleted: number | null;
+    }>;
+    private restQuery;
+    private getCollectionId;
+    private ensureEmbedder;
+    private embedTexts;
+    getEmbeddingInfo(): Promise<{
+        method: string;
+        model?: string;
+        dimensions: number;
+        fallback: boolean;
+        speedMs: number;
+    }>;
+    private coerceMemoriesFromJson;
     listSessions(): Promise<string[]>;
     getAllSessions(): Promise<string[]>;
     getSessionSummary(sessionId: string): Promise<any>;
@@ -40,6 +75,9 @@ export declare class ChromaMemoryManager {
     reloadAllMemoriesFromJson(): Promise<{
         loaded: number;
         errors: number;
+    }>;
+    deleteJsonByFilenamePrefix(prefix: string): Promise<{
+        deleted: number;
     }>;
 }
 export declare function extractTags(text: string): string[];

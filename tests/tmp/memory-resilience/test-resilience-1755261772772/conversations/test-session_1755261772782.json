@@ -1,0 +1,16 @@
+{
+  "sessionId": "test-session",
+  "domain": "test",
+  "timestamp": 1755261772782,
+  "userMessage": "Test JSON fallback storage",
+  "assistantResponse": "JSON fallback should work when ChromaDB fails",
+  "context": [
+    "test",
+    "context"
+  ],
+  "tags": [
+    "json",
+    "fallback",
+    "test"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "incidentId": "test-json-fallback-001",
+  "domain": "cluster",
+  "timestamp": 1755261200508,
+  "symptoms": [
+    "ChromaDB embedding failure",
+    "Tensor format incompatibility"
+  ],
+  "rootCause": "Environment-specific embedding function issue",
+  "resolution": "JSON fallback activated successfully",
+  "environment": "test",
+  "tags": [
+    "json",
+    "fallback",
+    "resilience"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "incidentId": "test-incident-001",
+  "domain": "cluster",
+  "timestamp": 1755305011125,
+  "symptoms": [
+    "Pod not starting",
+    "ImagePullBackOff error"
+  ],
+  "rootCause": "Invalid image tag",
+  "resolution": "Updated image tag in deployment",
+  "environment": "test",
+  "tags": [
+    "pod",
+    "image",
+    "deployment"
+  ]
+}

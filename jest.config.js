@@ -21,12 +21,17 @@ export default {
     '^\\.\\./\\.\\./types/(.*)\\.js$': '<rootDir>/src/types/$1.ts',
     '^\\.\\./\\.\\./registry/(.*)\\.js$': '<rootDir>/src/registry/$1.ts',
     '^\\.\\./types/(.*)\\.js$': '<rootDir>/src/types/$1.ts',
-    '^\\.\\./\\.\\./lib/(.*)\\.js$': '<rootDir>/src/lib/$1.ts',
+    
     '^\\.\\./\\.\\./v2/(.*)\\.js$': '<rootDir>/src/v2/$1.ts',
+    '^\\.\\./\\.\\./lib/tools/(.*)\\.js$': '<rootDir>/src/lib/tools/$1.ts',
+    '^\\.\\./\\.\\./tools/(.*)\\.js$': '<rootDir>/src/tools/$1.ts',
     '^\\.\\./check-namespace-health/(.*)\\.js$': '<rootDir>/src/v2/tools/check-namespace-health/$1.ts',
+    '^\\.\\./\\.\\./\\.\\./src/tools/(.*)\\.js$': '<rootDir>/src/tools/$1.ts',
     '^\\.\\./\\.\\./\\.\\./lib/(.*)\\.js$': '<rootDir>/src/lib/$1.ts',
     '^\\.\\./\\.\\./v2-integration\\.js$': '<rootDir>/src/v2-integration.ts',
-    '^\\./v2/(.*)\\.js$': '<rootDir>/src/v2/$1.ts'
+    '^\\./v2/(.*)\\.js$': '<rootDir>/src/v2/$1.ts',
+    // Map local ESM-style relative .js imports in TS to .ts for tests
+    '^\\./mcp-files-memory-extension\\.js$': '<rootDir>/src/lib/memory/mcp-files-memory-extension.ts'
   },
   extensionsToTreatAsEsm: ['.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
