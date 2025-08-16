@@ -14,16 +14,26 @@ export declare class EnhancedSequentialThinkingOrchestrator {
     handleUserRequest(userInput: string, sessionId: string, opts?: {
         bounded?: boolean;
         firstStepOnly?: boolean;
+        reflectOnly?: boolean;
+        timeoutMs?: number;
+        nextThoughtNeeded?: boolean;
+        mode?: 'planOnly' | 'firstStepOnly' | 'boundedMultiStep' | 'unbounded';
+        continuePlan?: boolean;
+        triageTarget?: string;
+        stepBudget?: number;
     }): Promise<SequentialThinkingResult>;
     private analyzeProblemWithMemory;
     private searchSimilarProblems;
     private identifyProblemPatterns;
+    private quickReflect;
     private executeFirstStep;
     private formulateToolStrategyWithMemory;
     private executeWithReflectionAndNetworkRecovery;
     private executeToolWithNetworkHandling;
     private isNetworkResetError;
     private storeToolExecutionInMemory;
+    private resumePlannedSteps;
+    private advancePlanPointer;
     private storePlanStrategyInMemory;
     private reflectOnExecution;
     private reflectOnResults;

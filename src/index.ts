@@ -91,7 +91,12 @@ toolRegistry.registerTool({
       branchId: { type: 'string' },
       needsMoreThoughts: { anyOf: [{ type: 'boolean' }, { type: 'string' }] },
       bounded: { anyOf: [{ type: 'boolean' }, { type: 'string' }], description: 'Avoid expensive cluster-wide sweeps' },
-      firstStepOnly: { anyOf: [{ type: 'boolean' }, { type: 'string' }], description: 'Execute only the first planned step' }
+      firstStepOnly: { anyOf: [{ type: 'boolean' }, { type: 'string' }], description: 'Execute only the first planned step' },
+      mode: { anyOf: [{ type: 'string' }], description: 'planOnly | firstStepOnly | boundedMultiStep | unbounded' },
+      continuePlan: { anyOf: [{ type: 'boolean' }, { type: 'string' }] },
+      triageTarget: { type: 'string', description: 'Ingress | monitoring | crashloops | storage' },
+      stepBudget: { anyOf: [{ type: 'integer' }, { type: 'string' }], description: 'Steps to execute in boundedMultiStep mode' },
+      timeoutMs: { anyOf: [{ type: 'integer' }, { type: 'string' }], description: 'Override orchestrator guard timeout' }
     },
     required: ['thought', 'nextThoughtNeeded', 'thoughtNumber', 'totalThoughts'],
     additionalProperties: true
@@ -99,10 +104,18 @@ toolRegistry.registerTool({
   async execute(args: any): Promise<string> {
     const userInput = String(args?.thought ?? args?.userInput ?? '');
     const session = String(args?.sessionId || `session-${Date.now()}`);
-    const coerceBool = (v: any) => typeof v === 'string' ? ['true','1','yes','on'].includes(v.toLowerCase()) : Boolean(v);
+    const coerceBool = (v: any) => typeof v === 'string' ? ['true','1','yes','on','false','0','no','off'].includes(v.toLowerCase()) ? ['true','1','yes','on'].includes(v.toLowerCase()) : Boolean(v) : Boolean(v);
+    const coerceNum = (v: any, d?: number) => typeof v === 'string' ? (Number(v) || d || 0) : (typeof v === 'number' ? v : (d || 0));
     const bounded = coerceBool(args?.bounded);
-    const firstStepOnly = coerceBool(args?.firstStepOnly);
-    const result = await sequentialThinkingOrchestrator.handleUserRequest(userInput, session, { bounded, firstStepOnly });
+    const firstStepOnly = 'firstStepOnly' in (args||{}) ? coerceBool(args?.firstStepOnly) : (bounded ? true : false);
+    const nextThoughtNeeded = 'nextThoughtNeeded' in (args||{}) ? coerceBool(args?.nextThoughtNeeded) : true;
+    const timeoutMs = coerceNum(args?.timeoutMs ?? process.env.SEQ_TIMEOUT_MS ?? (bounded ? 12000 : 0), bounded ? 12000 : 0);
+    const reflectOnly = nextThoughtNeeded === false;
+    const mode = typeof args?.mode === 'string' ? args.mode : (firstStepOnly ? 'firstStepOnly' : (bounded ? 'firstStepOnly' : 'planOnly'));
+    const continuePlan = coerceBool(args?.continuePlan);
+    const triageTarget = typeof args?.triageTarget === 'string' ? args.triageTarget : undefined;
+    const stepBudget = coerceNum(args?.stepBudget, 2);
+    const result = await sequentialThinkingOrchestrator.handleUserRequest(userInput, session, { bounded, firstStepOnly, reflectOnly, timeoutMs, nextThoughtNeeded, mode, continuePlan, triageTarget, stepBudget });
     return JSON.stringify(result, null, 2);
   },
   category: 'workflow',

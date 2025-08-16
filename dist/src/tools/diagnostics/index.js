@@ -84,16 +84,16 @@ export class DiagnosticToolsV2 {
                     type: 'object',
                     properties: {
                         sessionId: { type: 'string' },
-                        includeNamespaceAnalysis: { type: 'boolean', default: false },
-                        maxNamespacesToAnalyze: { type: 'number', default: 10 },
-                        namespaceScope: { type: 'string', enum: ['all', 'system', 'user'], default: 'all', description: 'Limit namespace analysis to system, user, or all' },
+                        includeNamespaceAnalysis: { anyOf: [{ type: 'boolean' }, { type: 'string' }], default: false },
+                        maxNamespacesToAnalyze: { anyOf: [{ type: 'number' }, { type: 'string' }], default: 10 },
+                        namespaceScope: { anyOf: [{ type: 'string' }], enum: ['all', 'system', 'user'], default: 'all', description: 'Limit namespace analysis to system, user, or all' },
                         focusNamespace: { type: 'string', description: 'Namespace to prioritize for deep analysis' },
-                        focusStrategy: { type: 'string', enum: ['auto', 'events', 'resourcePressure', 'none'], default: 'auto' },
-                        depth: { type: 'string', enum: ['summary', 'detailed'], default: 'summary' },
-                        // New: bounded-mode compatibility and scoping
-                        bounded: { type: 'boolean', default: false, description: 'Enable performance-bounded execution (skips cluster-wide sweeps)' },
-                        namespaceList: { type: 'array', items: { type: 'string' }, description: 'Explicit list of namespaces to analyze (bounded triage)' },
-                        maxRuntimeMs: { type: 'number', description: 'Hard cap on execution time; triage loops stop when exceeded' }
+                        focusStrategy: { anyOf: [{ type: 'string' }], enum: ['auto', 'events', 'resourcePressure', 'none'], default: 'auto' },
+                        depth: { anyOf: [{ type: 'string' }], enum: ['summary', 'detailed'], default: 'summary' },
+                        // New: bounded-mode compatibility and scoping (accept strings too)
+                        bounded: { anyOf: [{ type: 'boolean' }, { type: 'string' }], default: false, description: 'Enable performance-bounded execution (skips cluster-wide sweeps)' },
+                        namespaceList: { anyOf: [{ type: 'array', items: { type: 'string' } }, { type: 'string' }], description: 'Explicit list of namespaces to analyze (bounded triage); accepts comma-separated string' },
+                        maxRuntimeMs: { anyOf: [{ type: 'number' }, { type: 'string' }], description: 'Hard cap on execution time; triage loops stop when exceeded' }
                     },
                     required: ['sessionId']
                 }
@@ -117,9 +117,9 @@ export class DiagnosticToolsV2 {
                     properties: {
                         sessionId: { type: 'string' },
                         namespace: { type: 'string' },
-                        includeIngressTest: { type: 'boolean', default: false },
-                        maxLogLinesPerPod: { type: 'number', default: 0 },
-                        deepAnalysis: { type: 'boolean', default: false }
+                        includeIngressTest: { anyOf: [{ type: 'boolean' }, { type: 'string' }], default: false },
+                        maxLogLinesPerPod: { anyOf: [{ type: 'number' }, { type: 'string' }], default: 0 },
+                        deepAnalysis: { anyOf: [{ type: 'boolean' }, { type: 'string' }], default: false }
                     },
                     required: ['sessionId', 'namespace']
                 }
@@ -145,8 +145,8 @@ export class DiagnosticToolsV2 {
                         sessionId: { type: 'string' },
                         namespace: { type: 'string' },
                         podName: { type: 'string' },
-                        includeDependencies: { type: 'boolean', default: true },
-                        includeResourceAnalysis: { type: 'boolean', default: true }
+                        includeDependencies: { anyOf: [{ type: 'boolean' }, { type: 'string' }], default: true },
+                        includeResourceAnalysis: { anyOf: [{ type: 'boolean' }, { type: 'string' }], default: true }
                     },
                     required: ['sessionId', 'namespace', 'podName']
                 }
@@ -169,8 +169,8 @@ export class DiagnosticToolsV2 {
                         sessionId: { type: 'string' },
                         namespace: { type: 'string', description: 'Target namespace (optional for cluster-wide analysis)' },
                         outputFormat: { type: 'string', enum: ['json', 'markdown'], default: 'json' },
-                        includeDeepAnalysis: { type: 'boolean', default: false },
-                        maxCheckTime: { type: 'number', default: 60000, description: 'Maximum checklist execution time in ms' }
+                        includeDeepAnalysis: { anyOf: [{ type: 'boolean' }, { type: 'string' }], default: false },
+                        maxCheckTime: { anyOf: [{ type: 'number' }, { type: 'string' }], default: 60000, description: 'Maximum checklist execution time in ms' }
                     },
                     required: ['sessionId']
                 }
@@ -225,14 +225,19 @@ export class DiagnosticToolsV2 {
      */
     async enhancedClusterHealth(args) {
         const startTime = Date.now();
-        const { sessionId, includeNamespaceAnalysis = false, maxNamespacesToAnalyze = 10 } = args;
+        const coerceBool = (v) => typeof v === 'string' ? ['true', '1', 'yes', 'on'].includes(v.toLowerCase()) : Boolean(v);
+        const coerceNum = (v, d) => typeof v === 'string' ? (Number(v) || d || 0) : (typeof v === 'number' ? v : (d || 0));
+        const toList = (v) => Array.isArray(v) ? v : (typeof v === 'string' ? v.split(',').map(s => s.trim()).filter(Boolean) : []);
+        const sessionId = String(args?.sessionId || `session-${Date.now()}`);
+        const includeNamespaceAnalysis = coerceBool(args?.includeNamespaceAnalysis);
+        const maxNamespacesToAnalyze = coerceNum(args?.maxNamespacesToAnalyze, 10);
         const namespaceScope = args.namespaceScope || 'all';
         const focusNamespace = args.focusNamespace;
         const focusStrategy = args.focusStrategy || 'auto';
         const depth = args.depth || 'summary';
-        const bounded = Boolean(args.bounded) || (typeof args.maxRuntimeMs === 'number' && args.maxRuntimeMs > 0) || (typeof maxNamespacesToAnalyze === 'number' && maxNamespacesToAnalyze <= 3);
-        const maxRuntimeMs = typeof args.maxRuntimeMs === 'number' && args.maxRuntimeMs > 0 ? args.maxRuntimeMs : (bounded ? 20000 : 0);
-        const namespaceList = Array.isArray(args.namespaceList) ? args.namespaceList.filter(Boolean) : [];
+        const bounded = coerceBool(args?.bounded) || (coerceNum(args?.maxRuntimeMs, 0) > 0) || (maxNamespacesToAnalyze <= 3);
+        const maxRuntimeMs = coerceNum(args?.maxRuntimeMs, bounded ? 20000 : 0);
+        const namespaceList = toList(args?.namespaceList);
         try {
             // Get cluster info using both v1 and v2 capabilities
             const clusterInfo = await this.openshiftClient.getClusterInfo();

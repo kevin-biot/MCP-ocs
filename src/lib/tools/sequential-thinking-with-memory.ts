@@ -26,7 +26,21 @@ export class EnhancedSequentialThinkingOrchestrator {
     this.memoryManager = memoryManager;
   }
 
-  async handleUserRequest(userInput: string, sessionId: string, opts?: { bounded?: boolean, firstStepOnly?: boolean }): Promise<SequentialThinkingResult> {
+  async handleUserRequest(
+    userInput: string,
+    sessionId: string,
+    opts?: {
+      bounded?: boolean;
+      firstStepOnly?: boolean;
+      reflectOnly?: boolean;
+      timeoutMs?: number;
+      nextThoughtNeeded?: boolean;
+      mode?: 'planOnly' | 'firstStepOnly' | 'boundedMultiStep' | 'unbounded';
+      continuePlan?: boolean;
+      triageTarget?: string;
+      stepBudget?: number;
+    }
+  ): Promise<SequentialThinkingResult> {
     const context: SequentialThinkingContext = {
       sessionId,
       userInput,
@@ -38,14 +52,50 @@ export class EnhancedSequentialThinkingOrchestrator {
       bounded: Boolean(opts?.bounded),
       firstStepOnly: Boolean(opts?.firstStepOnly),
     };
+    // Fast-path: reflect-only mode (e.g., nextThoughtNeeded=false) to avoid long runs
+    const reflectOnly = opts?.reflectOnly === true || opts?.nextThoughtNeeded === false;
+    if (reflectOnly) {
+      return await this.quickReflect(sessionId, userInput);
+    }
 
-    try {
+    const timeoutMs = typeof opts?.timeoutMs === 'number' && opts?.timeoutMs > 0
+      ? opts!.timeoutMs!
+      : (context.bounded ? 12000 : 0);
+
+    const work = (async () => {
+      const mode: 'planOnly' | 'firstStepOnly' | 'boundedMultiStep' | 'unbounded' =
+        (opts?.mode as any) || (context.firstStepOnly ? 'firstStepOnly' : (context.bounded ? 'firstStepOnly' : 'planOnly'));
+
+      // Continuation path: execute next planned steps without re-planning
+      if (opts?.continuePlan) {
+        return await this.resumePlannedSteps(sessionId, opts?.stepBudget || (context.firstStepOnly ? 1 : 2));
+      }
+
       const analysis = await this.analyzeProblemWithMemory(userInput, context);
-      const { strategy, suggestions } = await this.formulateToolStrategyWithMemory(analysis, context);
-      // Optionally execute only first step to stay within tight timeouts
-      const final = context.firstStepOnly
-        ? await this.executeFirstStep(strategy, context)
-        : await this.executeWithReflectionAndNetworkRecovery(strategy, context);
+      const { strategy, suggestions } = await this.formulateToolStrategyWithMemory(analysis, context, opts?.triageTarget);
+
+      if (mode === 'planOnly') {
+        try { await this.storePlanStrategyInMemory(strategy, sessionId); } catch {}
+        return {
+          success: true,
+          toolStrategy: strategy,
+          reasoningTrace: [analysis],
+          finalResult: { note: 'Plan-only mode: no steps executed' },
+          networkResetDetected: false,
+          suggestions,
+        };
+      }
+
+      let stepsToRun = strategy.steps;
+      if (mode === 'firstStepOnly') stepsToRun = strategy.steps.slice(0, 1);
+      if (mode === 'boundedMultiStep') {
+        const n = Math.max(1, Math.min((opts?.stepBudget || 2), strategy.steps.length));
+        stepsToRun = strategy.steps.slice(0, n);
+      }
+
+      const partial: ToolStrategy = { ...strategy, steps: stepsToRun, estimatedSteps: stepsToRun.length };
+      const final = await this.executeWithReflectionAndNetworkRecovery(partial, context);
+      try { await this.advancePlanPointer(sessionId, stepsToRun.length); } catch {}
 
       return {
         success: true,
@@ -61,17 +111,21 @@ export class EnhancedSequentialThinkingOrchestrator {
         finalResult: final,
         networkResetDetected: Boolean(final?.networkResetDetected),
         suggestions,
-      };
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      return {
-        success: false,
-        toolStrategy: { steps: [], estimatedSteps: 0, rationale: 'Failed to generate strategy', confidenceScore: 0 },
-        reasoningTrace: [],
-        error: msg,
-        networkResetDetected: false,
-      };
+      } as SequentialThinkingResult;
+    })();
+
+    if (timeoutMs && timeoutMs > 0) {
+      const timed = await Promise.race([
+        work,
+        (async () => {
+          await new Promise((r) => setTimeout(r, timeoutMs));
+          const fallback = await this.quickReflect(sessionId, userInput);
+          return { ...fallback, error: `orchestrator_timeout_${timeoutMs}ms` } as SequentialThinkingResult;
+        })()
+      ]);
+      return timed as SequentialThinkingResult;
     }
+    return await work;
   }
 
   private async analyzeProblemWithMemory(userInput: string, context: SequentialThinkingContext): Promise<ThoughtProcess> {
@@ -153,6 +207,29 @@ export class EnhancedSequentialThinkingOrchestrator {
     return p;
   }
 
+  private async quickReflect(sessionId: string, userInput: string): Promise<SequentialThinkingResult> {
+    // Ultra-fast reflection: intentionally avoid any memory or network calls to prevent timeouts
+    const recent: any[] = [];
+    const suggestions: string[] = [
+      'Tip: Use bounded=true and firstStepOnly=true for fast, targeted runs',
+      'Set SEQ_TIMEOUT_MS to raise orchestrator timeout if needed'
+    ];
+    return {
+      success: true,
+      toolStrategy: { steps: [], estimatedSteps: 0, rationale: `Quick reflection for: "${userInput}"`, confidenceScore: 0.6 },
+      reasoningTrace: [{
+        thoughtNumber: 1,
+        thought: 'Reflection-only mode: skipping planning and execution to avoid timeouts',
+        timestamp: new Date(),
+        nextThoughtNeeded: false,
+        totalThoughts: 1,
+      }],
+      finalResult: { note: 'Reflection-only response (no tool execution)' },
+      networkResetDetected: false,
+      suggestions,
+    };
+  }
+
   private async executeFirstStep(strategy: ToolStrategy, context: SequentialThinkingContext): Promise<any> {
     const steps = strategy.steps.slice(0, 1);
     const limitedStrategy: ToolStrategy = { ...strategy, steps, estimatedSteps: steps.length };
@@ -163,7 +240,11 @@ export class EnhancedSequentialThinkingOrchestrator {
     return { ...result, note: 'Executed only the first planned step (firstStepOnly=true)' };
   }
 
-  private async formulateToolStrategyWithMemory(analysis: ThoughtProcess, context: SequentialThinkingContext): Promise<{ strategy: ToolStrategy, suggestions: string[] }> {
+  private async formulateToolStrategyWithMemory(
+    analysis: ThoughtProcess,
+    context: SequentialThinkingContext,
+    triageTarget?: string
+  ): Promise<{ strategy: ToolStrategy, suggestions: string[] }> {
     const mem = analysis.memoryContext || [];
     let confidence = 0.7;
     const steps: ToolStep[] = [];
@@ -201,6 +282,37 @@ export class EnhancedSequentialThinkingOrchestrator {
       }
     } else if (this.isClusterProblem(input) && context.bounded) {
       suggestions.push('Bounded mode: skipping cluster-wide health sweep');
+    }
+
+    // Scenario template: ingress triage (strong defaults)
+    if ((triageTarget && triageTarget.toLowerCase().includes('ingress')) || t.includes('ingress')) {
+      const nsOp = 'openshift-ingress-operator';
+      const nsIng = 'openshift-ingress';
+      steps.push({
+        sequenceNumber: context.thoughtNumber++,
+        tool: 'oc_read_get_pods',
+        parameters: { sessionId: context.sessionId, namespace: nsIng },
+        rationale: 'List router pods in ingress namespace',
+        dependencies: [],
+        memoryContext: mem.slice(0, 2),
+      });
+      steps.push({
+        sequenceNumber: context.thoughtNumber++,
+        tool: 'oc_read_get_pods',
+        parameters: { sessionId: context.sessionId, namespace: nsOp },
+        rationale: 'Check ingress operator pod status',
+        dependencies: [],
+        memoryContext: mem.slice(0, 2),
+      });
+      steps.push({
+        sequenceNumber: context.thoughtNumber++,
+        tool: 'oc_read_describe',
+        parameters: { sessionId: context.sessionId, resourceType: 'ingresscontroller', name: 'default', namespace: nsOp },
+        rationale: 'Describe default ingresscontroller for configuration/status',
+        dependencies: [],
+        memoryContext: mem.slice(0, 2),
+      });
+      suggestions.push('Template applied: ingress triage');
     }
 
     if (this.isMonitoringProblem(input)) {
@@ -463,6 +575,82 @@ export class EnhancedSequentialThinkingOrchestrator {
     } catch (e) {
       console.error('Failed to store tool execution in memory:', e);
     }
+  }
+
+  private async resumePlannedSteps(sessionId: string, stepBudget: number): Promise<SequentialThinkingResult> {
+    // Retrieve last strategy (plan) with steps from metadata
+    let steps: any[] = [];
+    try {
+      const results = await this.memoryManager.searchOperational(`${sessionId} plan_strategy`, 3);
+      const latest = results[0]?.memory as any;
+      // @ts-ignore
+      const meta = latest?.metadata || {};
+      steps = Array.isArray(meta.steps) ? meta.steps : [];
+    } catch {}
+    if (!steps.length) {
+      return {
+        success: false,
+        toolStrategy: { steps: [], estimatedSteps: 0, rationale: 'No prior plan found', confidenceScore: 0 },
+        reasoningTrace: [],
+        networkResetDetected: false,
+        error: 'no_prior_plan'
+      } as any;
+    }
+    // Read pointer
+    let pointer = 0;
+    try {
+      const ptr = await this.memoryManager.searchOperational(`plan-pointer-${sessionId}`, 1);
+      const latestPtr = ptr[0]?.memory as any;
+      // @ts-ignore
+      pointer = Number(latestPtr?.metadata?.index || 0);
+    } catch {}
+    const toRun = steps.slice(pointer, pointer + Math.max(1, stepBudget));
+    if (!toRun.length) {
+      return {
+        success: true,
+        toolStrategy: { steps: [], estimatedSteps: 0, rationale: 'Plan already completed', confidenceScore: 0.9 },
+        reasoningTrace: [],
+        finalResult: { note: 'No remaining steps' },
+        networkResetDetected: false,
+        suggestions: []
+      } as any;
+    }
+    // Execute
+    const partial: ToolStrategy = {
+      steps: toRun.map((s: any, i: number) => ({ sequenceNumber: i + 1, tool: s.tool, parameters: s.parameters, rationale: s.rationale, dependencies: s.dependencies || [], memoryContext: s.memoryContext || [] })),
+      estimatedSteps: toRun.length,
+      rationale: 'Continue plan execution',
+      confidenceScore: 0.8,
+    };
+    const context: SequentialThinkingContext = { sessionId, userInput: 'continue', thoughtNumber: 1, totalThoughts: 3, nextThoughtNeeded: false, toolRegistry: this.toolRegistry, memoryManager: this.memoryManager, bounded: true, firstStepOnly: false };
+    const final = await this.executeWithReflectionAndNetworkRecovery(partial, context);
+    try { await this.advancePlanPointer(sessionId, toRun.length, pointer); } catch {}
+    return {
+      success: true,
+      toolStrategy: partial,
+      reasoningTrace: [],
+      finalResult: final,
+      networkResetDetected: Boolean(final?.networkResetDetected),
+      suggestions: []
+    } as any;
+  }
+
+  private async advancePlanPointer(sessionId: string, ran: number, currentIndex?: number): Promise<void> {
+    const nextIndex = (currentIndex ?? 0) + ran;
+    try {
+      await this.memoryManager.storeOperational({
+        incidentId: `plan-pointer-${sessionId}`,
+        domain: 'cluster',
+        timestamp: Date.now(),
+        symptoms: ['plan_pointer', sessionId],
+        affectedResources: [],
+        diagnosticSteps: [`advanced_to_${nextIndex}`],
+        tags: ['plan_pointer', sessionId],
+        environment: 'prod',
+        // @ts-ignore
+        metadata: { index: nextIndex }
+      } as any);
+    } catch {}
   }
 
   private async storePlanStrategyInMemory(strategy: ToolStrategy, sessionId: string): Promise<void> {
