@@ -1,5 +1,5 @@
-import { EnhancedSequentialThinkingOrchestrator } from "../src/lib/tools/sequential-thinking-with-memory.ts";
-import { SharedMemoryManager } from "../src/lib/memory/shared-memory.ts";
+import { EnhancedSequentialThinkingOrchestrator } from "../../src/lib/tools/sequential-thinking-with-memory.ts";
+import { SharedMemoryManager } from "../../src/lib/memory/shared-memory.ts";
 
 // Minimal registry stub to avoid real oc calls
 const registry = {
@@ -47,3 +47,4 @@ main().catch((e) => {
   console.error('Smoke test failed:', e);
   process.exit(1);
 });
+

@@ -1,5 +1,5 @@
-import { EnhancedSequentialThinkingOrchestrator } from "../src/lib/tools/sequential-thinking-with-memory.ts";
-import { SharedMemoryManager } from "../src/lib/memory/shared-memory.ts";
+import { EnhancedSequentialThinkingOrchestrator } from "../../src/lib/tools/sequential-thinking-with-memory.ts";
+import { SharedMemoryManager } from "../../src/lib/memory/shared-memory.ts";
 
 // Stub registry with controllable responses to trigger red flags
 const registry = {

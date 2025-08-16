@@ -35,4 +35,9 @@ export declare class EnhancedSequentialThinkingOrchestrator {
     private isPodIssue;
     private isNetworkProblem;
     private listAvailableTools;
+    private isSpecificRequest;
+    private isExplicitComprehensiveRequest;
+    private isComplexOrUnclear;
+    private inferNamespaceFromInput;
+    private detectRedFlags;
 }

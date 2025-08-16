@@ -97,7 +97,11 @@
     "capture:real:init": "mkdir -p docs/real-examples",
     "capture:real:cluster": "bash scripts/capture-real.sh cluster -- --scope all --strategy auto --depth summary --max 5",
     "capture:real:ns": "bash scripts/capture-real.sh ns",
-    "capture:real:rca": "bash scripts/capture-real.sh rca"
+    "capture:real:rca": "bash scripts/capture-real.sh rca",
+    "retest:setup": "bash scripts/retest-llm-setup.sh",
+    "retest:smoke:ingress": "tsx scripts/smoke/smoke-sequential-ingress.ts",
+    "retest:smoke:rca": "tsx scripts/smoke/smoke-sequential-rca.ts",
+    "retest:smoke:all": "npm run -s retest:smoke:ingress && npm run -s retest:smoke:rca"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.8",
