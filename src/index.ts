@@ -23,6 +23,9 @@ import { KnowledgeSeedingSystem } from './lib/memory/knowledge-seeding-system.js
 // TEMP DISABLED: import { KnowledgeSeedingTool, KnowledgeToolsSuite } from './tools/memory/knowledge-seeding-tool-v2.js';
 import { UnifiedToolRegistry } from './lib/tools/tool-registry.js';
 import { EnhancedSequentialThinkingOrchestrator } from './lib/tools/sequential-thinking-with-memory.js';
+import { TemplateRegistry } from './lib/templates/template-registry.js';
+import { TemplateEngine } from './lib/templates/template-engine.js';
+import { BoundaryEnforcer } from './lib/enforcement/boundary-enforcer.js';
 
 console.error('🚀 Starting MCP-ocs server...');
 
@@ -73,6 +76,12 @@ toolRegistry.registerSuite(stateMgmtTools);
 
 // Register an explicit orchestrator tool so LLMs can opt-in to planning in the standard entrypoint
 const sequentialThinkingOrchestrator = new EnhancedSequentialThinkingOrchestrator(toolRegistry, sharedMemory);
+
+// Deterministic Template Engine (behind flag)
+const ENABLE_TEMPLATE_ENGINE = process.env.ENABLE_TEMPLATE_ENGINE === 'true';
+const templateRegistry = new TemplateRegistry();
+const templateEngine = new TemplateEngine();
+await templateRegistry.load().catch(()=>{});
 toolRegistry.registerTool({
   name: 'sequential_thinking',
   fullName: 'sequential_thinking',
@@ -169,6 +178,30 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const startTime = Date.now();
   
   console.error(`🔧 Executing tool: ${name}`);
+  
+  // Template Engine primary path (behind flag)
+  if (ENABLE_TEMPLATE_ENGINE && (request.params.arguments as any)?.triageTarget) {
+    const targs = request.params.arguments as any;
+    const triageTarget = String(targs.triageTarget);
+    const sel = templateRegistry.selectByTarget(triageTarget);
+    if (!sel) { console.error('❌ No template for target', triageTarget); }
+    else {
+      const stepBudget = Number(targs.stepBudget || 2);
+      const bounded = !!targs.bounded;
+      const sessionId = String(targs.sessionId || `session-${Date.now()}`);
+      const plan = templateEngine.buildPlan(sel.template, { sessionId, bounded, stepBudget });
+      const enforcer = new BoundaryEnforcer({ maxSteps: plan.boundaries.maxSteps, timeoutMs: plan.boundaries.timeoutMs, toolWhitelist: undefined, allowedNamespaces: targs.allowedNamespaces });
+      const steps = enforcer.filterSteps(plan.steps);
+      const exec: any[] = [];
+      for (const s of steps) {
+        const r = await toolRegistry.executeTool(s.tool, s.params);
+        exec.push({ step: s, result: r });
+      }
+      const out = { planId: plan.planId, target: triageTarget, executed: exec.length, steps: exec };
+      const content: any = { content: [{ type: 'text', text: JSON.stringify(out, null, 2) }] };
+      return content;
+    }
+  }
   
   // Check for relevant past context before execution
   const relevantContext = await autoMemory.retrieveRelevantContext(name, args || {});
