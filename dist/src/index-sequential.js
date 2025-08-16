@@ -183,6 +183,39 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         else {
             result = await toolRegistry.executeTool(name, args || {});
         }
+        // Post-diagnostic hook: if bounded cluster_health shows ingress pending, execute mini-plan via ST
+        try {
+            if (name === 'oc_diagnostic_cluster_health' && typeof result === 'string') {
+                const parsed = JSON.parse(result);
+                const mode = parsed?.mode;
+                const detailed = parsed?.userNamespaces?.detailed;
+                const ingress = Array.isArray(detailed) ? detailed.find((d) => d?.namespace === 'openshift-ingress') : undefined;
+                const pending = Number(ingress?.checks?.pods?.pending || 0);
+                if (mode === 'bounded' && pending > 0) {
+                    console.error('🔁 Shim: mini-plan executed (ingress_pending)');
+                    // Telemetry: shim engagement (early if within first call window)
+                    try {
+                        await sharedMemory.storeOperational({
+                            incidentId: `shim-engagement-${args?.sessionId || 'unknown'}-${Date.now()}`,
+                            domain: 'cluster',
+                            timestamp: Date.now(),
+                            symptoms: ['shim_engagement', 'ingress_pending'],
+                            affectedResources: ['oc_diagnostic_cluster_health'],
+                            diagnosticSteps: ['sequential_thinking(continue) auto-executed for ingress_pending'],
+                            tags: ['shim_engagement', String(args?.sessionId || 'unknown')],
+                            environment: 'prod',
+                            // @ts-ignore
+                            metadata: { plan_id: args?.sessionId || 'unknown', plan_phase: 'continue', engagement: 'early', step_budget: 3 }
+                        });
+                    }
+                    catch { }
+                    // Execute deterministic continue (bounded, stepBudget=3)
+                    const sid = String(args?.sessionId || `session-${Date.now()}`);
+                    await sequentialThinkingOrchestrator.handleUserRequest('continue ingress mini-plan', sid, { bounded: true, continuePlan: true, stepBudget: 3 });
+                }
+            }
+        }
+        catch { }
     }
     catch (e) {
         success = false;

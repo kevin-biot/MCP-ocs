@@ -102,6 +102,21 @@ npm run start:sequential
 ENABLE_SEQUENTIAL_THINKING=true npm run start:sequential
 ```
 
+#### Reviewer Template (10/10) and Smokes
+- Template: see `docs/CODEX_REVIEWER_TEMPLATE.md` for the standardized, deterministic structure used by the reporter (triggers, mini-plans, telemetry, replay controls).
+
+- Quick smokes (no cluster required):
+  - Plan → Continue:
+    - `npm run retest:smoke:plan-continue`
+  - Ingress boundedMultiStep default (pods + controller describe in first reply):
+    - `npm run retest:smoke:ingress-multistep`
+  - Red‑flag mini‑plan persistence (FailedScheduling taint/anti-affinity):
+    - `npm run retest:smoke:redflag-mini-plan`
+
+Recommended ST calls in triage:
+- Start (safe): `sequential_thinking({ sessionId, thought, triageTarget: "ingress", bounded: true, mode: "firstStepOnly" })`
+- Continue deterministically: `sequential_thinking({ sessionId, thought: "continue", continuePlan: true, stepBudget: 2 })`
+
 #### Using `sequential_thinking`
 
 #### RCA Policy and Intent
