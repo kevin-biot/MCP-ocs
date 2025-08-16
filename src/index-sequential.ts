@@ -103,14 +103,18 @@ toolRegistry.registerTool({
     const coerceBool = (v: any) => typeof v === 'string' ? ['true','1','yes','on','false','0','no','off'].includes(v.toLowerCase()) ? ['true','1','yes','on'].includes(v.toLowerCase()) : Boolean(v) : Boolean(v);
     const coerceNum = (v: any, d?: number) => typeof v === 'string' ? (Number(v) || d || 0) : (typeof v === 'number' ? v : (d || 0));
     const bounded = coerceBool(args?.bounded);
+    const triageTarget = typeof args?.triageTarget === 'string' ? args.triageTarget : undefined;
     const firstStepOnly = 'firstStepOnly' in (args||{}) ? coerceBool(args?.firstStepOnly) : (bounded ? true : false);
     const nextThoughtNeeded = 'nextThoughtNeeded' in (args||{}) ? coerceBool(args?.nextThoughtNeeded) : true;
     const timeoutMs = coerceNum(args?.timeoutMs ?? process.env.SEQ_TIMEOUT_MS ?? (bounded ? 12000 : 0), bounded ? 12000 : 0);
     const reflectOnly = nextThoughtNeeded === false;
-    const mode = typeof args?.mode === 'string' ? args.mode : (firstStepOnly ? 'firstStepOnly' : (bounded ? 'firstStepOnly' : 'planOnly'));
+    let mode = typeof args?.mode === 'string' ? args.mode : (firstStepOnly ? 'firstStepOnly' : (bounded ? 'firstStepOnly' : 'planOnly'));
+    // Aggressive default for ingress triage: boundedMultiStep with stepBudget=2
+    if (!args?.mode && bounded && triageTarget && triageTarget.toLowerCase().includes('ingress')) {
+      mode = 'boundedMultiStep';
+    }
     const continuePlan = coerceBool(args?.continuePlan);
-    const triageTarget = typeof args?.triageTarget === 'string' ? args.triageTarget : undefined;
-    const stepBudget = coerceNum(args?.stepBudget, 2);
+    const stepBudget = coerceNum(args?.stepBudget ?? (mode === 'boundedMultiStep' ? 2 : 2), 2);
     const result = await sequentialThinkingOrchestrator.handleUserRequest(userInput, session, { bounded, firstStepOnly, reflectOnly, timeoutMs, nextThoughtNeeded, mode, continuePlan, triageTarget, stepBudget });
     return JSON.stringify(result, null, 2);
   },

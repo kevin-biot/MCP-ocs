@@ -255,6 +255,7 @@ export class EnhancedSequentialThinkingOrchestrator {
         if ((triageTarget && triageTarget.toLowerCase().includes('ingress')) || t.includes('ingress')) {
             const nsOp = 'openshift-ingress-operator';
             const nsIng = 'openshift-ingress';
+            // Step 1: list router pods
             steps.push({
                 sequenceNumber: context.thoughtNumber++,
                 tool: 'oc_read_get_pods',
@@ -263,19 +264,21 @@ export class EnhancedSequentialThinkingOrchestrator {
                 dependencies: [],
                 memoryContext: mem.slice(0, 2),
             });
-            steps.push({
-                sequenceNumber: context.thoughtNumber++,
-                tool: 'oc_read_get_pods',
-                parameters: { sessionId: context.sessionId, namespace: nsOp },
-                rationale: 'Check ingress operator pod status',
-                dependencies: [],
-                memoryContext: mem.slice(0, 2),
-            });
+            // Step 2: describe ingresscontroller early to confirm config
             steps.push({
                 sequenceNumber: context.thoughtNumber++,
                 tool: 'oc_read_describe',
                 parameters: { sessionId: context.sessionId, resourceType: 'ingresscontroller', name: 'default', namespace: nsOp },
                 rationale: 'Describe default ingresscontroller for configuration/status',
+                dependencies: [],
+                memoryContext: mem.slice(0, 2),
+            });
+            // Step 3: operator pods
+            steps.push({
+                sequenceNumber: context.thoughtNumber++,
+                tool: 'oc_read_get_pods',
+                parameters: { sessionId: context.sessionId, namespace: nsOp },
+                rationale: 'Check ingress operator pod status',
                 dependencies: [],
                 memoryContext: mem.slice(0, 2),
             });
@@ -524,6 +527,38 @@ export class EnhancedSequentialThinkingOrchestrator {
         const indicators = ['network reset', 'connection timeout', 'connection reset', 'timeout', 'econnreset', 'etimedout', 'connection refused', 'no route to host'];
         return indicators.some((i) => msg.includes(i));
     }
+    includesSchedulingRedFlags(text) {
+        const s = text.toLowerCase();
+        return /faileddcheduling/.test(s) || /taint/.test(s) || /anti-?affinity/.test(s);
+    }
+    extractNodeFromText(text) {
+        // Try to find a node name like ip-10-0-77-117.eu-west-1.compute.internal or similar
+        const m = text.match(/\b([a-z0-9-]+\.[a-z0-9.-]+compute\.internal)\b/i);
+        if (m)
+            return m[1];
+        // Fallback: hostname-like token
+        const h = text.match(/\b([a-z0-9-]+\.localdomain)\b/i);
+        if (h)
+            return h[1];
+        return undefined;
+    }
+    async storeMiniPlanStrategy(sessionId, steps, telemetry) {
+        try {
+            await this.memoryManager.storeOperational({
+                incidentId: `plan-strategy-${sessionId}`,
+                domain: 'cluster',
+                timestamp: Date.now(),
+                symptoms: ['plan_strategy', sessionId, 'mini_plan'],
+                affectedResources: steps.map(s => s.tool),
+                diagnosticSteps: steps.map(s => `Planned ${s.tool}`),
+                tags: ['plan_strategy', sessionId, 'mini_plan'],
+                environment: 'prod',
+                // @ts-ignore
+                metadata: { steps, ...(telemetry || {}) }
+            });
+        }
+        catch { }
+    }
     async storeToolExecutionInMemory(step, result, sessionId) {
         try {
             await this.memoryManager.storeOperational({
@@ -662,6 +697,27 @@ export class EnhancedSequentialThinkingOrchestrator {
         }
         // Escalation logic: detect red flags and propose RCA (bounded or unbounded)
         const redFlags = this.detectRedFlags(result);
+        // Persist deterministic mini-plan for taints/anti-affinity scheduling failures
+        try {
+            const s = typeof result === 'string' ? result : JSON.stringify(result);
+            if (this.includesSchedulingRedFlags(s)) {
+                const node = this.extractNodeFromText(s);
+                const nsOp = 'openshift-ingress-operator';
+                const nsIng = 'openshift-ingress';
+                const steps = [
+                    { sequenceNumber: 1, tool: 'oc_read_describe', parameters: { sessionId: context.sessionId, resourceType: 'deployment', namespace: nsIng, name: 'router-default' }, rationale: 'Confirm router tolerations and anti-affinity', dependencies: [], memoryContext: [] },
+                    { sequenceNumber: 2, tool: 'oc_read_describe', parameters: { sessionId: context.sessionId, resourceType: 'ingresscontroller', namespace: nsOp, name: 'default' }, rationale: 'Inspect ingresscontroller nodePlacement and status', dependencies: [], memoryContext: [] },
+                    { sequenceNumber: 3, tool: 'oc_read_describe', parameters: { sessionId: context.sessionId, resourceType: 'node', name: node || '<NODE_FROM_FAILED_SCHED_EVENT>' }, rationale: 'Verify node taints and role labels', dependencies: [], memoryContext: [] }
+                ];
+                await this.storeMiniPlanStrategy(context.sessionId, steps, {
+                    plan_id: context.sessionId,
+                    plan_phase: 'continue',
+                    step_budget: 3,
+                    trigger: 'failed_scheduling_taint_affinity'
+                });
+            }
+        }
+        catch { }
         if (redFlags.length > 0) {
             const ns = this.inferNamespaceFromInput(context.userInput) || (typeof step.parameters?.namespace === 'string' ? step.parameters.namespace : undefined);
             const boundedEscalation = context.bounded;

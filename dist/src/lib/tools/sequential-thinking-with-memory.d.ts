@@ -31,6 +31,9 @@ export declare class EnhancedSequentialThinkingOrchestrator {
     private executeWithReflectionAndNetworkRecovery;
     private executeToolWithNetworkHandling;
     private isNetworkResetError;
+    private includesSchedulingRedFlags;
+    private extractNodeFromText;
+    private storeMiniPlanStrategy;
     private storeToolExecutionInMemory;
     private resumePlannedSteps;
     private advancePlanPointer;
