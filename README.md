@@ -103,6 +103,23 @@ ENABLE_SEQUENTIAL_THINKING=true npm run start:sequential
 ```
 
 #### Using `sequential_thinking`
+
+#### RCA Policy and Intent
+- Specific requests stay targeted (no RCA by default). Examples: "check ingress operator", "describe router pod".
+- Complex/unclear problems in unbounded mode may trigger comprehensive RCA.
+- Explicit comprehensive requests trigger RCA; in bounded mode a bounded RCA subset is used.
+- Escalation: when initial probes show red flags (degraded/pending/503), the orchestrator plans an RCA next step (bounded if bounded=true).
+
+Bounded RCA defaults:
+- `includeDeepAnalysis=false`, `maxCheckTime=15000`, optional `namespace` from prompt (e.g., `openshift-ingress`).
+- Adds a suggestion noting bounded RCA was used for performance constraints.
+
+Examples that trigger modes:
+- "Check ingress operator health" → ingress-specific steps only.
+- "Multiple applications failing; we don't know why" (unbounded) → full RCA allowed.
+- "router pod pending" (bounded) → ingress steps, escalation planned to bounded RCA.
+- "Full cluster analysis / complete incident report" → comprehensive RCA.
+
 - Entrypoint: `npx tsx src/index.ts` (standard) or `ENABLE_SEQUENTIAL_THINKING=true npx tsx src/index-sequential.ts`
 - Flags: set `bounded=true` to avoid sweeps; set `firstStepOnly=true` to execute one planned step and reflect.
 - Timeouts: increase `OC_TIMEOUT_MS` (e.g., `120000`) if you see timeouts.
