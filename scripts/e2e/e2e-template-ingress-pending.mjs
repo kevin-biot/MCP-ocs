@@ -4,9 +4,9 @@ const SERVER_CMD = process.env.SERVER_CMD || 'npx';
 const SERVER_ARGS = process.env.SERVER_ARGS ? process.env.SERVER_ARGS.split(' ') : ['tsx','src/index.ts'];
 
 function send(proc, obj){
-  proc.stdin.write(JSON.stringify(obj));
-  proc.stdin.write('
-');
+  const line = JSON.stringify(obj) + "
+";
+  proc.stdin.write(line);
 }
 
 function waitFor(proc, id, timeoutMs=8000){
