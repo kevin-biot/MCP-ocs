@@ -188,9 +188,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             if (name === 'oc_diagnostic_cluster_health' && typeof result === 'string') {
                 const parsed = JSON.parse(result);
                 const mode = parsed?.mode;
+                // Robust pending detection across possible shapes
                 const detailed = parsed?.userNamespaces?.detailed;
-                const ingress = Array.isArray(detailed) ? detailed.find((d) => d?.namespace === 'openshift-ingress') : undefined;
-                const pending = Number(ingress?.checks?.pods?.pending || 0);
+                let pending = 0;
+                if (Array.isArray(detailed)) {
+                    const ingress = detailed.find((d) => d?.namespace === 'openshift-ingress');
+                    pending = Number(ingress?.checks?.pods?.pending || 0);
+                }
                 if (mode === 'bounded' && pending > 0) {
                     console.error('🔁 Shim: mini-plan executed (ingress_pending)');
                     // Telemetry: shim engagement (early if within first call window)
@@ -209,8 +213,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                         });
                     }
                     catch { }
-                    // Execute deterministic continue (bounded, stepBudget=3)
+                    // Ensure a plan exists: generate a plan-only if none persisted, then continue
                     const sid = String(args?.sessionId || `session-${Date.now()}`);
+                    try {
+                        // Prime the plan (planOnly) with ingress triage in bounded mode
+                        await sequentialThinkingOrchestrator.handleUserRequest('Ingress triage plan seed', sid, { bounded: true, mode: 'planOnly', triageTarget: 'ingress' });
+                    }
+                    catch { }
                     await sequentialThinkingOrchestrator.handleUserRequest('continue ingress mini-plan', sid, { bounded: true, continuePlan: true, stepBudget: 3 });
                 }
             }
