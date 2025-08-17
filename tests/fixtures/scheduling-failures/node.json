@@ -1,0 +1,16 @@
+{
+  "metadata": {
+    "name": "ip-10-0-0-1",
+    "labels": {
+      "topology.kubernetes.io/zone": "a",
+      "node-role.kubernetes.io/master": ""
+    }
+  },
+  "spec": {
+    "taints": [
+      { "key": "node-role.kubernetes.io/master", "effect": "NoSchedule" }
+    ]
+  },
+  "labelsText": "Labels: topology.kubernetes.io/zone=a, node-role.kubernetes.io/master"
+}
+

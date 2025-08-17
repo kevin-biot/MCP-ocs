@@ -73,7 +73,14 @@ export class TemplateEngine {
     // Very small subset: paths like { .spec.taints[*].key } or {.spec.taints}
     const m = path.match(/^\{\.(.*)\}$/);
     const dot = m ? m[1] : path.replace(/^\./,'');
-    const segs = dot.split('.').filter(Boolean).map(s=>s.replace(/\[\*\]/g,'').replace(/\[\d+\]/g,''));
+    const segs = dot
+      .split('.')
+      .filter(Boolean)
+      .map(s => s
+        .replace(/\[\*\]/g, '')
+        .replace(/\[\d+\]/g, '')
+        .replace(/\[\]\??/g, '') // handle [] and []?
+      );
     let cur: any = obj;
     for (const seg of segs) {
       if (cur == null) return undefined;
@@ -98,7 +105,14 @@ export class TemplateEngine {
       const sels = selectors[key] || [];
       for (const sel of sels) {
         if (sel.type === 'eventsRegex') {
-          try { const re = new RegExp(sel.path); if (re.test(textAll)) return true; } catch { continue; }
+          try {
+            let pattern = sel.path || '';
+            let flags = '';
+            // Support inline case-insensitive prefix (?i)
+            if (/^\(\?i\)/i.test(pattern)) { pattern = pattern.replace(/^\(\?i\)/i, ''); flags += 'i'; }
+            const re = new RegExp(pattern, flags);
+            if (re.test(textAll)) return true;
+          } catch { continue; }
         } else if (sel.type === 'jsonpath') {
           for (const r of results) { if (r.obj && typeof this.selectJsonPath(r.obj, sel.path) !== 'undefined') return true; }
         } else if (sel.type === 'yq') {

@@ -15,8 +15,16 @@
     "version": "v1.0.0",
     "required": ["lastLogs", "probeConfig"],
     "selectors": {
-      "lastLogs": [ { "type": "dsl", "path": "logs.tail" } ],
-      "probeConfig": [ { "type": "yq", "path": ".spec.containers[].livenessProbe" } ]
+      "lastLogs": [
+        { "type": "dsl", "path": "logs.tail" },
+        { "type": "eventsRegex", "path": "CrashLoopBackOff" },
+        { "type": "eventsRegex", "path": "OOMKilled|OutOfMemory|Killed process" },
+        { "type": "eventsRegex", "path": "ImagePullBackOff|ErrImagePull|Back-off pulling image" }
+      ],
+      "probeConfig": [
+        { "type": "yq", "path": ".spec.containers[].livenessProbe" },
+        { "type": "eventsRegex", "path": "Liveness" }
+      ]
     },
     "completenessThreshold": 0.8
   },

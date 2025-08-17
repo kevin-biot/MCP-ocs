@@ -1,0 +1,32 @@
+{
+  "results": [
+    {
+      "target": "ingress-pending",
+      "diffs": []
+    },
+    {
+      "target": "crashloopbackoff",
+      "diffs": []
+    },
+    {
+      "target": "route-5xx",
+      "diffs": []
+    },
+    {
+      "target": "pvc-binding",
+      "diffs": []
+    },
+    {
+      "target": "api-degraded",
+      "diffs": []
+    },
+    {
+      "target": "zone-conflict",
+      "diffs": []
+    },
+    {
+      "target": "scheduling-failures",
+      "diffs": []
+    }
+  ]
+}

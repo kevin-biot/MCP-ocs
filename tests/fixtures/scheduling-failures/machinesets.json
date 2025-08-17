@@ -1,0 +1,7 @@
+{
+  "sets": [
+    { "name": "ms-a", "replicas": 3, "zone": "a" },
+    { "name": "ms-b", "replicas": 0, "zone": "b" }
+  ]
+}
+

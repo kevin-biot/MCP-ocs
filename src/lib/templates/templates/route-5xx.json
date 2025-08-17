@@ -15,8 +15,15 @@
     "version": "v1.0.0",
     "required": ["endpoints", "routeSpec"],
     "selectors": {
-      "endpoints": [ { "type": "yq", "path": ".subsets[].addresses[]?.ip" } ],
-      "routeSpec": [ { "type": "yq", "path": ".spec" } ]
+      "endpoints": [
+        { "type": "yq", "path": ".subsets[].addresses[]?.ip" },
+        { "type": "jsonpath", "path": "{.subsets[*].addresses[*].ip}" },
+        { "type": "eventsRegex", "path": "Endpoints" }
+      ],
+      "routeSpec": [
+        { "type": "yq", "path": ".spec" },
+        { "type": "eventsRegex", "path": "Route|TLS|readinessProbe|ReadinessProbe" }
+      ]
     },
     "completenessThreshold": 0.7
   },

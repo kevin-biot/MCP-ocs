@@ -12,6 +12,10 @@
 - [`strategy/current-state.md`](strategy/current-state.md) - Current testing state checkpoint
 - [`strategy/standards.md`](strategy/standards.md) - Testing conventions and standards
 
+### Golden Snapshots & Regression Testing
+- [`GOLDEN_SNAPSHOTS.md`](GOLDEN_SNAPSHOTS.md) - Complete guide to golden snapshot testing
+- [`REGRESSION_TESTING_STRATEGY.md`](REGRESSION_TESTING_STRATEGY.md) - Regression testing approach
+
 ### Reports
 - [`reports/`](reports/) - Historical testing reports and checkpoints
 
@@ -29,6 +33,18 @@ npm run test:unit
 ### Run Enhanced Analysis
 ```bash
 scripts/test/dual-mode/enhanced-clean.sh
+```
+
+### Golden Snapshot Testing
+```bash
+# Generate golden snapshots
+LMSTUDIO_DRY_RUN=true npm run template:golden:snapshot
+
+# Compare against goldens
+npm run template:golden:compare
+
+# Full CI validation (includes goldens)
+npm run ci:templates
 ```
 
 ### Individual Test Debugging

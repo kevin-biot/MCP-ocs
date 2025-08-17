@@ -9,15 +9,28 @@
   "steps": [
     { "tool": "oc_read_describe", "params": { "resourceType": "pod", "namespace": "<ns>", "name": "<pendingPod>" }, "rationale": "Capture FailedScheduling events" },
     { "tool": "oc_read_describe", "params": { "resourceType": "ingresscontroller", "namespace": "openshift-ingress-operator", "name": "default" }, "rationale": "Controller placement/conditions" },
-    { "tool": "oc_read_describe", "params": { "resourceType": "node", "name": "<nodeFromEvent>" }, "rationale": "Node taints/labels" }
+    { "tool": "oc_read_describe", "params": { "resourceType": "node", "name": "<nodeFromEvent>" }, "rationale": "Node taints/labels" },
+    { "tool": "oc_read_machinesets", "params": { "sessionId": "<sessionId>", "namespace": "openshift-machine-api", "bounded": true }, "rationale": "Zone distribution across MachineSets" }
   ],
   "evidenceContract": {
     "version": "v1.0.0",
-    "required": ["schedulingEvents", "controllerStatus", "nodeTaints"],
+    "required": ["schedulingEvents", "controllerStatus", "nodeTaints", "nodeLabels", "machinesetZoneDistribution"],
     "selectors": {
       "schedulingEvents": [ { "type": "eventsRegex", "path": "(?i)FailedScheduling" } ],
-      "controllerStatus": [ { "type": "yq", "path": ".status.conditions[] | {type,status,reason,message}" } ],
-      "nodeTaints": [ { "type": "jsonpath", "path": "{.spec.taints[*].key}" } ]
+      "controllerStatus": [
+        { "type": "yq", "path": ".status.conditions[] | {type,status,reason,message}" },
+        { "type": "eventsRegex", "path": "IngressController|DeploymentRollingOut" }
+      ],
+      "nodeTaints": [
+        { "type": "jsonpath", "path": "{.spec.taints[*].key}" },
+        { "type": "eventsRegex", "path": "(?i)taint|Taints" }
+      ],
+      "nodeLabels": [
+        { "type": "eventsRegex", "path": "(?i)Labels" }
+      ],
+      "machinesetZoneDistribution": [
+        { "type": "jsonpath", "path": "{.sets[*].zone}" }
+      ]
     },
     "completenessThreshold": 0.9
   },

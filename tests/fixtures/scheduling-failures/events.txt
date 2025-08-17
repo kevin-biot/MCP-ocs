@@ -1,0 +1,4 @@
+Warning  FailedScheduling  default-scheduler: 0/2 nodes are available
+  1 Insufficient cpu
+  1 node(s) had taint {node-role.kubernetes.io/master: }, that the pod didn't tolerate.
+

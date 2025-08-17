@@ -15,9 +15,19 @@
     "version": "v1.0.0",
     "required": ["routerPods", "schedulingEvents", "controllerStatus"],
     "selectors": {
-      "routerPods": [ { "type": "jsonpath", "path": "{.items[*].metadata.name}" } ],
-      "schedulingEvents": [ { "type": "eventsRegex", "path": "(?i)FailedScheduling" } ],
-      "controllerStatus": [ { "type": "yq", "path": ".status.conditions[] | {type,status,reason,message}" } ]
+      "routerPods": [
+        { "type": "jsonpath", "path": "{.items[*].metadata.name}" },
+        { "type": "jsonpath", "path": "{.pods[*].name}" }
+      ],
+      "schedulingEvents": [
+        { "type": "eventsRegex", "path": "FailedScheduling" },
+        { "type": "eventsRegex", "path": "(?i)FailedScheduling" }
+      ],
+      "controllerStatus": [
+        { "type": "yq", "path": ".status.conditions[] | {type,status,reason,message}" },
+        { "type": "eventsRegex", "path": "IngressController" },
+        { "type": "eventsRegex", "path": "DeploymentRollingOut" }
+      ]
     },
     "completenessThreshold": 0.9
   },

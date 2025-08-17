@@ -1,0 +1,28 @@
+{
+  "id": "zone-conflict-detection-v1",
+  "name": "Zone Conflict Detection",
+  "version": "1.0.0",
+  "triageTarget": "zone-conflict",
+  "triggers": [ { "type": "static_target", "target": "zone-conflict", "confidence": 1.0 } ],
+  "blocks": [],
+  "composition": { "infrastructure": [], "workload": [], "correlation": [] },
+  "steps": [
+    { "tool": "oc_read_describe", "params": { "resourceType": "machinesets", "namespace": "openshift-machine-api" }, "rationale": "MachineSet distribution and replicas per zone" },
+    { "tool": "oc_read_describe", "params": { "resourceType": "node" }, "rationale": "Node labels/taints and zone mapping" },
+    { "tool": "oc_read_describe", "params": { "resourceType": "pod", "namespace": "<ns>", "name": "<pendingPod>" }, "rationale": "Scheduling failures to identify constraint violations" }
+  ],
+  "evidenceContract": {
+    "version": "v1.0.0",
+    "required": ["nodeZones", "machinesets", "zoneSkew", "capacityPressure"],
+    "selectors": {
+      "nodeZones": [ { "type": "jsonpath", "path": "{.zones[*]}" } ],
+      "machinesets": [ { "type": "jsonpath", "path": "{.sets[*].name}" } ],
+      "zoneSkew": [ { "type": "jsonpath", "path": "{.skew}" } ],
+      "capacityPressure": [ { "type": "jsonpath", "path": "{.capacity.utilization}" } ],
+      "constraintViolations": [ { "type": "eventsRegex", "path": "(?i)FailedScheduling|No nodes fit" } ]
+    },
+    "completenessThreshold": 0.9
+  },
+  "boundaries": { "maxSteps": 3, "timeoutMs": 20000 }
+}
+

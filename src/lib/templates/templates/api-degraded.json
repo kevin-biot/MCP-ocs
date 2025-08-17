@@ -1,0 +1,29 @@
+{
+  "id": "api-degraded-v1",
+  "name": "API Degraded Analysis",
+  "version": "1.0.0",
+  "triageTarget": "api-degraded",
+  "triggers": [ { "type": "static_target", "target": "api-degraded", "confidence": 1.0 } ],
+  "blocks": [],
+  "composition": { "infrastructure": [], "workload": [] },
+  "steps": [
+    { "tool": "oc_read_describe", "params": { "resourceType": "clusteroperators", "name": "kube-apiserver" }, "rationale": "Operator status and conditions" },
+    { "tool": "oc_read_describe", "params": { "resourceType": "namespace", "name": "openshift-kube-apiserver" }, "rationale": "Recent events indicating API errors" }
+  ],
+  "evidenceContract": {
+    "version": "v1.0.0",
+    "required": ["operatorStatus", "apiErrors"],
+    "selectors": {
+      "operatorStatus": [
+        { "type": "eventsRegex", "path": "Degraded\\s*True|Available\\s*False|Progressing\\s*True" },
+        { "type": "yq", "path": ".status.conditions" }
+      ],
+      "apiErrors": [
+        { "type": "eventsRegex", "path": "timeout|etcd|connection reset|EOF|apiserver|x509" }
+      ]
+    },
+    "completenessThreshold": 0.7
+  },
+  "boundaries": { "maxSteps": 2, "timeoutMs": 20000 }
+}
+

@@ -15,9 +15,9 @@
     "version": "v1.0.0",
     "required": ["pvcSpec", "scInfo", "quota"],
     "selectors": {
-      "pvcSpec": [ { "type": "yq", "path": ".spec" } ],
-      "scInfo": [ { "type": "yq", "path": ".parameters" } ],
-      "quota": [ { "type": "yq", "path": ".status.hard" } ]
+      "pvcSpec": [ { "type": "yq", "path": ".spec" }, { "type": "eventsRegex", "path": "PersistentVolumeClaim" } ],
+      "scInfo": [ { "type": "yq", "path": ".parameters" }, { "type": "eventsRegex", "path": "StorageClass" } ],
+      "quota": [ { "type": "yq", "path": ".status.hard" }, { "type": "eventsRegex", "path": "Resource Quotas|hard|exceeded quota|exceeds" } ]
     },
     "completenessThreshold": 0.8
   },
