@@ -111,6 +111,8 @@
     "retest:smoke:te-pvc": "tsx scripts/smoke/smoke-template-pvc-binding.ts",
     "retest:smoke:te-route": "tsx scripts/smoke/smoke-template-route-5xx.ts",
     "retest:smoke:infra-reads": "tsx scripts/smoke/smoke-infra-reads.mjs",
+    "retest:smoke:te-scheduling": "tsx scripts/smoke/smoke-template-scheduling-failures.mjs",
+    "retest:smoke:te-zone": "tsx scripts/smoke/smoke-template-zone-conflict.mjs",
     "retest:smoke:networking-discovery": "node scripts/smoke/smoke-networking-discovery.mjs",
     "retest:smoke:networking-discover": "node scripts/smoke/smoke-networking-discovery.mjs",
     "e2e:te-ingress": "node scripts/e2e/e2e-template-ingress-pending.mjs",

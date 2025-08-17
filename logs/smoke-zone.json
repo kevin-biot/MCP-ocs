@@ -1,0 +1,107 @@
+{
+  "steps": [
+    "oc_read_describe",
+    "oc_read_describe",
+    "oc_read_describe"
+  ],
+  "evidence": {
+    "completeness": 1,
+    "missing": [],
+    "present": [
+      "nodeZones",
+      "machinesets",
+      "zoneSkew",
+      "capacityPressure"
+    ]
+  },
+  "rubrics": {
+    "triage": {
+      "id": "triage-priority.v1",
+      "kind": "weighted",
+      "score": 0.57,
+      "label": "P2",
+      "bands": {
+        "P1": ">=0.8",
+        "P2": ">=0.55",
+        "P3": "otherwise"
+      },
+      "inputs": {
+        "blastRadius": 0.7,
+        "customerPaths": 0.5,
+        "operatorsDegraded": 0.5,
+        "timeSinceFirstEventMin": 72
+      },
+      "breakdown": {
+        "blastRadius": 0.7,
+        "customerPaths": 0.5,
+        "operatorsDegraded": 0.5,
+        "timeSinceFirstEventMin": 0.4
+      }
+    },
+    "confidence": {
+      "id": "evidence-confidence.v1",
+      "kind": "mapping",
+      "label": "High",
+      "matched": "evidenceCompleteness>=0.9 && toolAgreement>=0.8 && freshnessMin<=10"
+    },
+    "safety": {
+      "id": "remediation-safety.v1",
+      "kind": "guards",
+      "allowAuto": true,
+      "guards": [
+        "etcdHealthy == true",
+        "controlPlaneReadyRatio >= 0.66",
+        "affectedNamespaces <= 3",
+        "noCriticalAlerts == true"
+      ],
+      "failing": []
+    },
+    "slo": {
+      "id": "slo-impact.v1",
+      "kind": "mapping",
+      "label": "LOW",
+      "matched": "otherwise"
+    },
+    "infra": {
+      "zoneConflict": {
+        "id": "zone-conflict-severity.v1",
+        "kind": "weighted",
+        "score": 0.67,
+        "label": "MEDIUM",
+        "bands": {
+          "CRITICAL": ">=0.85",
+          "HIGH": ">=0.7",
+          "MEDIUM": ">=0.5",
+          "LOW": "otherwise"
+        },
+        "inputs": {
+          "zoneSkew": 0.88,
+          "capacityUtilization": 0.7,
+          "constraintViolations": 1
+        },
+        "breakdown": {
+          "zoneSkew": 0.88,
+          "capacityUtilization": 0.7,
+          "constraintViolations": 0.1
+        }
+      },
+      "schedulingConfidence": {
+        "id": "scheduling-confidence.v1",
+        "kind": "mapping",
+        "label": "Low",
+        "matched": "otherwise"
+      },
+      "infrastructureSafety": {
+        "id": "infrastructure-safety.v1",
+        "kind": "guards",
+        "allowAuto": true,
+        "guards": [
+          "clusterStability == true",
+          "nodeReadiness >= 0.66",
+          "storageHealth == true"
+        ],
+        "failing": []
+      }
+    }
+  }
+}
