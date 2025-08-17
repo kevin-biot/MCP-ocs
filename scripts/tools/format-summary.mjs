@@ -47,6 +47,16 @@ function render(summary, opts={}){
   if (summary?.slo) {
     if (summary?.sloHint) lines.push(`SLO hint: ${summary.sloHint}`);
   }
+  // Infra rubric badges (visual only)
+  const infra = summary?.infra;
+  if (infra && (infra.zoneConflict || infra.schedulingConfidence || (infra.infrastructureSafety && typeof infra.infrastructureSafety.allowAuto !== 'undefined'))) {
+    const bits = [];
+    if (infra.zoneConflict) bits.push(`ZoneConflict: ${infra.zoneConflict}`);
+    if (infra.schedulingConfidence) bits.push(`SchedulingConfidence: ${infra.schedulingConfidence}`);
+    if (infra.infrastructureSafety && typeof infra.infrastructureSafety.allowAuto !== 'undefined') bits.push(`InfraAuto: ${infra.infrastructureSafety.allowAuto}`);
+    const badge = `Infra: ${bits.join(' | ')}`;
+    lines.push(opts.color ? colorize(badge, 'dim', true) : badge);
+  }
   return lines.join('\n');
 }
 

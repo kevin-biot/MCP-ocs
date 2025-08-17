@@ -559,6 +559,18 @@ function buildSummaryCard(rubrics: any, evidence: any, rubricInputs: Record<stri
       (base as any).sloHint = computeSloHint(String(sloLabel));
     }
   } catch {}
+  // Attach infrastructure rubric summaries (visual-only; not gated)
+  try {
+    const infra: any = (rubrics as any)?.infra;
+    if (infra) {
+      const badge = {
+        zoneConflict: infra?.zoneConflict?.label,
+        schedulingConfidence: infra?.schedulingConfidence?.label,
+        infrastructureSafety: typeof infra?.infrastructureSafety?.allowAuto === 'boolean' ? { allowAuto: infra.infrastructureSafety.allowAuto } : undefined
+      };
+      (base as any).infra = badge;
+    }
+  } catch {}
   return base;
 }
 

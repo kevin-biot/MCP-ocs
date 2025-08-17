@@ -3,6 +3,9 @@
 import { TemplateRegistry } from '../../src/lib/templates/template-registry.js';
 import { TemplateEngine } from '../../src/lib/templates/template-engine.js';
 
+const INFRA_LIVE_READS = String(process.env.INFRA_LIVE_READS || '').toLowerCase() === 'true';
+if (INFRA_LIVE_READS) console.error('[template-coverage] INFRA_LIVE_READS=true (placeholder) — using fabricated exec for determinism');
+
 const TARGETS = ['ingress-pending','crashloopbackoff','route-5xx','pvc-binding','api-degraded','zone-conflict','scheduling-failures'];
 
 function fabricateExec(target, plan){

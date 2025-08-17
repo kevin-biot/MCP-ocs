@@ -3,6 +3,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { TemplateRegistry } from '../../src/lib/templates/template-registry.js';
 import { TemplateEngine } from '../../src/lib/templates/template-engine.js';
+
+const INFRA_LIVE_READS = String(process.env.INFRA_LIVE_READS || '').toLowerCase() === 'true';
+if (INFRA_LIVE_READS) console.error('[golden-snapshot] INFRA_LIVE_READS=true (placeholder) — using fabricated exec for determinism');
 import { BoundaryEnforcer } from '../../src/lib/enforcement/boundary-enforcer.js';
 import { evaluateRubrics } from '../../src/lib/rubrics/rubric-evaluator.ts';
 import { TRIAGE_PRIORITY_V1 } from '../../src/lib/rubrics/core/triage-priority.v1.ts';

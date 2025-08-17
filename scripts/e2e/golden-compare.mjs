@@ -10,6 +10,9 @@ import { TRIAGE_PRIORITY_V1 } from '../../src/lib/rubrics/core/triage-priority.v
 import { EVIDENCE_CONFIDENCE_V1 } from '../../src/lib/rubrics/core/evidence-confidence.v1.ts';
 import { REMEDIATION_SAFETY_V1 } from '../../src/lib/rubrics/core/remediation-safety.v1.ts';
 
+const INFRA_LIVE_READS = String(process.env.INFRA_LIVE_READS || '').toLowerCase() === 'true';
+if (INFRA_LIVE_READS) console.error('[golden-compare] INFRA_LIVE_READS=true (placeholder) — using fabricated exec for determinism');
+
 const TARGETS = ['ingress-pending','crashloopbackoff','route-5xx','pvc-binding','api-degraded','zone-conflict','scheduling-failures'];
 const SCORE_DELTA_TOL = Number(process.env.SCORE_DELTA_TOL ?? 0);
 
