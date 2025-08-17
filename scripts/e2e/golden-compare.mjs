@@ -13,7 +13,7 @@ import { REMEDIATION_SAFETY_V1 } from '../../src/lib/rubrics/core/remediation-sa
 const INFRA_LIVE_READS = String(process.env.INFRA_LIVE_READS || '').toLowerCase() === 'true';
 if (INFRA_LIVE_READS) console.error('[golden-compare] INFRA_LIVE_READS=true (placeholder) — using fabricated exec for determinism');
 
-const TARGETS = ['ingress-pending','crashloopbackoff','route-5xx','pvc-binding','api-degraded','zone-conflict','scheduling-failures'];
+const TARGETS = ['ingress-pending','crashloopbackoff','route-5xx','pvc-binding','api-degraded','zone-conflict','scheduling-failures','scale-instability'];
 const SCORE_DELTA_TOL = Number(process.env.SCORE_DELTA_TOL ?? 0);
 
 function loadGolden(t){
@@ -65,6 +65,7 @@ async function actual(t){
       exec.push(mk(0,{ spec:{ accessModes:['ReadWriteOnce'] } }));
       exec.push(mk(1,{ parameters:{ provisioner:'kubernetes.io/aws-ebs' } }));
       exec.push(mk(2,{ status:{ hard:{ 'requests.storage':'100Gi' } } }));
+      exec.push(mk(2,'WaitForFirstConsumer; allowedTopologies: topology.kubernetes.io/zone; no matching topology'));
       break;
     case 'zone-conflict':
       exec.push(mk(0,{ sets:[{name:'ms-a', replicas:3, zone:'a'},{name:'ms-b', replicas:1, zone:'b'}]}));
@@ -76,6 +77,10 @@ async function actual(t){
       exec.push(mk(1,{ status:{ conditions:[{ type:'DeploymentRollingOut', status:'True' }] } }));
       exec.push(mk(2,{ spec:{ taints:[{ key:'node-role.kubernetes.io/master' }] }, labelsText:'Labels: topology.kubernetes.io/zone=a' }));
       exec.push(mk(3,{ sets:[{ name:'ms-a', replicas:3, zone:'a' }, { name:'ms-b', replicas:0, zone:'b' }] }));
+      break;
+    case 'scale-instability':
+      exec.push(mk(0,{ schemaVersion:'v1', sets:[{name:'ms-a',replicas:3,zone:'a'},{name:'ms-b',replicas:1,zone:'b'}], replicasDesired:4, replicasCurrent:3, replicasReady:3, lastScaleEvent:'Scaled up 1 (5m ago)', autoscaler:true }));
+      exec.push(mk(1,{ schemaVersion:'v1', zones:['a','b'], nodes:[{name:'n1',zone:'a',ready:true},{name:'n2',zone:'b',ready:false}], ready:1, total:2, conditions:{ MemoryPressure:true, DiskPressure:false, PIDPressure:false, NetworkUnavailable:false }, capacity:{ utilization:0.85 }, allocatable:{ cpu:'8', memory:'32Gi' } }));
       break;
     default:
       for (let i=0;i<steps.length && i<3;i++) exec.push(mk(i,{ ok:true }));

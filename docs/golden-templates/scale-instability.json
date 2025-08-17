@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "engineVersion": "0.8.0-beta",
-  "templateId": "pvc-binding-v1",
+  "templateId": "scale-instability-v1",
   "templateVersion": "1.0.0",
   "rubricVersions": {
     "triage": "triage-priority.v1",
@@ -16,22 +16,19 @@
     "seed": 42
   },
   "evidenceThreshold": 0.8,
-  "target": "pvc-binding",
+  "target": "scale-instability",
   "steps": [
-    "oc_read_describe",
-    "oc_read_describe",
-    "oc_read_describe"
+    "oc_read_machinesets",
+    "oc_read_nodes"
   ],
   "evidence": {
     "completeness": 1,
     "missing": [],
     "present": [
-      "pvcSpec",
-      "scInfo",
-      "quota",
-      "bindingMode",
-      "allowedTopologies",
-      "topologyMismatch"
+      "msReplicasDesired",
+      "msReplicasCurrent",
+      "msReplicasReady",
+      "nodePressure"
     ]
   },
   "rubricInputs": {
@@ -92,8 +89,8 @@
     "slo": {
       "id": "slo-impact.v1",
       "kind": "mapping",
-      "label": "HIGH",
-      "matched": "route5xx==1 || pvcBinding==1"
+      "label": "LOW",
+      "matched": "otherwise"
     }
   }
 }

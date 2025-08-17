@@ -43,6 +43,9 @@ import { MEMORY_CONVERSATIONS_CONFIDENCE_V1 } from './lib/rubrics/intelligence/m
 import { ZONE_CONFLICT_SEVERITY_V1 } from './lib/rubrics/infrastructure/zone-conflict-severity.v1.js';
 import { SCHEDULING_CONFIDENCE_V1 } from './lib/rubrics/infrastructure/scheduling-confidence.v1.js';
 import { INFRASTRUCTURE_SAFETY_V1 } from './lib/rubrics/infrastructure/infrastructure-safety.v1.js';
+import { CAPACITY_TRIAGE_V1 } from './lib/rubrics/infrastructure/capacity-triage.v1.js';
+import { STORAGE_AFFINITY_V1 } from './lib/rubrics/infrastructure/storage-affinity.v1.js';
+import { SCALE_INSTABILITY_V1 } from './lib/rubrics/infrastructure/scale-instability.v1.js';
 
 console.error('🚀 Starting MCP-ocs server (sequential) ...');
 
@@ -315,7 +318,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           // Infrastructure-specific rubrics (Phase 2): evaluate when relevant templates are used
           try {
             const key = String(triageTarget || '').toLowerCase();
-            const isInfra = key.includes('zone') || key.includes('scheduling');
+            const isInfra = key.includes('zone') || key.includes('scheduling') || key.includes('scale') || key.includes('pvc');
             if (isInfra) {
               // Derive infra inputs from executed step results
               const resultsText = (exec || []).map((e:any)=> typeof e?.result === 'string' ? e.result : JSON.stringify(e.result)).join('\n');
@@ -332,6 +335,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
               const skew = Number(scan('skew'));
               const capacityUtil = Number(((scan('capacity')||{}) as any).utilization);
               const violations = (resultsText.match(/FailedScheduling|No nodes fit/gi) || []).length;
+              const conds = (scan('conditions') || {}) as any;
+              const headroom = isFinite(capacityUtil) ? Math.max(0, 1 - Math.min(1, capacityUtil)) : undefined;
+              // MachineSet scalars
+              const replicasDesired = Number(scan('replicasDesired'));
+              const replicasCurrent = Number(scan('replicasCurrent'));
+              const desiredMinusCurrentAbs = isFinite(replicasDesired) && isFinite(replicasCurrent) ? Math.abs(replicasDesired - replicasCurrent) : 0;
+              const recentScaleMin = /\((\d+)m ago\)/i.test(String(scan('lastScaleEvent')||'')) ? Number(String(scan('lastScaleEvent')).match(/\((\d+)m ago\)/i)?.[1] || 999) : 999;
+              // PVC topology hints
+              const wffc = /WaitForFirstConsumer/i.test(resultsText);
+              const noPvZoneMatch = /no matching topology|no PV found in zone/i.test(resultsText);
+              const provisionerSlow = /timed out waiting|provisioning failed/i.test(resultsText);
+              const bindingProgressing = !/pending|stuck/i.test(resultsText);
               const infraInputs = {
                 zoneSkew: isFinite(skew) ? skew : undefined,
                 capacityUtilization: isFinite(capacityUtil) ? capacityUtil : undefined,
@@ -341,12 +356,28 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 constraintSatisfaction: violations === 0 ? 1 : 1 - Math.min(1, violations / 10),
                 clusterStability: Boolean(inputs?.noCriticalAlerts && inputs?.etcdHealthy),
                 nodeReadiness: Number(inputs?.controlPlaneReadyRatio),
-                storageHealth: true
+                storageHealth: true,
+                // capacity-triage
+                memoryPressure: Boolean(conds?.MemoryPressure),
+                diskPressure: Boolean(conds?.DiskPressure),
+                pidPressure: Boolean(conds?.PIDPressure),
+                headroom,
+                // storage-affinity
+                wffc,
+                noPvZoneMatch,
+                recentScaleMin,
+                provisionerSlow,
+                bindingProgressing,
+                // scale-instability
+                desiredMinusCurrentAbs
               } as any;
               const infraRubrics = evaluateRubrics({
                 zoneConflict: ZONE_CONFLICT_SEVERITY_V1,
                 schedulingConfidence: SCHEDULING_CONFIDENCE_V1,
-                infrastructureSafety: INFRASTRUCTURE_SAFETY_V1
+                infrastructureSafety: INFRASTRUCTURE_SAFETY_V1,
+                capacityTriage: CAPACITY_TRIAGE_V1,
+                storageAffinity: STORAGE_AFFINITY_V1,
+                scaleInstability: SCALE_INSTABILITY_V1
               }, infraInputs);
               (rubrics as any).infra = infraRubrics;
             }
@@ -587,12 +618,36 @@ function buildSummaryCard(rubrics: any, evidence: any, rubricInputs: Record<stri
       const badge = {
         zoneConflict: infra?.zoneConflict?.label,
         schedulingConfidence: infra?.schedulingConfidence?.label,
-        infrastructureSafety: typeof infra?.infrastructureSafety?.allowAuto === 'boolean' ? { allowAuto: infra.infrastructureSafety.allowAuto } : undefined
+        infrastructureSafety: typeof infra?.infrastructureSafety?.allowAuto === 'boolean' ? { allowAuto: infra.infrastructureSafety.allowAuto } : undefined,
+        capacity: infra?.capacityTriage?.label,
+        scale: infra?.scaleInstability?.label
       };
       (base as any).infra = badge;
     }
   } catch {}
+  // Attach memory recall (advisory)
+  try {
+    const recall = await tryRecallForTarget(String((base as any)?.templateId || ''), (base as any));
+    if (recall) (base as any).recall = recall;
+  } catch {}
   return base;
+}
+
+async function tryRecallForTarget(targetId: string, summary: any){
+  try {
+    // Basic heuristic: search by target id or priority label
+    const query = `${targetId} ${String(summary?.priority?.label || '')}`.trim();
+    const hits: any[] = await (sharedMemory as any)?.searchOperational?.(query, 5) || [];
+    if (!Array.isArray(hits) || hits.length === 0) return undefined;
+    const top = hits[0];
+    const top1Similarity = Number(top?.similarity ?? top?.score ?? 0);
+    let freshnessMin: number | undefined = undefined;
+    const ts = top?.timestamp || top?.ts;
+    if (typeof ts === 'number') freshnessMin = Math.floor((Date.now() - ts)/(1000*60));
+    else if (typeof ts === 'string') { const d = Date.parse(ts); if (!isNaN(d)) freshnessMin = Math.floor((Date.now() - d)/(1000*60)); }
+    const topK = hits.slice(0, Math.min(5, hits.length)).map(h=>({ id: h?.incidentId || h?.memory?.incidentId || '', score: Number(h?.similarity ?? h?.score ?? 0) }));
+    return { topK, top1Similarity, freshnessMin };
+  } catch { return undefined; }
 }
 
 function persistSummary(planId: string, target: string, summary: any) {

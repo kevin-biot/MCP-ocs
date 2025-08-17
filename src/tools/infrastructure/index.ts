@@ -13,6 +13,9 @@ import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
 
 const INFRA_LIVE_READS = String(process.env.INFRA_LIVE_READS || '').toLowerCase() === 'true';
+if (INFRA_LIVE_READS) {
+  console.error('[infra] INFRA_LIVE_READS=true (bounded live reads enabled)');
+}
 
 export class InfrastructureTools implements ToolSuite {
   category = 'infrastructure';
@@ -53,7 +56,20 @@ export class InfrastructureTools implements ToolSuite {
             const zones = Array.from(new Set(nodes.map(n=>n.zone).filter(Boolean)));
             const ready = nodes.filter(n=>n.ready).length;
             const total = nodes.length;
-            const out = { zones, nodes, ready, total, timestamp: new Date().toISOString() };
+            // Aggregate node condition flags (any True across nodes)
+            const condFlags = { MemoryPressure:false, DiskPressure:false, PIDPressure:false, NetworkUnavailable:false } as any;
+            try {
+              for (const it of items) {
+                const conds: any[] = Array.isArray(it?.status?.conditions) ? it.status.conditions : [];
+                for (const c of conds) {
+                  if ((c?.type==='MemoryPressure' || c?.type==='DiskPressure' || c?.type==='PIDPressure' || c?.type==='NetworkUnavailable') && String(c?.status)==='True') condFlags[c.type] = true;
+                }
+              }
+            } catch {}
+            const capacity = data?.items?.[0]?.status?.capacity || {};
+            const allocatable = data?.items?.[0]?.status?.allocatable || {};
+            const requestedApprox = undefined; // not computed in live path
+            const out = { schemaVersion:'v1', zones, nodes, ready, total, conditions: condFlags, capacity, allocatable, requestedApprox, timestamp: new Date().toISOString() };
             return JSON.stringify(out, null, 2);
           } catch {/* fall through to scaffold */}
         }
@@ -67,7 +83,10 @@ export class InfrastructureTools implements ToolSuite {
         const ready = nodes.filter(n=>n.ready).length;
         const total = nodes.length;
         const capacity = { utilization: 0.65 };
-        const out = { zones, nodes, ready, total, capacity, timestamp: new Date().toISOString() };
+        const allocatable = { cpu: '8', memory: '32Gi' };
+        const requestedApprox = { cpu: '6', memory: '20Gi' };
+        const conditions = { MemoryPressure:false, DiskPressure:false, PIDPressure:true, NetworkUnavailable:false };
+        const out = { schemaVersion:'v1', zones, nodes, ready, total, conditions, capacity, allocatable, requestedApprox, timestamp: new Date().toISOString() };
         return JSON.stringify(out, null, 2);
       }),
 
@@ -92,7 +111,12 @@ export class InfrastructureTools implements ToolSuite {
               const zone = it?.spec?.template?.spec?.nodeSelector?.['topology.kubernetes.io/zone'] || it?.spec?.template?.metadata?.labels?.['topology.kubernetes.io/zone'] || 'unknown';
               return { name, replicas, zone };
             });
-            const out = { sets, timestamp: new Date().toISOString() };
+            const replicasDesired = sets.reduce((s:any,x:any)=>s+Number(x.replicas||0),0);
+            const replicasCurrent = replicasDesired; // approximate without status
+            const replicasReady = replicasDesired;   // approximate
+            const lastScaleEvent = null;
+            const autoscaler = false;
+            const out = { schemaVersion:'v1', sets, replicasDesired, replicasCurrent, replicasReady, lastScaleEvent, autoscaler, timestamp: new Date().toISOString() };
             return JSON.stringify(out, null, 2);
           } catch {/* fall through to scaffold */}
         }
@@ -100,7 +124,12 @@ export class InfrastructureTools implements ToolSuite {
           { name: 'ms-a', replicas: 3, zone: 'a' },
           { name: 'ms-b', replicas: 1, zone: 'b' }
         ];
-        const out = { sets, timestamp: new Date().toISOString() };
+        const replicasDesired = 4;
+        const replicasCurrent = 3;
+        const replicasReady = 3;
+        const lastScaleEvent = 'Scaled up 1 from 2 to 3 (5m ago)';
+        const autoscaler = true;
+        const out = { schemaVersion:'v1', sets, replicasDesired, replicasCurrent, replicasReady, lastScaleEvent, autoscaler, timestamp: new Date().toISOString() };
         return JSON.stringify(out, null, 2);
       }),
 

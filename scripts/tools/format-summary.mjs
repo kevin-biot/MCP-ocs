@@ -54,7 +54,16 @@ function render(summary, opts={}){
     if (infra.zoneConflict) bits.push(`ZoneConflict: ${infra.zoneConflict}`);
     if (infra.schedulingConfidence) bits.push(`SchedulingConfidence: ${infra.schedulingConfidence}`);
     if (infra.infrastructureSafety && typeof infra.infrastructureSafety.allowAuto !== 'undefined') bits.push(`InfraAuto: ${infra.infrastructureSafety.allowAuto}`);
+    if (infra.capacity) bits.push(`Capacity: ${infra.capacity}`);
+    if (infra.scale) bits.push(`Scale: ${infra.scale}`);
     const badge = `Infra: ${bits.join(' | ')}`;
+    lines.push(opts.color ? colorize(badge, 'dim', true) : badge);
+  }
+  // Recall badge
+  if (summary?.recall) {
+    const sim = Number(summary?.recall?.top1Similarity ?? 0).toFixed(2);
+    const fresh = typeof summary?.recall?.freshnessMin === 'number' ? `${summary.recall.freshnessMin}m` : 'n/a';
+    const badge = `Recall: sim ${sim} | fresh ${fresh}`;
     lines.push(opts.color ? colorize(badge, 'dim', true) : badge);
   }
   return lines.join('\n');

@@ -1,0 +1,76 @@
+{
+  "results": [
+    {
+      "target": "ingress-pending",
+      "diffs": []
+    },
+    {
+      "target": "crashloopbackoff",
+      "diffs": []
+    },
+    {
+      "target": "route-5xx",
+      "diffs": []
+    },
+    {
+      "target": "pvc-binding",
+      "diffs": [
+        {
+          "path": "evidence.completeness",
+          "expected": 1,
+          "actual": 0.5,
+          "severity": "breaking"
+        },
+        {
+          "path": "evidence.present",
+          "expected": [
+            "pvcSpec",
+            "scInfo",
+            "quota",
+            "bindingMode",
+            "allowedTopologies",
+            "topologyMismatch"
+          ],
+          "actual": [
+            "pvcSpec",
+            "scInfo",
+            "quota"
+          ],
+          "severity": "breaking"
+        },
+        {
+          "path": "rubrics.labels",
+          "expected": {
+            "triage": "P2",
+            "confidence": "High",
+            "safety": true,
+            "slo": "HIGH"
+          },
+          "actual": {
+            "triage": "P2",
+            "confidence": "Low",
+            "safety": true,
+            "slo": "HIGH"
+          },
+          "severity": "breaking"
+        }
+      ]
+    },
+    {
+      "target": "api-degraded",
+      "diffs": []
+    },
+    {
+      "target": "zone-conflict",
+      "diffs": []
+    },
+    {
+      "target": "scheduling-failures",
+      "diffs": []
+    },
+    {
+      "target": "scale-instability",
+      "diffs": []
+    }
+  ]
+}

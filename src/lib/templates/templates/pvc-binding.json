@@ -13,11 +13,14 @@
   ],
   "evidenceContract": {
     "version": "v1.0.0",
-    "required": ["pvcSpec", "scInfo", "quota"],
+    "required": ["pvcSpec", "scInfo", "quota", "bindingMode", "allowedTopologies", "topologyMismatch"],
     "selectors": {
       "pvcSpec": [ { "type": "yq", "path": ".spec" }, { "type": "eventsRegex", "path": "PersistentVolumeClaim" } ],
       "scInfo": [ { "type": "yq", "path": ".parameters" }, { "type": "eventsRegex", "path": "StorageClass" } ],
-      "quota": [ { "type": "yq", "path": ".status.hard" }, { "type": "eventsRegex", "path": "Resource Quotas|hard|exceeded quota|exceeds" } ]
+      "quota": [ { "type": "yq", "path": ".status.hard" }, { "type": "eventsRegex", "path": "Resource Quotas|hard|exceeded quota|exceeds" } ],
+      "bindingMode": [ { "type": "eventsRegex", "path": "WaitForFirstConsumer|Immediate" } ],
+      "allowedTopologies": [ { "type": "eventsRegex", "path": "allowedTopologies|topology.kubernetes.io/zone" } ],
+      "topologyMismatch": [ { "type": "eventsRegex", "path": "no matching topology|no PV found in zone|0/\\d+ nodes are available" } ]
     },
     "completenessThreshold": 0.8
   },

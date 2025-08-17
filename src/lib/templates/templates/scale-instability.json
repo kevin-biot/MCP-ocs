@@ -1,0 +1,26 @@
+{
+  "id": "scale-instability-v1",
+  "name": "Scale Instability Analysis",
+  "version": "1.0.0",
+  "triageTarget": "scale-instability",
+  "triggers": [ { "type": "static_target", "target": "scale-instability", "confidence": 1.0 } ],
+  "blocks": [],
+  "composition": { "infrastructure": [], "workload": [], "correlation": [] },
+  "steps": [
+    { "tool": "oc_read_machinesets", "params": { "sessionId": "<sessionId>", "namespace": "openshift-machine-api", "bounded": true }, "rationale": "MachineSet desired/current/ready and last scale" },
+    { "tool": "oc_read_nodes", "params": { "sessionId": "<sessionId>", "bounded": true }, "rationale": "Node pressure and capacity snapshot" }
+  ],
+  "evidenceContract": {
+    "version": "v1.0.0",
+    "required": ["msReplicasDesired","msReplicasCurrent","msReplicasReady","nodePressure"],
+    "selectors": {
+      "msReplicasDesired": [ { "type": "jsonpath", "path": "{.replicasDesired}" } ],
+      "msReplicasCurrent": [ { "type": "jsonpath", "path": "{.replicasCurrent}" } ],
+      "msReplicasReady": [ { "type": "jsonpath", "path": "{.replicasReady}" } ],
+      "nodePressure": [ { "type": "jsonpath", "path": "{.conditions.MemoryPressure}" } ]
+    },
+    "completenessThreshold": 0.8
+  },
+  "boundaries": { "maxSteps": 2, "timeoutMs": 20000 }
+}
+
