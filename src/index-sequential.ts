@@ -238,6 +238,27 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
               }
             }
           }
+          // Scheduling-failures: derive nodeFromEvent for subsequent node describe
+          if (s.tool === 'oc_read_describe' && params?.resourceType === 'pod') {
+            // After pod describe, try to extract a candidate node or fall back to infra nodes list
+            try {
+              const txt = typeof exec?.[exec.length-1]?.result === 'string' ? exec[exec.length-1].result : JSON.stringify(exec?.[exec.length-1]?.result || '');
+              const m = txt.match(/node\s+([A-Za-z0-9-_.]+)/i);
+              if (m && !ctxVars.nodeFromEvent) ctxVars.nodeFromEvent = m[1];
+            } catch {}
+            if (!ctxVars.nodeFromEvent) {
+              try {
+                const nodes = await toolRegistry.executeTool('oc_read_nodes', { sessionId, bounded: true });
+                const obj = typeof nodes === 'string' ? JSON.parse(nodes) : nodes;
+                const list = Array.isArray(obj?.nodes) ? obj.nodes : [];
+                const pick = list.find((n:any)=>!n.ready) || list[0];
+                if (pick?.name) ctxVars.nodeFromEvent = pick.name;
+              } catch {}
+            }
+          }
+          if (s.tool === 'oc_read_describe' && params?.resourceType === 'node' && isPlaceholder(params?.name) && ctxVars.nodeFromEvent) {
+            params = { ...params, name: ctxVars.nodeFromEvent };
+          }
         } catch {}
         const sStart = Date.now();
         const r = await toolRegistry.executeTool(s.tool, params);

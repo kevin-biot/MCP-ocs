@@ -12,6 +12,8 @@ import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
 
+const INFRA_LIVE_READS = String(process.env.INFRA_LIVE_READS || '').toLowerCase() === 'true';
+
 export class InfrastructureTools implements ToolSuite {
   category = 'infrastructure';
   version = 'v1';
@@ -32,7 +34,30 @@ export class InfrastructureTools implements ToolSuite {
         },
         required: ['sessionId']
       }, async (args: any) => {
-        // Scaffold: minimal per-zone summary. In the future, fetch from oc.
+        // Live path (optional) — guarded for determinism
+        if (INFRA_LIVE_READS) {
+          try {
+            const raw = await this.openshiftClient.executeRawCommand(['get','nodes','-o','json']);
+            const data = JSON.parse(raw);
+            const items: any[] = Array.isArray(data?.items) ? data.items : [];
+            const nodes = items.map((it:any)=>{
+              const name = it?.metadata?.name;
+              const labels = it?.metadata?.labels || {};
+              const zone = labels['topology.kubernetes.io/zone'] || labels['failure-domain.beta.kubernetes.io/zone'] || 'unknown';
+              const taints = Array.isArray(it?.spec?.taints) ? it.spec.taints.map((t:any)=>({ key: t.key, value: t.value ?? true })) : [];
+              const conds: any[] = Array.isArray(it?.status?.conditions) ? it.status.conditions : [];
+              const readyCond = conds.find(c=>c?.type==='Ready');
+              const ready = readyCond?.status === 'True';
+              return { name, zone, ready, taints };
+            });
+            const zones = Array.from(new Set(nodes.map(n=>n.zone).filter(Boolean)));
+            const ready = nodes.filter(n=>n.ready).length;
+            const total = nodes.length;
+            const out = { zones, nodes, ready, total, timestamp: new Date().toISOString() };
+            return JSON.stringify(out, null, 2);
+          } catch {/* fall through to scaffold */}
+        }
+        // Scaffold: minimal per-zone summary
         const zones = ['a','b'];
         const nodes = [
           { name: 'node-a-1', zone: 'a', ready: true, taints: [] },
@@ -55,6 +80,22 @@ export class InfrastructureTools implements ToolSuite {
         },
         required: ['sessionId']
       }, async (args: any) => {
+        if (INFRA_LIVE_READS) {
+          try {
+            const ns = String(args?.namespace || 'openshift-machine-api');
+            const raw = await this.openshiftClient.executeRawCommand(['get','machinesets','-n', ns, '-o','json']);
+            const data = JSON.parse(raw);
+            const items: any[] = Array.isArray(data?.items) ? data.items : [];
+            const sets = items.map((it:any)=>{
+              const name = it?.metadata?.name;
+              const replicas = Number(it?.spec?.replicas ?? 0);
+              const zone = it?.spec?.template?.spec?.nodeSelector?.['topology.kubernetes.io/zone'] || it?.spec?.template?.metadata?.labels?.['topology.kubernetes.io/zone'] || 'unknown';
+              return { name, replicas, zone };
+            });
+            const out = { sets, timestamp: new Date().toISOString() };
+            return JSON.stringify(out, null, 2);
+          } catch {/* fall through to scaffold */}
+        }
         const sets = [
           { name: 'ms-a', replicas: 3, zone: 'a' },
           { name: 'ms-b', replicas: 1, zone: 'b' }
@@ -106,4 +147,3 @@ export class InfrastructureTools implements ToolSuite {
     };
   }
 }
-
