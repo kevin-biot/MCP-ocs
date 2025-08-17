@@ -125,6 +125,7 @@
     "e2e:te-ingress:deep:mem": "COMPREHENSIVE=true SHARED_MEMORY_DIR=\"/Users/kevinbrown/memory/consolidated\" CHROMA_HOST=127.0.0.1 CHROMA_PORT=8000 TRANSFORMERS_CACHE=~/.cache/transformers SERVER_ARGS=\"tsx src/index-sequential.ts\" node scripts/e2e/e2e-template-ingress-pending.mjs",
     "e2e:te-ingress:deep:perf:mem": "COMPREHENSIVE=true PERF=true SHARED_MEMORY_DIR=\"/Users/kevinbrown/memory/consolidated\" CHROMA_HOST=127.0.0.1 CHROMA_PORT=8000 TRANSFORMERS_CACHE=~/.cache/transformers SERVER_ARGS=\"tsx src/index-sequential.ts\" node scripts/e2e/e2e-template-ingress-pending.mjs",
     "e2e:te-scheduling": "SERVER_ARGS=\"tsx src/index-sequential.ts\" node scripts/e2e/e2e-template-scheduling-failures.mjs",
+    "e2e:te-zone": "SERVER_ARGS=\"tsx src/index-sequential.ts\" node scripts/e2e/e2e-template-zone-conflict.mjs",
     "template:hygiene:test:cluster-health": "tsx scripts/e2e/template-hygiene-tester.mjs cluster-health",
     "template:hygiene:test:monitoring": "tsx scripts/e2e/template-hygiene-tester.mjs monitoring",
     "template:hygiene:test:networking": "tsx scripts/e2e/template-hygiene-tester.mjs networking",
