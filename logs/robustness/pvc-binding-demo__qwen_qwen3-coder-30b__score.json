@@ -1,0 +1,86 @@
+{
+  "model": "qwen/qwen3-coder-30b",
+  "scenario": "pvc-binding-demo",
+  "files": [
+    "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512011329.json",
+    "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512014776.json",
+    "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512018352.json"
+  ],
+  "score": {
+    "structuralStable": true,
+    "toolSuccessRate": 1,
+    "answerStability": 0.333,
+    "rubricStability": 1,
+    "jsonEqual": null,
+    "rubricEqual": null,
+    "robustnessScore": 0.867,
+    "toolSeqs": [
+      "oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,resourceType) -> oc_read_describe(namespace,resourceType)",
+      "oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,resourceType) -> oc_read_describe(namespace,resourceType)",
+      "oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,resourceType) -> oc_read_describe(namespace,resourceType)"
+    ]
+  },
+  "extracted": [
+    {
+      "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512011329.json",
+      "priority": "P2",
+      "confidence": "High",
+      "slo": null,
+      "evidence_keys": [
+        "pvc_pending",
+        "zone_mismatch"
+      ]
+    },
+    {
+      "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512014776.json",
+      "priority": "P2",
+      "confidence": "High",
+      "slo": null,
+      "evidence_keys": [
+        "pvc_pending",
+        "storage_class_missing"
+      ]
+    },
+    {
+      "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512018352.json",
+      "priority": "P2",
+      "confidence": "High",
+      "slo": null,
+      "evidence_keys": [
+        "pvc_pending",
+        "zone_mismatch"
+      ]
+    }
+  ],
+  "schema": {
+    "scenario": "pvc-binding",
+    "jsonValidRate": 1,
+    "results": [
+      {
+        "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512011329.json",
+        "ok": true,
+        "errors": null
+      },
+      {
+        "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512014776.json",
+        "ok": true,
+        "errors": null
+      },
+      {
+        "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512018352.json",
+        "ok": true,
+        "errors": null
+      }
+    ]
+  },
+  "gates": {
+    "structuralStable": true,
+    "toolSuccessRate": 1,
+    "jsonValidRate": 1,
+    "answerStability": 0.333,
+    "rubricStability": 1,
+    "jsonEqual": null,
+    "rubricEqual": null,
+    "PASS": false
+  }
+}

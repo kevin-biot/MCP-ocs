@@ -1,0 +1,58 @@
+{
+  "scenario": "route-5xx",
+  "sessionId": "engine-route-5xx-1755512006192",
+  "plan": {
+    "planId": "engine-route-5xx-1755512006192",
+    "steps": [
+      {
+        "tool": "oc_read_describe",
+        "params": {
+          "sessionId": "engine-route-5xx-1755512006192",
+          "resourceType": "endpoints",
+          "namespace": "shop",
+          "name": "checkout"
+        },
+        "rationale": "Service endpoints health"
+      },
+      {
+        "tool": "oc_read_describe",
+        "params": {
+          "sessionId": "engine-route-5xx-1755512006192",
+          "resourceType": "route",
+          "namespace": "shop",
+          "name": "checkout"
+        },
+        "rationale": "Route spec and TLS"
+      },
+      {
+        "tool": "oc_read_describe",
+        "params": {
+          "sessionId": "engine-route-5xx-1755512006192",
+          "resourceType": "pod",
+          "namespace": "shop",
+          "name": "example-pod"
+        },
+        "rationale": "Probe configuration"
+      }
+    ],
+    "boundaries": {
+      "maxSteps": 3,
+      "timeoutMs": 20000
+    }
+  },
+  "completeness": 0,
+  "result": {
+    "priority": "P2",
+    "confidence": "Low",
+    "slo": "HIGH",
+    "evidence_keys": [
+      "no_evidence"
+    ],
+    "notes": "no_evidence"
+  },
+  "debug": {
+    "evidence_fired": [],
+    "mapped_keys": [],
+    "confidence_rules_applied": []
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "error": "tools_unavailable",
+  "reason": "The 'orders' namespace does not exist in the cluster, preventing retrieval of PVC, StorageClass, and ResourceQuota information. The tools failed to fetch the required resources due to the missing namespace."
+}

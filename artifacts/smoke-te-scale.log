@@ -1,0 +1,83 @@
+Saved summary: logs/runs/1755476193354-smoke-scale-instability-1755476193353-scale-instability.summary.json
+{
+  "steps": [
+    "oc_read_machinesets",
+    "oc_read_nodes"
+  ],
+  "evidence": {
+    "completeness": 1,
+    "missing": [],
+    "present": [
+      "msReplicasDesired",
+      "msReplicasCurrent",
+      "msReplicasReady",
+      "recentScaleEvents",
+      "nodePressure"
+    ]
+  },
+  "rubrics": {
+    "core": {
+      "triage": {
+        "id": "triage-priority.v1",
+        "kind": "weighted",
+        "score": 0.57,
+        "label": "P2",
+        "bands": {
+          "P1": ">=0.8",
+          "P2": ">=0.55",
+          "P3": "otherwise"
+        },
+        "inputs": {
+          "blastRadius": 0.7,
+          "customerPaths": 0.5,
+          "operatorsDegraded": 0.5,
+          "timeSinceFirstEventMin": 72
+        },
+        "breakdown": {
+          "blastRadius": 0.7,
+          "customerPaths": 0.5,
+          "operatorsDegraded": 0.5,
+          "timeSinceFirstEventMin": 0.4
+        }
+      },
+      "confidence": {
+        "id": "evidence-confidence.v1",
+        "kind": "mapping",
+        "label": "High",
+        "matched": "evidenceCompleteness>=0.9 && toolAgreement>=0.8 && freshnessMin<=10"
+      },
+      "safety": {
+        "id": "remediation-safety.v1",
+        "kind": "guards",
+        "allowAuto": true,
+        "guards": [
+          "etcdHealthy == true",
+          "controlPlaneReadyRatio >= 0.66",
+          "affectedNamespaces <= 3",
+          "noCriticalAlerts == true"
+        ],
+        "failing": []
+      },
+      "slo": {
+        "id": "slo-impact.v1",
+        "kind": "mapping",
+        "label": "LOW",
+        "matched": "otherwise"
+      }
+    },
+    "infra": {
+      "scaleInstability": {
+        "id": "scale-instability.v1",
+        "kind": "mapping",
+        "label": "STABLE",
+        "matched": "otherwise"
+      },
+      "capacityTriage": {
+        "id": "capacity-triage.v1",
+        "kind": "mapping",
+        "label": "MEDIUM",
+        "matched": "memoryPressure==true || diskPressure==true || pidPressure==true || (headroom < 0.20)"
+      }
+    }
+  }
+}

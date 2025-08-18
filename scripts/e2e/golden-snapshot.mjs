@@ -13,7 +13,10 @@ import { EVIDENCE_CONFIDENCE_V1 } from '../../src/lib/rubrics/core/evidence-conf
 import { REMEDIATION_SAFETY_V1 } from '../../src/lib/rubrics/core/remediation-safety.v1.ts';
 import { SLO_IMPACT_V1 } from '../../src/lib/rubrics/core/slo-impact.v1.ts';
 
-const TARGETS = ['ingress-pending','crashloopbackoff','route-5xx','pvc-binding','api-degraded','zone-conflict','scheduling-failures','scale-instability'];
+const TARGETS = [
+  'ingress-pending','crashloopbackoff','route-5xx','pvc-binding','pvc-storage-affinity','api-degraded','zone-conflict','scheduling-failures','scale-instability',
+  'cluster-health-fanout-ingress','cluster-health-fanout-pvc','cluster-health-fanout-churn','cluster-health-negative'
+];
 
 function getEngineVersion(){
   try { return JSON.parse(fs.readFileSync('package.json','utf8'))?.version || '0.0.0'; } catch { return '0.0.0'; }
@@ -28,10 +31,12 @@ function determinism(){
   };
 }
 
+function lookupTarget(t){ return t.startsWith('cluster-health') ? 'cluster-health' : t; }
+
 async function planAndEval(templateId){
   const reg = new TemplateRegistry();
   await reg.load();
-  const sel = reg.selectByTarget(templateId);
+  const sel = reg.selectByTarget(lookupTarget(templateId));
   if (!sel) throw new Error(`Template not found: ${templateId}`);
   const engine = new TemplateEngine();
   const sessionId = `golden-${templateId}`;
@@ -64,6 +69,18 @@ async function planAndEval(templateId){
         exec.push(mk(2,{ status:{ hard:{ 'requests.storage':'100Gi' } } }));
         exec.push(mk(2,'WaitForFirstConsumer; allowedTopologies: topology.kubernetes.io/zone; no matching topology'));
         break;
+      case 'pvc-storage-affinity':
+        // PVC
+        exec.push(mk(0,{ spec:{ accessModes:['ReadWriteOnce'], storageClassName:'standard' }, status:{ phase:'Pending' } }));
+        // PV (unbound or wrong zone)
+        exec.push(mk(1,{ spec:{ nodeAffinity:{ required:{ nodeSelectorTerms:[{ matchExpressions:[{ key:'topology.kubernetes.io/zone', operator:'In', values:['b'] }] }] } } } }));
+        exec.push(mk(1,'no matching topology for requested zone'));
+        // StorageClass with WFFC and topology
+        exec.push(mk(2,{ volumeBindingMode:'WaitForFirstConsumer', parameters:{ type:'gp2' }, allowedTopologies:['topology.kubernetes.io/zone'] }));
+        exec.push(mk(2,'provisioning failed: timed out waiting for PV'));
+        // MachineSets with a recent scale event
+        exec.push(mk(3,{ sets:[{name:'ms-a',replicas:3,zone:'a'},{name:'ms-b',replicas:1,zone:'b'}], lastScaleEvent:'Scaled up 1 (5m ago)', autoscaler:true }));
+        break;
       case 'scheduling-failures':
         exec.push(mk(0,'Warning  FailedScheduling  default-scheduler: 0/2 nodes are available'));
         exec.push(mk(1,{ status:{ conditions:[{ type:'DeploymentRollingOut', status:'True' }] } }));
@@ -78,6 +95,27 @@ async function planAndEval(templateId){
         exec.push(mk(0,{ sets:[{name:'ms-a', replicas:3, zone:'a'},{name:'ms-b', replicas:1, zone:'b'}]}));
         exec.push(mk(1,{ zones:['a','b'], skew:0.85, capacity:{ utilization:0.8 } }));
         exec.push(mk(2,'Warning  FailedScheduling  Insufficient resources on zone a'));
+        break;
+      case 'cluster-health-fanout-ingress':
+        exec.push(mk(0,'Degraded False; Available True')); // cheap probe baseline
+        exec.push(mk(1,{ total: 5, ready: 5 }));
+        exec.push(mk(2,{ items:[{metadata:{name:'router-default-abc'}}], pods:[{name:'router-default-abc', ready:'0/1'}] }));
+        exec.push(mk(2,'router pending'));
+        break;
+      case 'cluster-health-fanout-pvc':
+        exec.push(mk(0,'Degraded False; Available True'));
+        exec.push(mk(1,{ total: 5, ready: 5 }));
+        exec.push(mk(2,'WaitForFirstConsumer; no matching topology'));
+        break;
+      case 'cluster-health-fanout-churn':
+        exec.push(mk(0,'Progressing True'));
+        exec.push(mk(1,{ total: 5, ready: 4 }));
+        exec.push(mk(2,'Scaled up 1 (5m ago); replicas 3->4'));
+        break;
+      case 'cluster-health-negative':
+        exec.push(mk(0,'All Operators Available True'));
+        exec.push(mk(1,{ total: 5, ready: 5 }));
+        exec.push(mk(2,{ items:[{metadata:{name:'router-default-abc'}}], pods:[{name:'router-default-abc', ready:'1/1'}] }));
         break;
       default:
         for (let i=0;i<steps.length && i<3;i++) exec.push(mk(i,{ ok:true }));
@@ -101,6 +139,16 @@ async function planAndEval(templateId){
   };
   const slo = sloInputsFor(templateId);
   const rubrics = evaluateRubrics({ triage: TRIAGE_PRIORITY_V1, confidence: EVIDENCE_CONFIDENCE_V1, safety: REMEDIATION_SAFETY_V1, slo: SLO_IMPACT_V1 }, { ...inputs, ...slo });
+  // Meta-dispatch confidence for cluster-health fanout scenarios
+  if (templateId.startsWith('cluster-health')) {
+    const t = templateId;
+    const ingressSignal = t.includes('ingress') ? 1 : 0;
+    const pvcSignal = t.includes('pvc') ? 1 : 0;
+    const churnSignal = t.includes('churn') ? 1 : 0;
+    const { META_DISPATCH_CONFIDENCE_V1 } = await import('../../src/lib/rubrics/meta/meta-dispatch-confidence.v1.ts');
+    const meta = evaluateRubrics({ meta: META_DISPATCH_CONFIDENCE_V1 }, { ingressSignal, pvcSignal, churnSignal });
+    rubrics.meta = meta.meta;
+  }
   const meta = {
     schemaVersion: '1.0.0',
     engineVersion: getEngineVersion(),

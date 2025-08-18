@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "targets": [
+    "ingress-pending",
+    "crashloopbackoff",
+    "route-5xx",
+    "pvc-binding",
+    "pvc-storage-affinity",
+    "api-degraded",
+    "zone-conflict",
+    "scheduling-failures",
+    "scale-instability"
+  ]
+}

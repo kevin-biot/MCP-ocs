@@ -1,0 +1,292 @@
+{
+  "model": "qwen/qwen3-coder-30b",
+  "template": "pvc-binding",
+  "session": "matrix-pvc-binding-1755478289523",
+  "params": {
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": 800,
+    "seed": 7
+  },
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an SRE using MCP tools (OpenShift). For any triage request, you MUST call tools first (oc_read_get_pods, oc_read_describe, oc_read_logs) and only then answer. Never guess.\n\nStrictly follow this protocol:\n1) Call one or more tools to gather evidence (pods, describe, logs)\n2) Summarize with a compact JSON object:\n   { \"priority\": \"P1|P2|P3\", \"confidence\": \"High|Medium|Low\", \"evidence\": { \"keys\": [..] }, \"notes\": \"...\" }\n\nIf you cannot gather evidence (tools unavailable), respond with a JSON object:\n{ \"error\": \"tools_unavailable\", \"reason\": \"...\" }\n\n"
+    },
+    {
+      "role": "user",
+      "content": "Investigate pvc binding. ns=orders, pvc=db-storage. Use describe(pvc) + describe(storageclass) + describe(resourcequota)."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "657069170",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"orders\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:31.360Z\",\n  \"args\": {\n    \"resourceType\": \"persistentvolumeclaim\",\n    \"namespace\": \"orders\",\n    \"name\": \"db-storage\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "444086585",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): storageclasses.storage.k8s.io \\\"standard\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:31.751Z\",\n  \"args\": {\n    \"resourceType\": \"storageclass\",\n    \"namespace\": \"orders\",\n    \"name\": \"standard\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "546782261",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"orders\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:32.166Z\",\n  \"args\": {\n    \"resourceType\": \"resourcequota\",\n    \"namespace\": \"orders\",\n    \"name\": \"default\"\n  }\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "657069170",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"persistentvolumeclaim\",\"namespace\":\"orders\",\"name\":\"db-storage\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "444086585",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"storageclass\",\"namespace\":\"orders\",\"name\":\"standard\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "546782261",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"resourcequota\",\"namespace\":\"orders\",\"name\":\"default\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "298026772",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"orders\",\n  \"selector\": \"none\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:32.991Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "298026772",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"orders\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "745273535",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"orders\",\n  \"selector\": \"none\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:33.886Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "745273535",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"orders\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "968226397",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"orders\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:35.898Z\",\n  \"args\": {\n    \"resourceType\": \"persistentvolumeclaim\",\n    \"namespace\": \"orders\",\n    \"name\": \"db-storage\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "673248375",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): storageclasses.storage.k8s.io \\\"standard\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:36.275Z\",\n  \"args\": {\n    \"resourceType\": \"storageclass\",\n    \"namespace\": \"orders\",\n    \"name\": \"standard\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "705044338",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"orders\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:36.678Z\",\n  \"args\": {\n    \"resourceType\": \"resourcequota\",\n    \"namespace\": \"orders\",\n    \"name\": \"default\"\n  }\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "968226397",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"persistentvolumeclaim\",\"namespace\":\"orders\",\"name\":\"db-storage\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "673248375",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"storageclass\",\"namespace\":\"orders\",\"name\":\"standard\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "705044338",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"resourcequota\",\"namespace\":\"orders\",\"name\":\"default\"}"
+          }
+        }
+      ]
+    }
+  ],
+  "transcript": [
+    {
+      "role": "assistant",
+      "content": "\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "657069170",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"persistentvolumeclaim\",\"namespace\":\"orders\",\"name\":\"db-storage\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "444086585",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"storageclass\",\"namespace\":\"orders\",\"name\":\"standard\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "546782261",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"resourcequota\",\"namespace\":\"orders\",\"name\":\"default\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"orders\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:31.360Z\",\n  \"args\": {\n    \"resourceType\": \"persistentvolumeclaim\",\n    \"namespace\": \"orders\",\n    \"name\": \"db-storage\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): storageclasses.storage.k8s.io \\\"standard\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:31.751Z\",\n  \"args\": {\n    \"resourceType\": \"storageclass\",\n    \"namespace\": \"orders\",\n    \"name\": \"standard\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"orders\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:32.166Z\",\n  \"args\": {\n    \"resourceType\": \"resourcequota\",\n    \"namespace\": \"orders\",\n    \"name\": \"default\"\n  }\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "298026772",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"orders\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"orders\",\n  \"selector\": \"none\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:32.991Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "745273535",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"orders\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"orders\",\n  \"selector\": \"none\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:33.886Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "968226397",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"persistentvolumeclaim\",\"namespace\":\"orders\",\"name\":\"db-storage\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "673248375",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"storageclass\",\"namespace\":\"orders\",\"name\":\"standard\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "705044338",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"resourcequota\",\"namespace\":\"orders\",\"name\":\"default\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"orders\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:35.898Z\",\n  \"args\": {\n    \"resourceType\": \"persistentvolumeclaim\",\n    \"namespace\": \"orders\",\n    \"name\": \"db-storage\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): storageclasses.storage.k8s.io \\\"standard\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:36.275Z\",\n  \"args\": {\n    \"resourceType\": \"storageclass\",\n    \"namespace\": \"orders\",\n    \"name\": \"standard\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"orders\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:36.678Z\",\n  \"args\": {\n    \"resourceType\": \"resourcequota\",\n    \"namespace\": \"orders\",\n    \"name\": \"default\"\n  }\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "{\n  \"error\": \"tools_unavailable\",\n  \"reason\": \"The 'orders' namespace does not exist in the cluster, preventing retrieval of PVC, StorageClass, and ResourceQuota information. The tools failed to fetch the required resources due to the missing namespace.\"\n}",
+      "tool_calls": []
+    }
+  ]
+}

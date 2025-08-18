@@ -1,0 +1,148 @@
+{
+  "model": "qwen/qwen3-coder-30b",
+  "template": "pvc-storage-affinity",
+  "session": "matrix-pvc-storage-affinity-1755478297576",
+  "params": {
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": 800,
+    "seed": 7
+  },
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an SRE using MCP tools (OpenShift). For any triage request, you MUST call tools first (oc_read_get_pods, oc_read_describe, oc_read_logs) and only then answer. Never guess.\n\nStrictly follow this protocol:\n1) Call one or more tools to gather evidence (pods, describe, logs)\n2) Summarize with a compact JSON object:\n   { \"priority\": \"P1|P2|P3\", \"confidence\": \"High|Medium|Low\", \"evidence\": { \"keys\": [..] }, \"notes\": \"...\" }\n\nIf you cannot gather evidence (tools unavailable), respond with a JSON object:\n{ \"error\": \"tools_unavailable\", \"reason\": \"...\" }\n\n"
+    },
+    {
+      "role": "user",
+      "content": "Investigate pvc storage affinity. ns=orders, pvc=db-storage. Use describe(pvc/pv/sc) + machinesets."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "817243718",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"orders\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:39.621Z\",\n  \"args\": {\n    \"resourceType\": \"pvc\",\n    \"namespace\": \"orders\",\n    \"name\": \"db-storage\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "878889949",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): persistentvolumes \\\"REDACTED_EMAIL\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:40.014Z\",\n  \"args\": {\n    \"resourceType\": \"pv\",\n    \"name\": \"<REDACTED_EMAIL>\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "745512936",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): storageclasses.storage.k8s.io \\\"REDACTED_EMAIL\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:40.344Z\",\n  \"args\": {\n    \"resourceType\": \"sc\",\n    \"name\": \"<REDACTED_EMAIL>\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "179307930",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"orders\",\n  \"selector\": \"app=db\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:40.622Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "\n\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "817243718",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"pvc\",\"namespace\":\"orders\",\"name\":\"db-storage\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "878889949",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"pv\",\"name\":\"<REDACTED_EMAIL>\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "745512936",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"sc\",\"name\":\"<REDACTED_EMAIL>\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "179307930",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"orders\",\"selector\":\"app=db\"}"
+          }
+        }
+      ]
+    }
+  ],
+  "transcript": [
+    {
+      "role": "assistant",
+      "content": "\n\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "817243718",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"pvc\",\"namespace\":\"orders\",\"name\":\"db-storage\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "878889949",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"pv\",\"name\":\"<REDACTED_EMAIL>\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "745512936",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"sc\",\"name\":\"<REDACTED_EMAIL>\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "179307930",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"orders\",\"selector\":\"app=db\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"orders\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:39.621Z\",\n  \"args\": {\n    \"resourceType\": \"pvc\",\n    \"namespace\": \"orders\",\n    \"name\": \"db-storage\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): persistentvolumes \\\"REDACTED_EMAIL\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:40.014Z\",\n  \"args\": {\n    \"resourceType\": \"pv\",\n    \"name\": \"<REDACTED_EMAIL>\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): storageclasses.storage.k8s.io \\\"REDACTED_EMAIL\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:40.344Z\",\n  \"args\": {\n    \"resourceType\": \"sc\",\n    \"name\": \"<REDACTED_EMAIL>\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"orders\",\n  \"selector\": \"app=db\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:40.622Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "{\n  \"error\": \"tools_unavailable\",\n  \"reason\": \"Namespace 'orders' not found, preventing investigation of PVC 'db-storage' and related resources (PV, SC).\"\n}",
+      "tool_calls": []
+    }
+  ]
+}

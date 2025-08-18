@@ -1,0 +1,14 @@
+{
+  "templateId": "ingress-pending-v1",
+  "templateVersion": "1.0.0",
+  "priorityScore": 0,
+  "allowAuto": false,
+  "completeness": 1,
+  "minThreshold": 0,
+  "missing": [],
+  "slo": null,
+  "model": "none",
+  "modelSha": "none",
+  "seed": 42,
+  "formatterVersion": "1.0.0"
+}

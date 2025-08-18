@@ -1,4 +1,4 @@
-import type { MappingRubric } from "../../rubric-registry.js";
+import type { MappingRubric } from "../rubric-registry.js";
 
 // Storage Affinity (v1)
 // Inputs:
@@ -18,4 +18,3 @@ export const STORAGE_AFFINITY_V1: MappingRubric = {
     LOW: 'otherwise'
   }
 };
-

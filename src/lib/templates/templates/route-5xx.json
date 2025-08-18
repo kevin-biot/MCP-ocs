@@ -18,11 +18,13 @@
       "endpoints": [
         { "type": "yq", "path": ".subsets[].addresses[]?.ip" },
         { "type": "jsonpath", "path": "{.subsets[*].addresses[*].ip}" },
-        { "type": "eventsRegex", "path": "Endpoints" }
+        { "type": "eventsRegex", "path": "Endpoints|Addresses|NotReadyAddresses" },
+        { "type": "eventsRegex", "path": "(?i)Addresses: \\s*<none>|NotReadyAddresses: \\s*<none>|subsets: \\s*\\[\\s*\\]|No subsets" }
       ],
       "routeSpec": [
         { "type": "yq", "path": ".spec" },
-        { "type": "eventsRegex", "path": "Route|TLS|readinessProbe|ReadinessProbe" }
+        { "type": "eventsRegex", "path": "Route|TLS|termination|edge|passthrough|reencrypt|backend" },
+        { "type": "eventsRegex", "path": "(?i)Readiness probe failed|readiness probe.*(failed|timeout|http.*(404|5\\d\\d))|ContainersNotReady" }
       ]
     },
     "completenessThreshold": 0.7

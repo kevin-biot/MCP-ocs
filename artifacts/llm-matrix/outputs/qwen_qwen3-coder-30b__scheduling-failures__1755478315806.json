@@ -1,0 +1,4 @@
+{
+  "error": "tools_unavailable",
+  "reason": "All tool calls failed due to resource not found errors. The specified pod 'router-default-xxxxx', node 'ip-10-0-1-100.ec2.internal', and machineset 'worker-us-east-1a' could not be located in the cluster. This may indicate a scheduling issue or misconfiguration in the OpenShift environment."
+}

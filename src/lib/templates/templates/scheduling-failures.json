@@ -16,20 +16,25 @@
     "version": "v1.0.0",
     "required": ["schedulingEvents", "controllerStatus", "nodeTaints", "nodeLabels", "machinesetZoneDistribution"],
     "selectors": {
-      "schedulingEvents": [ { "type": "eventsRegex", "path": "(?i)FailedScheduling" } ],
+      "schedulingEvents": [
+        { "type": "eventsRegex", "path": "(?i)FailedScheduling" },
+        { "type": "eventsRegex", "path": "0/\\d+\\s*nodes are available" },
+        { "type": "eventsRegex", "path": "0/\\d+ nodes are available" }
+      ],
       "controllerStatus": [
         { "type": "yq", "path": ".status.conditions[] | {type,status,reason,message}" },
         { "type": "eventsRegex", "path": "IngressController|DeploymentRollingOut" }
       ],
       "nodeTaints": [
         { "type": "jsonpath", "path": "{.spec.taints[*].key}" },
-        { "type": "eventsRegex", "path": "(?i)taint|Taints" }
+        { "type": "eventsRegex", "path": "(?i)taint|untolerated taint|had taint .* that the pod did not tolerate|did not tolerate|didn't tolerate" }
       ],
       "nodeLabels": [
         { "type": "eventsRegex", "path": "(?i)Labels" }
       ],
       "machinesetZoneDistribution": [
-        { "type": "jsonpath", "path": "{.sets[*].zone}" }
+        { "type": "jsonpath", "path": "{.sets[*].zone}" },
+        { "type": "eventsRegex", "path": "(?i)zone|topology|spread.*violation|us-[a-z]+-\\d[a-z]" }
       ]
     },
     "completenessThreshold": 0.9

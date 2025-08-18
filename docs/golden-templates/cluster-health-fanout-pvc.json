@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "1.0.0",
+  "engineVersion": "0.8.0-beta",
+  "templateId": "cluster-health-v1",
+  "templateVersion": "1.0.0",
+  "rubricVersions": {
+    "triage": "triage-priority.v1",
+    "confidence": "evidence-confidence.v1",
+    "safety": "remediation-safety.v1"
+  },
+  "determinism": {
+    "modelName": "none",
+    "system_fingerprint": "none",
+    "temperature": 0,
+    "top_p": 1,
+    "seed": 42
+  },
+  "evidenceThreshold": 0.7,
+  "target": "cluster-health-fanout-pvc",
+  "steps": [
+    "oc_diagnostic_cluster_health",
+    "oc_read_nodes",
+    "oc_read_get_pods"
+  ],
+  "evidence": {
+    "completeness": 0.75,
+    "missing": [
+      "podSummary"
+    ],
+    "present": [
+      "nodesSummary",
+      "controlPlaneAlerts",
+      "fanoutHint"
+    ]
+  },
+  "rubricInputs": {
+    "evidenceCompleteness": 0.75,
+    "toolAgreement": 0.85,
+    "freshnessMin": 5,
+    "etcdHealthy": true,
+    "controlPlaneReadyRatio": 0.67,
+    "affectedNamespaces": 1,
+    "noCriticalAlerts": true,
+    "blastRadius": 0.7,
+    "customerPaths": 0.5,
+    "operatorsDegraded": 0.5,
+    "timeSinceFirstEventMin": 72
+  },
+  "rubrics": {
+    "triage": {
+      "id": "triage-priority.v1",
+      "kind": "weighted",
+      "score": 0.57,
+      "label": "P2",
+      "bands": {
+        "P1": ">=0.8",
+        "P2": ">=0.55",
+        "P3": "otherwise"
+      },
+      "inputs": {
+        "blastRadius": 0.7,
+        "customerPaths": 0.5,
+        "operatorsDegraded": 0.5,
+        "timeSinceFirstEventMin": 72
+      },
+      "breakdown": {
+        "blastRadius": 0.7,
+        "customerPaths": 0.5,
+        "operatorsDegraded": 0.5,
+        "timeSinceFirstEventMin": 0.4
+      }
+    },
+    "confidence": {
+      "id": "evidence-confidence.v1",
+      "kind": "mapping",
+      "label": "Medium",
+      "matched": "evidenceCompleteness>=0.75"
+    },
+    "safety": {
+      "id": "remediation-safety.v1",
+      "kind": "guards",
+      "allowAuto": true,
+      "guards": [
+        "etcdHealthy == true",
+        "controlPlaneReadyRatio >= 0.66",
+        "affectedNamespaces <= 3",
+        "noCriticalAlerts == true"
+      ],
+      "failing": []
+    },
+    "slo": {
+      "id": "slo-impact.v1",
+      "kind": "mapping",
+      "label": "LOW",
+      "matched": "otherwise"
+    },
+    "meta": {
+      "id": "meta-dispatch-confidence.v1",
+      "kind": "mapping",
+      "label": "Low",
+      "matched": "otherwise"
+    }
+  }
+}

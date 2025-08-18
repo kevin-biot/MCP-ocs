@@ -1,4 +1,4 @@
-import type { MappingRubric } from "../../rubric-registry.js";
+import type { MappingRubric } from "../rubric-registry.js";
 
 // Capacity Triage (v1): derive HIGH/MEDIUM/LOW from node pressure/headroom
 // Inputs:
@@ -14,4 +14,3 @@ export const CAPACITY_TRIAGE_V1: MappingRubric = {
     LOW: 'otherwise'
   }
 };
-

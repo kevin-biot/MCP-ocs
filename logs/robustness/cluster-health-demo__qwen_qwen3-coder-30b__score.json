@@ -1,0 +1,107 @@
+{
+  "model": "qwen/qwen3-coder-30b",
+  "scenario": "cluster-health-demo",
+  "files": [
+    "logs/transcripts/cluster-health-demo/cluster-health-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512089935.json",
+    "logs/transcripts/cluster-health-demo/cluster-health-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512122230.json",
+    "logs/transcripts/cluster-health-demo/cluster-health-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512155565.json"
+  ],
+  "score": {
+    "structuralStable": false,
+    "toolSuccessRate": 1,
+    "answerStability": 0.333,
+    "rubricStability": 1,
+    "jsonEqual": null,
+    "rubricEqual": null,
+    "robustnessScore": 0.567,
+    "toolSeqs": [
+      "oc_read_get_pods(namespace) -> oc_read_get_pods(namespace) -> oc_read_get_pods(namespace) -> oc_read_get_pods(namespace) -> oc_read_get_pods(namespace) -> oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,namespace,resourceType)",
+      "oc_read_get_pods(namespace) -> oc_read_get_pods(namespace) -> oc_read_get_pods(namespace) -> oc_read_get_pods(namespace) -> oc_read_describe(name,resourceType) -> oc_read_describe(name,resourceType) -> oc_read_describe(name,resourceType) -> oc_read_describe(name,resourceType) -> oc_read_describe(name,resourceType)",
+      "oc_read_get_pods(namespace) -> oc_read_get_pods(namespace) -> oc_read_get_pods(namespace) -> oc_read_get_pods(namespace) -> oc_read_describe(name,resourceType) -> oc_read_describe(name,resourceType) -> oc_read_describe(name,resourceType) -> oc_read_describe(name,resourceType) -> oc_read_describe(name,resourceType)"
+    ]
+  },
+  "extracted": [
+    {
+      "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512089935.json",
+      "priority": "P1",
+      "confidence": "High",
+      "slo": null,
+      "evidence_keys": [
+        "ingress_controller_degraded",
+        "network_degraded",
+        "storage_degraded"
+      ]
+    },
+    {
+      "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512122230.json",
+      "priority": "P1",
+      "confidence": "High",
+      "slo": "CRITICAL",
+      "evidence_keys": [
+        "ingress_controller_degraded",
+        "network_degraded"
+      ]
+    },
+    {
+      "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512155565.json",
+      "priority": "P1",
+      "confidence": "High",
+      "slo": "CRITICAL",
+      "evidence_keys": [
+        "ingress_controller_degraded",
+        "network_degraded"
+      ]
+    }
+  ],
+  "schema": {
+    "scenario": "cluster-health",
+    "jsonValidRate": 0.3333333333333333,
+    "results": [
+      {
+        "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512089935.json",
+        "ok": true,
+        "errors": null
+      },
+      {
+        "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512122230.json",
+        "ok": false,
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "slo"
+            },
+            "message": "must NOT have additional properties"
+          }
+        ]
+      },
+      {
+        "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512155565.json",
+        "ok": false,
+        "errors": [
+          {
+            "instancePath": "",
+            "schemaPath": "#/additionalProperties",
+            "keyword": "additionalProperties",
+            "params": {
+              "additionalProperty": "slo"
+            },
+            "message": "must NOT have additional properties"
+          }
+        ]
+      }
+    ]
+  },
+  "gates": {
+    "structuralStable": false,
+    "toolSuccessRate": 1,
+    "jsonValidRate": 0.3333333333333333,
+    "answerStability": 0.333,
+    "rubricStability": 1,
+    "jsonEqual": null,
+    "rubricEqual": null,
+    "PASS": false
+  }
+}

@@ -1,4 +1,4 @@
-import type { MappingRubric } from "../../rubric-registry.js";
+import type { MappingRubric } from "../rubric-registry.js";
 
 // Scheduling Confidence (v1)
 // Inputs:
@@ -15,4 +15,3 @@ export const SCHEDULING_CONFIDENCE_V1: MappingRubric = {
     Low: 'otherwise'
   }
 };
-

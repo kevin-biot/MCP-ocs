@@ -1,4 +1,4 @@
-import type { WeightedRubric } from "../../rubric-registry.js";
+import type { WeightedRubric } from "../rubric-registry.js";
 
 // Zone Conflict Severity (v1)
 // Inputs:
@@ -18,4 +18,3 @@ export const ZONE_CONFLICT_SEVERITY_V1: WeightedRubric = {
     LOW: 'otherwise'
   }
 };
-

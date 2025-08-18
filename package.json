@@ -34,6 +34,7 @@
     "mcp-ocs": "dist/src/index.js"
   },
   "scripts": {
+    "pretest": "bash scripts/ci/prevent-mutations.sh",
     "build": "tsc && mkdir -p dist",
     "build:beta": "tsc src/index.beta.ts --outDir dist/beta && mkdir -p dist/beta",
     "build:production": "npm run build",
@@ -113,6 +114,8 @@
     "retest:smoke:infra-reads": "tsx scripts/smoke/smoke-infra-reads.mjs",
     "retest:smoke:te-scheduling": "tsx scripts/smoke/smoke-template-scheduling-failures.mjs",
     "retest:smoke:te-zone": "tsx scripts/smoke/smoke-template-zone-conflict.mjs",
+    "retest:smoke:te-scale": "tsx scripts/smoke/smoke-template-scale-instability.mjs",
+    "retest:smoke:te-pvc-affinity": "tsx scripts/smoke/smoke-template-pvc-storage-affinity.mjs",
     "retest:smoke:networking-discovery": "node scripts/smoke/smoke-networking-discovery.mjs",
     "retest:smoke:networking-discover": "node scripts/smoke/smoke-networking-discovery.mjs",
     "e2e:te-ingress": "node scripts/e2e/e2e-template-ingress-pending.mjs",
@@ -137,6 +140,11 @@
     "template:golden:compare": "tsx scripts/e2e/golden-compare.mjs",
     "template:golden:snapshot:negative": "tsx scripts/e2e/golden-snapshot-negative.mjs",
     "template:golden:compare:negative": "node scripts/e2e/golden-compare-negative.mjs",
+    "e2e:lmstudio": "node scripts/e2e/lmstudio-tool-runner.mjs --prompt docs/e2e/prompts/route-5xx.json",
+    "llm:matrix": "tsx scripts/e2e/llm-matrix-runner.mjs",
+    "e2e:capture": "tsx scripts/e2e/run-matrix.mjs ingress-pending-demo",
+    "e2e:capture:scale": "tsx scripts/e2e/run-matrix.mjs scale-instability-demo",
+    "e2e:score": "node -e \"const {scoreRunFiles}=require('./scripts/e2e/robustness-score.mjs'); console.log(JSON.stringify(scoreRunFiles(process.argv.slice(1)),null,2));\"",
     "ci:templates": "npm run -s template:hygiene:test:all && npm run -s template:golden:compare && MIN_RUBRICS_COVERAGE=0.9 npm run -s rubrics:coverage:check",
     "ci:templates:negative": "npm run -s template:golden:compare:negative",
     "template:coverage": "tsx scripts/e2e/template-coverage.mjs",

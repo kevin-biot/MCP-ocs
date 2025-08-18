@@ -1,0 +1,4 @@
+{
+  "error": "tools_unavailable",
+  "reason": "Namespace 'orders' not found, preventing investigation of PVC 'db-storage' and related resources (PV, SC)."
+}

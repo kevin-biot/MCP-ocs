@@ -1,0 +1,63 @@
+{
+  "scenario": "ingress-pending",
+  "sessionId": "engine-ingress-pending-1755511993690",
+  "plan": {
+    "planId": "engine-ingress-pending-1755511993690",
+    "steps": [
+      {
+        "tool": "oc_read_get_pods",
+        "params": {
+          "sessionId": "engine-ingress-pending-1755511993690",
+          "namespace": "openshift-ingress"
+        },
+        "rationale": "List router pods and identify pending"
+      },
+      {
+        "tool": "oc_read_describe",
+        "params": {
+          "sessionId": "engine-ingress-pending-1755511993690",
+          "resourceType": "pod",
+          "namespace": "openshift-ingress",
+          "name": "<pendingRouterPod>"
+        },
+        "rationale": "Capture FailedScheduling events"
+      },
+      {
+        "tool": "oc_read_describe",
+        "params": {
+          "sessionId": "engine-ingress-pending-1755511993690",
+          "resourceType": "ingresscontroller",
+          "namespace": "openshift-ingress-operator",
+          "name": "default"
+        },
+        "rationale": "Controller placement/conditions"
+      }
+    ],
+    "boundaries": {
+      "maxSteps": 3,
+      "timeoutMs": 20000
+    }
+  },
+  "completeness": 0.667,
+  "result": {
+    "priority": "P2",
+    "confidence": "Low",
+    "slo": "CRITICAL",
+    "evidence_keys": [
+      "router_pods_pending",
+      "ingress_controller_degraded"
+    ],
+    "notes": "evidence: router_pods_pending,ingress_controller_degraded"
+  },
+  "debug": {
+    "evidence_fired": [
+      "routerPods",
+      "controllerStatus"
+    ],
+    "mapped_keys": [
+      "router_pods_pending",
+      "ingress_controller_degraded"
+    ],
+    "confidence_rules_applied": []
+  }
+}

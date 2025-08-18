@@ -378,8 +378,21 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 capacityTriage: CAPACITY_TRIAGE_V1,
                 storageAffinity: STORAGE_AFFINITY_V1,
                 scaleInstability: SCALE_INSTABILITY_V1
-              }, infraInputs);
+              } as any, infraInputs);
               (rubrics as any).infra = infraRubrics;
+            }
+          } catch {}
+          // Meta-dispatch rubric for cluster-health
+          try {
+            const key = String(triageTarget || '').toLowerCase();
+            if (key.includes('cluster-health')) {
+              const resultsText = (exec || []).map((e:any)=> typeof e?.result === 'string' ? e.result : JSON.stringify(e.result)).join('\n').toLowerCase();
+              const ingressSignal = /router pending|ingress pending/.test(resultsText) ? 1 : 0;
+              const pvcSignal = /pvc pending|no matching topology|waitforfirstconsumer/.test(resultsText) ? 1 : 0;
+              const churnSignal = /scaled up|scaled down|replicas/.test(resultsText) ? 1 : 0;
+              const { META_DISPATCH_CONFIDENCE_V1 } = await import('./lib/rubrics/meta/meta-dispatch-confidence.v1.js');
+              const metaRes = evaluateRubrics({ metaDispatch: META_DISPATCH_CONFIDENCE_V1 } as any, { ingressSignal, pvcSignal, churnSignal });
+              (rubrics as any).meta = metaRes;
             }
           } catch {}
           // Evidence gate: if below threshold, force confidence=Low
@@ -388,7 +401,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             rubrics.confidence.matched = 'forced: evidence below threshold';
           }
           const templateMeta = { templateId: sel.template.id, templateVersion: sel.template.version, evidenceThreshold: Number(sel.template?.evidenceContract?.completenessThreshold ?? 0) };
-          summary = buildSummaryCard(rubrics, evidence, inputs, templateMeta);
+          summary = await buildSummaryCard(rubrics, evidence, inputs, templateMeta);
           if (rubrics?.slo) {
             summary.slo = { label: rubrics.slo.label, why: rubrics.slo.matched };
           }
@@ -573,7 +586,7 @@ function computeCoreRubricInputs(target: string, evidence: any) {
   } as Record<string, any>;
 }
 
-function buildSummaryCard(rubrics: any, evidence: any, rubricInputs: Record<string, any>, templateMeta: { templateId: string; templateVersion: string; evidenceThreshold: number }) {
+async function buildSummaryCard(rubrics: any, evidence: any, rubricInputs: Record<string, any>, templateMeta: { templateId: string; templateVersion: string; evidenceThreshold: number }) {
   const schemaVersion = '1.0.0';
   const engineVersion = getEngineVersion();
   const env = getDeterminismEnvelope();
@@ -622,13 +635,25 @@ function buildSummaryCard(rubrics: any, evidence: any, rubricInputs: Record<stri
         capacity: infra?.capacityTriage?.label,
         scale: infra?.scaleInstability?.label
       };
-      (base as any).infra = badge;
+      (base as any).infra = { ...badge, storageAffinity: infra?.storageAffinity?.label };
     }
   } catch {}
   // Attach memory recall (advisory)
   try {
     const recall = await tryRecallForTarget(String((base as any)?.templateId || ''), (base as any));
-    if (recall) (base as any).recall = recall;
+    if (recall) {
+      // Evaluate memory recall confidence rubric
+      try {
+        const { MEMORY_RECALL_CONFIDENCE_V1 } = await import('./lib/rubrics/intelligence/memory-recall-confidence.v1.js');
+        const recallInputs = {
+          recallSimilarity: Number(recall?.top1Similarity ?? 0),
+          recallFreshnessMin: Number(recall?.freshnessMin ?? 999999)
+        } as any;
+        const rr = evaluateRubrics({ recallConfidence: MEMORY_RECALL_CONFIDENCE_V1 } as any, recallInputs);
+        (recall as any).confidence = rr?.recallConfidence?.label;
+      } catch {}
+      (base as any).recall = recall;
+    }
   } catch {}
   return base;
 }
@@ -689,6 +714,17 @@ function getDeterminismEnvelope() {
   const top_p = Number(process.env.LM_TOP_P ?? 1);
   const seed = Number(process.env.LM_SEED ?? 42);
   return { modelName, system_fingerprint, temperature, top_p, seed };
+}
+
+function computeSloHint(label: string): string {
+  const key = String(label || '').toUpperCase();
+  switch (key) {
+    case 'CRITICAL': return 'Immediate customer impact likely; prioritize mitigation.';
+    case 'HIGH': return 'User-facing degradation; address within minutes.';
+    case 'MEDIUM': return 'Limited impact; monitor and schedule remediation.';
+    case 'LOW': return 'Minimal impact; fix as capacity allows.';
+    default: return 'SLO impact unknown.';
+  }
 }
 
 function buildGuardsDetail(safetyRubric: any, inputs: Record<string, any>) {
@@ -762,8 +798,8 @@ function computeDiagnosticRubricsIfAny(toolName: string, resultText: string): { 
     } catch {}
   } else if (/oc_diagnostic_namespace_health/i.test(toolName)) {
     try {
-      const summary = obj?.summary || {};
-      const podsStr = String(summary?.pods || '0/0 ready');
+      const nsSummary = obj?.summary || {};
+      const podsStr = String(nsSummary?.pods || '0/0 ready');
       const parts = podsStr.split(' ')[0]?.split('/') || ['0','0'];
       const ready = Number(parts[0]||0), total = Number(parts[1]||0);
       const pendingRatio = total>0 ? Math.max(0, (total - ready)/total) : undefined;
@@ -784,7 +820,7 @@ function computeDiagnosticRubricsIfAny(toolName: string, resultText: string): { 
       inputs.netFailed = checks.some(c=>/network/i.test(String(c?.name||'')) && String(c?.status||'').toLowerCase()!=='pass');
       inputs.pvcFailed = checks.some(c=>/pvc|storage/i.test(String(c?.name||'')) && String(c?.status||'').toLowerCase()!=='pass');
       inputs.controlPlaneReadyRatio = undefined;
-      rubrics = evaluateRubrics({ mapping: DIAGNOSTIC_RCA_CHECKLIST_MAPPING_V1, safety: DIAGNOSTIC_RCA_CHECKLIST_SAFETY_V1 }, inputs);
+      rubrics = evaluateRubrics({ mapping: DIAGNOSTIC_RCA_CHECKLIST_MAPPING_V1, safety: DIAGNOSTIC_RCA_CHECKLIST_SAFETY_V1 } as any, inputs);
       if (rubrics) summary = buildCompactSummary(rubrics);
     } catch {}
   } else if (/memory_search_incidents/i.test(toolName) || /memory_search_operational/i.test(toolName)) {

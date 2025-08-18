@@ -1,0 +1,145 @@
+{
+  "model": "mistralai/devstral-small-2507",
+  "template": "ingress-pending",
+  "session": "matrix-ingress-pending-1755478201609",
+  "params": {
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": 800,
+    "seed": 7
+  },
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an SRE using MCP tools (OpenShift). For any triage request, you MUST call tools first (oc_read_get_pods, oc_read_describe, oc_read_logs) and only then answer. Never guess.\n\nStrictly follow this protocol:\n1) Call one or more tools to gather evidence (pods, describe, logs)\n2) Summarize with a compact JSON object:\n   { \"priority\": \"P1|P2|P3\", \"confidence\": \"High|Medium|Low\", \"evidence\": { \"keys\": [..] }, \"notes\": \"...\" }\n\nIf you cannot gather evidence (tools unavailable), respond with a JSON object:\n{ \"error\": \"tools_unavailable\", \"reason\": \"...\" }\n\n"
+    },
+    {
+      "role": "user",
+      "content": "Investigate ingress router pending in ns=openshift-ingress. Use get_pods + describe(pod) + describe(ingresscontroller)."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "822944524",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"openshift-ingress\",\n  \"selector\": \"none\",\n  \"totalPods\": 2,\n  \"pods\": [\n    {\n      \"name\": \"router-default-5c65587884-f5vzx\",\n      \"namespace\": \"openshift-ingress\",\n      \"status\": \"Running\",\n      \"ready\": \"1/1\",\n      \"restarts\": 0,\n      \"age\": \"5d\",\n      \"ip\": \"10.129.3.30\",\n      \"node\": \"ip-10-0-77-117.eu-west-1.compute.internal\"\n    },\n    {\n      \"name\": \"router-default-5c65587884-mt5qx\",\n      \"namespace\": \"openshift-ingress\",\n      \"status\": \"Pending\",\n      \"ready\": \"0/1\",\n      \"restarts\": 0,\n      \"age\": \"5d\"\n    }\n  ],\n  \"summary\": {\n    \"running\": 1,\n    \"pending\": 1,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:50:15.505Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "822944524",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"openshift-ingress\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "850849149",
+      "name": "oc_read_describe",
+      "content": "{\n  \"resourceType\": \"pod\",\n  \"name\": \"router-default-5c65587884-mt5qx\",\n  \"namespace\": \"openshift-ingress\",\n  \"description\": \"Name:                 router-default-5c65587884-mt5qx\\nNamespace:            openshift-ingress\\nPriority:             2000000000\\nPriority Class Name:  system-cluster-critical\\nService Account:      router\\nNode:                 <none>\\nLabels:               ingresscontroller.operator.openshift.io/deployment-ingresscontroller=default\\n                      ingresscontroller.operator.openshift.io/hash=64fdf7bcc4\\n                      pod-template-hash=5c65587884\\nAnnotations:          openshift.io/required-scc: restricted\\n                      openshift.io/scc: restricted\\nStatus:               Pending\\nIP:                   \\nIPs:                  <none>\\nControlled By:        ReplicaSet/router-default-5c65587884\\nContainers:\\n  router:\\n    Image:       quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:b6fdca02f2da9e6dc456d8b49d8b40d0610a3e3741f9ee85d94f45d4e446c0fe\\n    Ports:       80/TCP, 443/TCP, 1936/TCP\\n    Host Ports:  0/TCP, 0/TCP, 0/TCP\\n    Requests:\\n      cpu:      100m\\n      memory:   256Mi\\n    Liveness:   http-get http://:1936/healthz delay=0s timeout=1s period=10s #success=1 #failure=3\\n    Readiness:  http-get http://:1936/healthz/ready delay=0s timeout=1s period=10s #success=1 #failure=3\\n    Startup:    http-get http://:1936/healthz/ready delay=0s timeout=1s period=1s #success=1 #failure=120\\n    Environment:\\n      DEFAULT_CERTIFICATE_DIR:                   /etc/pki/tls/private\\n      DEFAULT_DESTINATION_CA_PATH:               /var/run/configmaps/service-ca/service-ca.crt\\n      RELOAD_INTERVAL:                           5s\\n      ROUTER_ALLOW_WILDCARD_ROUTES:              false\\n      ROUTER_CANONICAL_HOSTNAME:                 router-default.apps.bootcamp-ocs-cluster.bootcamp.tkmind.net\\n      ROUTER_CIPHERS:                            ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384\\n      ROUTER_CIPHERSUITES:                       TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256\\n      ROUTER_DISABLE_HTTP2:                      true\\n      ROUTER_DISABLE_NAMESPACE_OWNERSHIP_CHECK:  false\\n      ROUTER_DOMAIN:                             apps.bootcamp-ocs-cluster.bootcamp.tkmind.net\\n      ROUTER_IDLE_CLOSE_ON_RESPONSE:             true\\n      ROUTER_LOAD_BALANCE_ALGORITHM:             random\\n      ROUTER_METRICS_TLS_CERT_FILE:              /etc/pki/tls/metrics-certs/tls.crt\\n      ROUTER_METRICS_TLS_KEY_FILE:               /etc/pki/tls/metrics-certs/tls.key\\n      ROUTER_METRICS_TYPE:                       haproxy\\n      ROUTER_SERVICE_NAME:                       default\\n      ROUTER_SERVICE_NAMESPACE:                  openshift-ingress\\n      ROUTER_SET_FORWARDED_HEADERS:              append\\n      ROUTER_TCP_BALANCE_SCHEME:                 source\\n      ROUTER_THREADS:                            4\\n      ROUTER_USE_PROXY_PROTOCOL:                 true\\n      SSL_MIN_VERSION:                           TLSv1.2\\n      STATS_PASSWORD_FILE:                       /var/lib/haproxy/conf/metrics-auth/statsPassword\\n      STATS_PORT:                                1936\\n      STATS_USERNAME_FILE:                       /var/lib/haproxy/conf/metrics-auth/statsUsername\\n    Mounts:\\n      /etc/pki/tls/metrics-certs from metrics-certs (ro)\\n      /etc/pki/tls/private from default-certificate (ro)\\n      /var/lib/haproxy/conf/metrics-auth from stats-auth (ro)\\n      /var/run/configmaps/service-ca from service-ca-bundle (ro)\\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-6ktdr (ro)\\nConditions:\\n  Type           Status\\n  PodScheduled   False \\nVolumes:\\n  default-certificate:\\n    Type:        Secret (a volume populated by a Secret)\\n    SecretName:  router-certs-default\\n    Optional:    false\\n  service-ca-bundle:\\n    Type:      ConfigMap (a volume populated by a ConfigMap)\\n    Name:      service-ca-bundle\\n    Optional:  false\\n  stats-auth:\\n    Type:        Secret (a volume populated by a Secret)\\n    SecretName:  router-stats-default\\n    Optional:    false\\n  metrics-certs:\\n    Type:        Secret (a volume populated by a Secret)\\n    SecretName:  router-metrics-certs-default\\n    Optional:    false\\n  kube-api-access-6ktdr:\\n    Type:                     Projected (a volume that contains injected data from multiple sources)\\n    TokenExpirationSeconds:   3607\\n    ConfigMapName:            kube-root-ca.crt\\n    ConfigMapOptional:        <nil>\\n    DownwardAPI:              true\\n    ConfigMapName:            openshift-service-ca.crt\\n    ConfigMapOptional:        <nil>\\nQoS Class:                    Burstable\\nNode-Selectors:               kubernetes.io/os=linux\\n                              node-role.kubernetes.io/worker=\\nTolerations:                  kubernetes.io/e2e-evict-taint-key=evictTaintVal:NoExecute\\n                              node.kubernetes.io/memory-pressure:NoSchedule op=Exists\\n                              node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\\n                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\\nTopology Spread Constraints:  topology.kubernetes.io/zone:ScheduleAnyway when max skew 1 is exceeded for selector ingresscontroller.operator.openshift.io/hash in (64fdf7bcc4)\\nEvents:\\n  Type     Reason            Age                  From               Message\\n  ----     ------            ----                 ----               -------\\n  Warning  FailedScheduling  50m (x728 over 24h)  default-scheduler  0/4 nodes are available: 1 node(s) didn't match pod anti-affinity rules, 3 node(s) had untolerated taint {node-role.kubernetes.io/master: }. preemption: 0/4 nodes are available: 1 node(s) didn't match pod anti-affinity rules, 3 Preemption is not helpful for scheduling.\\n  Warning  FailedScheduling  50m                  default-scheduler  0/4 nodes are available: 1 node(s) didn't match pod anti-affinity rules, 3 node(s) had untolerated taint {node-role.kubernetes.io/master: }. preemption: 0/4 nodes are available: 1 node(s) didn't match pod anti-affinity rules, 3 Preemption is not helpful for scheduling.\\n  Warning  FailedScheduling  23m (x14 over 46m)   default-scheduler  0/4 nodes are available: 1 node(s) didn't match pod anti-affinity rules, 3 node(s) had untolerated taint {node-role.kubernetes.io/master: }. preemption: 0/4 nodes are available: 1 node(s) didn't match pod anti-affinity rules, 3 Preemption is not helpful for scheduling.\\n\",\n  \"timestamp\": \"2025-08-18T00:50:19.874Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "850849149",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"pod\",\"namespace\":\"openshift-ingress\",\"name\":\"router-default-5c65587884-mt5qx\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "666849484",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): ingresscontrollers.operator.openshift.io \\\"default\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:50:31.375Z\",\n  \"args\": {\n    \"resourceType\": \"ingresscontroller\",\n    \"name\": \"default\",\n    \"namespace\": \"openshift-ingress\"\n  }\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "666849484",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"ingresscontroller\",\"name\":\"default\",\"namespace\":\"openshift-ingress\"}"
+          }
+        }
+      ]
+    }
+  ],
+  "transcript": [
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "822944524",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"openshift-ingress\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"openshift-ingress\",\n  \"selector\": \"none\",\n  \"totalPods\": 2,\n  \"pods\": [\n    {\n      \"name\": \"router-default-5c65587884-f5vzx\",\n      \"namespace\": \"openshift-ingress\",\n      \"status\": \"Running\",\n      \"ready\": \"1/1\",\n      \"restarts\": 0,\n      \"age\": \"5d\",\n      \"ip\": \"10.129.3.30\",\n      \"node\": \"ip-10-0-77-117.eu-west-1.compute.internal\"\n    },\n    {\n      \"name\": \"router-default-5c65587884-mt5qx\",\n      \"namespace\": \"openshift-ingress\",\n      \"status\": \"Pending\",\n      \"ready\": \"0/1\",\n      \"restarts\": 0,\n      \"age\": \"5d\"\n    }\n  ],\n  \"summary\": {\n    \"running\": 1,\n    \"pending\": 1,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:50:15.505Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "850849149",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"pod\",\"namespace\":\"openshift-ingress\",\"name\":\"router-default-5c65587884-mt5qx\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"resourceType\": \"pod\",\n  \"name\": \"router-default-5c65587884-mt5qx\",\n  \"namespace\": \"openshift-ingress\",\n  \"description\": \"Name:                 router-default-5c65587884-mt5qx\\nNamespace:            openshift-ingress\\nPriority:             2000000000\\nPriority Class Name:  system-cluster-critical\\nService Account:      router\\nNode:                 <none>\\nLabels:               ingresscontroller.operator.openshift.io/deployment-ingresscontroller=default\\n                      ingresscontroller.operator.openshift.io/hash=64fdf7bcc4\\n                      pod-template-hash=5c65587884\\nAnnotations:          openshift.io/required-scc: restricted\\n                      openshift.io/scc: restricted\\nStatus:               Pending\\nIP:                   \\nIPs:                  <none>\\nControlled By:        ReplicaSet/router-default-5c65587884\\nContainers:\\n  router:\\n    Image:       quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:b6fdca02f2da9e6dc456d8b49d8b40d0610a3e3741f9ee85d94f45d4e446c0fe\\n    Ports:       80/TCP, 443/TCP, 1936/TCP\\n    Host Ports:  0/TCP, 0/TCP, 0/TCP\\n    Requests:\\n      cpu:      100m\\n      memory:   256Mi\\n    Liveness:   http-get http://:1936/healthz delay=0s timeout=1s period=10s #success=1 #failure=3\\n    Readiness:  http-get http://:1936/healthz/ready delay=0s timeout=1s period=10s #success=1 #failure=3\\n    Startup:    http-get http://:1936/healthz/ready delay=0s timeout=1s period=1s #success=1 #failure=120\\n    Environment:\\n      DEFAULT_CERTIFICATE_DIR:                   /etc/pki/tls/private\\n      DEFAULT_DESTINATION_CA_PATH:               /var/run/configmaps/service-ca/service-ca.crt\\n      RELOAD_INTERVAL:                           5s\\n      ROUTER_ALLOW_WILDCARD_ROUTES:              false\\n      ROUTER_CANONICAL_HOSTNAME:                 router-default.apps.bootcamp-ocs-cluster.bootcamp.tkmind.net\\n      ROUTER_CIPHERS:                            ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384\\n      ROUTER_CIPHERSUITES:                       TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256\\n      ROUTER_DISABLE_HTTP2:                      true\\n      ROUTER_DISABLE_NAMESPACE_OWNERSHIP_CHECK:  false\\n      ROUTER_DOMAIN:                             apps.bootcamp-ocs-cluster.bootcamp.tkmind.net\\n      ROUTER_IDLE_CLOSE_ON_RESPONSE:             true\\n      ROUTER_LOAD_BALANCE_ALGORITHM:             random\\n      ROUTER_METRICS_TLS_CERT_FILE:              /etc/pki/tls/metrics-certs/tls.crt\\n      ROUTER_METRICS_TLS_KEY_FILE:               /etc/pki/tls/metrics-certs/tls.key\\n      ROUTER_METRICS_TYPE:                       haproxy\\n      ROUTER_SERVICE_NAME:                       default\\n      ROUTER_SERVICE_NAMESPACE:                  openshift-ingress\\n      ROUTER_SET_FORWARDED_HEADERS:              append\\n      ROUTER_TCP_BALANCE_SCHEME:                 source\\n      ROUTER_THREADS:                            4\\n      ROUTER_USE_PROXY_PROTOCOL:                 true\\n      SSL_MIN_VERSION:                           TLSv1.2\\n      STATS_PASSWORD_FILE:                       /var/lib/haproxy/conf/metrics-auth/statsPassword\\n      STATS_PORT:                                1936\\n      STATS_USERNAME_FILE:                       /var/lib/haproxy/conf/metrics-auth/statsUsername\\n    Mounts:\\n      /etc/pki/tls/metrics-certs from metrics-certs (ro)\\n      /etc/pki/tls/private from default-certificate (ro)\\n      /var/lib/haproxy/conf/metrics-auth from stats-auth (ro)\\n      /var/run/configmaps/service-ca from service-ca-bundle (ro)\\n      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-6ktdr (ro)\\nConditions:\\n  Type           Status\\n  PodScheduled   False \\nVolumes:\\n  default-certificate:\\n    Type:        Secret (a volume populated by a Secret)\\n    SecretName:  router-certs-default\\n    Optional:    false\\n  service-ca-bundle:\\n    Type:      ConfigMap (a volume populated by a ConfigMap)\\n    Name:      service-ca-bundle\\n    Optional:  false\\n  stats-auth:\\n    Type:        Secret (a volume populated by a Secret)\\n    SecretName:  router-stats-default\\n    Optional:    false\\n  metrics-certs:\\n    Type:        Secret (a volume populated by a Secret)\\n    SecretName:  router-metrics-certs-default\\n    Optional:    false\\n  kube-api-access-6ktdr:\\n    Type:                     Projected (a volume that contains injected data from multiple sources)\\n    TokenExpirationSeconds:   3607\\n    ConfigMapName:            kube-root-ca.crt\\n    ConfigMapOptional:        <nil>\\n    DownwardAPI:              true\\n    ConfigMapName:            openshift-service-ca.crt\\n    ConfigMapOptional:        <nil>\\nQoS Class:                    Burstable\\nNode-Selectors:               kubernetes.io/os=linux\\n                              node-role.kubernetes.io/worker=\\nTolerations:                  kubernetes.io/e2e-evict-taint-key=evictTaintVal:NoExecute\\n                              node.kubernetes.io/memory-pressure:NoSchedule op=Exists\\n                              node.kubernetes.io/not-ready:NoExecute op=Exists for 300s\\n                              node.kubernetes.io/unreachable:NoExecute op=Exists for 300s\\nTopology Spread Constraints:  topology.kubernetes.io/zone:ScheduleAnyway when max skew 1 is exceeded for selector ingresscontroller.operator.openshift.io/hash in (64fdf7bcc4)\\nEvents:\\n  Type     Reason            Age                  From               Message\\n  ----     ------            ----                 ----               -------\\n  Warning  FailedScheduling  50m (x728 over 24h)  default-scheduler  0/4 nodes are available: 1 node(s) didn't match pod anti-affinity rules, 3 node(s) had untolerated taint {node-role.kubernetes.io/master: }. preemption: 0/4 nodes are available: 1 node(s) didn't match pod anti-affinity rules, 3 Preemption is not helpful for scheduling.\\n  Warning  FailedScheduling  50m                  default-scheduler  0/4 nodes are available: 1 node(s) didn't match pod anti-affinity rules, 3 node(s) had untolerated taint {node-role.kubernetes.io/master: }. preemption: 0/4 nodes are available: 1 node(s) didn't match pod anti-affinity rules, 3 Preemption is not helpful for scheduling.\\n  Warning  FailedScheduling  23m (x14 over 46m)   default-scheduler  0/4 nodes are available: 1 node(s) didn't match pod anti-affinity rules, 3 node(s) had untolerated taint {node-role.kubernetes.io/master: }. preemption: 0/4 nodes are available: 1 node(s) didn't match pod anti-affinity rules, 3 Preemption is not helpful for scheduling.\\n\",\n  \"timestamp\": \"2025-08-18T00:50:19.874Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "666849484",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"ingresscontroller\",\"name\":\"default\",\"namespace\":\"openshift-ingress\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): ingresscontrollers.operator.openshift.io \\\"default\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:50:31.375Z\",\n  \"args\": {\n    \"resourceType\": \"ingresscontroller\",\n    \"name\": \"default\",\n    \"namespace\": \"openshift-ingress\"\n  }\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": []
+    }
+  ]
+}

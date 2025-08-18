@@ -1,0 +1,76 @@
+{
+  "results": [
+    {
+      "target": "ingress-pending",
+      "diffs": []
+    },
+    {
+      "target": "crashloopbackoff",
+      "diffs": []
+    },
+    {
+      "target": "route-5xx",
+      "diffs": []
+    },
+    {
+      "target": "pvc-binding",
+      "diffs": []
+    },
+    {
+      "target": "pvc-storage-affinity",
+      "diffs": []
+    },
+    {
+      "target": "api-degraded",
+      "diffs": []
+    },
+    {
+      "target": "zone-conflict",
+      "diffs": []
+    },
+    {
+      "target": "scheduling-failures",
+      "diffs": []
+    },
+    {
+      "target": "scale-instability",
+      "diffs": []
+    },
+    {
+      "target": "cluster-health-fanout-ingress",
+      "diffs": []
+    },
+    {
+      "target": "cluster-health-fanout-pvc",
+      "diffs": []
+    },
+    {
+      "target": "cluster-health-fanout-churn",
+      "diffs": []
+    },
+    {
+      "target": "cluster-health-negative",
+      "diffs": []
+    },
+    {
+      "target": "cluster-health-ingress-degraded",
+      "diffs": []
+    },
+    {
+      "target": "cluster-health-monitoring-degraded",
+      "diffs": []
+    },
+    {
+      "target": "cluster-health-clean",
+      "diffs": [
+        {
+          "path": "rubrics.triage.score",
+          "expected": 0.33,
+          "actual": 0.33000000000000007,
+          "delta": 5.551115123125783e-17,
+          "severity": "cosmetic"
+        }
+      ]
+    }
+  ]
+}

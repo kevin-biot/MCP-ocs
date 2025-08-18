@@ -28,6 +28,7 @@
       "msReplicasDesired",
       "msReplicasCurrent",
       "msReplicasReady",
+      "recentScaleEvents",
       "nodePressure"
     ]
   },

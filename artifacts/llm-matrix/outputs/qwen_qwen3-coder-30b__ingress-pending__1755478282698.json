@@ -1,0 +1,4 @@
+{
+  "error": "tools_unavailable",
+  "reason": "Failed to retrieve IngressController resource after multiple attempts. The 'default' IngressController does not exist in the 'openshift-ingress' namespace, which may indicate a misconfiguration or missing resource. The pod 'router-default-5c65587884-mt5qx' is in 'Pending' status, possibly due to resource constraints or scheduling issues."
+}

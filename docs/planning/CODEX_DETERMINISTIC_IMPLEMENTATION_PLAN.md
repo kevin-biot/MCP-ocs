@@ -1,4 +1,194 @@
-# MCP-ocs Deterministic Template Engine Implementation Plan
+# MCP-ocs Implementation Plans
+
+# ⚠️⚠️⚠️ MAJOR PLAN REVISION - 2025-08-18 ⚠️⚠️⚠️
+# OLD PLAN ARCHIVED BELOW - NEW v1.0 ACCEPTANCE PLAN ADDED
+# Kevin approved new comprehensive v1.0 scope replacing incremental approach
+# ═══════════════════════════════════════════════════════════════════════
+
+# 🚀 NEW v1.0 ACCEPTANCE IMPLEMENTATION PLAN
+Owner: Kevin (Architect). Executors: Codex (impl/tests), ChatGPT (reviews/specs), Claude (files/ADRs), Qwen (cross-model sanity).
+Goal: Deliver deterministic template engine with ≥90% coverage, rubrics, formatter, regression suite.
+
+──────────────────────────────────────────────────────────────────────────────
+ACCEPTANCE FOR v1.0 (FULL SCOPE)
+
+Scope Philosophy
+• v1.0 is a feature-complete baseline: all critical templates, rubrics, evidence 
+  contracts, formatter outputs, and memory coupling must be in place.  
+• Codex implements at velocity; Kevin validates at CLI; ChatGPT reviews/specs; 
+  Claude only scaffolds docs + ADRs (no touching code/tests).  
+• Release is gated by a massive regression run (all goldens, negatives, coverage, 
+  formatter outputs).  
+
+──────────────────────────────────────────────────────────────────────────────
+A) TEMPLATE CATALOGUE (explicit list, no gaps)
+
+A1) Implemented (goldens exist; core rubrics gated)
+1) ingress-pending-v1
+   • Purpose: Router pod Pending & IngressController rollout mismatch
+   • Evidence (req thr=0.9): routerPods, schedulingEvents, controllerStatus
+   • Tools: oc_read_get_pods; oc_read_describe(pod); oc_read_describe(ingresscontroller)
+   • Rubrics: triage-priority.v1; evidence-confidence.v1; remediation-safety.v1; slo-impact.v1
+   • Tests: positive + negative goldens, formatter shows SLO
+
+2) crashloopbackoff-v1
+   • Purpose: CrashLoopBackOff triage via logs + probes
+   • Evidence (req thr=0.8): lastLogs, probeConfig
+   • Tools: oc_read_get_pods; oc_read_logs; oc_read_describe(pod)
+   • Rubrics: triage-priority.v1; evidence-confidence.v1; remediation-safety.v1; slo-impact.v1
+   • Tests: goldens; confidence forced Low if evidence < threshold
+
+3) route-5xx-v1
+   • Purpose: Route/service/backend mismatch & endpoints empty
+   • Evidence (req thr=0.7): endpoints, routeSpec, readinessProbe
+   • Tools: oc_read_describe(route/service/endpoints)
+   • Rubrics: triage-priority.v1; evidence-confidence.v1; remediation-safety.v1; slo-impact.v1
+   • Tests: goldens
+
+4) pvc-binding-v1
+   • Purpose: Base PVC/PV/SC binding, quotas, provisioner hints
+   • Evidence (req thr=0.8): pvcSpec, scInfo, quota
+   • Tools: oc_read_describe(pvc/storageclass/resourcequota)
+   • Rubrics: triage-priority.v1; evidence-confidence.v1; remediation-safety.v1; slo-impact.v1
+   • Tests: goldens; upgrade path to pvc-storage-affinity-v1
+
+A2) In-Progress (scaffold + smokes; infra rubrics visual only)
+5) scheduling-failures-v1
+   • Purpose: FailedScheduling due to taints, labels, topology, MachineSets
+   • Evidence (req thr=0.9): schedulingEvents, controllerStatus, nodeTaints, nodeLabels, machinesetZoneDistribution
+   • Tools: oc_read_describe(pod/node); oc_read_machinesets; oc_read_nodes; oc_analyze_zone_conflicts
+   • Rubrics: triage-priority.v1; evidence-confidence.v1; remediation-safety.v1; infra (visual): scheduling-confidence.v1; zone-conflict-severity.v1; infrastructure-safety.v1
+   • Tests: smokes pass; goldens pending
+
+6) zone-conflict-detection-v1
+   • Purpose: Zone skew & capacity pressure from nodes + MachineSets
+   • Evidence (req thr=0.9): nodeZones, machinesets, zoneSkew, capacityPressure
+   • Tools: oc_read_nodes; oc_read_machinesets; oc_analyze_zone_conflicts
+   • Rubrics: infra (visual): zone-conflict-severity.v1; scheduling-confidence.v1; infrastructure-safety.v1
+   • Tests: goldens, non-gating
+
+7) scale-instability-v1
+   • Purpose: MachineSet churn + node pressure
+   • Evidence (req thr=0.85): msDesired, msCurrent, msReady, recentScaleEvents, nodePressureFlags
+   • Tools: oc_read_machinesets(+events); oc_read_nodes(conditions)
+   • Rubrics: triage-priority.v1; evidence-confidence.v1; remediation-safety.v1; slo-impact.v1; infra: scale-instability.v1; capacity-triage.v1
+   • Tests: scaffold; smokes needed
+
+8) pvc-storage-affinity-v1
+   • Purpose: Enhanced PVC → WFFC, topology mismatch, PV/SC misalignment, scale timing
+   • Evidence (req thr=0.85): bindingMode, allowedTopologies, waitForFirstConsumer, pvZoneMismatch, provisionerErrors, recentScaleEvents
+   • Tools: oc_read_describe(pvc/pv/sc); oc_read_machinesets(+events)
+   • Rubrics: storage-affinity.v1 + core rubrics
+   • Tests: scaffold
+
+A3) Planned (not yet started; must be present for v1.0)
+9) cluster-health-v1 (meta-template dispatcher)
+   • Purpose: Stage-0 probes → deterministic fan-out to micro templates
+   • Evidence: nodesSummary, podSummary, controlPlaneAlerts, recentEvents
+   • Tools: oc_diagnostic_cluster_health; oc_read_get_pods -A; oc_read_nodes
+   • Rubrics: triage/confidence/safety; meta-dispatch-confidence.v1
+   • Tests: fanout goldens (e.g., ingress, pvc, churn scenarios)
+
+10) node-pressure-hotspots-v1
+   • Purpose: Node Memory/Disk/PIDPressure + per-node imbalance
+   • Evidence (thr=0.85): nodeConditions, allocatable/capacity, spreadScore, topPressuredNodes
+   • Tools: oc_read_nodes(conditions + allocatable); oc_read_get_pods (replica→node mapping)
+   • Rubrics: capacity-triage.v1; per-node-spread.v1; core rubrics
+   • Tests: smokes + goldens
+
+11) deployment-rollout-stuck-v1
+   • Purpose: progressDeadlineExceeded, rollout not advancing
+   • Evidence: rolloutStatus, updatedVsDesired, failingPodsRecent
+   • Tools: oc_read_describe(deployment/rs/pods); oc_read_logs(pods)
+   • Rubrics: rollout-health.v1 + core rubrics
+
+12) image-pull-failure-v1
+   • Purpose: ErrImagePull/ImagePullBackOff
+   • Evidence: pullEvents, registryAuth, imageExists, rateLimitSignals
+   • Tools: oc_read_describe(pod); oc_read_logs(pod); (optional image metadata)
+   • Rubrics: image-pull-cause.v1 + core rubrics
+
+13) dns-resolution-failure-v1
+   • Purpose: kube-dns/CoreDNS degradation
+   • Evidence: corednsReady, dnsPodErrors, latencyMs, nxdomainRate
+   • Tools: oc_read_get_pods(kube-system/openshift-dns); oc_read_logs(coredns); oc_read_describe(service)
+   • Rubrics: dns-health.v1 + core rubrics
+
+14) quota-limit-breach-v1
+   • Purpose: ResourceQuota blocks scheduling/scale
+   • Evidence: quotaUsageVsHard, blockedKinds, impactedNamespaces
+   • Tools: oc_read_describe(resourcequota); oc_read_get_pods(ns)
+   • Rubrics: quota-block.v1 + core rubrics
+
+15) network-policy-block-v1
+   • Purpose: NetPol traffic denies
+   • Evidence: policyDenySignals, affectedWorkloads, connectivityProbe
+   • Tools: oc_read_describe(networkpolicy/pods/svc); oc_exec_probe
+   • Rubrics: netpol-block.v1 + core rubrics
+
+16) node-spread-imbalance-v1
+   • Purpose: topologySpread/anti-affinity violations
+   • Evidence: replicaDistributionPerNode, stdDev, maxNodeShare
+   • Tools: oc_read_get_pods + node mapping
+   • Rubrics: per-node-spread.v1 + core rubrics
+
+17) certificate-expiry-v1
+   • Purpose: router/api cert expiry + renewals failing
+   • Evidence: daysToExpiry, autoRenewConfigured, lastRenewFailed
+   • Tools: oc_read_describe(ingresscontroller/clusteroperator/auth)
+   • Rubrics: cert-expiry-risk.v1 + core rubrics
+
+18) etcd-disk-latency-v1
+   • Purpose: etcd fsync/backend commit latency
+   • Evidence: fsyncP99, backendCommitDur, diskPressure
+   • Tools: oc_read_describe(etcd CO/pods); oc_read_logs(etcd); node conditions
+   • Rubrics: etcd-io-latency.v1 + core rubrics
+
+19) cluster-outage-escalation-v1 (panic button)
+   • Purpose: "Do everything": bearings, failing pod focus, rollout, networking; prints real verify commands
+   • Evidence (thr~0.8): clusterStatus, nodesSummary, podSummary, failingPodDescribe, failingPodLogs, rolloutStatus
+   • Tools: oc_diagnostic_cluster_health; oc_read_get_pods; oc_read_describe(pod/deploy/svc/endpoints); oc_read_logs; sequential_thinking (bounded)
+   • Rubrics: core + verify-command-readiness.v1 (guards); playbook-suggestion-confidence.v1 (visual)
+   • Output: copy-paste commands + suggested runbooks
+
+──────────────────────────────────────────────────────────────────────────────
+B) RUBRICS LIBRARY (32 required for v1.0)
+
+Core (gated): triage-priority.v1; evidence-confidence.v1; remediation-safety.v1; slo-impact.v1  
+Infra (visual): zone-conflict-severity.v1; scheduling-confidence.v1; infrastructure-safety.v1; capacity-triage.v1; storage-affinity.v1; scale-instability.v1; per-node-spread.v1  
+Diagnostic: cluster-health.safety.v1; namespace-health.confidence.v1; pod-health.safety.v1; pod-health.confidence.v1; rca-checklist.mapping.v1  
+Memory: memory.search.confidence.v1; memory.store.safety.v1; memory.stats.safety.v1; memory.conversations.confidence.v1; memory-recall-confidence.v1  
+Workflow: workflow_state.safety.v1; sequential_thinking.safety.v1  
+Meta/Verification: meta-dispatch-confidence.v1; verify-command-readiness.v1; rollout-health.v1; image-pull-cause.v1; dns-health.v1; quota-block.v1; netpol-block.v1; cert-expiry-risk.v1; etcd-io-latency.v1  
+
+──────────────────────────────────────────────────────────────────────────────
+C) INFRASTRUCTURE / TESTS
+
+• Formatter v1.0: human (color), JSON, CSV; includes SLO + badges.  
+• Memory coupling: recall 3 past incidents, scored by memory-recall-confidence.v1.  
+• Regression suite: goldens (pos+neg) for all templates, CI comparator.  
+• Coverage gate: MIN_RUBRICS_COVERAGE=0.9 enforced.  
+• Smokes: preset fabricated runs for each template + fan-out.  
+• Docs: TEMPLATE-CATALOG.md auto-generated; ADRs in docs/architecture/adr.
+
+──────────────────────────────────────────────────────────────────────────────
+D) DONE CRITERIA
+
+• ≥10 templates shipping (we ship 19).  
+• 32 rubrics implemented.  
+• Formatter v1.0 operational.  
+• Evidence contracts enforced.  
+• Coverage ≥0.9.  
+• Regression suite green.  
+• Memory recall integrated.  
+• Docs + ADRs in place.  
+──────────────────────────────────────────────────────────────────────────────
+
+# ═══════════════════════════════════════════════════════════════════════
+# ARCHIVED - OLD INCREMENTAL PLAN (SUPERSEDED BY v1.0 ACCEPTANCE ABOVE)
+# ═══════════════════════════════════════════════════════════════════════
+
+# OLD MCP-ocs Deterministic Template Engine Implementation Plan
 
 ## Project Overview
 Transform MCP-ocs from LLM-driven diagnostic exploration to deterministic template-based triage engine while preserving Sequential Thinking as constrained post-template enhancement capability.

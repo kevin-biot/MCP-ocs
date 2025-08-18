@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LLMTranscript",
+  "type": "object",
+  "required": ["meta", "input", "turns", "summary"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["model", "temperature", "top_p", "seed", "tool_mode", "timestamp"],
+      "properties": {
+        "model": {"type":"string"},
+        "temperature": {"type":"number"},
+        "top_p": {"type":"number"},
+        "seed": {"type":"number"},
+        "tool_mode": {"type":"string"},
+        "tool_defs_hash": {"type":"string"},
+        "timestamp": {"type":"string"}
+      }
+    },
+    "input": {
+      "type": "object",
+      "required": ["system", "user"],
+      "properties": {
+        "system": {"type":"string"},
+        "user": {"type":"string"}
+      }
+    },
+    "turns": {
+      "type": "array",
+      "items": {
+        "type":"object",
+        "required":["idx","role"],
+        "properties": {
+          "idx": {"type":"integer"},
+          "role": {"type":"string"},
+          "content": {"type":"string"},
+          "tool_call": {
+            "type":"object",
+            "properties": {
+              "name":{"type":"string"},
+              "arguments":{"type":"object"}
+            }
+          },
+          "tool_result": {
+            "type":"object",
+            "properties": {
+              "ok":{"type":"boolean"},
+              "elapsed_ms":{"type":"number"},
+              "data":{"type":["object","string","array","null"]}
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type":"object",
+      "required": ["final_text","final_text_norm","templates","rubrics","metrics"],
+      "properties": {
+        "final_text":{"type":"string"},
+        "final_text_norm":{"type":"string"},
+        "templates": {
+          "type":"array",
+          "items":{"type":"string"}
+        },
+        "rubrics": {
+          "type":"object",
+          "additionalProperties":{"type":"string"}
+        },
+        "metrics":{
+          "type":"object",
+          "properties":{
+            "tool_calls_total":{"type":"integer"},
+            "tool_calls_ok":{"type":"integer"},
+            "evidence_completeness":{"type":"number"},
+            "priority_label":{"type":"string"},
+            "slo_label":{"type":"string"}
+          }
+        }
+      }
+    }
+  }
+}
+

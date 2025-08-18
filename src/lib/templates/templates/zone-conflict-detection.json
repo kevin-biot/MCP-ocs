@@ -7,9 +7,9 @@
   "blocks": [],
   "composition": { "infrastructure": [], "workload": [], "correlation": [] },
   "steps": [
-    { "tool": "oc_read_describe", "params": { "resourceType": "machinesets", "namespace": "openshift-machine-api" }, "rationale": "MachineSet distribution and replicas per zone" },
-    { "tool": "oc_read_describe", "params": { "resourceType": "node" }, "rationale": "Node labels/taints and zone mapping" },
-    { "tool": "oc_read_describe", "params": { "resourceType": "pod", "namespace": "<ns>", "name": "<pendingPod>" }, "rationale": "Scheduling failures to identify constraint violations" }
+    { "tool": "oc_read_machinesets", "params": { "sessionId": "<sessionId>", "namespace": "openshift-machine-api", "bounded": true }, "rationale": "MachineSet distribution and replicas per zone" },
+    { "tool": "oc_read_nodes", "params": { "sessionId": "<sessionId>", "bounded": true }, "rationale": "Node readiness, conditions, and zone mapping" },
+    { "tool": "oc_analyze_zone_conflicts", "params": { "sessionId": "<sessionId>" }, "rationale": "Aggregate zone skew and capacity pressure" }
   ],
   "evidenceContract": {
     "version": "v1.0.0",
@@ -25,4 +25,3 @@
   },
   "boundaries": { "maxSteps": 3, "timeoutMs": 20000 }
 }
-

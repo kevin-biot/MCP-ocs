@@ -18,9 +18,9 @@
   "evidenceThreshold": 0.9,
   "target": "zone-conflict",
   "steps": [
-    "oc_read_describe",
-    "oc_read_describe",
-    "oc_read_describe"
+    "oc_read_machinesets",
+    "oc_read_nodes",
+    "oc_analyze_zone_conflicts"
   ],
   "evidence": {
     "completeness": 1,

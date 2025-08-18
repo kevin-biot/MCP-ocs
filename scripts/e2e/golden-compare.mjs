@@ -13,7 +13,11 @@ import { REMEDIATION_SAFETY_V1 } from '../../src/lib/rubrics/core/remediation-sa
 const INFRA_LIVE_READS = String(process.env.INFRA_LIVE_READS || '').toLowerCase() === 'true';
 if (INFRA_LIVE_READS) console.error('[golden-compare] INFRA_LIVE_READS=true (placeholder) — using fabricated exec for determinism');
 
-const TARGETS = ['ingress-pending','crashloopbackoff','route-5xx','pvc-binding','api-degraded','zone-conflict','scheduling-failures','scale-instability'];
+const TARGETS = [
+  'ingress-pending','crashloopbackoff','route-5xx','pvc-binding','pvc-storage-affinity','api-degraded','zone-conflict','scheduling-failures','scale-instability',
+  'cluster-health-fanout-ingress','cluster-health-fanout-pvc','cluster-health-fanout-churn','cluster-health-negative',
+  'cluster-health-ingress-degraded','cluster-health-monitoring-degraded','cluster-health-clean'
+];
 const SCORE_DELTA_TOL = Number(process.env.SCORE_DELTA_TOL ?? 0);
 
 function loadGolden(t){
@@ -32,10 +36,12 @@ function determinism(){
   };
 }
 
+function lookupTarget(t){ return t.startsWith('cluster-health') ? 'cluster-health' : t; }
+
 async function actual(t){
   const reg = new TemplateRegistry();
   await reg.load();
-  const sel = reg.selectByTarget(t);
+  const sel = reg.selectByTarget(lookupTarget(t));
   if (!sel) throw new Error(`Template not found: ${t}`);
   const engine = new TemplateEngine();
   const sessionId = `compare-${t}`;
@@ -67,6 +73,14 @@ async function actual(t){
       exec.push(mk(2,{ status:{ hard:{ 'requests.storage':'100Gi' } } }));
       exec.push(mk(2,'WaitForFirstConsumer; allowedTopologies: topology.kubernetes.io/zone; no matching topology'));
       break;
+    case 'pvc-storage-affinity':
+      exec.push(mk(0,{ spec:{ accessModes:['ReadWriteOnce'], storageClassName:'standard' }, status:{ phase:'Pending' } }));
+      exec.push(mk(1,{ spec:{ nodeAffinity:{ required:{ nodeSelectorTerms:[{ matchExpressions:[{ key:'topology.kubernetes.io/zone', operator:'In', values:['b'] }] }] } } } }));
+      exec.push(mk(1,'no matching topology for requested zone'));
+      exec.push(mk(2,{ volumeBindingMode:'WaitForFirstConsumer', parameters:{ type:'gp2' }, allowedTopologies:['topology.kubernetes.io/zone'] }));
+      exec.push(mk(2,'provisioning failed: timed out waiting for PV'));
+      exec.push(mk(3,{ sets:[{name:'ms-a',replicas:3,zone:'a'},{name:'ms-b',replicas:1,zone:'b'}], lastScaleEvent:'Scaled up 1 (5m ago)', autoscaler:true }));
+      break;
     case 'zone-conflict':
       exec.push(mk(0,{ sets:[{name:'ms-a', replicas:3, zone:'a'},{name:'ms-b', replicas:1, zone:'b'}]}));
       exec.push(mk(1,{ zones:['a','b'], skew:0.85, capacity:{ utilization:0.8 } }));
@@ -81,6 +95,44 @@ async function actual(t){
     case 'scale-instability':
       exec.push(mk(0,{ schemaVersion:'v1', sets:[{name:'ms-a',replicas:3,zone:'a'},{name:'ms-b',replicas:1,zone:'b'}], replicasDesired:4, replicasCurrent:3, replicasReady:3, lastScaleEvent:'Scaled up 1 (5m ago)', autoscaler:true }));
       exec.push(mk(1,{ schemaVersion:'v1', zones:['a','b'], nodes:[{name:'n1',zone:'a',ready:true},{name:'n2',zone:'b',ready:false}], ready:1, total:2, conditions:{ MemoryPressure:true, DiskPressure:false, PIDPressure:false, NetworkUnavailable:false }, capacity:{ utilization:0.85 }, allocatable:{ cpu:'8', memory:'32Gi' } }));
+      break;
+    case 'cluster-health-fanout-ingress':
+      exec.push(mk(0,'Degraded False; Available True'));
+      exec.push(mk(1,{ total: 5, ready: 5 }));
+      exec.push(mk(2,{ items:[{metadata:{name:'router-default-abc'}}], pods:[{name:'router-default-abc', ready:'0/1'}] }));
+      exec.push(mk(2,'router pending'));
+      break;
+    case 'cluster-health-fanout-pvc':
+      exec.push(mk(0,'Degraded False; Available True'));
+      exec.push(mk(1,{ total: 5, ready: 5 }));
+      exec.push(mk(2,'WaitForFirstConsumer; no matching topology'));
+      break;
+    case 'cluster-health-fanout-churn':
+      exec.push(mk(0,'Progressing True'));
+      exec.push(mk(1,{ total: 5, ready: 4 }));
+      exec.push(mk(2,'Scaled up 1 (5m ago); replicas 3->4'));
+      break;
+    case 'cluster-health-negative':
+      exec.push(mk(0,'All Operators Available True'));
+      exec.push(mk(1,{ total: 5, ready: 5 }));
+      exec.push(mk(2,{ items:[{metadata:{name:'router-default-abc'}}], pods:[{name:'router-default-abc', ready:'1/1'}] }));
+      break;
+    case 'cluster-health-ingress-degraded':
+      exec.push(mk(0,'Degraded True; Available False; DeploymentReplicasAllAvailable: False'));
+      exec.push(mk(1,{ total: 5, ready: 4 }));
+      exec.push(mk(2,{ items:[{metadata:{name:'router-default-abc'}}], pods:[{name:'router-default-abc', ready:'0/1'}] }));
+      exec.push(mk(2,'ingress pending; availableReplicas: 1\n...\nreplicas: 2\n\n type: DeploymentRollingOut\n status: True\n type: Degraded\n status: True'));
+      break;
+    case 'cluster-health-monitoring-degraded':
+      exec.push(mk(0,'name: monitoring\nDegraded True; UpdatingPrometheusOperator'));
+      exec.push(mk(1,{ total: 5, ready: 5 }));
+      exec.push(mk(2,{ items:[{metadata:{name:'router-default-abc'}}], pods:[{name:'router-default-abc', ready:'1/1'}] }));
+      exec.push(mk(2,'Scaled up 1 (5m ago)'));
+      break;
+    case 'cluster-health-clean':
+      exec.push(mk(0,'All Operators Available True'));
+      exec.push(mk(1,{ total: 5, ready: 5 }));
+      exec.push(mk(2,{ items:[{metadata:{name:'router-default-abc'}}], pods:[{name:'router-default-abc', ready:'1/1'}] }));
       break;
     default:
       for (let i=0;i<steps.length && i<3;i++) exec.push(mk(i,{ ok:true }));
@@ -99,19 +151,40 @@ async function actual(t){
     operatorsDegraded: 0.5,
     timeSinceFirstEventMin: 72
   };
+  // Adjust cluster-health severity for new degraded/clean cases
+  if (t === 'cluster-health-ingress-degraded' || t === 'cluster-health-monitoring-degraded') {
+    inputs.blastRadius = 1;
+    inputs.customerPaths = 1;
+    inputs.operatorsDegraded = 1;
+  }
+  if (t === 'cluster-health-clean') {
+    inputs.blastRadius = 0.5;
+    inputs.customerPaths = 0.3;
+    inputs.operatorsDegraded = 0;
+  }
   const slo = sloInputsFor(t);
   const rubrics = evaluateRubrics({ triage: TRIAGE_PRIORITY_V1, confidence: EVIDENCE_CONFIDENCE_V1, safety: REMEDIATION_SAFETY_V1, slo: SLO_IMPACT_V1 }, { ...inputs, ...slo });
+  if (t.startsWith('cluster-health')) {
+    const ingressSignal = t.includes('ingress') ? 1 : 0;
+    const pvcSignal = t.includes('pvc') ? 1 : 0;
+    const churnSignal = t.includes('churn') ? 1 : 0;
+    const { META_DISPATCH_CONFIDENCE_V1 } = await import('../../src/lib/rubrics/meta/meta-dispatch-confidence.v1.ts');
+    const meta = evaluateRubrics({ meta: META_DISPATCH_CONFIDENCE_V1 }, { ingressSignal, pvcSignal, churnSignal });
+    (rubrics).meta = meta.meta;
+  }
   return { target: t, steps: steps.map(s=>s.tool), evidence, rubrics, determinism: determinism() };
 }
 
 function sloInputsFor(t){
-  const base = { ingressPending:0, route5xx:0, pvcBinding:0, crashloop:0, apiDegraded:0 };
+  const base = { ingressPending:0, route5xx:0, pvcBinding:0, crashloop:0, apiDegraded:0, clusterHealthDegraded:0 };
   switch(t){
     case 'ingress-pending': return { ...base, ingressPending:1 };
     case 'route-5xx': return { ...base, route5xx:1 };
     case 'pvc-binding': return { ...base, pvcBinding:1 };
     case 'crashloopbackoff': return { ...base, crashloop:1 };
     case 'api-degraded': return { ...base, apiDegraded:1 };
+    case 'cluster-health-ingress-degraded': return { ...base, clusterHealthDegraded:1 };
+    case 'cluster-health-monitoring-degraded': return { ...base, clusterHealthDegraded:1 };
     default: return base;
   }
 }

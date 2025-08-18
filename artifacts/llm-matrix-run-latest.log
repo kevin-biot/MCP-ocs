@@ -1,0 +1,641 @@
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477722227_1755477725115',
+  documentLength: 617,
+  sessionId: 'matrix-ingress-pending-1755477722227'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477722227_1755477725233',
+  documentLength: 95,
+  sessionId: 'matrix-ingress-pending-1755477722227'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477722227_1755477727969',
+  documentLength: 617,
+  sessionId: 'matrix-ingress-pending-1755477722227'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477722227_1755477728025',
+  documentLength: 95,
+  sessionId: 'matrix-ingress-pending-1755477722227'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477722227_1755477731012',
+  documentLength: 617,
+  sessionId: 'matrix-ingress-pending-1755477722227'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477722227_1755477731084',
+  documentLength: 95,
+  sessionId: 'matrix-ingress-pending-1755477722227'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477722227_1755477733220',
+  documentLength: 617,
+  sessionId: 'matrix-ingress-pending-1755477722227'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477722227_1755477733281',
+  documentLength: 95,
+  sessionId: 'matrix-ingress-pending-1755477722227'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477722227_1755477735498',
+  documentLength: 617,
+  sessionId: 'matrix-ingress-pending-1755477722227'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477722227_1755477735561',
+  documentLength: 95,
+  sessionId: 'matrix-ingress-pending-1755477722227'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477722227_1755477737892',
+  documentLength: 617,
+  sessionId: 'matrix-ingress-pending-1755477722227'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477722227_1755477737951',
+  documentLength: 95,
+  sessionId: 'matrix-ingress-pending-1755477722227'
+}
+✅ Successfully stored to ChromaDB
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+💾 Storing to ChromaDB: {
+  id: 'matrix-route-5xx-1755477737984_1755477740014',
+  documentLength: 258,
+  sessionId: 'matrix-route-5xx-1755477737984'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-route-5xx-1755477737984_1755477740085',
+  documentLength: 69,
+  sessionId: 'matrix-route-5xx-1755477737984'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-route-5xx-1755477737984_1755477741982',
+  documentLength: 258,
+  sessionId: 'matrix-route-5xx-1755477737984'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-route-5xx-1755477737984_1755477742042',
+  documentLength: 69,
+  sessionId: 'matrix-route-5xx-1755477737984'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-route-5xx-1755477737984_1755477745865',
+  documentLength: 258,
+  sessionId: 'matrix-route-5xx-1755477737984'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-route-5xx-1755477737984_1755477745949',
+  documentLength: 69,
+  sessionId: 'matrix-route-5xx-1755477737984'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-route-5xx-1755477737984_1755477750847',
+  documentLength: 258,
+  sessionId: 'matrix-route-5xx-1755477737984'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-route-5xx-1755477737984_1755477750909',
+  documentLength: 69,
+  sessionId: 'matrix-route-5xx-1755477737984'
+}
+✅ Successfully stored to ChromaDB
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-binding-1755477755729_1755477760211',
+  documentLength: 262,
+  sessionId: 'matrix-pvc-binding-1755477755729'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-binding-1755477755729_1755477760249',
+  documentLength: 73,
+  sessionId: 'matrix-pvc-binding-1755477755729'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-binding-1755477755729_1755477765898',
+  documentLength: 262,
+  sessionId: 'matrix-pvc-binding-1755477755729'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-binding-1755477755729_1755477765965',
+  documentLength: 73,
+  sessionId: 'matrix-pvc-binding-1755477755729'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-binding-1755477755729_1755477772975',
+  documentLength: 262,
+  sessionId: 'matrix-pvc-binding-1755477755729'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-binding-1755477755729_1755477773058',
+  documentLength: 73,
+  sessionId: 'matrix-pvc-binding-1755477755729'
+}
+✅ Successfully stored to ChromaDB
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-storage-affinity-1755477775250_1755477776968',
+  documentLength: 262,
+  sessionId: 'matrix-pvc-storage-affinity-1755477775250'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-storage-affinity-1755477775250_1755477777007',
+  documentLength: 73,
+  sessionId: 'matrix-pvc-storage-affinity-1755477775250'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-storage-affinity-1755477775250_1755477778505',
+  documentLength: 262,
+  sessionId: 'matrix-pvc-storage-affinity-1755477775250'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-storage-affinity-1755477775250_1755477778567',
+  documentLength: 73,
+  sessionId: 'matrix-pvc-storage-affinity-1755477775250'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-storage-affinity-1755477775250_1755477780435',
+  documentLength: 262,
+  sessionId: 'matrix-pvc-storage-affinity-1755477775250'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-storage-affinity-1755477775250_1755477780495',
+  documentLength: 73,
+  sessionId: 'matrix-pvc-storage-affinity-1755477775250'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-storage-affinity-1755477775250_1755477782182',
+  documentLength: 262,
+  sessionId: 'matrix-pvc-storage-affinity-1755477775250'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-storage-affinity-1755477775250_1755477782245',
+  documentLength: 73,
+  sessionId: 'matrix-pvc-storage-affinity-1755477775250'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-storage-affinity-1755477775250_1755477785945',
+  documentLength: 262,
+  sessionId: 'matrix-pvc-storage-affinity-1755477775250'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-storage-affinity-1755477775250_1755477786029',
+  documentLength: 73,
+  sessionId: 'matrix-pvc-storage-affinity-1755477775250'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-storage-affinity-1755477775250_1755477789701',
+  documentLength: 262,
+  sessionId: 'matrix-pvc-storage-affinity-1755477775250'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-storage-affinity-1755477775250_1755477789761',
+  documentLength: 73,
+  sessionId: 'matrix-pvc-storage-affinity-1755477775250'
+}
+✅ Successfully stored to ChromaDB
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477790216_1755477792022',
+  documentLength: 617,
+  sessionId: 'matrix-scheduling-failures-1755477790216'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477790216_1755477792072',
+  documentLength: 95,
+  sessionId: 'matrix-scheduling-failures-1755477790216'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477790216_1755477794090',
+  documentLength: 617,
+  sessionId: 'matrix-scheduling-failures-1755477790216'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477790216_1755477794162',
+  documentLength: 95,
+  sessionId: 'matrix-scheduling-failures-1755477790216'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477790216_1755477797026',
+  documentLength: 17036,
+  sessionId: 'matrix-scheduling-failures-1755477790216'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477790216_1755477797524',
+  documentLength: 617,
+  sessionId: 'matrix-scheduling-failures-1755477790216'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477790216_1755477797595',
+  documentLength: 95,
+  sessionId: 'matrix-scheduling-failures-1755477790216'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477790216_1755477809953',
+  documentLength: 617,
+  sessionId: 'matrix-scheduling-failures-1755477790216'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477790216_1755477810052',
+  documentLength: 95,
+  sessionId: 'matrix-scheduling-failures-1755477790216'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477790216_1755477813343',
+  documentLength: 617,
+  sessionId: 'matrix-scheduling-failures-1755477790216'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477790216_1755477813415',
+  documentLength: 95,
+  sessionId: 'matrix-scheduling-failures-1755477790216'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477790216_1755477819310',
+  documentLength: 617,
+  sessionId: 'matrix-scheduling-failures-1755477790216'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477790216_1755477819382',
+  documentLength: 95,
+  sessionId: 'matrix-scheduling-failures-1755477790216'
+}
+✅ Successfully stored to ChromaDB
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477822493_1755477826632',
+  documentLength: 617,
+  sessionId: 'matrix-ingress-pending-1755477822493'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477822493_1755477826710',
+  documentLength: 95,
+  sessionId: 'matrix-ingress-pending-1755477822493'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477822493_1755477830990',
+  documentLength: 6896,
+  sessionId: 'matrix-ingress-pending-1755477822493'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477822493_1755477845156',
+  documentLength: 6896,
+  sessionId: 'matrix-ingress-pending-1755477822493'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477822493_1755477857003',
+  documentLength: 340,
+  sessionId: 'matrix-ingress-pending-1755477822493'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477822493_1755477857092',
+  documentLength: 125,
+  sessionId: 'matrix-ingress-pending-1755477822493'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477822493_1755477860553',
+  documentLength: 340,
+  sessionId: 'matrix-ingress-pending-1755477822493'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477822493_1755477860618',
+  documentLength: 125,
+  sessionId: 'matrix-ingress-pending-1755477822493'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477822493_1755477863949',
+  documentLength: 340,
+  sessionId: 'matrix-ingress-pending-1755477822493'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477822493_1755477864017',
+  documentLength: 125,
+  sessionId: 'matrix-ingress-pending-1755477822493'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477822493_1755477867361',
+  documentLength: 340,
+  sessionId: 'matrix-ingress-pending-1755477822493'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477822493_1755477867462',
+  documentLength: 125,
+  sessionId: 'matrix-ingress-pending-1755477822493'
+}
+✅ Successfully stored to ChromaDB
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477894668_1755477903202',
+  documentLength: 617,
+  sessionId: 'matrix-ingress-pending-1755477894668'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477894668_1755477903315',
+  documentLength: 95,
+  sessionId: 'matrix-ingress-pending-1755477894668'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477894668_1755477905344',
+  documentLength: 617,
+  sessionId: 'matrix-ingress-pending-1755477894668'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477894668_1755477905414',
+  documentLength: 95,
+  sessionId: 'matrix-ingress-pending-1755477894668'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477894668_1755477907411',
+  documentLength: 6896,
+  sessionId: 'matrix-ingress-pending-1755477894668'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477894668_1755477910507',
+  documentLength: 617,
+  sessionId: 'matrix-ingress-pending-1755477894668'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-ingress-pending-1755477894668_1755477910579',
+  documentLength: 95,
+  sessionId: 'matrix-ingress-pending-1755477894668'
+}
+✅ Successfully stored to ChromaDB
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+💾 Storing to ChromaDB: {
+  id: 'matrix-route-5xx-1755477912998_1755477915601',
+  documentLength: 274,
+  sessionId: 'matrix-route-5xx-1755477912998'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-route-5xx-1755477912998_1755477915672',
+  documentLength: 95,
+  sessionId: 'matrix-route-5xx-1755477912998'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-route-5xx-1755477912998_1755477916505',
+  documentLength: 258,
+  sessionId: 'matrix-route-5xx-1755477912998'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-route-5xx-1755477912998_1755477916568',
+  documentLength: 69,
+  sessionId: 'matrix-route-5xx-1755477912998'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-route-5xx-1755477912998_1755477919189',
+  documentLength: 274,
+  sessionId: 'matrix-route-5xx-1755477912998'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-route-5xx-1755477912998_1755477919252',
+  documentLength: 95,
+  sessionId: 'matrix-route-5xx-1755477912998'
+}
+✅ Successfully stored to ChromaDB
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-binding-1755477920006_1755477923672',
+  documentLength: 262,
+  sessionId: 'matrix-pvc-binding-1755477920006'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-binding-1755477920006_1755477923713',
+  documentLength: 73,
+  sessionId: 'matrix-pvc-binding-1755477920006'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-binding-1755477920006_1755477924547',
+  documentLength: 262,
+  sessionId: 'matrix-pvc-binding-1755477920006'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-binding-1755477920006_1755477924614',
+  documentLength: 73,
+  sessionId: 'matrix-pvc-binding-1755477920006'
+}
+✅ Successfully stored to ChromaDB
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-storage-affinity-1755477928348_1755477931522',
+  documentLength: 266,
+  sessionId: 'matrix-pvc-storage-affinity-1755477928348'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-pvc-storage-affinity-1755477928348_1755477931563',
+  documentLength: 87,
+  sessionId: 'matrix-pvc-storage-affinity-1755477928348'
+}
+✅ Successfully stored to ChromaDB
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+✓ Local embedding pipeline ready
+✓ Chroma memory manager initialized (REST + local embeddings)
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477932279_1755477934722',
+  documentLength: 288,
+  sessionId: 'matrix-scheduling-failures-1755477932279'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477932279_1755477934766',
+  documentLength: 109,
+  sessionId: 'matrix-scheduling-failures-1755477932279'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477932279_1755477938954',
+  documentLength: 288,
+  sessionId: 'matrix-scheduling-failures-1755477932279'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477932279_1755477939018',
+  documentLength: 109,
+  sessionId: 'matrix-scheduling-failures-1755477932279'
+}
+✅ Successfully stored to ChromaDB
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477932279_1755477943567',
+  documentLength: 288,
+  sessionId: 'matrix-scheduling-failures-1755477932279'
+}
+✅ Successfully stored to ChromaDB
+📝 Adding 1 documents to conversations via MCP-files adapter
+💾 Storing to ChromaDB: {
+  id: 'matrix-scheduling-failures-1755477932279_1755477943631',
+  documentLength: 109,
+  sessionId: 'matrix-scheduling-failures-1755477932279'
+}
+✅ Successfully stored to ChromaDB
+# LLM Matrix Report
+
+| Model | Template | Tool Calls | Status |
+|-------|----------|------------|--------|
+| ministral-8b-instruct-2410 | ingress-pending | 14 | OK |
+| ministral-8b-instruct-2410 | route-5xx | 15 | OK |
+| ministral-8b-instruct-2410 | pvc-binding | 21 | OK |
+| ministral-8b-instruct-2410 | pvc-storage-affinity | 13 | OK |
+| ministral-8b-instruct-2410 | scheduling-failures | 12 | OK |
+| mistralai/devstral-small-2507 | ingress-pending | 8 | OK |
+| mistralai/devstral-small-2507 | route-5xx | 1 | OK |
+| mistralai/devstral-small-2507 | pvc-binding | 1 | OK |
+| mistralai/devstral-small-2507 | pvc-storage-affinity | 1 | OK |
+| mistralai/devstral-small-2507 | scheduling-failures | 1 | OK |
+| qwen/qwen3-coder-30b | ingress-pending | 7 | OK |
+| qwen/qwen3-coder-30b | route-5xx | 7 | OK |
+| qwen/qwen3-coder-30b | pvc-binding | 8 | OK |
+| qwen/qwen3-coder-30b | pvc-storage-affinity | 4 | OK |
+| qwen/qwen3-coder-30b | scheduling-failures | 12 | OK |

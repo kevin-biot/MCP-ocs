@@ -1,4 +1,4 @@
-import type { GuardsRubric } from "../../rubric-registry.js";
+import type { GuardsRubric } from "../rubric-registry.js";
 
 // Infrastructure Safety (v1)
 // Inputs:
@@ -15,4 +15,3 @@ export const INFRASTRUCTURE_SAFETY_V1: GuardsRubric = {
   ],
   decision: { allowAuto: 'all guards true' }
 };
-

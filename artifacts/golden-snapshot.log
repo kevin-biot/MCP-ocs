@@ -1,0 +1,13 @@
+Saved golden: docs/golden-templates/ingress-pending.json
+Saved golden: docs/golden-templates/crashloopbackoff.json
+Saved golden: docs/golden-templates/route-5xx.json
+Saved golden: docs/golden-templates/pvc-binding.json
+Saved golden: docs/golden-templates/pvc-storage-affinity.json
+Saved golden: docs/golden-templates/api-degraded.json
+Saved golden: docs/golden-templates/zone-conflict.json
+Saved golden: docs/golden-templates/scheduling-failures.json
+Saved golden: docs/golden-templates/scale-instability.json
+Saved golden: docs/golden-templates/cluster-health-fanout-ingress.json
+Saved golden: docs/golden-templates/cluster-health-fanout-pvc.json
+Saved golden: docs/golden-templates/cluster-health-fanout-churn.json
+Saved golden: docs/golden-templates/cluster-health-negative.json

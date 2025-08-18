@@ -12,15 +12,15 @@
   ],
   "evidenceContract": {
     "version": "v1.0.0",
-    "required": ["msReplicasDesired","msReplicasCurrent","msReplicasReady","nodePressure"],
+    "required": ["msReplicasDesired","msReplicasCurrent","msReplicasReady","recentScaleEvents","nodePressure"],
     "selectors": {
       "msReplicasDesired": [ { "type": "jsonpath", "path": "{.replicasDesired}" } ],
       "msReplicasCurrent": [ { "type": "jsonpath", "path": "{.replicasCurrent}" } ],
       "msReplicasReady": [ { "type": "jsonpath", "path": "{.replicasReady}" } ],
+      "recentScaleEvents": [ { "type": "eventsRegex", "path": "Scaled up|Scaled down|replicas" } ],
       "nodePressure": [ { "type": "jsonpath", "path": "{.conditions.MemoryPressure}" } ]
     },
     "completenessThreshold": 0.8
   },
   "boundaries": { "maxSteps": 2, "timeoutMs": 20000 }
 }
-

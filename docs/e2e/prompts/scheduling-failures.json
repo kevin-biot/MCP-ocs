@@ -1,0 +1,2 @@
+{ "template": "scheduling-failures", "ns": "openshift-ingress", "pod": "router-default-xxxxx" }
+

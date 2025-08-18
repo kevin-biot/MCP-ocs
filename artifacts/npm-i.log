@@ -1,0 +1,20 @@
+
+> mcp-ocs@0.8.0-beta prepare
+> npm run build
+
+
+> mcp-ocs@0.8.0-beta build
+> tsc && mkdir -p dist
+
+
+up to date, audited 937 packages in 2s
+
+143 packages are looking for funding
+  run `npm fund` for details
+
+5 vulnerabilities (1 moderate, 4 critical)
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.

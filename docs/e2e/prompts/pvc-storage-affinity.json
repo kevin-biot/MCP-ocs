@@ -1,0 +1,2 @@
+{ "template": "pvc-storage-affinity", "ns": "orders", "pvc": "db-storage" }
+

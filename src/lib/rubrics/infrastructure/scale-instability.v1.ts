@@ -1,4 +1,4 @@
-import type { MappingRubric } from "../../rubric-registry.js";
+import type { MappingRubric } from "../rubric-registry.js";
 
 // Scale Instability (v1)
 // Inputs:
@@ -13,4 +13,3 @@ export const SCALE_INSTABILITY_V1: MappingRubric = {
     STABLE: 'otherwise'
   }
 };
-

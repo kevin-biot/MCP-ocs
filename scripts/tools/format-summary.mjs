@@ -49,10 +49,11 @@ function render(summary, opts={}){
   }
   // Infra rubric badges (visual only)
   const infra = summary?.infra;
-  if (infra && (infra.zoneConflict || infra.schedulingConfidence || (infra.infrastructureSafety && typeof infra.infrastructureSafety.allowAuto !== 'undefined'))) {
+  if (infra && (infra.zoneConflict || infra.schedulingConfidence || infra.storageAffinity || (infra.infrastructureSafety && typeof infra.infrastructureSafety.allowAuto !== 'undefined'))) {
     const bits = [];
     if (infra.zoneConflict) bits.push(`ZoneConflict: ${infra.zoneConflict}`);
     if (infra.schedulingConfidence) bits.push(`SchedulingConfidence: ${infra.schedulingConfidence}`);
+    if (infra.storageAffinity) bits.push(`StorageAffinity: ${infra.storageAffinity}`);
     if (infra.infrastructureSafety && typeof infra.infrastructureSafety.allowAuto !== 'undefined') bits.push(`InfraAuto: ${infra.infrastructureSafety.allowAuto}`);
     if (infra.capacity) bits.push(`Capacity: ${infra.capacity}`);
     if (infra.scale) bits.push(`Scale: ${infra.scale}`);
@@ -63,7 +64,8 @@ function render(summary, opts={}){
   if (summary?.recall) {
     const sim = Number(summary?.recall?.top1Similarity ?? 0).toFixed(2);
     const fresh = typeof summary?.recall?.freshnessMin === 'number' ? `${summary.recall.freshnessMin}m` : 'n/a';
-    const badge = `Recall: sim ${sim} | fresh ${fresh}`;
+    const conf = summary?.recall?.confidence || 'n/a';
+    const badge = `Recall: sim ${sim} | fresh ${fresh} | conf ${conf}`;
     lines.push(opts.color ? colorize(badge, 'dim', true) : badge);
   }
   return lines.join('\n');
@@ -104,6 +106,17 @@ function main(){
   const raw = fs.readFileSync(file,'utf8');
   const payload = JSON.parse(raw);
   const summary = payload?.summary || payload; // accept both envelope or bare summary
+
+  // Future-proof runtime lock: if summary indicates a mutation attempt, abort loudly
+  try {
+    const allowMut = String(process.env.OC_ALLOW_MUTATIONS || '0') !== '0';
+    const actions = Array.isArray(summary?.actions) ? summary.actions : [];
+    const mutationFlag = Boolean(summary?.attemptedMutations) || actions.some(a => /apply|delete|scale|patch|edit|replace|cordon|drain|uncordon|annotate|label|taint|rollout\s+(restart|pause|resume|undo)/i.test(String(a?.command || '')));
+    if (mutationFlag && !allowMut) {
+      console.error('\u001b[31m[LOCK] Mutation-like action detected in summary. OC_ALLOW_MUTATIONS=0 — aborting.\u001b[0m');
+      process.exit(2);
+    }
+  } catch {}
   const jsonOut = process.argv.includes('--json');
   const csvOut = process.argv.includes('--csv');
   const csvNoHeader = process.argv.includes('--no-header') || process.env.CSV_NO_HEADER === 'true';
@@ -145,6 +158,8 @@ function main(){
     return;
   }
   const color = process.argv.includes('--color') || process.env.COLOR === 'true';
+// Belt & suspenders: default to read-only
+process.env.OC_ALLOW_MUTATIONS = process.env.OC_ALLOW_MUTATIONS ?? '0';
   console.log(render(summary, { color }));
   if (gate) {
     const completeness = Number(summary?.evidence?.completeness ?? 0);

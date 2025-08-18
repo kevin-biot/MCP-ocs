@@ -6,7 +6,7 @@ import { TemplateEngine } from '../../src/lib/templates/template-engine.js';
 const INFRA_LIVE_READS = String(process.env.INFRA_LIVE_READS || '').toLowerCase() === 'true';
 if (INFRA_LIVE_READS) console.error('[template-coverage] INFRA_LIVE_READS=true (placeholder) — using fabricated exec for determinism');
 
-const TARGETS = ['ingress-pending','crashloopbackoff','route-5xx','pvc-binding','api-degraded','zone-conflict','scheduling-failures','scale-instability'];
+const TARGETS = ['ingress-pending','crashloopbackoff','route-5xx','pvc-binding','pvc-storage-affinity','api-degraded','zone-conflict','scheduling-failures','scale-instability'];
 
 function fabricateExec(target, plan){
   const mk = (i,res)=>({ step: plan.steps[Math.min(i, plan.steps.length-1)], result: res });
@@ -32,6 +32,14 @@ function fabricateExec(target, plan){
       exec.push(mk(1, { parameters:{ provisioner: 'kubernetes.io/aws-ebs' } }));
       exec.push(mk(2, { status:{ hard:{ 'requests.storage':'100Gi' } } }));
       exec.push(mk(2, 'WaitForFirstConsumer; allowedTopologies: topology.kubernetes.io/zone; no matching topology'));
+      break;
+    case 'pvc-storage-affinity':
+      exec.push(mk(0, { spec:{ accessModes:['ReadWriteOnce'], storageClassName:'standard' } }));
+      exec.push(mk(1, { spec:{ nodeAffinity:{ required:{ nodeSelectorTerms:[{ matchExpressions:[{ key:'topology.kubernetes.io/zone', operator:'In', values:['b'] }] }] } } } }));
+      exec.push(mk(1, 'no matching topology for requested zone'));
+      exec.push(mk(2, { volumeBindingMode:'WaitForFirstConsumer', parameters:{ type:'gp2' }, allowedTopologies:['topology.kubernetes.io/zone'] }));
+      exec.push(mk(2, 'provisioning failed: timed out waiting for PV'));
+      exec.push(mk(3, { sets:[{ name:'ms-a', replicas:3, zone:'a' }, { name:'ms-b', replicas:1, zone:'b' }], lastScaleEvent:'Scaled up 1 (5m ago)', autoscaler:true }));
       break;
     case 'api-degraded':
       exec.push(mk(0, 'kube-apiserver Degraded True'));

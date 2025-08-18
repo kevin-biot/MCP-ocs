@@ -5,7 +5,7 @@ import { TemplateRegistry } from '../../src/lib/templates/template-registry.js';
 import { TemplateEngine } from '../../src/lib/templates/template-engine.js';
 import { BoundaryEnforcer } from '../../src/lib/enforcement/boundary-enforcer.js';
 
-const TARGETS = ['ingress-pending','crashloopbackoff','route-5xx','pvc-binding'];
+const TARGETS = ['ingress-pending','crashloopbackoff','route-5xx','pvc-binding','pvc-storage-affinity','scale-instability'];
 
 function determinism(){
   return {
@@ -55,6 +55,16 @@ async function actualNegative(t){
       exec.push(mk(1,{ parameters: { } }));
       exec.push(mk(2,{ status:{ } }));
       break;
+    case 'pvc-storage-affinity':
+      exec.push(mk(0,{ spec:{ storageClassName:'standard' }, status:{ phase:'Pending' } }));
+      exec.push(mk(1,{ }));
+      exec.push(mk(2,{ volumeBindingMode:'Immediate', parameters:{}, allowedTopologies:[] }));
+      exec.push(mk(3,{ sets:[{name:'ms-a',replicas:3,zone:'a'}], lastScaleEvent:null, autoscaler:false }));
+      break;
+    case 'scale-instability':
+      exec.push(mk(0,{ schemaVersion:'v1', sets:[{name:'ms-a',replicas:3,zone:'a'}], replicasDesired:3, replicasCurrent:3, replicasReady:3, lastScaleEvent:null, autoscaler:false }));
+      exec.push(mk(1,{ schemaVersion:'v1', zones:['a'], nodes:[{name:'n1',zone:'a',ready:true}], ready:1, total:1, conditions:{ MemoryPressure:false, DiskPressure:false, PIDPressure:false, NetworkUnavailable:false }, capacity:{ utilization:0.3 }, allocatable:{ cpu:'8', memory:'32Gi' } }));
+      break;
   }
   const evidence = engine.evaluateEvidence(sel.template, exec);
   return { determinism: determinism(), steps: steps.map(s=>s.tool), evidence };
@@ -97,4 +107,3 @@ async function main(){
 }
 
 main().catch(e=>{ console.error(e?.message||e); process.exit(1); });
-

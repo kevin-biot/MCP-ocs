@@ -1,0 +1,55 @@
+{
+  "scenario": "cluster-health",
+  "sessionId": "engine-cluster-health-1755512234624",
+  "plan": {
+    "planId": "engine-cluster-health-1755512234624",
+    "steps": [
+      {
+        "tool": "oc_diagnostic_cluster_health",
+        "params": {
+          "sessionId": "engine-cluster-health-1755512234624",
+          "bounded": true
+        },
+        "rationale": "Stage-0: cheap global health probe"
+      },
+      {
+        "tool": "oc_read_nodes",
+        "params": {
+          "sessionId": "engine-cluster-health-1755512234624",
+          "bounded": true
+        },
+        "rationale": "Node readiness and pressure snapshot"
+      },
+      {
+        "tool": "oc_read_get_pods",
+        "params": {
+          "sessionId": "engine-cluster-health-1755512234624",
+          "namespace": "openshift-ingress"
+        },
+        "rationale": "Router pod readiness hints"
+      }
+    ],
+    "boundaries": {
+      "maxSteps": 3,
+      "timeoutMs": 15000
+    }
+  },
+  "completeness": 0.5,
+  "result": {
+    "priority": "P3",
+    "confidence": "Low",
+    "slo": "LOW",
+    "evidence_keys": [
+      "no_evidence"
+    ],
+    "notes": "no_evidence"
+  },
+  "debug": {
+    "evidence_fired": [
+      "nodesSummary",
+      "podSummary"
+    ],
+    "mapped_keys": [],
+    "confidence_rules_applied": []
+  }
+}

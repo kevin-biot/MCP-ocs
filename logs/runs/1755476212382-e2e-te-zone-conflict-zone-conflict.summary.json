@@ -1,0 +1,130 @@
+{
+  "planId": "e2e-te-zone-conflict",
+  "target": "zone-conflict",
+  "summary": {
+    "schemaVersion": "1.0.0",
+    "engineVersion": "0.8.0-beta",
+    "templateId": "zone-conflict-detection-v1",
+    "templateVersion": "1.0.0",
+    "rubricVersions": {
+      "triage": "triage-priority.v1",
+      "confidence": "evidence-confidence.v1",
+      "safety": "remediation-safety.v1"
+    },
+    "determinism": {
+      "modelName": "none",
+      "system_fingerprint": "none",
+      "temperature": 0,
+      "top_p": 1,
+      "seed": 42
+    },
+    "priority": {
+      "label": "P2",
+      "score": 0.57,
+      "why": ">=0.55"
+    },
+    "confidence": {
+      "label": "High",
+      "why": "evidenceCompleteness>=0.9 && toolAgreement>=0.8 && freshnessMin<=10"
+    },
+    "safety": {
+      "allowAuto": true,
+      "why": "all guards passed",
+      "guards": [
+        {
+          "guard": "etcdHealthy == true",
+          "key": "etcdHealthy",
+          "op": "==",
+          "threshold": true,
+          "observed": true,
+          "pass": true
+        },
+        {
+          "guard": "controlPlaneReadyRatio >= 0.66",
+          "key": "controlPlaneReadyRatio",
+          "op": ">=",
+          "threshold": 0.66,
+          "observed": 0.67,
+          "pass": true
+        },
+        {
+          "guard": "affectedNamespaces <= 3",
+          "key": "affectedNamespaces",
+          "op": "<=",
+          "threshold": 3,
+          "observed": 1,
+          "pass": true
+        },
+        {
+          "guard": "noCriticalAlerts == true",
+          "key": "noCriticalAlerts",
+          "op": "==",
+          "threshold": true,
+          "observed": true,
+          "pass": true
+        }
+      ]
+    },
+    "evidence": {
+      "completeness": 1,
+      "minThreshold": 0.9,
+      "missing": [],
+      "present": [
+        "nodeZones",
+        "machinesets",
+        "zoneSkew",
+        "capacityPressure"
+      ]
+    },
+    "rubricInputs": {
+      "evidenceCompleteness": 1,
+      "toolAgreement": 0.85,
+      "freshnessMin": 5,
+      "etcdHealthy": true,
+      "controlPlaneReadyRatio": 0.67,
+      "affectedNamespaces": 1,
+      "noCriticalAlerts": true,
+      "blastRadius": 0.7,
+      "customerPaths": 0.5,
+      "operatorsDegraded": 0.5,
+      "timeSinceFirstEventMin": 72
+    },
+    "slo": {
+      "label": "LOW",
+      "why": "otherwise"
+    },
+    "sloHint": "Minimal impact; fix as capacity allows.",
+    "infra": {
+      "zoneConflict": "LOW",
+      "schedulingConfidence": "Low",
+      "infrastructureSafety": {
+        "allowAuto": true
+      },
+      "capacity": "LOW",
+      "scale": "STABLE",
+      "storageAffinity": "LOW"
+    },
+    "recall": {
+      "topK": [
+        {
+          "id": "architectural-actions-2025-08-13",
+          "score": -0.04130649999999991
+        },
+        {
+          "id": "phase-2a1-implementation-complete",
+          "score": -0.06566000000000005
+        },
+        {
+          "id": "phase-2a1-build-analysis",
+          "score": -0.0718106999999999
+        },
+        {
+          "id": "openshift-diagnostic-case-study",
+          "score": -0.0943273
+        }
+      ],
+      "top1Similarity": -0.04130649999999991,
+      "confidence": "Low"
+    }
+  }
+}

@@ -1,0 +1,341 @@
+
+=== Model: ministral-8b-instruct-2410 ===
+-- ingress-pending: PASS (exit 0)
+-- crashloopbackoff: PASS (exit 0)
+-- route-5xx: PASS (exit 0)
+-- pvc-binding: FAIL (exit 1)
+{
+  "target": "pvc-binding",
+  "lmStudio": {
+    "ok": true,
+    "content": "To evaluate the `pvc-binding` template in Kubernetes, you need to understand what it does and how it works. The term \"template\" typically refers to a YAML or JSON file that defines resources for Kubernetes, such as Pods, Services, Deployments, etc.\n\nIn the context of Persistent Volume Claims (PVCs), a `pvc-binding` template is used to create a PVC that binds to an existing Persistent Volume (PV). This can be useful in scenarios where you want to dynamically provision storage without manually creating PVs and binding them to PVCs.\n\nHere's a basic example of how a `pvc-binding` might look:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: my-pod\nspec:\n  containers:\n    - name: my-container\n      image: nginx\n  volumes:\n    - name: my-storage\n      persistentVolumeClaim:\n        claimName: my-pvc\n```\n\nIn this example, the `my-pod` is using a PVC named `my-pvc`. The PVC itself might be defined in another template or file.\n\nTo evaluate and test this setup:\n\n1. **Create the PVC Template**: Define your PVC template if it doesn't already exist.\n    ```yaml\n    apiVersion: v1\n    kind: PersistentVolumeClaim\n    metadata:\n      name: my-pvc\n    spec:\n      accessModes:\n        - ReadWriteOnce\n      resources:\n        requests:\n          storage: 1Gi\n    ```\n\n2. **Apply the PVC Template**:\n    ```sh\n    kubectl apply -f pvc-template.yaml\n    ```\n\n3. **Create and Apply the Pod Template**: Ensure your pod template references the PVC correctly.\n    ```sh\n    kubectl apply -f pod-template.yaml\n    ```\n\n4. **Verify the Binding**: Check if the PVC is bound to a PV.\n    ```sh\n    kubectl get pvc my-pvc\n    ```\n    You should see output indicating that the PVC is bound.\n\n5. **Check Pod Status**:\n    ```sh\n    kubectl get pods\n    kubectl describe pod my-pod\n    ```\n\n6. **Inspect Logs**: If necessary, inspect logs to ensure everything is working as expected.\n    ```sh\n    kubectl logs my-pod\n    ```\n\n### Troubleshooting Tips\n\n- Ensure the PV exists and matches the PVC's requirements (e.g., storage class, access modes).\n- Check for",
+    "raw": {
+      "id": "chatcmpl-ff2vgqdo3jnad7ce5pdxao",
+      "object": "chat.completion",
+      "created": 1755475452,
+      "model": "ministral-8b-instruct-2410",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "To evaluate the `pvc-binding` template in Kubernetes, you need to understand what it does and how it works. The term \"template\" typically refers to a YAML or JSON file that defines resources for Kubernetes, such as Pods, Services, Deployments, etc.\n\nIn the context of Persistent Volume Claims (PVCs), a `pvc-binding` template is used to create a PVC that binds to an existing Persistent Volume (PV). This can be useful in scenarios where you want to dynamically provision storage without manually creating PVs and binding them to PVCs.\n\nHere's a basic example of how a `pvc-binding` might look:\n\n```yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: my-pod\nspec:\n  containers:\n    - name: my-container\n      image: nginx\n  volumes:\n    - name: my-storage\n      persistentVolumeClaim:\n        claimName: my-pvc\n```\n\nIn this example, the `my-pod` is using a PVC named `my-pvc`. The PVC itself might be defined in another template or file.\n\nTo evaluate and test this setup:\n\n1. **Create the PVC Template**: Define your PVC template if it doesn't already exist.\n    ```yaml\n    apiVersion: v1\n    kind: PersistentVolumeClaim\n    metadata:\n      name: my-pvc\n    spec:\n      accessModes:\n        - ReadWriteOnce\n      resources:\n        requests:\n          storage: 1Gi\n    ```\n\n2. **Apply the PVC Template**:\n    ```sh\n    kubectl apply -f pvc-template.yaml\n    ```\n\n3. **Create and Apply the Pod Template**: Ensure your pod template references the PVC correctly.\n    ```sh\n    kubectl apply -f pod-template.yaml\n    ```\n\n4. **Verify the Binding**: Check if the PVC is bound to a PV.\n    ```sh\n    kubectl get pvc my-pvc\n    ```\n    You should see output indicating that the PVC is bound.\n\n5. **Check Pod Status**:\n    ```sh\n    kubectl get pods\n    kubectl describe pod my-pod\n    ```\n\n6. **Inspect Logs**: If necessary, inspect logs to ensure everything is working as expected.\n    ```sh\n    kubectl logs my-pod\n    ```\n\n### Troubleshooting Tips\n\n- Ensure the PV exists and matches the PVC's requirements (e.g., storage class, access modes).\n- Check for",
+            "reasoning_content": "",
+            "tool_calls": []
+          },
+          "logprobs": null,
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 9,
+        "completion_tokens": 512,
+        "total_tokens": 521
+      },
+      "stats": {},
+      "system_fingerprint": "ministral-8b-instruct-2410"
+    }
+  },
+  "localPlan": {
+    "target": "pvc-binding",
+    "steps": [
+      "oc_read_describe",
+      "oc_read_describe",
+      "oc_read_describe"
+    ],
+    "evidence": {
+      "completeness": 0.5,
+      "missing": [
+        "bindingMode",
+        "allowedTopologies",
+        "topologyMismatch"
+      ],
+      "present": [
+        "pvcSpec",
+        "scInfo",
+        "quota"
+      ]
+    },
+    "threshold": 0.8,
+    "rubrics": {
+      "triage": {
+        "id": "triage-priority.v1",
+        "kind": "weighted",
+        "score": 0.57,
+        "label": "P2",
+        "bands": {
+          "P1": ">=0.8",
+          "P2": ">=0.55",
+          "P3": "otherwise"
+        },
+        "inputs": {
+          "blastRadius": 0.7,
+          "customerPaths": 0.5,
+          "operatorsDegraded": 0.5,
+          "timeSinceFirstEventMin": 72
+        },
+        "breakdown": {
+          "blastRadius": 0.7,
+          "customerPaths": 0.5,
+          "operatorsDegraded": 0.5,
+          "timeSinceFirstEventMin": 0.4
+        }
+      },
+      "confidence": {
+        "id": "evidence-confidence.v1",
+        "kind": "mapping",
+        "label": "Low",
+        "matched": "otherwise"
+      },
+      "safety": {
+        "id": "remediation-safety.v1",
+        "kind": "guards",
+        "allowAuto": true,
+        "guards": [
+          "etcdHealthy == true",
+          "controlPlaneReadyRatio >= 0.66",
+          "affectedNamespaces <= 3",
+          "noCriticalAlerts == true"
+        ],
+        "failing": []
+      }
+    }
+  },
+  "status": {
+    "evidencePass": false,
+    "rubricPass": true,
+    "steps": [
+      "oc_read_describe",
+      "oc_read_describe",
+      "oc_read_describe"
+    ]
+  }
+}
+
+=== Model: qwen2.5-7b-instruct ===
+-- ingress-pending: PASS (exit 0)
+-- crashloopbackoff: PASS (exit 0)
+-- route-5xx: PASS (exit 0)
+-- pvc-binding: FAIL (exit 1)
+{
+  "target": "pvc-binding",
+  "lmStudio": {
+    "ok": true,
+    "content": "To evaluate the `pvc-binding` template in Kubernetes, we need to understand what it does and how it fits into the broader context of Persistent Volume Claims (PVCs) and Persistent Volumes (PVs).\n\n### What is PVC Binding?\n\nIn Kubernetes, a Persistent Volume Claim (PVC) is an object that represents storage requested by a user. When a PVC is created, it needs to be bound to a Persistent Volume (PV). The binding process involves matching the PVC's requirements with available PVs.\n\nThe `pvc-binding` template typically contains logic or configuration for managing this binding process. This could include:\n\n1. **Matching PVC and PV**: Ensuring that the PVC's storage class, access modes, and other parameters match those of a suitable PV.\n2. **Dynamic Provisioning**: Automating the creation of PVs based on the PVC's requirements.\n3. **Manual Binding**: Manually associating a PV with a PVC.\n\n### Template Structure\n\nA typical `pvc-binding` template might look something like this:\n\n```yaml\napiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: example-storage-class\nprovisioner: kubernetes.io/aws-ebs  # Example provisioner, change as needed\nparameters:\n  type: gp2  # Example volume type, change as needed\n\n---\napiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: example-pvc\nspec:\n  accessModes:\n    - ReadWriteOnce\n  resources:\n    requests:\n      storage: 1Gi\n  storageClassName: example-storage-class\n\n---\n# Example of a manual binding (not typically part of the template, but for illustration)\napiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: bound-pvc\nspec:\n  accessModes:\n    - ReadWriteOnce\n  resources:\n    requests:\n      storage: 1Gi\n  volumeName: example-pv\n\n---\napiVersion: v1\nkind: PersistentVolume\nmetadata:\n  name: example-pv\nspec:\n  capacity:\n    storage: 1Gi\n  accessModes:\n    - ReadWriteOnce\n  persistentVolumeReclaimPolicy: Retain\n  claimRef:\n    apiVersion: v1\n    kind: PersistentVolumeClaim\n    name: bound-pvc\n```\n\n### Evaluation Criteria\n\nTo evaluate the `pvc-binding` template, consider the following criteria:\n\n1. **Correctness**: Ensure that",
+    "raw": {
+      "id": "chatcmpl-t5jz08pjeaaqrsoujfy3f",
+      "object": "chat.completion",
+      "created": 1755475479,
+      "model": "qwen2.5-7b-instruct",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "To evaluate the `pvc-binding` template in Kubernetes, we need to understand what it does and how it fits into the broader context of Persistent Volume Claims (PVCs) and Persistent Volumes (PVs).\n\n### What is PVC Binding?\n\nIn Kubernetes, a Persistent Volume Claim (PVC) is an object that represents storage requested by a user. When a PVC is created, it needs to be bound to a Persistent Volume (PV). The binding process involves matching the PVC's requirements with available PVs.\n\nThe `pvc-binding` template typically contains logic or configuration for managing this binding process. This could include:\n\n1. **Matching PVC and PV**: Ensuring that the PVC's storage class, access modes, and other parameters match those of a suitable PV.\n2. **Dynamic Provisioning**: Automating the creation of PVs based on the PVC's requirements.\n3. **Manual Binding**: Manually associating a PV with a PVC.\n\n### Template Structure\n\nA typical `pvc-binding` template might look something like this:\n\n```yaml\napiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: example-storage-class\nprovisioner: kubernetes.io/aws-ebs  # Example provisioner, change as needed\nparameters:\n  type: gp2  # Example volume type, change as needed\n\n---\napiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: example-pvc\nspec:\n  accessModes:\n    - ReadWriteOnce\n  resources:\n    requests:\n      storage: 1Gi\n  storageClassName: example-storage-class\n\n---\n# Example of a manual binding (not typically part of the template, but for illustration)\napiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: bound-pvc\nspec:\n  accessModes:\n    - ReadWriteOnce\n  resources:\n    requests:\n      storage: 1Gi\n  volumeName: example-pv\n\n---\napiVersion: v1\nkind: PersistentVolume\nmetadata:\n  name: example-pv\nspec:\n  capacity:\n    storage: 1Gi\n  accessModes:\n    - ReadWriteOnce\n  persistentVolumeReclaimPolicy: Retain\n  claimRef:\n    apiVersion: v1\n    kind: PersistentVolumeClaim\n    name: bound-pvc\n```\n\n### Evaluation Criteria\n\nTo evaluate the `pvc-binding` template, consider the following criteria:\n\n1. **Correctness**: Ensure that",
+            "reasoning_content": "",
+            "tool_calls": []
+          },
+          "logprobs": null,
+          "finish_reason": "length"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 34,
+        "completion_tokens": 512,
+        "total_tokens": 546
+      },
+      "stats": {},
+      "system_fingerprint": "qwen2.5-7b-instruct"
+    }
+  },
+  "localPlan": {
+    "target": "pvc-binding",
+    "steps": [
+      "oc_read_describe",
+      "oc_read_describe",
+      "oc_read_describe"
+    ],
+    "evidence": {
+      "completeness": 0.5,
+      "missing": [
+        "bindingMode",
+        "allowedTopologies",
+        "topologyMismatch"
+      ],
+      "present": [
+        "pvcSpec",
+        "scInfo",
+        "quota"
+      ]
+    },
+    "threshold": 0.8,
+    "rubrics": {
+      "triage": {
+        "id": "triage-priority.v1",
+        "kind": "weighted",
+        "score": 0.57,
+        "label": "P2",
+        "bands": {
+          "P1": ">=0.8",
+          "P2": ">=0.55",
+          "P3": "otherwise"
+        },
+        "inputs": {
+          "blastRadius": 0.7,
+          "customerPaths": 0.5,
+          "operatorsDegraded": 0.5,
+          "timeSinceFirstEventMin": 72
+        },
+        "breakdown": {
+          "blastRadius": 0.7,
+          "customerPaths": 0.5,
+          "operatorsDegraded": 0.5,
+          "timeSinceFirstEventMin": 0.4
+        }
+      },
+      "confidence": {
+        "id": "evidence-confidence.v1",
+        "kind": "mapping",
+        "label": "Low",
+        "matched": "otherwise"
+      },
+      "safety": {
+        "id": "remediation-safety.v1",
+        "kind": "guards",
+        "allowAuto": true,
+        "guards": [
+          "etcdHealthy == true",
+          "controlPlaneReadyRatio >= 0.66",
+          "affectedNamespaces <= 3",
+          "noCriticalAlerts == true"
+        ],
+        "failing": []
+      }
+    }
+  },
+  "status": {
+    "evidencePass": false,
+    "rubricPass": true,
+    "steps": [
+      "oc_read_describe",
+      "oc_read_describe",
+      "oc_read_describe"
+    ]
+  }
+}
+
+=== Model: mistralai/devstral-small-2507 ===
+-- ingress-pending: PASS (exit 0)
+-- crashloopbackoff: PASS (exit 0)
+-- route-5xx: PASS (exit 0)
+-- pvc-binding: FAIL (exit 1)
+{
+  "target": "pvc-binding",
+  "lmStudio": {
+    "ok": true,
+    "content": "To evaluate the \"pvc-binding\" template, I'll need to understand what this template is supposed to do. In Kubernetes, \"pvc\" typically refers to Persistent Volume Claims, which are used to request storage resources. The \"binding\" process is where Kubernetes matches a PVC with an appropriate Persistent Volume (PV).\n\nCould you please provide more context or details about the \"pvc-binding\" template? For example:\n- Is this a Kubernetes YAML template?\n- What specific functionality or behavior are you looking to evaluate?\n- Do you have any sample code or configuration files related to this template?\n\nWith more information, I can provide a more accurate and helpful evaluation.",
+    "raw": {
+      "id": "chatcmpl-ro6p9itp6vmsvpmuf9erb",
+      "object": "chat.completion",
+      "created": 1755475528,
+      "model": "mistralai/devstral-small-2507",
+      "choices": [
+        {
+          "index": 0,
+          "message": {
+            "role": "assistant",
+            "content": "To evaluate the \"pvc-binding\" template, I'll need to understand what this template is supposed to do. In Kubernetes, \"pvc\" typically refers to Persistent Volume Claims, which are used to request storage resources. The \"binding\" process is where Kubernetes matches a PVC with an appropriate Persistent Volume (PV).\n\nCould you please provide more context or details about the \"pvc-binding\" template? For example:\n- Is this a Kubernetes YAML template?\n- What specific functionality or behavior are you looking to evaluate?\n- Do you have any sample code or configuration files related to this template?\n\nWith more information, I can provide a more accurate and helpful evaluation.",
+            "reasoning_content": "",
+            "tool_calls": []
+          },
+          "logprobs": null,
+          "finish_reason": "stop"
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 605,
+        "completion_tokens": 137,
+        "total_tokens": 742
+      },
+      "stats": {},
+      "system_fingerprint": "mistralai/devstral-small-2507"
+    }
+  },
+  "localPlan": {
+    "target": "pvc-binding",
+    "steps": [
+      "oc_read_describe",
+      "oc_read_describe",
+      "oc_read_describe"
+    ],
+    "evidence": {
+      "completeness": 0.5,
+      "missing": [
+        "bindingMode",
+        "allowedTopologies",
+        "topologyMismatch"
+      ],
+      "present": [
+        "pvcSpec",
+        "scInfo",
+        "quota"
+      ]
+    },
+    "threshold": 0.8,
+    "rubrics": {
+      "triage": {
+        "id": "triage-priority.v1",
+        "kind": "weighted",
+        "score": 0.57,
+        "label": "P2",
+        "bands": {
+          "P1": ">=0.8",
+          "P2": ">=0.55",
+          "P3": "otherwise"
+        },
+        "inputs": {
+          "blastRadius": 0.7,
+          "customerPaths": 0.5,
+          "operatorsDegraded": 0.5,
+          "timeSinceFirstEventMin": 72
+        },
+        "breakdown": {
+          "blastRadius": 0.7,
+          "customerPaths": 0.5,
+          "operatorsDegraded": 0.5,
+          "timeSinceFirstEventMin": 0.4
+        }
+      },
+      "confidence": {
+        "id": "evidence-confidence.v1",
+        "kind": "mapping",
+        "label": "Low",
+        "matched": "otherwise"
+      },
+      "safety": {
+        "id": "remediation-safety.v1",
+        "kind": "guards",
+        "allowAuto": true,
+        "guards": [
+          "etcdHealthy == true",
+          "controlPlaneReadyRatio >= 0.66",
+          "affectedNamespaces <= 3",
+          "noCriticalAlerts == true"
+        ],
+        "failing": []
+      }
+    }
+  },
+  "status": {
+    "evidencePass": false,
+    "rubricPass": true,
+    "steps": [
+      "oc_read_describe",
+      "oc_read_describe",
+      "oc_read_describe"
+    ]
+  }
+}
+
+Summary: 9/12 passed

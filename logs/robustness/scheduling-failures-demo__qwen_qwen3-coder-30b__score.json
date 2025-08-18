@@ -1,0 +1,89 @@
+{
+  "model": "qwen/qwen3-coder-30b",
+  "scenario": "scheduling-failures-demo",
+  "files": [
+    "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512025391.json",
+    "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512032038.json",
+    "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512038747.json"
+  ],
+  "score": {
+    "structuralStable": false,
+    "toolSuccessRate": 1,
+    "answerStability": 0.333,
+    "rubricStability": 1,
+    "jsonEqual": null,
+    "rubricEqual": null,
+    "robustnessScore": 0.567,
+    "toolSeqs": [
+      "oc_read_describe(name,namespace,resourceType) -> oc_read_get_pods(namespace,selector) -> oc_read_describe(name,namespace,resourceType)",
+      "oc_read_get_pods(namespace,selector) -> oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,resourceType) -> oc_read_describe(name,namespace,resourceType)",
+      "oc_read_get_pods(namespace,selector) -> oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,resourceType) -> oc_read_describe(name,namespace,resourceType)"
+    ]
+  },
+  "extracted": [
+    {
+      "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512025391.json",
+      "priority": "P1",
+      "confidence": "High",
+      "slo": null,
+      "evidence_keys": [
+        "failed_scheduling",
+        "node_taints",
+        "machineset_zone_skew"
+      ]
+    },
+    {
+      "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512032038.json",
+      "priority": "P2",
+      "confidence": "High",
+      "slo": null,
+      "evidence_keys": [
+        "failed_scheduling",
+        "node_taints",
+        "machineset_zone_skew"
+      ]
+    },
+    {
+      "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512038747.json",
+      "priority": "P2",
+      "confidence": "High",
+      "slo": null,
+      "evidence_keys": [
+        "failed_scheduling",
+        "node_taints",
+        "machineset_zone_skew"
+      ]
+    }
+  ],
+  "schema": {
+    "scenario": "scheduling-failures",
+    "jsonValidRate": 1,
+    "results": [
+      {
+        "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512025391.json",
+        "ok": true,
+        "errors": null
+      },
+      {
+        "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512032038.json",
+        "ok": true,
+        "errors": null
+      },
+      {
+        "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512038747.json",
+        "ok": true,
+        "errors": null
+      }
+    ]
+  },
+  "gates": {
+    "structuralStable": false,
+    "toolSuccessRate": 1,
+    "jsonValidRate": 1,
+    "answerStability": 0.333,
+    "rubricStability": 1,
+    "jsonEqual": null,
+    "rubricEqual": null,
+    "PASS": false
+  }
+}

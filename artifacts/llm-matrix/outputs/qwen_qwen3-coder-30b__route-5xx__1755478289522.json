@@ -1,0 +1,4 @@
+{
+  "error": "tools_unavailable",
+  "reason": "Namespace 'shop' not found in the cluster. Unable to describe Route, Endpoints, or fetch pods for investigation."
+}

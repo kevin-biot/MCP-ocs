@@ -1,0 +1,86 @@
+{
+  "model": "qwen/qwen3-coder-30b",
+  "scenario": "ingress-pending-demo",
+  "files": [
+    "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755511989747.json",
+    "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755511991563.json",
+    "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755511993500.json"
+  ],
+  "score": {
+    "structuralStable": true,
+    "toolSuccessRate": 1,
+    "answerStability": 0.333,
+    "rubricStability": 1,
+    "jsonEqual": null,
+    "rubricEqual": null,
+    "robustnessScore": 0.867,
+    "toolSeqs": [
+      "oc_read_get_pods(namespace,selector)",
+      "oc_read_get_pods(namespace,selector)",
+      "oc_read_get_pods(namespace,selector)"
+    ]
+  },
+  "extracted": [
+    {
+      "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755511989747.json",
+      "priority": "P1",
+      "confidence": "High",
+      "slo": null,
+      "evidence_keys": [
+        "router_pods_pending",
+        "no_evidence"
+      ]
+    },
+    {
+      "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755511991563.json",
+      "priority": "P2",
+      "confidence": "High",
+      "slo": null,
+      "evidence_keys": [
+        "router_pods_pending",
+        "no_evidence"
+      ]
+    },
+    {
+      "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755511993500.json",
+      "priority": "P2",
+      "confidence": "High",
+      "slo": null,
+      "evidence_keys": [
+        "router_pods_pending",
+        "no_evidence"
+      ]
+    }
+  ],
+  "schema": {
+    "scenario": "ingress-pending",
+    "jsonValidRate": 1,
+    "results": [
+      {
+        "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755511989747.json",
+        "ok": true,
+        "errors": null
+      },
+      {
+        "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755511991563.json",
+        "ok": true,
+        "errors": null
+      },
+      {
+        "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755511993500.json",
+        "ok": true,
+        "errors": null
+      }
+    ]
+  },
+  "gates": {
+    "structuralStable": true,
+    "toolSuccessRate": 1,
+    "jsonValidRate": 1,
+    "answerStability": 0.333,
+    "rubricStability": 1,
+    "jsonEqual": null,
+    "rubricEqual": null,
+    "PASS": false
+  }
+}

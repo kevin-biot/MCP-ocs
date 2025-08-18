@@ -1,0 +1,388 @@
+{
+  "model": "qwen/qwen3-coder-30b",
+  "template": "scheduling-failures",
+  "session": "matrix-scheduling-failures-1755478301455",
+  "params": {
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": 800,
+    "seed": 7
+  },
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an SRE using MCP tools (OpenShift). For any triage request, you MUST call tools first (oc_read_get_pods, oc_read_describe, oc_read_logs) and only then answer. Never guess.\n\nStrictly follow this protocol:\n1) Call one or more tools to gather evidence (pods, describe, logs)\n2) Summarize with a compact JSON object:\n   { \"priority\": \"P1|P2|P3\", \"confidence\": \"High|Medium|Low\", \"evidence\": { \"keys\": [..] }, \"notes\": \"...\" }\n\nIf you cannot gather evidence (tools unavailable), respond with a JSON object:\n{ \"error\": \"tools_unavailable\", \"reason\": \"...\" }\n\n"
+    },
+    {
+      "role": "user",
+      "content": "Investigate scheduling failures. ns=openshift-ingress, pod=router-default-xxxxx. Use describe(pod/node) + machinesets."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "357997617",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"openshift-ingress\",\n  \"selector\": \"router\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:43.751Z\"\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "738335531",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): pods \\\"router-default-xxxxx\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:44.381Z\",\n  \"args\": {\n    \"resourceType\": \"pod\",\n    \"namespace\": \"openshift-ingress\",\n    \"name\": \"router-default-xxxxx\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "142805260",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): nodes \\\"ip-10-0-1-100.ec2.internal\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:44.939Z\",\n  \"args\": {\n    \"resourceType\": \"node\",\n    \"namespace\": \"openshift-ingress\",\n    \"name\": \"ip-10-0-1-100.ec2.internal\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "977708938",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): machinesets.machine.openshift.io \\\"worker-us-east-1a\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:45.422Z\",\n  \"args\": {\n    \"resourceType\": \"machineset\",\n    \"namespace\": \"openshift-machine-api\",\n    \"name\": \"worker-us-east-1a\"\n  }\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "\n\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "357997617",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"openshift-ingress\",\"selector\":\"router\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "738335531",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"pod\",\"namespace\":\"openshift-ingress\",\"name\":\"router-default-xxxxx\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "142805260",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"node\",\"namespace\":\"openshift-ingress\",\"name\":\"ip-10-0-1-100.ec2.internal\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "977708938",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"machineset\",\"namespace\":\"openshift-machine-api\",\"name\":\"worker-us-east-1a\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "757789327",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"openshift-ingress\",\n  \"selector\": \"router\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:48.071Z\"\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "302998620",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): pods \\\"router-default-xxxxx\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:48.624Z\",\n  \"args\": {\n    \"resourceType\": \"pod\",\n    \"namespace\": \"openshift-ingress\",\n    \"name\": \"router-default-xxxxx\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "280538275",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): nodes \\\"ip-10-0-1-100.ec2.internal\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:49.128Z\",\n  \"args\": {\n    \"resourceType\": \"node\",\n    \"namespace\": \"openshift-ingress\",\n    \"name\": \"ip-10-0-1-100.ec2.internal\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "364137963",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): machinesets.machine.openshift.io \\\"worker-us-east-1a\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:49.618Z\",\n  \"args\": {\n    \"resourceType\": \"machineset\",\n    \"namespace\": \"openshift-machine-api\",\n    \"name\": \"worker-us-east-1a\"\n  }\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "\n\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "757789327",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"openshift-ingress\",\"selector\":\"router\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "302998620",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"pod\",\"namespace\":\"openshift-ingress\",\"name\":\"router-default-xxxxx\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "280538275",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"node\",\"namespace\":\"openshift-ingress\",\"name\":\"ip-10-0-1-100.ec2.internal\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "364137963",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"machineset\",\"namespace\":\"openshift-machine-api\",\"name\":\"worker-us-east-1a\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "151125993",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"openshift-ingress\",\n  \"selector\": \"router\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:52.597Z\"\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "523934772",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): pods \\\"router-default-xxxxx\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:53.259Z\",\n  \"args\": {\n    \"resourceType\": \"pod\",\n    \"namespace\": \"openshift-ingress\",\n    \"name\": \"router-default-xxxxx\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "978000474",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): nodes \\\"ip-10-0-1-100.ec2.internal\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:53.767Z\",\n  \"args\": {\n    \"resourceType\": \"node\",\n    \"namespace\": \"openshift-ingress\",\n    \"name\": \"ip-10-0-1-100.ec2.internal\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "687310449",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): machinesets.machine.openshift.io \\\"worker-us-east-1a\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:54.233Z\",\n  \"args\": {\n    \"resourceType\": \"machineset\",\n    \"namespace\": \"openshift-machine-api\",\n    \"name\": \"worker-us-east-1a\"\n  }\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "\n\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "151125993",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"openshift-ingress\",\"selector\":\"router\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "523934772",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"pod\",\"namespace\":\"openshift-ingress\",\"name\":\"router-default-xxxxx\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "978000474",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"node\",\"namespace\":\"openshift-ingress\",\"name\":\"ip-10-0-1-100.ec2.internal\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "687310449",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"machineset\",\"namespace\":\"openshift-machine-api\",\"name\":\"worker-us-east-1a\"}"
+          }
+        }
+      ]
+    }
+  ],
+  "transcript": [
+    {
+      "role": "assistant",
+      "content": "\n\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "357997617",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"openshift-ingress\",\"selector\":\"router\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "738335531",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"pod\",\"namespace\":\"openshift-ingress\",\"name\":\"router-default-xxxxx\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "142805260",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"node\",\"namespace\":\"openshift-ingress\",\"name\":\"ip-10-0-1-100.ec2.internal\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "977708938",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"machineset\",\"namespace\":\"openshift-machine-api\",\"name\":\"worker-us-east-1a\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"openshift-ingress\",\n  \"selector\": \"router\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:43.751Z\"\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): pods \\\"router-default-xxxxx\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:44.381Z\",\n  \"args\": {\n    \"resourceType\": \"pod\",\n    \"namespace\": \"openshift-ingress\",\n    \"name\": \"router-default-xxxxx\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): nodes \\\"ip-10-0-1-100.ec2.internal\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:44.939Z\",\n  \"args\": {\n    \"resourceType\": \"node\",\n    \"namespace\": \"openshift-ingress\",\n    \"name\": \"ip-10-0-1-100.ec2.internal\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): machinesets.machine.openshift.io \\\"worker-us-east-1a\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:45.422Z\",\n  \"args\": {\n    \"resourceType\": \"machineset\",\n    \"namespace\": \"openshift-machine-api\",\n    \"name\": \"worker-us-east-1a\"\n  }\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "\n\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "757789327",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"openshift-ingress\",\"selector\":\"router\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "302998620",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"pod\",\"namespace\":\"openshift-ingress\",\"name\":\"router-default-xxxxx\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "280538275",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"node\",\"namespace\":\"openshift-ingress\",\"name\":\"ip-10-0-1-100.ec2.internal\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "364137963",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"machineset\",\"namespace\":\"openshift-machine-api\",\"name\":\"worker-us-east-1a\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"openshift-ingress\",\n  \"selector\": \"router\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:48.071Z\"\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): pods \\\"router-default-xxxxx\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:48.624Z\",\n  \"args\": {\n    \"resourceType\": \"pod\",\n    \"namespace\": \"openshift-ingress\",\n    \"name\": \"router-default-xxxxx\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): nodes \\\"ip-10-0-1-100.ec2.internal\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:49.128Z\",\n  \"args\": {\n    \"resourceType\": \"node\",\n    \"namespace\": \"openshift-ingress\",\n    \"name\": \"ip-10-0-1-100.ec2.internal\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): machinesets.machine.openshift.io \\\"worker-us-east-1a\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:49.618Z\",\n  \"args\": {\n    \"resourceType\": \"machineset\",\n    \"namespace\": \"openshift-machine-api\",\n    \"name\": \"worker-us-east-1a\"\n  }\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "\n\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "151125993",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"openshift-ingress\",\"selector\":\"router\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "523934772",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"pod\",\"namespace\":\"openshift-ingress\",\"name\":\"router-default-xxxxx\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "978000474",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"node\",\"namespace\":\"openshift-ingress\",\"name\":\"ip-10-0-1-100.ec2.internal\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "687310449",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"machineset\",\"namespace\":\"openshift-machine-api\",\"name\":\"worker-us-east-1a\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"openshift-ingress\",\n  \"selector\": \"router\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:52.597Z\"\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): pods \\\"router-default-xxxxx\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:53.259Z\",\n  \"args\": {\n    \"resourceType\": \"pod\",\n    \"namespace\": \"openshift-ingress\",\n    \"name\": \"router-default-xxxxx\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): nodes \\\"ip-10-0-1-100.ec2.internal\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:53.767Z\",\n  \"args\": {\n    \"resourceType\": \"node\",\n    \"namespace\": \"openshift-ingress\",\n    \"name\": \"ip-10-0-1-100.ec2.internal\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): machinesets.machine.openshift.io \\\"worker-us-east-1a\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:54.233Z\",\n  \"args\": {\n    \"resourceType\": \"machineset\",\n    \"namespace\": \"openshift-machine-api\",\n    \"name\": \"worker-us-east-1a\"\n  }\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "{\n  \"error\": \"tools_unavailable\",\n  \"reason\": \"All tool calls failed due to resource not found errors. The specified pod 'router-default-xxxxx', node 'ip-10-0-1-100.ec2.internal', and machineset 'worker-us-east-1a' could not be located in the cluster. This may indicate a scheduling issue or misconfiguration in the OpenShift environment.\"\n}",
+      "tool_calls": []
+    }
+  ]
+}

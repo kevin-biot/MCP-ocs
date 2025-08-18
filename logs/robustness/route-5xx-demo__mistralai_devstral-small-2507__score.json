@@ -1,0 +1,89 @@
+{
+  "model": "mistralai/devstral-small-2507",
+  "scenario": "route-5xx-demo",
+  "files": [
+    "logs/transcripts/route-5xx-demo/route-5xx-demo__mistralai_devstral-small-2507__t0_p1_s7__1755512409858.json",
+    "logs/transcripts/route-5xx-demo/route-5xx-demo__mistralai_devstral-small-2507__t0_p1_s13__1755512428389.json",
+    "logs/transcripts/route-5xx-demo/route-5xx-demo__mistralai_devstral-small-2507__t0_p1_s23__1755512446324.json"
+  ],
+  "score": {
+    "structuralStable": true,
+    "toolSuccessRate": 1,
+    "answerStability": 0,
+    "rubricStability": 1,
+    "jsonEqual": null,
+    "rubricEqual": null,
+    "robustnessScore": 0.8,
+    "toolSeqs": [
+      "oc_read_describe(namespace,resourceType)",
+      "oc_read_describe(namespace,resourceType)",
+      "oc_read_describe(namespace,resourceType)"
+    ]
+  },
+  "extracted": [
+    {
+      "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__mistralai_devstral-small-2507__t0_p1_s7__1755512409858.json",
+      "priority": null,
+      "confidence": null,
+      "slo": null,
+      "evidence_keys": null
+    },
+    {
+      "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__mistralai_devstral-small-2507__t0_p1_s13__1755512428389.json",
+      "priority": null,
+      "confidence": null,
+      "slo": null,
+      "evidence_keys": null
+    },
+    {
+      "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__mistralai_devstral-small-2507__t0_p1_s23__1755512446324.json",
+      "priority": null,
+      "confidence": null,
+      "slo": null,
+      "evidence_keys": null
+    }
+  ],
+  "schema": {
+    "scenario": "route-5xx",
+    "jsonValidRate": 0,
+    "results": [
+      {
+        "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__mistralai_devstral-small-2507__t0_p1_s7__1755512409858.json",
+        "ok": false,
+        "errors": [
+          {
+            "message": "not_json"
+          }
+        ]
+      },
+      {
+        "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__mistralai_devstral-small-2507__t0_p1_s13__1755512428389.json",
+        "ok": false,
+        "errors": [
+          {
+            "message": "not_json"
+          }
+        ]
+      },
+      {
+        "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__mistralai_devstral-small-2507__t0_p1_s23__1755512446324.json",
+        "ok": false,
+        "errors": [
+          {
+            "message": "not_json"
+          }
+        ]
+      }
+    ]
+  },
+  "gates": {
+    "structuralStable": true,
+    "toolSuccessRate": 1,
+    "jsonValidRate": 0,
+    "answerStability": 0,
+    "rubricStability": 1,
+    "jsonEqual": null,
+    "rubricEqual": null,
+    "PASS": false
+  }
+}

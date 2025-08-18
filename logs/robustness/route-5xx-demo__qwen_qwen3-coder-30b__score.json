@@ -1,0 +1,85 @@
+{
+  "model": "qwen/qwen3-coder-30b",
+  "scenario": "route-5xx-demo",
+  "files": [
+    "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755511999047.json",
+    "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512002555.json",
+    "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512006019.json"
+  ],
+  "score": {
+    "structuralStable": true,
+    "toolSuccessRate": 1,
+    "answerStability": 0.333,
+    "rubricStability": 1,
+    "jsonEqual": null,
+    "rubricEqual": null,
+    "robustnessScore": 0.867,
+    "toolSeqs": [
+      "oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,namespace,resourceType) -> oc_read_get_pods(namespace,selector)",
+      "oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,namespace,resourceType) -> oc_read_get_pods(namespace,selector)",
+      "oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,namespace,resourceType) -> oc_read_get_pods(namespace,selector)"
+    ]
+  },
+  "extracted": [
+    {
+      "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755511999047.json",
+      "priority": "P1",
+      "confidence": "High",
+      "slo": null,
+      "evidence_keys": [
+        "no_evidence"
+      ]
+    },
+    {
+      "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512002555.json",
+      "priority": "P1",
+      "confidence": "High",
+      "slo": null,
+      "evidence_keys": [
+        "endpoints_empty",
+        "backend_pods_failing",
+        "no_evidence"
+      ]
+    },
+    {
+      "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512006019.json",
+      "priority": "P1",
+      "confidence": "High",
+      "slo": null,
+      "evidence_keys": [
+        "no_evidence"
+      ]
+    }
+  ],
+  "schema": {
+    "scenario": "route-5xx",
+    "jsonValidRate": 1,
+    "results": [
+      {
+        "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755511999047.json",
+        "ok": true,
+        "errors": null
+      },
+      {
+        "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512002555.json",
+        "ok": true,
+        "errors": null
+      },
+      {
+        "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512006019.json",
+        "ok": true,
+        "errors": null
+      }
+    ]
+  },
+  "gates": {
+    "structuralStable": true,
+    "toolSuccessRate": 1,
+    "jsonValidRate": 1,
+    "answerStability": 0.333,
+    "rubricStability": 1,
+    "jsonEqual": null,
+    "rubricEqual": null,
+    "PASS": false
+  }
+}

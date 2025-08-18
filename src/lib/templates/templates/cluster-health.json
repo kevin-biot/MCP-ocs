@@ -1,0 +1,52 @@
+{
+  "id": "cluster-health-v1",
+  "name": "Cluster Health Meta-Dispatcher",
+  "version": "1.0.0",
+  "triageTarget": "cluster-health",
+  "triggers": [ { "type": "static_target", "target": "cluster-health", "confidence": 1.0 } ],
+  "blocks": [],
+  "composition": { "infrastructure": [], "workload": [], "correlation": [] },
+  "steps": [
+    { "tool": "oc_diagnostic_cluster_health", "params": { "sessionId": "<sessionId>", "bounded": true }, "rationale": "Stage-0: cheap global health probe" },
+    { "tool": "oc_read_nodes", "params": { "sessionId": "<sessionId>", "bounded": true }, "rationale": "Node readiness and pressure snapshot" },
+    { "tool": "oc_read_get_pods", "params": { "namespace": "openshift-ingress" }, "rationale": "Router pod readiness hints" },
+    { "tool": "oc_read_describe", "params": { "resourceType": "ingresscontroller", "namespace": "openshift-ingress-operator", "name": "default" }, "rationale": "IngressController CR conditions (replicas, rolling out, degraded)" }
+  ],
+  "evidenceContract": {
+    "version": "v1.0.0",
+    "required": ["nodesSummary", "podSummary", "controlPlaneAlerts", "fanoutHint"],
+    "selectors": {
+      "nodesSummary": [ { "type": "jsonpath", "path": "{.total}" } ],
+      "podSummary": [ { "type": "jsonpath", "path": "{.items[*].metadata.name}" }, { "type": "jsonpath", "path": "{.pods[*].name}" } ],
+      "controlPlaneAlerts": [
+        { "type": "eventsRegex", "path": "Degraded|Available False|Progressing True|Degraded=True" },
+        { "type": "eventsRegex", "path": "(?i)conditions.*type:\\s*Degraded.*status:\\s*True" },
+        { "type": "eventsRegex", "path": "(?i)ClusterOperator .* Degraded" },
+        { "type": "eventsRegex", "path": "(?i)type:\\s*Available.*status:\\s*False" }
+      ],
+      "fanoutHint": [
+        { "type": "eventsRegex", "path": "router pending|ingress pending" },
+        { "type": "eventsRegex", "path": "pvc pending|no matching topology|WaitForFirstConsumer" },
+        { "type": "eventsRegex", "path": "Scaled up|Scaled down|replicas" }
+      ],
+      "operatorDegraded": [
+        { "type": "eventsRegex", "path": "\"type\"\\s*:\\s*\"Degraded\"\\s*,\\s*\"status\"\\s*:\\s*\"True\"" },
+        { "type": "eventsRegex", "path": "(?m)type:\\s*Degraded\\s*\\n\\s*status:\\s*True" }
+      ],
+      "ingress": [
+        { "type": "eventsRegex", "path": "(?i)(\\bname\\b.*ingress|^ingress\\b|IngressController)" },
+        { "type": "eventsRegex", "path": "DeploymentReplicas(All)?Available\\s*[:=]\\s*False|DeploymentReplicasNotAvailable" },
+        { "type": "eventsRegex", "path": "availableReplicas:\\s*([0-9]+)[\\s\\S]*?replicas:\\s*([0-9]+)" },
+        { "type": "eventsRegex", "path": "(?m)type:\\s*DeploymentRollingOut\\s*\\n\\s*status:\\s*\"?True\"?" },
+        { "type": "eventsRegex", "path": "(?m)type:\\s*Degraded\\s*\\n\\s*status:\\s*\"?True\"?" }
+      ],
+      "monitoring": [
+        { "type": "eventsRegex", "path": "(?i)(\\bname\\b.*monitoring|^monitoring\\b)" },
+        { "type": "eventsRegex", "path": "\"type\"\\s*:\\s*\"Degraded\"\\s*,\\s*\"status\"\\s*:\\s*\"True\"|(?m)Degraded:\\s*True" },
+        { "type": "eventsRegex", "path": "UpdatingPrometheusOperator|prometheus-operator-admission-webhook|got\\s+1\\s+unavailable\\s+replicas" }
+      ]
+    },
+    "completenessThreshold": 0.7
+  },
+  "boundaries": { "maxSteps": 3, "timeoutMs": 15000 }
+}

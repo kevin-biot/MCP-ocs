@@ -1,0 +1,51 @@
+{
+  "planId": "smoke-scheduling-failures-1755467271948",
+  "target": "scheduling-failures",
+  "summary": {
+    "schemaVersion": "1.0.0",
+    "engineVersion": "0.8.0-beta",
+    "templateId": "scheduling-failures-v1",
+    "templateVersion": "1.0.0",
+    "determinism": {
+      "modelName": "none",
+      "system_fingerprint": "none",
+      "temperature": 0,
+      "top_p": 1,
+      "seed": 42
+    },
+    "priority": {
+      "label": "P2",
+      "score": 0.57
+    },
+    "confidence": {
+      "label": "High",
+      "why": "evidenceCompleteness>=0.9 && toolAgreement>=0.8 && freshnessMin<=10"
+    },
+    "safety": {
+      "allowAuto": true
+    },
+    "evidence": {
+      "completeness": 1,
+      "minThreshold": 0.9,
+      "missing": [],
+      "present": [
+        "schedulingEvents",
+        "controllerStatus",
+        "nodeTaints",
+        "nodeLabels",
+        "machinesetZoneDistribution"
+      ]
+    },
+    "slo": {
+      "label": "LOW",
+      "why": "otherwise"
+    },
+    "infra": {
+      "zoneConflict": "LOW",
+      "schedulingConfidence": "High",
+      "infrastructureSafety": {
+        "allowAuto": true
+      }
+    }
+  }
+}

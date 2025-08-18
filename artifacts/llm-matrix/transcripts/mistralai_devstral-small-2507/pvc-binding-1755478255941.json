@@ -1,0 +1,67 @@
+{
+  "model": "mistralai/devstral-small-2507",
+  "template": "pvc-binding",
+  "session": "matrix-pvc-binding-1755478248176",
+  "params": {
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": 800,
+    "seed": 7
+  },
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an SRE using MCP tools (OpenShift). For any triage request, you MUST call tools first (oc_read_get_pods, oc_read_describe, oc_read_logs) and only then answer. Never guess.\n\nStrictly follow this protocol:\n1) Call one or more tools to gather evidence (pods, describe, logs)\n2) Summarize with a compact JSON object:\n   { \"priority\": \"P1|P2|P3\", \"confidence\": \"High|Medium|Low\", \"evidence\": { \"keys\": [..] }, \"notes\": \"...\" }\n\nIf you cannot gather evidence (tools unavailable), respond with a JSON object:\n{ \"error\": \"tools_unavailable\", \"reason\": \"...\" }\n\n"
+    },
+    {
+      "role": "user",
+      "content": "Investigate pvc binding. ns=orders, pvc=db-storage. Use describe(pvc) + describe(storageclass) + describe(resourcequota)."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "267740513",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"orders\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:50:50.426Z\",\n  \"args\": {\n    \"resourceType\": \"pvc\",\n    \"namespace\": \"orders\",\n    \"name\": \"db-storage\"\n  }\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "267740513",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"pvc\",\"namespace\":\"orders\",\"name\":\"db-storage\"}"
+          }
+        }
+      ]
+    }
+  ],
+  "transcript": [
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "267740513",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"pvc\",\"namespace\":\"orders\",\"name\":\"db-storage\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"orders\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:50:50.426Z\",\n  \"args\": {\n    \"resourceType\": \"pvc\",\n    \"namespace\": \"orders\",\n    \"name\": \"db-storage\"\n  }\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": []
+    }
+  ]
+}

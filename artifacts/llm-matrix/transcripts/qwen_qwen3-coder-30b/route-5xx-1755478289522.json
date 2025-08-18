@@ -1,0 +1,253 @@
+{
+  "model": "qwen/qwen3-coder-30b",
+  "template": "route-5xx",
+  "session": "matrix-route-5xx-1755478282699",
+  "params": {
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": 800,
+    "seed": 7
+  },
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are an SRE using MCP tools (OpenShift). For any triage request, you MUST call tools first (oc_read_get_pods, oc_read_describe, oc_read_logs) and only then answer. Never guess.\n\nStrictly follow this protocol:\n1) Call one or more tools to gather evidence (pods, describe, logs)\n2) Summarize with a compact JSON object:\n   { \"priority\": \"P1|P2|P3\", \"confidence\": \"High|Medium|Low\", \"evidence\": { \"keys\": [..] }, \"notes\": \"...\" }\n\nIf you cannot gather evidence (tools unavailable), respond with a JSON object:\n{ \"error\": \"tools_unavailable\", \"reason\": \"...\" }\n\n"
+    },
+    {
+      "role": "user",
+      "content": "Investigate route 5xx. ns=shop, route=checkout. Use describe(endpoints) + describe(route) + describe(pod)."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "282505165",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"shop\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:24.508Z\",\n  \"args\": {\n    \"resourceType\": \"Route\",\n    \"namespace\": \"shop\",\n    \"name\": \"checkout\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "363230654",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"shop\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:24.954Z\",\n  \"args\": {\n    \"resourceType\": \"Endpoints\",\n    \"namespace\": \"shop\",\n    \"name\": \"checkout\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "412691619",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"shop\",\n  \"selector\": \"app=checkout\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:25.225Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "282505165",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"Route\",\"namespace\":\"shop\",\"name\":\"checkout\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "363230654",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"Endpoints\",\"namespace\":\"shop\",\"name\":\"checkout\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "412691619",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"shop\",\"selector\":\"app=checkout\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "205964434",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"shop\",\n  \"selector\": \"none\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:26.091Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "205964434",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"shop\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "649676805",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"shop\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:28.047Z\",\n  \"args\": {\n    \"resourceType\": \"Route\",\n    \"namespace\": \"shop\",\n    \"name\": \"checkout\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "227465846",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"shop\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:28.487Z\",\n  \"args\": {\n    \"resourceType\": \"Endpoints\",\n    \"namespace\": \"shop\",\n    \"name\": \"checkout\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "253550949",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"shop\",\n  \"selector\": \"app=checkout\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:28.773Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "649676805",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"Route\",\"namespace\":\"shop\",\"name\":\"checkout\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "227465846",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"Endpoints\",\"namespace\":\"shop\",\"name\":\"checkout\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "253550949",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"shop\",\"selector\":\"app=checkout\"}"
+          }
+        }
+      ]
+    }
+  ],
+  "transcript": [
+    {
+      "role": "assistant",
+      "content": "\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "282505165",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"Route\",\"namespace\":\"shop\",\"name\":\"checkout\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "363230654",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"Endpoints\",\"namespace\":\"shop\",\"name\":\"checkout\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "412691619",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"shop\",\"selector\":\"app=checkout\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"shop\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:24.508Z\",\n  \"args\": {\n    \"resourceType\": \"Route\",\n    \"namespace\": \"shop\",\n    \"name\": \"checkout\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"shop\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:24.954Z\",\n  \"args\": {\n    \"resourceType\": \"Endpoints\",\n    \"namespace\": \"shop\",\n    \"name\": \"checkout\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"shop\",\n  \"selector\": \"app=checkout\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:25.225Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "205964434",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"shop\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"shop\",\n  \"selector\": \"none\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:26.091Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "\n\n",
+      "tool_calls": [
+        {
+          "type": "function",
+          "id": "649676805",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"Route\",\"namespace\":\"shop\",\"name\":\"checkout\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "227465846",
+          "function": {
+            "name": "oc_read_describe",
+            "arguments": "{\"resourceType\":\"Endpoints\",\"namespace\":\"shop\",\"name\":\"checkout\"}"
+          }
+        },
+        {
+          "type": "function",
+          "id": "253550949",
+          "function": {
+            "name": "oc_read_get_pods",
+            "arguments": "{\"namespace\":\"shop\",\"selector\":\"app=checkout\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"shop\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:28.047Z\",\n  \"args\": {\n    \"resourceType\": \"Route\",\n    \"namespace\": \"shop\",\n    \"name\": \"checkout\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_describe",
+      "content": "{\n  \"success\": false,\n  \"tool\": \"oc_read_describe\",\n  \"error\": \"OpenShift command failed: Error from server (NotFound): namespaces \\\"shop\\\" not found \",\n  \"timestamp\": \"2025-08-18T00:51:28.487Z\",\n  \"args\": {\n    \"resourceType\": \"Endpoints\",\n    \"namespace\": \"shop\",\n    \"name\": \"checkout\"\n  }\n}"
+    },
+    {
+      "role": "tool",
+      "name": "oc_read_get_pods",
+      "content": "{\n  \"namespace\": \"shop\",\n  \"selector\": \"app=checkout\",\n  \"totalPods\": 0,\n  \"pods\": [],\n  \"summary\": {\n    \"running\": 0,\n    \"pending\": 0,\n    \"failed\": 0,\n    \"unknown\": 0\n  },\n  \"timestamp\": \"2025-08-18T00:51:28.773Z\"\n}"
+    },
+    {
+      "role": "assistant",
+      "content": "{\n  \"error\": \"tools_unavailable\",\n  \"reason\": \"Namespace 'shop' not found in the cluster. Unable to describe Route, Endpoints, or fetch pods for investigation.\"\n}",
+      "tool_calls": []
+    }
+  ]
+}

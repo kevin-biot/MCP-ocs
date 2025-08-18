@@ -1,0 +1,66 @@
+{
+  "scenario": "pvc-binding",
+  "sessionId": "engine-pvc-binding-1755512178226",
+  "plan": {
+    "planId": "engine-pvc-binding-1755512178226",
+    "steps": [
+      {
+        "tool": "oc_read_describe",
+        "params": {
+          "sessionId": "engine-pvc-binding-1755512178226",
+          "resourceType": "pvc",
+          "namespace": "student35",
+          "name": "shared-pvc"
+        },
+        "rationale": "PVC spec and events"
+      },
+      {
+        "tool": "oc_read_describe",
+        "params": {
+          "sessionId": "engine-pvc-binding-1755512178226",
+          "resourceType": "storageclass",
+          "name": "<sc|default>"
+        },
+        "rationale": "Storage class capabilities"
+      },
+      {
+        "tool": "oc_read_describe",
+        "params": {
+          "sessionId": "engine-pvc-binding-1755512178226",
+          "resourceType": "resourcequota",
+          "namespace": "student35"
+        },
+        "rationale": "Quota limits"
+      }
+    ],
+    "boundaries": {
+      "maxSteps": 3,
+      "timeoutMs": 20000
+    }
+  },
+  "completeness": 0.5,
+  "result": {
+    "priority": "P3",
+    "confidence": "Medium",
+    "slo": "HIGH",
+    "evidence_keys": [
+      "pvc_pending",
+      "storage_class_missing"
+    ],
+    "notes": "evidence: pvc_pending,storage_class_missing"
+  },
+  "debug": {
+    "evidence_fired": [
+      "pvcSpec",
+      "scInfo",
+      "bindingMode"
+    ],
+    "mapped_keys": [
+      "pvc_pending",
+      "storage_class_missing"
+    ],
+    "confidence_rules_applied": [
+      "nudge:2-strong->Low->Medium"
+    ]
+  }
+}

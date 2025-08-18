@@ -15,9 +15,12 @@
     "version": "v1.0.0",
     "required": ["pvcSpec", "scInfo", "quota", "bindingMode", "allowedTopologies", "topologyMismatch"],
     "selectors": {
-      "pvcSpec": [ { "type": "yq", "path": ".spec" }, { "type": "eventsRegex", "path": "PersistentVolumeClaim" } ],
+      "pvcSpec": [
+        { "type": "yq", "path": ".spec" },
+        { "type": "eventsRegex", "path": "PersistentVolumeClaim|Status:\\s*Pending|no \\\n+(matching \\\n+\\s*)?PersistentVolume|no PersistentVolume|no matching PersistentVolume|waiting for a volume to be created/bound" }
+      ],
       "scInfo": [ { "type": "yq", "path": ".parameters" }, { "type": "eventsRegex", "path": "StorageClass" } ],
-      "quota": [ { "type": "yq", "path": ".status.hard" }, { "type": "eventsRegex", "path": "Resource Quotas|hard|exceeded quota|exceeds" } ],
+      "quota": [ { "type": "yq", "path": ".status.hard" }, { "type": "eventsRegex", "path": "Resource Quotas|hard|exceeded quota|exceeds|quota exceeded|exceeds usage" } ],
       "bindingMode": [ { "type": "eventsRegex", "path": "WaitForFirstConsumer|Immediate" } ],
       "allowedTopologies": [ { "type": "eventsRegex", "path": "allowedTopologies|topology.kubernetes.io/zone" } ],
       "topologyMismatch": [ { "type": "eventsRegex", "path": "no matching topology|no PV found in zone|0/\\d+ nodes are available" } ]

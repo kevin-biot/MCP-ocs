@@ -1,0 +1,89 @@
+{
+  "model": "mistralai/devstral-small-2507",
+  "scenario": "ingress-pending-demo",
+  "files": [
+    "logs/transcripts/ingress-pending-demo/ingress-pending-demo__mistralai_devstral-small-2507__t0_p1_s7__1755512276989.json",
+    "logs/transcripts/ingress-pending-demo/ingress-pending-demo__mistralai_devstral-small-2507__t0_p1_s13__1755512309272.json",
+    "logs/transcripts/ingress-pending-demo/ingress-pending-demo__mistralai_devstral-small-2507__t0_p1_s23__1755512389490.json"
+  ],
+  "score": {
+    "structuralStable": true,
+    "toolSuccessRate": 1,
+    "answerStability": 0,
+    "rubricStability": 1,
+    "jsonEqual": null,
+    "rubricEqual": null,
+    "robustnessScore": 0.8,
+    "toolSeqs": [
+      "oc_read_get_pods(namespace)",
+      "oc_read_get_pods(namespace)",
+      "oc_read_get_pods(namespace)"
+    ]
+  },
+  "extracted": [
+    {
+      "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__mistralai_devstral-small-2507__t0_p1_s7__1755512276989.json",
+      "priority": null,
+      "confidence": null,
+      "slo": null,
+      "evidence_keys": null
+    },
+    {
+      "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__mistralai_devstral-small-2507__t0_p1_s13__1755512309272.json",
+      "priority": null,
+      "confidence": null,
+      "slo": null,
+      "evidence_keys": null
+    },
+    {
+      "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__mistralai_devstral-small-2507__t0_p1_s23__1755512389490.json",
+      "priority": null,
+      "confidence": null,
+      "slo": null,
+      "evidence_keys": null
+    }
+  ],
+  "schema": {
+    "scenario": "ingress-pending",
+    "jsonValidRate": 0,
+    "results": [
+      {
+        "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__mistralai_devstral-small-2507__t0_p1_s7__1755512276989.json",
+        "ok": false,
+        "errors": [
+          {
+            "message": "not_json"
+          }
+        ]
+      },
+      {
+        "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__mistralai_devstral-small-2507__t0_p1_s13__1755512309272.json",
+        "ok": false,
+        "errors": [
+          {
+            "message": "not_json"
+          }
+        ]
+      },
+      {
+        "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__mistralai_devstral-small-2507__t0_p1_s23__1755512389490.json",
+        "ok": false,
+        "errors": [
+          {
+            "message": "not_json"
+          }
+        ]
+      }
+    ]
+  },
+  "gates": {
+    "structuralStable": true,
+    "toolSuccessRate": 1,
+    "jsonValidRate": 0,
+    "answerStability": 0,
+    "rubricStability": 1,
+    "jsonEqual": null,
+    "rubricEqual": null,
+    "PASS": false
+  }
+}

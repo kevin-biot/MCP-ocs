@@ -1,0 +1,50 @@
+{
+  "planId": "smoke-pvc-storage-affinity-1755476193597",
+  "target": "pvc-storage-affinity",
+  "summary": {
+    "schemaVersion": "1.0.0",
+    "engineVersion": "0.8.0-beta",
+    "templateId": "pvc-storage-affinity-v1",
+    "templateVersion": "1.0.0",
+    "determinism": {
+      "modelName": "none",
+      "system_fingerprint": "none",
+      "temperature": 0,
+      "top_p": 1,
+      "seed": 42
+    },
+    "priority": {
+      "label": "P2",
+      "score": 0.57
+    },
+    "confidence": {
+      "label": "High",
+      "why": "evidenceCompleteness>=0.9 && toolAgreement>=0.8 && freshnessMin<=10"
+    },
+    "safety": {
+      "allowAuto": true
+    },
+    "evidence": {
+      "completeness": 1,
+      "minThreshold": 0.85,
+      "missing": [],
+      "present": [
+        "pvcSpec",
+        "scInfo",
+        "bindingMode",
+        "allowedTopologies",
+        "waitForFirstConsumer",
+        "pvZoneMismatch",
+        "provisionerErrors",
+        "recentScaleEvents"
+      ]
+    },
+    "slo": {
+      "label": "LOW",
+      "why": "otherwise"
+    },
+    "infra": {
+      "storageAffinity": "CRITICAL"
+    }
+  }
+}

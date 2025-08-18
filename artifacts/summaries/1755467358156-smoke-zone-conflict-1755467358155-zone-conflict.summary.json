@@ -1,0 +1,50 @@
+{
+  "planId": "smoke-zone-conflict-1755467358155",
+  "target": "zone-conflict",
+  "summary": {
+    "schemaVersion": "1.0.0",
+    "engineVersion": "0.8.0-beta",
+    "templateId": "zone-conflict-detection-v1",
+    "templateVersion": "1.0.0",
+    "determinism": {
+      "modelName": "none",
+      "system_fingerprint": "none",
+      "temperature": 0,
+      "top_p": 1,
+      "seed": 42
+    },
+    "priority": {
+      "label": "P2",
+      "score": 0.57
+    },
+    "confidence": {
+      "label": "High",
+      "why": "evidenceCompleteness>=0.9 && toolAgreement>=0.8 && freshnessMin<=10"
+    },
+    "safety": {
+      "allowAuto": true
+    },
+    "evidence": {
+      "completeness": 1,
+      "minThreshold": 0.9,
+      "missing": [],
+      "present": [
+        "nodeZones",
+        "machinesets",
+        "zoneSkew",
+        "capacityPressure"
+      ]
+    },
+    "slo": {
+      "label": "LOW",
+      "why": "otherwise"
+    },
+    "infra": {
+      "zoneConflict": "MEDIUM",
+      "schedulingConfidence": "Low",
+      "infrastructureSafety": {
+        "allowAuto": true
+      }
+    }
+  }
+}

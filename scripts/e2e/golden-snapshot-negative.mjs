@@ -9,7 +9,7 @@ import { TRIAGE_PRIORITY_V1 } from '../../src/lib/rubrics/core/triage-priority.v
 import { EVIDENCE_CONFIDENCE_V1 } from '../../src/lib/rubrics/core/evidence-confidence.v1.ts';
 import { REMEDIATION_SAFETY_V1 } from '../../src/lib/rubrics/core/remediation-safety.v1.ts';
 
-const TARGETS = ['ingress-pending','crashloopbackoff','route-5xx','pvc-binding'];
+const TARGETS = ['ingress-pending','crashloopbackoff','route-5xx','pvc-binding','pvc-storage-affinity','scale-instability','cluster-health-ambiguous'];
 
 function getEngineVersion(){
   try { return JSON.parse(fs.readFileSync('package.json','utf8'))?.version || '0.0.0'; } catch { return '0.0.0'; }
@@ -24,10 +24,12 @@ function determinism(){
   };
 }
 
+function lookupTarget(t){ return t.startsWith('cluster-health') ? 'cluster-health' : t; }
+
 async function planAndEvalNegative(templateId){
   const reg = new TemplateRegistry();
   await reg.load();
-  const sel = reg.selectByTarget(templateId);
+  const sel = reg.selectByTarget(lookupTarget(templateId));
   if (!sel) throw new Error(`Template not found: ${templateId}`);
   const engine = new TemplateEngine();
   const sessionId = `golden-neg-${templateId}`;
@@ -56,6 +58,24 @@ async function planAndEvalNegative(templateId){
       exec.push(mk(0,{ spec:{ } }));
       exec.push(mk(1,{ parameters: { } }));
       exec.push(mk(2,{ status:{ } }));
+      break;
+    case 'pvc-storage-affinity':
+      // Missing key evidence: no WFFC, no topo hints, no PV zone mismatch, no recent scale
+      exec.push(mk(0,{ spec:{ storageClassName:'standard' }, status:{ phase:'Pending' } }));
+      exec.push(mk(1,{ }));
+      exec.push(mk(2,{ volumeBindingMode:'Immediate', parameters:{}, allowedTopologies:[] }));
+      exec.push(mk(3,{ sets:[{name:'ms-a',replicas:3,zone:'a'}], lastScaleEvent:null, autoscaler:false }));
+      break;
+    case 'scale-instability':
+      // Missing recent scale and node pressure signals
+      exec.push(mk(0,{ schemaVersion:'v1', sets:[{name:'ms-a',replicas:3,zone:'a'}], replicasDesired:3, replicasCurrent:3, replicasReady:3, lastScaleEvent:null, autoscaler:false }));
+      exec.push(mk(1,{ schemaVersion:'v1', zones:['a'], nodes:[{name:'n1',zone:'a',ready:true}], ready:1, total:1, conditions:{ MemoryPressure:false, DiskPressure:false, PIDPressure:false, NetworkUnavailable:false }, capacity:{ utilization:0.3 }, allocatable:{ cpu:'8', memory:'32Gi' } }));
+      break;
+    case 'cluster-health-ambiguous':
+      // Multi-signal scenario to validate meta-dispatch Medium; evidence minimal for fanout
+      exec.push(mk(0,'Progressing True; Available True'));
+      exec.push(mk(1,{ total: 5, ready: 4 }));
+      exec.push(mk(2,'router pending; WaitForFirstConsumer; Scaled up 1 (5m ago)'));
       break;
     default:
       for (let i=0;i<steps.length && i<3;i++) exec.push(mk(i,{ }));
@@ -95,4 +115,3 @@ async function main(){
 }
 
 main().catch(e=>{ console.error(e?.message||e); process.exit(1); });
-

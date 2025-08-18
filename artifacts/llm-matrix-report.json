@@ -1,0 +1,195 @@
+{
+  "params": {
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": 800,
+    "seed": 7
+  },
+  "models": [
+    "ministral-8b-instruct-2410",
+    "mistralai/devstral-small-2507",
+    "qwen/qwen3-coder-30b"
+  ],
+  "results": [
+    {
+      "model": "ministral-8b-instruct-2410",
+      "template": "ingress-pending",
+      "ok": true,
+      "toolCalls": 14,
+      "finalText": "",
+      "priority": null,
+      "confidence": null,
+      "error": null,
+      "transcriptFile": "artifacts/llm-matrix/transcripts/ministral-8b-instruct-2410/ingress-pending-1755478134168.json",
+      "outputFile": "artifacts/llm-matrix/outputs/ministral-8b-instruct-2410__ingress-pending__1755478134168.json"
+    },
+    {
+      "model": "ministral-8b-instruct-2410",
+      "template": "route-5xx",
+      "ok": true,
+      "toolCalls": 15,
+      "finalText": "",
+      "priority": null,
+      "confidence": null,
+      "error": null,
+      "transcriptFile": "artifacts/llm-matrix/transcripts/ministral-8b-instruct-2410/route-5xx-1755478149848.json",
+      "outputFile": "artifacts/llm-matrix/outputs/ministral-8b-instruct-2410__route-5xx__1755478149848.json"
+    },
+    {
+      "model": "ministral-8b-instruct-2410",
+      "template": "pvc-binding",
+      "ok": true,
+      "toolCalls": 20,
+      "finalText": "",
+      "priority": null,
+      "confidence": null,
+      "error": null,
+      "transcriptFile": "artifacts/llm-matrix/transcripts/ministral-8b-instruct-2410/pvc-binding-1755478168800.json",
+      "outputFile": "artifacts/llm-matrix/outputs/ministral-8b-instruct-2410__pvc-binding__1755478168800.json"
+    },
+    {
+      "model": "ministral-8b-instruct-2410",
+      "template": "pvc-storage-affinity",
+      "ok": true,
+      "toolCalls": 14,
+      "finalText": "",
+      "priority": null,
+      "confidence": null,
+      "error": null,
+      "transcriptFile": "artifacts/llm-matrix/transcripts/ministral-8b-instruct-2410/pvc-storage-affinity-1755478183880.json",
+      "outputFile": "artifacts/llm-matrix/outputs/ministral-8b-instruct-2410__pvc-storage-affinity__1755478183880.json"
+    },
+    {
+      "model": "ministral-8b-instruct-2410",
+      "template": "scheduling-failures",
+      "ok": true,
+      "toolCalls": 12,
+      "finalText": "",
+      "priority": null,
+      "confidence": null,
+      "error": null,
+      "transcriptFile": "artifacts/llm-matrix/transcripts/ministral-8b-instruct-2410/scheduling-failures-1755478201607.json",
+      "outputFile": "artifacts/llm-matrix/outputs/ministral-8b-instruct-2410__scheduling-failures__1755478201607.json"
+    },
+    {
+      "model": "mistralai/devstral-small-2507",
+      "template": "ingress-pending",
+      "ok": true,
+      "toolCalls": 3,
+      "finalText": "",
+      "priority": null,
+      "confidence": null,
+      "error": null,
+      "transcriptFile": "artifacts/llm-matrix/transcripts/mistralai_devstral-small-2507/ingress-pending-1755478241245.json",
+      "outputFile": "artifacts/llm-matrix/outputs/mistralai_devstral-small-2507__ingress-pending__1755478241245.json"
+    },
+    {
+      "model": "mistralai/devstral-small-2507",
+      "template": "route-5xx",
+      "ok": true,
+      "toolCalls": 1,
+      "finalText": "",
+      "priority": null,
+      "confidence": null,
+      "error": null,
+      "transcriptFile": "artifacts/llm-matrix/transcripts/mistralai_devstral-small-2507/route-5xx-1755478248175.json",
+      "outputFile": "artifacts/llm-matrix/outputs/mistralai_devstral-small-2507__route-5xx__1755478248175.json"
+    },
+    {
+      "model": "mistralai/devstral-small-2507",
+      "template": "pvc-binding",
+      "ok": true,
+      "toolCalls": 1,
+      "finalText": "",
+      "priority": null,
+      "confidence": null,
+      "error": null,
+      "transcriptFile": "artifacts/llm-matrix/transcripts/mistralai_devstral-small-2507/pvc-binding-1755478255941.json",
+      "outputFile": "artifacts/llm-matrix/outputs/mistralai_devstral-small-2507__pvc-binding__1755478255941.json"
+    },
+    {
+      "model": "mistralai/devstral-small-2507",
+      "template": "pvc-storage-affinity",
+      "ok": true,
+      "toolCalls": 1,
+      "finalText": "",
+      "priority": null,
+      "confidence": null,
+      "error": null,
+      "transcriptFile": "artifacts/llm-matrix/transcripts/mistralai_devstral-small-2507/pvc-storage-affinity-1755478260486.json",
+      "outputFile": "artifacts/llm-matrix/outputs/mistralai_devstral-small-2507__pvc-storage-affinity__1755478260486.json"
+    },
+    {
+      "model": "mistralai/devstral-small-2507",
+      "template": "scheduling-failures",
+      "ok": true,
+      "toolCalls": 1,
+      "finalText": "",
+      "priority": null,
+      "confidence": null,
+      "error": null,
+      "transcriptFile": "artifacts/llm-matrix/transcripts/mistralai_devstral-small-2507/scheduling-failures-1755478268823.json",
+      "outputFile": "artifacts/llm-matrix/outputs/mistralai_devstral-small-2507__scheduling-failures__1755478268823.json"
+    },
+    {
+      "model": "qwen/qwen3-coder-30b",
+      "template": "ingress-pending",
+      "ok": true,
+      "toolCalls": 6,
+      "finalText": "{\n  \"error\": \"tools_unavailable\",\n  \"reason\": \"Failed to retrieve IngressController resource after multiple attempts. The 'default' IngressController does not exist in the 'openshift-ingress' namespace, which may indicate a misconfiguration or missing resource. The pod 'router-default-5c65587884-mt5qx' is in 'Pending' status, possibly due to resource constraints or scheduling issues.\"\n}",
+      "priority": null,
+      "confidence": null,
+      "error": "tools_unavailable",
+      "transcriptFile": "artifacts/llm-matrix/transcripts/qwen_qwen3-coder-30b/ingress-pending-1755478282698.json",
+      "outputFile": "artifacts/llm-matrix/outputs/qwen_qwen3-coder-30b__ingress-pending__1755478282698.json"
+    },
+    {
+      "model": "qwen/qwen3-coder-30b",
+      "template": "route-5xx",
+      "ok": true,
+      "toolCalls": 7,
+      "finalText": "{\n  \"error\": \"tools_unavailable\",\n  \"reason\": \"Namespace 'shop' not found in the cluster. Unable to describe Route, Endpoints, or fetch pods for investigation.\"\n}",
+      "priority": null,
+      "confidence": null,
+      "error": "tools_unavailable",
+      "transcriptFile": "artifacts/llm-matrix/transcripts/qwen_qwen3-coder-30b/route-5xx-1755478289522.json",
+      "outputFile": "artifacts/llm-matrix/outputs/qwen_qwen3-coder-30b__route-5xx__1755478289522.json"
+    },
+    {
+      "model": "qwen/qwen3-coder-30b",
+      "template": "pvc-binding",
+      "ok": true,
+      "toolCalls": 8,
+      "finalText": "{\n  \"error\": \"tools_unavailable\",\n  \"reason\": \"The 'orders' namespace does not exist in the cluster, preventing retrieval of PVC, StorageClass, and ResourceQuota information. The tools failed to fetch the required resources due to the missing namespace.\"\n}",
+      "priority": null,
+      "confidence": null,
+      "error": "tools_unavailable",
+      "transcriptFile": "artifacts/llm-matrix/transcripts/qwen_qwen3-coder-30b/pvc-binding-1755478297575.json",
+      "outputFile": "artifacts/llm-matrix/outputs/qwen_qwen3-coder-30b__pvc-binding__1755478297575.json"
+    },
+    {
+      "model": "qwen/qwen3-coder-30b",
+      "template": "pvc-storage-affinity",
+      "ok": true,
+      "toolCalls": 4,
+      "finalText": "{\n  \"error\": \"tools_unavailable\",\n  \"reason\": \"Namespace 'orders' not found, preventing investigation of PVC 'db-storage' and related resources (PV, SC).\"\n}",
+      "priority": null,
+      "confidence": null,
+      "error": "tools_unavailable",
+      "transcriptFile": "artifacts/llm-matrix/transcripts/qwen_qwen3-coder-30b/pvc-storage-affinity-1755478301454.json",
+      "outputFile": "artifacts/llm-matrix/outputs/qwen_qwen3-coder-30b__pvc-storage-affinity__1755478301454.json"
+    },
+    {
+      "model": "qwen/qwen3-coder-30b",
+      "template": "scheduling-failures",
+      "ok": true,
+      "toolCalls": 12,
+      "finalText": "{\n  \"error\": \"tools_unavailable\",\n  \"reason\": \"All tool calls failed due to resource not found errors. The specified pod 'router-default-xxxxx', node 'ip-10-0-1-100.ec2.internal', and machineset 'worker-us-east-1a' could not be located in the cluster. This may indicate a scheduling issue or misconfiguration in the OpenShift environment.\"\n}",
+      "priority": null,
+      "confidence": null,
+      "error": "tools_unavailable",
+      "transcriptFile": "artifacts/llm-matrix/transcripts/qwen_qwen3-coder-30b/scheduling-failures-1755478315806.json",
+      "outputFile": "artifacts/llm-matrix/outputs/qwen_qwen3-coder-30b__scheduling-failures__1755478315806.json"
+    }
+  ]
+}
