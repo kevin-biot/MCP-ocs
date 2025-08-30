@@ -1,15 +1,15 @@
 {
   "scenario": "pvc-binding",
-  "sessionId": "engine-pvc-binding-1755512018527",
+  "sessionId": "engine-pvc-binding-1755542877058",
   "plan": {
-    "planId": "engine-pvc-binding-1755512018527",
+    "planId": "engine-pvc-binding-1755542877058",
     "steps": [
       {
         "tool": "oc_read_describe",
         "params": {
-          "sessionId": "engine-pvc-binding-1755512018527",
+          "sessionId": "engine-pvc-binding-1755542877058",
           "resourceType": "pvc",
-          "namespace": "student35",
+          "namespace": "test-student",
           "name": "shared-pvc"
         },
         "rationale": "PVC spec and events"
@@ -17,7 +17,7 @@
       {
         "tool": "oc_read_describe",
         "params": {
-          "sessionId": "engine-pvc-binding-1755512018527",
+          "sessionId": "engine-pvc-binding-1755542877058",
           "resourceType": "storageclass",
           "name": "<sc|default>"
         },
@@ -26,9 +26,9 @@
       {
         "tool": "oc_read_describe",
         "params": {
-          "sessionId": "engine-pvc-binding-1755512018527",
+          "sessionId": "engine-pvc-binding-1755542877058",
           "resourceType": "resourcequota",
-          "namespace": "student35"
+          "namespace": "test-student"
         },
         "rationale": "Quota limits"
       }
@@ -38,29 +38,19 @@
       "timeoutMs": 20000
     }
   },
-  "completeness": 0.5,
+  "completeness": 0,
   "result": {
     "priority": "P3",
-    "confidence": "Medium",
+    "confidence": "Low",
     "slo": "HIGH",
     "evidence_keys": [
-      "pvc_pending",
-      "storage_class_missing"
+      "no_evidence"
     ],
-    "notes": "evidence: pvc_pending,storage_class_missing"
+    "notes": "no_evidence"
   },
   "debug": {
-    "evidence_fired": [
-      "pvcSpec",
-      "scInfo",
-      "bindingMode"
-    ],
-    "mapped_keys": [
-      "pvc_pending",
-      "storage_class_missing"
-    ],
-    "confidence_rules_applied": [
-      "nudge:2-strong->Low->Medium"
-    ]
+    "evidence_fired": [],
+    "mapped_keys": [],
+    "confidence_rules_applied": []
   }
 }

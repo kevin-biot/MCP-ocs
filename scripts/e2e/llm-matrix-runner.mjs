@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import fetch from 'node-fetch';
+import { execSync } from 'node:child_process';
 
 import { UnifiedToolRegistry } from '../../src/lib/tools/tool-registry.ts';
 import { OpenShiftClient } from '../../src/lib/openshift-client.ts';
@@ -16,6 +17,9 @@ import { validateOutput } from './schema/validators.mjs';
 const BASE = process.env.LMSTUDIO_BASE_URL || 'http://localhost:1234/v1';
 const MODELS = (process.env.LMSTUDIO_MODELS || 'ministral-8b-instruct-2410,mistralai/devstral-small-2507,qwen/qwen3-coder-30b')
   .split(',').map(s=>s.trim()).filter(Boolean);
+const PAUSE_CASES_SEC = Number(process.env.LM_PAUSE_BETWEEN_CASES_SEC || 0);
+const PAUSE_MODELS_SEC = Number(process.env.LM_PAUSE_BETWEEN_MODELS_SEC || 0);
+const MODEL_SETTLE_SEC = Number(process.env.LM_MODEL_SETTLE_SEC || 10);
 const PARAMS = {
   temperature: Number(process.env.LM_TEMPERATURE ?? 0.0),
   top_p: Number(process.env.LM_TOP_P ?? 1.0),
@@ -155,8 +159,12 @@ async function runOnce(model, prompt){
 }
 
 async function main(){
+  // Auth go/no-go
+  try { execSync('oc whoami', { stdio: ['ignore','pipe','pipe'] }); }
+  catch { console.error('[llm-matrix] ERROR: oc is not logged in. Run `oc login` and retry.'); process.exit(3); }
   const results=[];
   for (const model of MODELS){
+    if (MODEL_SETTLE_SEC>0) { console.error(`[llm-matrix] Settling before model ${model} (${MODEL_SETTLE_SEC}s)`); await new Promise(r=>setTimeout(r, MODEL_SETTLE_SEC*1000)); }
     for (const p of PROMPTS){
       try {
         const r = await runOnce(model, p);
@@ -165,7 +173,9 @@ async function main(){
       } catch (e) {
         results.push({ model, template:p.id, ok:false, error:String(e?.message||e) });
       }
+      if (PAUSE_CASES_SEC>0) { await new Promise(r=>setTimeout(r, PAUSE_CASES_SEC*1000)); }
     }
+    if (PAUSE_MODELS_SEC>0) { console.error(`[llm-matrix] Pausing ${PAUSE_MODELS_SEC}s before next model`); await new Promise(r=>setTimeout(r, PAUSE_MODELS_SEC*1000)); }
   }
   const outDir = 'artifacts'; fs.mkdirSync(outDir,{recursive:true});
   const md = [

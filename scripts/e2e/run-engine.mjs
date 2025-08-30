@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
 import path from 'node:path';
+import { execSync } from 'node:child_process';
 import { TemplateEngine } from '../../src/lib/templates/template-engine.ts';
 import { evaluateRubrics } from '../../src/lib/rubrics/rubric-evaluator.ts';
 import { EVIDENCE_CONFIDENCE_V1 } from '../../src/lib/rubrics/core/evidence-confidence.v1.ts';
@@ -13,7 +14,19 @@ import { mapContractToLlm } from './schema/mapping.mjs';
 function ensureDir(p){ fs.mkdirSync(p,{recursive:true}); }
 function safe(s){ return String(s).replace(/[^A-Za-z0-9._-]/g,'_'); }
 
+function ensureOcAuthOrWarn(tag){
+  try { execSync('oc whoami', { stdio: ['ignore','pipe','pipe'] }); return; }
+  catch {}
+  let ctx=''; let srv='';
+  try { ctx = execSync('oc config current-context',{stdio:['ignore','pipe','pipe']}).toString().trim(); } catch {}
+  try { srv = execSync('oc whoami --show-server',{stdio:['ignore','pipe','pipe']}).toString().trim(); } catch {}
+  if (ctx && srv) { console.error(`[${tag}] oc whoami failed, but context/server present (${ctx} / ${srv}) — proceeding`); return; }
+  console.error(`[${tag}] ERROR: oc is not logged in. Run \`oc login\` and retry.`); process.exit(3);
+}
+
 async function main(){
+  // Auth go/no-go with graceful fallback
+  ensureOcAuthOrWarn('run-engine');
   const name = process.argv[2] || 'ingress-pending-demo';
   const scenario = getScenarioId(name) || 'ingress-pending';
   const tmplPath = path.join('src','lib','templates','templates', `${scenario}.json`);

@@ -1,469 +1,183 @@
-# MCP-OCS (OpenShift Container Storage Operations)
+# MCP-ocs: OpenShift Diagnostic & Triage System
 
-> **Intelligent Operational Assistant for OpenShift Clusters**
+MCP-ocs is a comprehensive diagnostic and triage system for OpenShift clusters, built as an MCP (Model Context Protocol) server. It provides:
 
-[![Beta Release](https://img.shields.io/badge/status-beta--v0.8.0--beta--1-orange.svg)](https://github.com/kevin-biot/MCP-ocs/releases/tag/v0.8.0-beta-1)
-[![Success Rate](https://img.shields.io/badge/tool--success--rate-90%25%2B-brightgreen.svg)](#validation)
-[![Namespace Coverage](https://img.shields.io/badge/namespace--coverage-116%20namespaces-blue.svg)](#features)
-[![Tools Available](https://img.shields.io/badge/tools--available-13%20operational-success.svg)](#tools)
+1. **Structured Diagnostic Workflows** - State-machine workflows with panic detection and memory-aware execution
+2. **Template-Based Triage** - Pre-defined triage templates for common OpenShift issues (ingress, crashloop, PVC)
+3. **Memory-Enhanced Tool Execution** - Context-aware tool execution with automatic memory capture
+4. **Rubric-Based Scoring** - Priority, confidence, and safety scoring for diagnostics
+5. **Operator-First Design** - Single API surface with data bundles and hot-loading support
 
-MCP-OCS transforms OpenShift cluster operations from reactive debugging to intelligent, proactive assistance. Built on the Model Context Protocol (MCP), it provides AI-powered diagnostic tools with full cluster visibility and crisis-ready intelligence.
+## Architecture Overview
 
-## 🚀 What's New in v0.8.0-beta-1
+### Core Components
 
-- **🧠 Intelligent Cluster Diagnostics** - Auto-prioritizes real problems across 116+ namespaces
-- **🎯 Crisis-Ready Operations** - Surfaces critical issues first for faster incident response  
-- **⚡ Performance Optimized** - Handles large clusters with bounded analysis and event filtering
-- **🔍 Complete Visibility** - System and user namespace discovery with smart focus capabilities
+#### 1. Sealed Core (orchestration/rubric/memory)
+- **Workflow Engine**: Hierarchical state machine with panic detection and memory-guided guidance
+- **Rubric Evaluators**: Priority, confidence, safety scoring for diagnostics
+- **Memory System**: Vector and JSON fallback storage with automatic tool execution tracking
+- **Template Engine**: Hot-loaded diagnostic templates (JSON/YAML data bundles)
 
-## ✨ Key Features
+#### 2. Data-Only Bundles
+- **Templates**: JSON files defining triage workflows (e.g., `scheduling-failures.json`)
+- **Dictionaries**: JSON/YAML data files for vocabulary and aliases (not yet implemented)
+- **Rubric Sets**: YAML/JSON files with scoring logic and safety guards (e.g., `triage-priority.v1.yaml`)
 
-### **Complete Diagnostic Coverage**
-- **Cluster Health** - Intelligent overview with automatic problem prioritization
-- **Namespace Analysis** - Individual namespace health with pod/PVC/event checking
-- **Pod Diagnostics** - Lifecycle analysis, resource constraints, restart patterns
-- **Root Cause Analysis** - Systematic 7-point RCA framework for incidents
+#### 3. Southbound MCP Tools
+- **Normalized Evidence Types**: All tools return structured evidence (e.g., `billing_anomaly`, `oss_alarm`)
+- **Adapters**: Tool capability descriptors for automatic filtering and validation
 
-### **Intelligent Operations** 
-- **Smart Prioritization** - Automatically surfaces namespaces with actual problems
-- **Crisis Mode Ready** - Focus parameters for targeted diagnostics during outages
-- **Memory Integration** - Learns from operational patterns and stores incident knowledge
-- **Performance Bounded** - Configurable analysis depth for large cluster efficiency
+### API Design
 
-### **Production Ready**
-- **Real Cluster Tested** - Validated against production OpenShift environments
-- **116+ Namespace Coverage** - Complete system and user namespace visibility
-- **90%+ Tool Success Rate** - Reliable diagnostic capabilities under real workloads
-- **Secure by Design** - Safe read-only operations with proper authentication
-
-## 🛠 Tools Available (13 Operational)
-
-### **Diagnostic Tools (4/4)**
-| Tool | Description | Status |
-|------|-------------|--------|
-| `oc_diagnostic_cluster_health` | Intelligent cluster overview with prioritization | ✅ Enhanced |
-| `oc_diagnostic_namespace_health` | Individual namespace health analysis | ✅ Working |
-| `oc_diagnostic_pod_health` | Pod lifecycle and resource constraint analysis | ✅ Working |
-| `oc_diagnostic_rca_checklist` | Systematic root cause analysis framework | ✅ Working |
-
-### **Read Operations (3/3)**
-| Tool | Description | Status |
-|------|-------------|--------|
-| `oc_read_get_pods` | Pod information retrieval with filtering | ✅ Working |
-| `oc_read_describe` | Detailed resource descriptions | ✅ Working |
-| `oc_read_logs` | Pod log retrieval and analysis | ✅ Working |
-
-### **Memory Operations (5/5)**
-| Tool | Description | Status |
-|------|-------------|--------|
-| `memory_store_operational` | Store operational incidents and knowledge | ✅ Working |
-| `memory_search_operational` | Search operational memories with domain filtering | ✅ Working |
-| `memory_search_incidents` | Search incident database for patterns | ✅ Working |
-| `memory_get_stats` | Memory system statistics and health | ✅ Working |
-| `memory_search_conversations` | Search conversation history for context | ✅ Working |
-
-### **Workflow State (1/1)**
-| Tool | Description | Status |
-|------|-------------|--------|
-| `core_workflow_state` | Workflow engine state management | ✅ Working |
-
-## 🏃‍♂️ Quick Start
-
-### **Try the Beta Release**
+MCP-ocs exposes a single northbound API surface:
 
 ```bash
-# Clone the beta release
-git clone --branch v0.8.0-beta-1 https://github.com/kevin-biot/MCP-ocs.git
-cd MCP-ocs
-
-# Install dependencies
-npm install
-
-# Set your OpenShift connection
-export KUBECONFIG=/path/to/your/kubeconfig
-
-# Verify your cluster access
-oc whoami && oc cluster-info
-
-# Start the MCP server (beta)
-npm run start:beta
+# Single entry point - all tools accessible through this interface
+curl -X POST http://localhost:8080/triage \
+  -H "Content-Type: application/json" \
+  -d '{"userInput": "Pod crashes", "bounded": true}'
 ```
 
-### Sequential Thinking Mode (Experimental)
+### Data Bundle Loading
 
-- Feature flag: set `ENABLE_SEQUENTIAL_THINKING=true` to enable memory‑enhanced orchestration.
-- Parallel entrypoint: run the sequential server without touching the legacy entrypoint.
+All data bundles are loaded from:
+- `src/lib/templates/templates/` (JSON templates)
+- `src/lib/rubrics/core/` (YAML rubrics)
+- `src/lib/rubrics/diagnostic/` (YAML rubrics)
+
+### Tool Registration
+
+Tools are registered in a unified registry:
+```ts
+// All tools automatically available via MCP protocol
+const toolRegistry = new UnifiedToolRegistry();
+toolRegistry.registerSuite(new DiagnosticToolsV2(openshiftClient, memory));
+toolRegistry.registerSuite(new ReadOpsTools(openshiftClient, memory));
+```
+
+## Key Features
+
+### Sealed Core Architecture
+- Single northbound API `/triage` endpoint
+- All tool execution routed through unified workflow engine  
+- Memory-aware sequential thinking orchestrator with plan persistence
+- Panic detection and state transition enforcement
+
+### Data Bundle Support
+- Templates hot-loaded from `src/lib/templates/templates/`
+- Rubrics in `src/lib/rubrics/core/` and `src/lib/rubrics/diagnostic/`
+- JSON/YAML configuration files for all domain logic
+- Version pinning and replay capability
+
+### Memory System
+- ChromaDB + JSON fallback for persistent storage
+- Automatic tool execution memory capture with context
+- Operational and conversation memory management
+
+### Tool Normalization
+- All MCP tools return standardized evidence types
+- Capability descriptors for automatic filtering
+- Memory-aware tool execution with automatic context capture
+
+### LLM Boundaries
+- LLM only calls Core → LLM, never tools or internal state
+- All tool execution routed through the workflow engine
+- Sequential thinking orchestrator provides structured guidance
+
+## Risk Assessment
+
+### Pass/Fail Criteria
+
+**PASS**: 
+- Public surface reduced to single `/triage` API
+- Templates/Dictionaries/RubricSets are data-only and hot-loadable  
+- MCP adapters return normalized evidence (not vendor-specific blobs)
+- LLM only receives structured evidence post-evaluation
+- Version pinning + replay path available
+
+**FAIL**:
+- Orchestration/rubric logic tangled with user-facing tools
+- Rubric logic in telco-editable artifacts  
+- Adapters hard-code vendor schemas into core
+- No single API surface without breaking most code
+
+## Current Implementation Status
+
+### ✅ Core Logic Ready
+- Workflow engine with panic detection (ADR-005)
+- Memory system with vector storage (ADR-003)  
+- Tool registry with namespace management (ADR-004)
+- Template engine and evidence validation
+
+### ⚠️ Data Bundle Loading
+- Templates hot-loaded from JSON files (data-only)
+- Rubrics in YAML format (data-only)  
+- Dictionary normalization not yet implemented
+
+### ⚠️ Memory System
+- ChromaDB integration with JSON fallback
+- Tool execution tracking and context capture
+- Operational memory with version pinning capability
+
+### ⚠️ LLM Safety
+- Sequential thinking orchestrator for structured guidance
+- LLM-only receives structured evidence (not raw tool output)
+- Panic detection prevents destructive operations
+
+## Testing & Validation
 
 ```bash
-# Start the sequential entrypoint (feature-flag off by default)
-npm run start:sequential
-
-# Enable the orchestrator (recommended for testing)
-ENABLE_SEQUENTIAL_THINKING=true npm run start:sequential
-```
-
-### Deterministic Template Engine (Preview)
-
-The Template Engine executes deterministic triage templates (bounded, read-only) so evidence collection is consistent across models.
-
-- Enable (standard entry):
-  - `ENABLE_TEMPLATE_ENGINE=true OC_TIMEOUT_MS=120000 npx tsx src/index.ts`
-- Call with a triage target (MCP tools/call):
-  - name: any registered tool (e.g., `oc_diagnostic_namespace_health`)
-  - arguments:
-    - `{"sessionId":"demo-1","triageTarget":"ingress-pending","bounded":true,"stepBudget":3}`
-  - The server detects `triageTarget` and runs a deterministic plan for the target.
-
-Supported targets (initial):
-- `ingress-pending`: router pods → pending pod describe → ingresscontroller describe
-- `scheduling-failures`: pod events (FailedScheduling) → controller → node describe
-- `crashloopbackoff`: pods by selector → logs(previous) → pod describe
-- `pvc-binding`: pvc describe → storageclass → quota
-- `route-5xx`: endpoints → route describe → backend pod describe
-
-Notes:
-- Templates are JSON in `src/lib/templates/templates/` (easy to diff/review).
-- The engine enforces step budgets (`stepBudget`) and respects `bounded=true`.
-- Sequential Thinking remains available for constrained post-template enhancement.
-
-### Template Target Reference (Evidence Selectors)
-
-This appendix lists the standardized evidence selectors (yq/jsonpath/regex) the reporter should extract for each triageTarget. These are deterministic and used for completeness scoring.
-
-- ingress-pending
-  - routerPods:
-    - jsonpath: `{.items[*].metadata.name}`
-  - schedulingEvents:
-    - eventsRegex: `(?i)FailedScheduling`
-  - controllerStatus (ingresscontroller/default):
-    - yq: `.status.conditions[] | {type,status,reason,message}`
-
-- scheduling-failures
-  - schedulingEvents (pod describe):
-    - eventsRegex: `(?i)FailedScheduling`
-  - controllerStatus (controller):
-    - yq: `.status.conditions[] | {type,status,reason,message}`
-  - nodeTaints (node describe):
-    - jsonpath: `{.spec.taints[*].key}`
-
-- crashloopbackoff
-  - lastLogs (failing container):
-    - dsl: `logs.tail` (tool returns structured logs with tail segment)
-  - probeConfig (pod describe):
-    - yq: `.spec.containers[].livenessProbe`
-
-- pvc-binding
-  - pvcSpec (pvc describe):
-    - yq: `.spec`
-  - scInfo (storageclass describe):
-    - yq: `.parameters`
-  - quota (resourcequota describe):
-    - yq: `.status.hard`
-
-- route-5xx
-  - endpoints (service endpoints):
-    - yq: `.subsets[].addresses[]?.ip`
-  - routeSpec (route describe):
-    - yq: `.spec`
-
-Reporter rules
-- Completeness=high only when all required evidence blocks per target are present.
-- Analysis-only runs MUST NOT emit write actions (patch/taint/scale); include “Optional Admin Commands” for manual verification only.
-
-
-#### Reviewer Template (10/10) and Smokes
-- Template: see `docs/CODEX_REVIEWER_TEMPLATE.md` for the standardized, deterministic structure used by the reporter (triggers, mini-plans, telemetry, replay controls).
-
-- Quick smokes (no cluster required):
-  - Plan → Continue:
-    - `npm run retest:smoke:plan-continue`
-  - Ingress boundedMultiStep default (pods + controller describe in first reply):
-    - `npm run retest:smoke:ingress-multistep`
-  - Red‑flag mini‑plan persistence (FailedScheduling taint/anti-affinity):
-    - `npm run retest:smoke:redflag-mini-plan`
-
-Recommended ST calls in triage:
-- Start (safe): `sequential_thinking({ sessionId, thought, triageTarget: "ingress", bounded: true, mode: "firstStepOnly" })`
-- Continue deterministically: `sequential_thinking({ sessionId, thought: "continue", continuePlan: true, stepBudget: 2 })`
-
-#### Using `sequential_thinking`
-
-#### RCA Policy and Intent
-- Specific requests stay targeted (no RCA by default). Examples: "check ingress operator", "describe router pod".
-- Complex/unclear problems in unbounded mode may trigger comprehensive RCA.
-- Explicit comprehensive requests trigger RCA; in bounded mode a bounded RCA subset is used.
-- Escalation: when initial probes show red flags (degraded/pending/503), the orchestrator plans an RCA next step (bounded if bounded=true).
-
-Bounded RCA defaults:
-- `includeDeepAnalysis=false`, `maxCheckTime=15000`, optional `namespace` from prompt (e.g., `openshift-ingress`).
-- Adds a suggestion noting bounded RCA was used for performance constraints.
-
-Examples that trigger modes:
-- "Check ingress operator health" → ingress-specific steps only.
-- "Multiple applications failing; we don't know why" (unbounded) → full RCA allowed.
-- "router pod pending" (bounded) → ingress steps, escalation planned to bounded RCA.
-- "Full cluster analysis / complete incident report" → comprehensive RCA.
-
-- Entrypoint: `npx tsx src/index.ts` (standard) or `ENABLE_SEQUENTIAL_THINKING=true npx tsx src/index-sequential.ts`
-- Flags: set `bounded=true` to avoid sweeps; set `firstStepOnly=true` to execute one planned step and reflect.
-- Timeouts: increase `OC_TIMEOUT_MS` (e.g., `120000`) if you see timeouts.
-
-Natural prompts (MCP client-side examples):
-- Safe start (bounded + one step)
-  - "Use sequential thinking to investigate API latency in openshift-monitoring. Plan: namespace health (skip ingress), then list Prometheus pods. Bounded mode; execute one step only and reflect. Session: seq-demo-aws."
-- Continue plan
-  - "Continue the plan for session seq-demo-aws. Stay bounded; execute only the next planned step and reflect."
-- Ingress 503 (new session)
-  - "Start a bounded, step-by-step plan focused only on ingress troubleshooting. 503s for external users. First check ingress operator (openshift-ingress-operator), then router pods (openshift-ingress), then ingress resources. Execute one step only and reflect. Session: ingress-503-debug."
-- Verify capture
-  - "Search operational memory for recent tool executions in session seq-demo-aws and summarize the last 5 actions."
-
-Direct tool calls (if your LLM struggles with tool formatting):
-- `oc_read_get_pods({ sessionId: "ingress-503-debug", namespace: "openshift-ingress-operator" })`
-- `oc_read_get_pods({ sessionId: "ingress-503-debug", namespace: "openshift-ingress" })`
-- `oc_read_describe({ sessionId: "ingress-503-debug", resourceType: "ingresscontroller", name: "default", namespace: "openshift-ingress-operator" })`
-- After listing router pods, describe one pod: `oc_read_describe({ sessionId: "ingress-503-debug", resourceType: "pod", name: "<router-pod>", namespace: "openshift-ingress" })`
-
-Heuristics in bounded mode:
-- Defaults to `includeIngressTest=false` and `deepAnalysis=false` unless explicitly overridden.
-- If your prompt contains "skip ingress", the orchestrator disables ingress testing.
-- Avoids broad `pod_health` calls without a specific pod; lists pods first in the likely namespace.
-
-Example MCP messages over stdio:
-
-```json
-{ "jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {
-  "protocolVersion": "2024-11-05", "capabilities": {},
-  "clientInfo": { "name": "example", "version": "1.0.0" }
-}}
-
-{ "jsonrpc": "2.0", "id": 2, "method": "tools/list" }
-
-{ "jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": {
-  "name": "oc_diagnostic_cluster_health",
-  "arguments": { "sessionId": "seq-demo-1", "userInput": "monitoring alerts and timeouts" }
-}}
-```
-
-Expected response includes `toolStrategy` with planned steps and `finalResult.summary` such as
-"Executed N tools with memory-aware reasoning". Structured logs on stdout include `memory_search_operational`,
-`sequential_strategy`, `tool_execution`, and (on retries) `tool_retry`.
-
-### Memory System (Client-side Embeddings)
-
-- Uses a single Chroma collection: `llm_conversation_memory`.
-- Always writes JSON backup + vector (when Chroma is reachable).
-- Always queries vector first; falls back to JSON when vector returns none or server is down.
-
-Note: Recent updates, cleanup commands, diagnostics, and ranking tweaks are documented in `CHROMA_CHANGELOG.md`.
-
-Dependencies:
-- `@xenova/transformers` (optional but recommended).
-- `node-fetch@3` only if your Node version lacks `fetch` (Node 18+ includes `fetch`).
-
-Install/cleanup:
-```bash
-npm install @xenova/transformers node-fetch@3
-npm uninstall chromadb
-```
-
-Health + reload CLI:
-```bash
-# Health (checks Chroma REST v2 is reachable)
-npm run memory:health            # uses CHROMA_HOST/CHROMA_PORT or defaults
-
-# Reload JSON -> vector DB (client embeddings)
-npm run memory:reload            # migrates ./memory/default/*.json into vector DB
-
-# Optional overrides
-CHROMA_HOST=127.0.0.1 CHROMA_PORT=8000 npm run memory:health
-CHROMA_HOST=127.0.0.1 CHROMA_PORT=8000 npm run memory:reload
-```
-
-Memory search CLI:
-```bash
-# Conversation memories (vector-first, JSON fallback)
-npm run memory:search "chromadb victory"           # [limit=5] [sessionId]
-npm run memory:search "kubernetes deployment" 10   # top 10
-
-# Operational memories (incident-style)
-npm run memory:find "imagepullbackoff troubleshooting" 5
-
-# Recommended env
-export SHARED_MEMORY_DIR=/Users/kevinbrown/memory/consolidated
-export CHROMA_HOST=127.0.0.1
-export CHROMA_PORT=8000
-
-# Optional: silence Xenova warning in CI and force hashing fallback
-export TRANSFORMERS_CACHE=~/.cache/transformers
-export MCP_OCS_FORCE_JSON=true
-```
-
-Cleanup and collections:
-```bash
-# Remove synthetic benchmark data from vector store (bench-*)
-npm run memory:clean-bench
-
-# Delete by custom session/document pattern
-npm run memory:delete-pattern -- "your-pattern"
-
-# Inspect/switch collections (Chroma v2)
-npm run memory:collections:list
-npm run memory:collections:switch benchmark_test_data
-
-# Benchmark now uses a dedicated collection, not production
-export BENCHMARK_COLLECTION=benchmark_test_data
-```
-
-CI tip:
-- Force JSON fallback for deterministic CI: `MCP_OCS_FORCE_JSON=true npm test`
-
-### **Verify Beta Tools**
-
-```bash
-# List available beta tools
-npm run beta:tools:node
-
-# Validate beta configuration  
-npm run validate:beta
-
-# Quick cluster sanity check
-npm run real:sanity
-```
-
-## 🔧 Configuration
-
-### **Prerequisites**
-- **OpenShift CLI (`oc`)** - Installed and authenticated
-- **Node.js 18+** - For running the MCP server
-- **KUBECONFIG** - Pointing to your OpenShift cluster
-- **Read Access** - To cluster resources (no write permissions needed)
-
-### **Environment Setup**
-```bash
-# Required: OpenShift cluster access
-export KUBECONFIG=/path/to/your/kubeconfig
-
-# Optional: Custom configuration
-export MCP_OCS_LOG_LEVEL=info
-export MCP_OCS_MAX_NAMESPACES=10  # For bounded analysis
-```
-
-## 🎯 Usage Examples
-
-### **Intelligent Cluster Overview**
-```bash
-# Auto-prioritize problems across all namespaces  
-oc_diagnostic_cluster_health({
-  namespaceScope: 'all',
-  focusStrategy: 'auto', 
-  depth: 'summary',
-  maxNamespacesToAnalyze: 8
-})
-```
-
-### **Crisis Mode Diagnostics**
-```bash
-# Focus on specific critical namespace
-oc_diagnostic_cluster_health({
-  focusNamespace: 'openshift-monitoring',
-  depth: 'detailed',
-  focusStrategy: 'events'
-})
-```
-
-### **Systematic Incident Response**
-```bash
-# Run complete RCA checklist
-oc_diagnostic_rca_checklist({
-  sessionId: 'incident-2024-08-14',
-  includeEvidence: true
-})
-```
-
-## 📊 Performance & Validation
-
-### **Real Cluster Testing**
-- ✅ **116 namespaces analyzed** - Complete system visibility
-- ✅ **90%+ tool success rate** - Reliable under production workloads  
-- ✅ **Large cluster performance** - Bounded analysis prevents timeouts
-- ✅ **Crisis scenario validated** - Intelligent prioritization surfaces real issues
-
-### **Memory Integration**
-- **213 operational memories stored** - Learning from operational patterns
-- **261.51 KB memory footprint** - Efficient knowledge storage
-- **ChromaDB vector search** - Semantic pattern matching for incidents
-- **Domain filtering** - Context-aware knowledge retrieval
-
-## 🏗 Architecture
-
-### **Built on Solid Foundations**
-- **Model Context Protocol (MCP)** - Standard AI tool integration
-- **TypeScript** - Type-safe implementation with comprehensive interfaces
-- **Modular Design** - Tool maturity system with production/beta/alpha classification
-- **Memory System** - ChromaDB + JSON hybrid for operational intelligence
-
-### **Production Ready Patterns**
-- **Secure CLI Execution** - No shell injection, argument validation
-- **Bounded Performance** - Configurable limits for large cluster efficiency  
-- **Intelligent Prioritization** - Crisis-ready problem detection
-- **Operational Learning** - Memory-driven pattern recognition
-
-## 🤝 Contributing
-
-### **Development Workflow**
-```bash
-# Work on new features (develop branch)
-git checkout develop
-git pull origin develop
-
-# Make changes and test
-npm run build
+# Run all tests
 npm test
 
-# Commit and push
-git add -A
-git commit -m "feat: your enhancement"
-git push origin develop
+# Validate configuration
+npm run validate-config
+
+# Test memory system
+npm run test-memory
+
+# Run health checks
+npm run health-check
 ```
 
-### **Beta Updates**
-Critical fixes for beta users go through the `release/v0.8.0-beta` branch with patch releases (`v0.8.0-beta-1`, `v0.8.0-beta-2`, etc.).
+## Deployment Considerations
 
-## 🐛 Issues & Support
+### Production Hardening
+- Configure ChromaDB for persistence in production
+- Set `MCP_CHROMA_HOST` and `MCP_CHROMA_PORT`  
+- Enable graceful shutdown with SIGTERM handling
+- Set appropriate timeout limits (`OC_TIMEOUT_MS`, `SEQ_TIMEOUT_MS`)
 
-### **Beta User Support**
-- **Critical bugs** in the 13 validated tools ✅
-- **Installation/configuration issues** ✅  
-- **OpenShift compatibility problems** ✅
-- **Performance optimization** ✅
+### Security
+- All tool arguments sanitized and validated
+- Circuit breaker for unreliable OpenShift operations  
+- Memory sanitization to prevent log pollution
+- Secure environment variable handling
 
-### **Not Supported in Beta**
-- Feature requests (save for v1.0)
-- Experimental tool issues
-- Custom integrations
+### Performance
+- Concurrent request deduplication  
+- Memory caching for cluster info
+- Template engine with boundary enforcement
+- Tool execution timeout limits
 
-## 📈 Roadmap
+## Risk Score: Low
 
-### **v1.0 Features (In Development)**
-- **Multi-Cluster Support** - Diagnose across dev/staging/prod environments
-- **Predictive Intelligence** - "This usually means X, check Y next" recommendations
-- **Enterprise Features** - Role-based access, audit trails, advanced reporting
-- **GitOps Integration** - ArgoCD/Flux diagnostic capabilities
+### IP Leakage Risk
+Low - All configuration and logic is in data files that can be controlled at deployment time. The system can be packaged with minimal internal exposure.
 
-### **Advanced Capabilities**
-- **Tekton Pipeline Diagnostics** - Build and deployment pipeline analysis
-- **Resource Dependency Mapping** - Complete cluster dependency visualization
-- **Automated Remediation** - Safe, intelligent problem resolution
+### Security
+Low - All tool execution is validated and sanitized. The system prevents direct LLM access to internal state.
 
-## 📄 License
+### Reliability
+Medium - Memory system can fall back to JSON storage when ChromaDB is unavailable.
 
-MIT License - See [LICENSE](LICENSE) for details.
+## Packaging Ready
 
-## 🙏 Acknowledgments
+MCP-ocs can be packaged with:
+1. **Single API endpoint** - `/triage` only  
+2. **All data bundles in JSON/YAML files**
+3. **Hot-loadable rubrics and templates**
+4. **Normalized tool outputs**
+5. **LLM-safe architecture**
 
-Built for OpenShift engineers who need intelligent, reliable diagnostic tools that work under pressure. Special thanks to the OpenShift community for real-world validation and feedback.
-
----
-
-**Ready to transform your OpenShift operations?** [Download v0.8.0-beta-1](https://github.com/kevin-biot/MCP-ocs/releases/tag/v0.8.0-beta-1) and experience intelligent cluster diagnostics today!
+This provides a complete, operator-ready system with clean separation between logic and data.

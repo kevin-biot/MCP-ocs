@@ -2,18 +2,18 @@
   "model": "qwen/qwen3-coder-30b",
   "scenario": "pvc-binding-demo",
   "files": [
-    "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512011329.json",
-    "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512014776.json",
-    "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512018352.json"
+    "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755542867948.json",
+    "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755542872314.json",
+    "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755542876657.json"
   ],
   "score": {
     "structuralStable": true,
     "toolSuccessRate": 1,
-    "answerStability": 0.333,
+    "answerStability": 1,
     "rubricStability": 1,
     "jsonEqual": null,
     "rubricEqual": null,
-    "robustnessScore": 0.867,
+    "robustnessScore": 1,
     "toolSeqs": [
       "oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,resourceType) -> oc_read_describe(namespace,resourceType)",
       "oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,resourceType) -> oc_read_describe(namespace,resourceType)",
@@ -22,33 +22,36 @@
   },
   "extracted": [
     {
-      "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512011329.json",
+      "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755542867948.json",
       "priority": "P2",
-      "confidence": "High",
+      "confidence": "Medium",
       "slo": null,
       "evidence_keys": [
         "pvc_pending",
-        "zone_mismatch"
+        "storage_class_missing",
+        "no_evidence"
       ]
     },
     {
-      "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512014776.json",
+      "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755542872314.json",
       "priority": "P2",
-      "confidence": "High",
+      "confidence": "Medium",
       "slo": null,
       "evidence_keys": [
         "pvc_pending",
-        "storage_class_missing"
+        "storage_class_missing",
+        "no_evidence"
       ]
     },
     {
-      "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512018352.json",
+      "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755542876657.json",
       "priority": "P2",
-      "confidence": "High",
+      "confidence": "Medium",
       "slo": null,
       "evidence_keys": [
         "pvc_pending",
-        "zone_mismatch"
+        "storage_class_missing",
+        "no_evidence"
       ]
     }
   ],
@@ -57,17 +60,17 @@
     "jsonValidRate": 1,
     "results": [
       {
-        "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512011329.json",
+        "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755542867948.json",
         "ok": true,
         "errors": null
       },
       {
-        "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512014776.json",
+        "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755542872314.json",
         "ok": true,
         "errors": null
       },
       {
-        "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512018352.json",
+        "file": "logs/transcripts/pvc-binding-demo/pvc-binding-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755542876657.json",
         "ok": true,
         "errors": null
       }
@@ -77,7 +80,7 @@
     "structuralStable": true,
     "toolSuccessRate": 1,
     "jsonValidRate": 1,
-    "answerStability": 0.333,
+    "answerStability": 1,
     "rubricStability": 1,
     "jsonEqual": null,
     "rubricEqual": null,

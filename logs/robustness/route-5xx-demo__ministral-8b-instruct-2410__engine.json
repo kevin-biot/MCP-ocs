@@ -1,36 +1,36 @@
 {
   "scenario": "route-5xx",
-  "sessionId": "engine-route-5xx-1755512170751",
+  "sessionId": "engine-route-5xx-1755543097346",
   "plan": {
-    "planId": "engine-route-5xx-1755512170751",
+    "planId": "engine-route-5xx-1755543097346",
     "steps": [
       {
         "tool": "oc_read_describe",
         "params": {
-          "sessionId": "engine-route-5xx-1755512170751",
+          "sessionId": "engine-route-5xx-1755543097346",
           "resourceType": "endpoints",
-          "namespace": "shop",
-          "name": "checkout"
+          "namespace": "openshift-gitops",
+          "name": "openshift-gitops-server"
         },
         "rationale": "Service endpoints health"
       },
       {
         "tool": "oc_read_describe",
         "params": {
-          "sessionId": "engine-route-5xx-1755512170751",
+          "sessionId": "engine-route-5xx-1755543097346",
           "resourceType": "route",
-          "namespace": "shop",
-          "name": "checkout"
+          "namespace": "openshift-gitops",
+          "name": "openshift-gitops-server"
         },
         "rationale": "Route spec and TLS"
       },
       {
         "tool": "oc_read_describe",
         "params": {
-          "sessionId": "engine-route-5xx-1755512170751",
+          "sessionId": "engine-route-5xx-1755543097346",
           "resourceType": "pod",
-          "namespace": "shop",
-          "name": "example-pod"
+          "namespace": "openshift-gitops",
+          "name": "openshift-gitops-repo-server-5cddfbc756-gdcd4"
         },
         "rationale": "Probe configuration"
       }
@@ -40,19 +40,26 @@
       "timeoutMs": 20000
     }
   },
-  "completeness": 0,
+  "completeness": 1,
   "result": {
     "priority": "P2",
-    "confidence": "Low",
+    "confidence": "High",
     "slo": "HIGH",
     "evidence_keys": [
-      "no_evidence"
+      "service_selector_mismatch",
+      "backend_pods_failing"
     ],
-    "notes": "no_evidence"
+    "notes": "evidence: service_selector_mismatch,backend_pods_failing"
   },
   "debug": {
-    "evidence_fired": [],
-    "mapped_keys": [],
+    "evidence_fired": [
+      "endpoints",
+      "routeSpec"
+    ],
+    "mapped_keys": [
+      "service_selector_mismatch",
+      "backend_pods_failing"
+    ],
     "confidence_rules_applied": []
   }
 }

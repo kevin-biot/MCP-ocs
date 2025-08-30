@@ -1,0 +1,54 @@
+✓ ChromaDB client initialized
+🔧 Executing: oc cluster-info
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc version -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get nodes -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get namespace openshift-monitoring
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring pods -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring events --field-selector type!=Normal -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring pvc -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring route -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring deployments -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get storageclass -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring pvc -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring services -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring endpoints -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring routes -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring events --field-selector=type!=Normal -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+✓ Connected to existing ChromaDB collection
+✓ Chroma memory manager initialized with vector search
+💾 Storing to ChromaDB: {
+  id: 'rca-1755218960420_1755218967080',
+  documentLength: 2801,
+  sessionId: 'rca-1755218960420'
+}
+✅ Successfully stored to ChromaDB

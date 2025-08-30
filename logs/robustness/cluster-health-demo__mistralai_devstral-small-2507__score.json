@@ -2,18 +2,18 @@
   "model": "mistralai/devstral-small-2507",
   "scenario": "cluster-health-demo",
   "files": [
-    "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s7__1755512817052.json",
-    "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s13__1755512832787.json",
-    "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s23__1755512848206.json"
+    "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s7__1755543789590.json",
+    "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s13__1755543805165.json",
+    "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s23__1755543820254.json"
   ],
   "score": {
     "structuralStable": true,
     "toolSuccessRate": 1,
-    "answerStability": 0,
+    "answerStability": 1,
     "rubricStability": 1,
     "jsonEqual": null,
     "rubricEqual": null,
-    "robustnessScore": 0.8,
+    "robustnessScore": 1,
     "toolSeqs": [
       "oc_read_get_pods(namespace,selector)",
       "oc_read_get_pods(namespace,selector)",
@@ -22,14 +22,7 @@
   },
   "extracted": [
     {
-      "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s7__1755512817052.json",
-      "priority": null,
-      "confidence": null,
-      "slo": null,
-      "evidence_keys": null
-    },
-    {
-      "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s13__1755512832787.json",
+      "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s7__1755543789590.json",
       "priority": "P2",
       "confidence": "Medium",
       "slo": null,
@@ -38,47 +31,50 @@
       ]
     },
     {
-      "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s23__1755512848206.json",
-      "priority": null,
-      "confidence": null,
+      "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s13__1755543805165.json",
+      "priority": "P2",
+      "confidence": "Medium",
       "slo": null,
-      "evidence_keys": null
+      "evidence_keys": [
+        "no_evidence"
+      ]
+    },
+    {
+      "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s23__1755543820254.json",
+      "priority": "P2",
+      "confidence": "Medium",
+      "slo": null,
+      "evidence_keys": [
+        "no_evidence"
+      ]
     }
   ],
   "schema": {
     "scenario": "cluster-health",
-    "jsonValidRate": 0.3333333333333333,
+    "jsonValidRate": 1,
     "results": [
       {
-        "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s7__1755512817052.json",
-        "ok": false,
-        "errors": [
-          {
-            "message": "not_json"
-          }
-        ]
-      },
-      {
-        "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s13__1755512832787.json",
+        "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s7__1755543789590.json",
         "ok": true,
         "errors": null
       },
       {
-        "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s23__1755512848206.json",
-        "ok": false,
-        "errors": [
-          {
-            "message": "not_json"
-          }
-        ]
+        "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s13__1755543805165.json",
+        "ok": true,
+        "errors": null
+      },
+      {
+        "file": "logs/transcripts/cluster-health-demo/cluster-health-demo__mistralai_devstral-small-2507__t0_p1_s23__1755543820254.json",
+        "ok": true,
+        "errors": null
       }
     ]
   },
   "gates": {
     "structuralStable": true,
     "toolSuccessRate": 1,
-    "jsonValidRate": 0.3333333333333333,
-    "answerStability": 0,
+    "jsonValidRate": 1,
+    "answerStability": 1,
     "rubricStability": 1,
     "jsonEqual": null,
     "rubricEqual": null,

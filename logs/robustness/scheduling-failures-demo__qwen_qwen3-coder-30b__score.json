@@ -2,9 +2,9 @@
   "model": "qwen/qwen3-coder-30b",
   "scenario": "scheduling-failures-demo",
   "files": [
-    "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512025391.json",
-    "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512032038.json",
-    "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512038747.json"
+    "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755542890085.json",
+    "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755542897868.json",
+    "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755542904397.json"
   ],
   "score": {
     "structuralStable": false,
@@ -22,7 +22,7 @@
   },
   "extracted": [
     {
-      "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512025391.json",
+      "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755542890085.json",
       "priority": "P1",
       "confidence": "High",
       "slo": null,
@@ -33,25 +33,23 @@
       ]
     },
     {
-      "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512032038.json",
+      "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755542897868.json",
       "priority": "P2",
       "confidence": "High",
       "slo": null,
       "evidence_keys": [
         "failed_scheduling",
-        "node_taints",
-        "machineset_zone_skew"
+        "node_taints"
       ]
     },
     {
-      "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512038747.json",
+      "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755542904397.json",
       "priority": "P2",
       "confidence": "High",
       "slo": null,
       "evidence_keys": [
         "failed_scheduling",
-        "node_taints",
-        "machineset_zone_skew"
+        "node_taints"
       ]
     }
   ],
@@ -60,17 +58,17 @@
     "jsonValidRate": 1,
     "results": [
       {
-        "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755512025391.json",
+        "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755542890085.json",
         "ok": true,
         "errors": null
       },
       {
-        "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512032038.json",
+        "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755542897868.json",
         "ok": true,
         "errors": null
       },
       {
-        "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512038747.json",
+        "file": "logs/transcripts/scheduling-failures-demo/scheduling-failures-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755542904397.json",
         "ok": true,
         "errors": null
       }

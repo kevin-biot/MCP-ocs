@@ -4,6 +4,21 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import fetch from 'node-fetch';
 import { normalize } from './normalize.mjs';
+import { execSync } from 'node:child_process';
+
+function ensureOcAuthOrWarn(tag){
+  try { execSync('oc whoami', { stdio: ['ignore','pipe','pipe'] }); return; }
+  catch {}
+  let ctx=''; let srv='';
+  try { ctx = execSync('oc config current-context',{stdio:['ignore','pipe','pipe']}).toString().trim(); } catch {}
+  try { srv = execSync('oc whoami --show-server',{stdio:['ignore','pipe','pipe']}).toString().trim(); } catch {}
+  if (ctx && srv) {
+    console.error(`[${tag}] oc whoami failed, but context/server present (${ctx} / ${srv}) — proceeding`);
+    return;
+  }
+  console.error(`[${tag}] ERROR: oc is not logged in. Run \`oc login\` and retry.`);
+  process.exit(3);
+}
 import { executeTool } from './tool-bridge.mjs';
 import { scoreRunFiles } from './robustness-score.mjs';
 import { allowedKeysText, getScenarioId } from './schema/vocab.mjs';
@@ -97,6 +112,8 @@ async function runOnce({ name, model, system, user, tools, toolChoice, temperatu
 }
 
 async function main(){
+  // Auth go/no-go with graceful fallback
+  ensureOcAuthOrWarn('run-matrix');
   const name = process.argv[2] || 'ingress-pending-demo';
   const model = process.env.LMS_MODEL || 'qwen/qwen3-coder-30b';
   // Strict JSON-only gating + scenario vocab

@@ -2,9 +2,9 @@
   "model": "qwen/qwen3-coder-30b",
   "scenario": "ingress-pending-demo",
   "files": [
-    "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755511989747.json",
-    "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755511991563.json",
-    "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755511993500.json"
+    "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755542819673.json",
+    "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755542821387.json",
+    "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755542823104.json"
   ],
   "score": {
     "structuralStable": true,
@@ -22,7 +22,7 @@
   },
   "extracted": [
     {
-      "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755511989747.json",
+      "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755542819673.json",
       "priority": "P1",
       "confidence": "High",
       "slo": null,
@@ -32,7 +32,7 @@
       ]
     },
     {
-      "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755511991563.json",
+      "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755542821387.json",
       "priority": "P2",
       "confidence": "High",
       "slo": null,
@@ -42,8 +42,8 @@
       ]
     },
     {
-      "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755511993500.json",
-      "priority": "P2",
+      "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755542823104.json",
+      "priority": "P1",
       "confidence": "High",
       "slo": null,
       "evidence_keys": [
@@ -57,17 +57,17 @@
     "jsonValidRate": 1,
     "results": [
       {
-        "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755511989747.json",
+        "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755542819673.json",
         "ok": true,
         "errors": null
       },
       {
-        "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755511991563.json",
+        "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755542821387.json",
         "ok": true,
         "errors": null
       },
       {
-        "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755511993500.json",
+        "file": "logs/transcripts/ingress-pending-demo/ingress-pending-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755542823104.json",
         "ok": true,
         "errors": null
       }

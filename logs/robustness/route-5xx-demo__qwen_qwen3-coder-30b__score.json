@@ -2,52 +2,53 @@
   "model": "qwen/qwen3-coder-30b",
   "scenario": "route-5xx-demo",
   "files": [
-    "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755511999047.json",
-    "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512002555.json",
-    "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512006019.json"
+    "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755542846148.json",
+    "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755542850358.json",
+    "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755542855764.json"
   ],
   "score": {
     "structuralStable": true,
     "toolSuccessRate": 1,
-    "answerStability": 0.333,
+    "answerStability": 1,
     "rubricStability": 1,
     "jsonEqual": null,
     "rubricEqual": null,
-    "robustnessScore": 0.867,
+    "robustnessScore": 1,
     "toolSeqs": [
-      "oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,namespace,resourceType) -> oc_read_get_pods(namespace,selector)",
-      "oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,namespace,resourceType) -> oc_read_get_pods(namespace,selector)",
-      "oc_read_describe(name,namespace,resourceType) -> oc_read_describe(name,namespace,resourceType) -> oc_read_get_pods(namespace,selector)"
+      "oc_read_describe(name,namespace,resourceType) -> oc_read_get_pods(namespace,selector)",
+      "oc_read_describe(name,namespace,resourceType) -> oc_read_get_pods(namespace,selector)",
+      "oc_read_describe(name,namespace,resourceType) -> oc_read_get_pods(namespace,selector)"
     ]
   },
   "extracted": [
     {
-      "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755511999047.json",
-      "priority": "P1",
+      "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755542846148.json",
+      "priority": "P2",
       "confidence": "High",
       "slo": null,
       "evidence_keys": [
-        "no_evidence"
+        "route_tls_mismatch",
+        "backend_pods_failing"
       ]
     },
     {
-      "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512002555.json",
-      "priority": "P1",
+      "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755542850358.json",
+      "priority": "P2",
       "confidence": "High",
       "slo": null,
       "evidence_keys": [
-        "endpoints_empty",
-        "backend_pods_failing",
-        "no_evidence"
+        "route_tls_mismatch",
+        "backend_pods_failing"
       ]
     },
     {
-      "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512006019.json",
-      "priority": "P1",
+      "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755542855764.json",
+      "priority": "P2",
       "confidence": "High",
       "slo": null,
       "evidence_keys": [
-        "no_evidence"
+        "route_tls_mismatch",
+        "backend_pods_failing"
       ]
     }
   ],
@@ -56,17 +57,17 @@
     "jsonValidRate": 1,
     "results": [
       {
-        "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755511999047.json",
+        "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s7__1755542846148.json",
         "ok": true,
         "errors": null
       },
       {
-        "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755512002555.json",
+        "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s13__1755542850358.json",
         "ok": true,
         "errors": null
       },
       {
-        "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755512006019.json",
+        "file": "logs/transcripts/route-5xx-demo/route-5xx-demo__qwen_qwen3-coder-30b__t0_p1_s23__1755542855764.json",
         "ok": true,
         "errors": null
       }
@@ -76,7 +77,7 @@
     "structuralStable": true,
     "toolSuccessRate": 1,
     "jsonValidRate": 1,
-    "answerStability": 0.333,
+    "answerStability": 1,
     "rubricStability": 1,
     "jsonEqual": null,
     "rubricEqual": null,
