@@ -1,0 +1,12 @@
+# Internal planning area — not for public distribution
+# Keep repo-tracked planning docs, but ignore private drafts and attachments
+
+# Private or local drafts
+*.private.md
+*.local.md
+*.local.*
+
+# Attachments or large artifacts
+attachments/
+drafts/
+
