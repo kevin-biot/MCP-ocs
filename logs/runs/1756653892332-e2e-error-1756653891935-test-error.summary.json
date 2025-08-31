@@ -1,0 +1,115 @@
+{
+  "planId": "e2e-error-1756653891935",
+  "target": "test-error",
+  "summary": {
+    "schemaVersion": "1.0.0",
+    "engineVersion": "0.8.0-beta",
+    "templateId": "test-error-v1",
+    "templateVersion": "1.0.0",
+    "rubricVersions": {
+      "triage": "triage-priority.v1",
+      "confidence": "evidence-confidence.v1",
+      "safety": "remediation-safety.v1"
+    },
+    "determinism": {
+      "modelName": "ministral-8b-instruct-2410",
+      "system_fingerprint": "none",
+      "temperature": 0,
+      "top_p": 1,
+      "seed": 42
+    },
+    "priority": {
+      "label": "P2",
+      "score": 0.57,
+      "why": ">=0.55"
+    },
+    "confidence": {
+      "label": "High",
+      "why": "evidenceCompleteness>=0.9 && toolAgreement>=0.8 && freshnessMin<=10"
+    },
+    "safety": {
+      "allowAuto": true,
+      "why": "all guards passed",
+      "guards": [
+        {
+          "guard": "etcdHealthy == true",
+          "key": "etcdHealthy",
+          "op": "==",
+          "threshold": true,
+          "observed": true,
+          "pass": true
+        },
+        {
+          "guard": "controlPlaneReadyRatio >= 0.66",
+          "key": "controlPlaneReadyRatio",
+          "op": ">=",
+          "threshold": 0.66,
+          "observed": 0.67,
+          "pass": true
+        },
+        {
+          "guard": "affectedNamespaces <= 3",
+          "key": "affectedNamespaces",
+          "op": "<=",
+          "threshold": 3,
+          "observed": 1,
+          "pass": true
+        },
+        {
+          "guard": "noCriticalAlerts == true",
+          "key": "noCriticalAlerts",
+          "op": "==",
+          "threshold": true,
+          "observed": true,
+          "pass": true
+        }
+      ]
+    },
+    "evidence": {
+      "completeness": 1,
+      "minThreshold": 0,
+      "missing": [],
+      "present": []
+    },
+    "rubricInputs": {
+      "evidenceCompleteness": 1,
+      "toolAgreement": 0.85,
+      "freshnessMin": 5,
+      "etcdHealthy": true,
+      "controlPlaneReadyRatio": 0.67,
+      "affectedNamespaces": 1,
+      "noCriticalAlerts": true,
+      "blastRadius": 0.7,
+      "customerPaths": 0.5,
+      "operatorsDegraded": 0.5,
+      "timeSinceFirstEventMin": 72
+    },
+    "slo": {
+      "label": "LOW",
+      "why": "otherwise"
+    },
+    "sloHint": "Minimal impact; fix as capacity allows.",
+    "recall": {
+      "topK": [
+        {
+          "id": "consistency-1755311234303-pvt0s2",
+          "score": -0.040176200000000106
+        },
+        {
+          "id": "mcp-ocs-testing-session",
+          "score": -0.11416530000000003
+        },
+        {
+          "id": "mcp-ocs-storage-intelligence-development",
+          "score": -0.14084849999999993
+        },
+        {
+          "id": "auto-session-1755117520552",
+          "score": -0.14449660000000009
+        }
+      ],
+      "top1Similarity": -0.040176200000000106,
+      "confidence": "Low"
+    }
+  }
+}

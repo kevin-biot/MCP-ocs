@@ -1,0 +1,14 @@
+{
+  "id": "test-error-v1",
+  "name": "Test Error Categorization",
+  "version": "1.0.0",
+  "triageTarget": "test-error",
+  "triggers": [ { "type": "static_target", "target": "test-error", "confidence": 1.0 } ],
+  "blocks": [],
+  "composition": { "infrastructure": [], "workload": [], "correlation": [] },
+  "steps": [
+    { "tool": "oc_read_describe", "params": { "resourceType": "pod", "namespace": "default", "name": "nonexistent-pod-xyz" }, "rationale": "Trigger 404 to validate categorization" }
+  ],
+  "evidenceContract": { "version": "v1.0.0", "required": [], "selectors": {}, "completenessThreshold": 0.0 },
+  "boundaries": { "maxSteps": 1, "timeoutMs": 10000 }
+}

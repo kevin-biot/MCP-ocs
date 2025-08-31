@@ -1,0 +1,120 @@
+{
+  "planId": "e2e-concurrent-1756653812075",
+  "target": "cluster-health",
+  "summary": {
+    "schemaVersion": "1.0.0",
+    "engineVersion": "0.8.0-beta",
+    "templateId": "cluster-health-v1",
+    "templateVersion": "1.0.0",
+    "rubricVersions": {
+      "triage": "triage-priority.v1",
+      "confidence": "evidence-confidence.v1",
+      "safety": "remediation-safety.v1"
+    },
+    "determinism": {
+      "modelName": "ministral-8b-instruct-2410",
+      "system_fingerprint": "none",
+      "temperature": 0,
+      "top_p": 1,
+      "seed": 42
+    },
+    "priority": {
+      "label": "P2",
+      "score": 0.57,
+      "why": ">=0.55"
+    },
+    "confidence": {
+      "label": "High",
+      "why": "evidenceCompleteness>=0.9 && toolAgreement>=0.8 && freshnessMin<=10"
+    },
+    "safety": {
+      "allowAuto": true,
+      "why": "all guards passed",
+      "guards": [
+        {
+          "guard": "etcdHealthy == true",
+          "key": "etcdHealthy",
+          "op": "==",
+          "threshold": true,
+          "observed": true,
+          "pass": true
+        },
+        {
+          "guard": "controlPlaneReadyRatio >= 0.66",
+          "key": "controlPlaneReadyRatio",
+          "op": ">=",
+          "threshold": 0.66,
+          "observed": 0.67,
+          "pass": true
+        },
+        {
+          "guard": "affectedNamespaces <= 3",
+          "key": "affectedNamespaces",
+          "op": "<=",
+          "threshold": 3,
+          "observed": 1,
+          "pass": true
+        },
+        {
+          "guard": "noCriticalAlerts == true",
+          "key": "noCriticalAlerts",
+          "op": "==",
+          "threshold": true,
+          "observed": true,
+          "pass": true
+        }
+      ]
+    },
+    "evidence": {
+      "completeness": 1,
+      "minThreshold": 0.9,
+      "missing": [],
+      "present": [
+        "nodesSummary",
+        "podSummary",
+        "controlPlaneAlerts",
+        "fanoutHint"
+      ]
+    },
+    "rubricInputs": {
+      "evidenceCompleteness": 1,
+      "toolAgreement": 0.85,
+      "freshnessMin": 5,
+      "etcdHealthy": true,
+      "controlPlaneReadyRatio": 0.67,
+      "affectedNamespaces": 1,
+      "noCriticalAlerts": true,
+      "blastRadius": 0.7,
+      "customerPaths": 0.5,
+      "operatorsDegraded": 0.5,
+      "timeSinceFirstEventMin": 72
+    },
+    "slo": {
+      "label": "LOW",
+      "why": "otherwise"
+    },
+    "sloHint": "Minimal impact; fix as capacity allows.",
+    "recall": {
+      "topK": [
+        {
+          "id": "cluster-health-cluster-health-detailed-123_1755088624826",
+          "score": 0.21814626000000004
+        },
+        {
+          "id": "cluster-health-cluster-health-check-12345_1755044067932",
+          "score": 0.15950655999999996
+        },
+        {
+          "id": "cluster-health-check-123",
+          "score": 0.15915024
+        },
+        {
+          "id": "cluster-health-cluster-health-full-123_1755088901984",
+          "score": 0.15410464999999995
+        }
+      ],
+      "top1Similarity": 0.21814626000000004,
+      "confidence": "Low"
+    }
+  }
+}

@@ -162,13 +162,8 @@ export class TemplateEngine {
   // Monitoring-specific scoring helper (bounded, evidence-based math)
   // Returns 0.0 - 1.0 based on presence of required fields
   public calculateEvidenceCompleteness(requiredFields: string[], evidence: Record<string, unknown>): number {
-    const completed = requiredFields.filter((field) => {
-      const v = (evidence as any)[field];
-      if (Array.isArray(v)) return v.length > 0;
-      return Boolean(v);
-    });
-    const score = requiredFields.length === 0 ? 1 : completed.length / requiredFields.length;
-    try { console.log(`Evidence completeness: ${score.toFixed(2)} (${completed.length}/${requiredFields.length})`); } catch {}
+    const score = EvidenceCompletenessCalculator.calculateCompleteness(evidence as any, requiredFields);
+    try { console.log(`Evidence completeness: ${score.toFixed(2)} (${Math.round(score*requiredFields.length)}/${requiredFields.length})`); } catch {}
     return score;
   }
 

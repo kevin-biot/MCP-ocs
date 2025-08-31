@@ -171,7 +171,14 @@ function sanitizeForLogging(data) {
     }
 }
 function isSafeInput(input) {
-    return /^[A-Za-z0-9_.:\-\/]+$/.test(String(input || '')) && String(input || '').length <= 256;
+    const s = String(input || '');
+    if (s.length === 0 || s.length > 256)
+        return false;
+    if (!/^[A-Za-z0-9_.:\-\/]+$/.test(s))
+        return false;
+    if (s.includes('..'))
+        return false;
+    return true;
 }
 // Create MCP server
 const server = new Server({ name: 'mcp-ocs', version: '1.0.0' }, { capabilities: { tools: {} } });
@@ -286,7 +293,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     console.warn(`Resource not found for step ${step?.tool}: ${sanitizeForLogging(msg)}`);
                 }
                 catch { }
-                return { success: false, error: msg, recoverable: true };
+                return { success: false, category: 'notfound', error: msg, recoverable: true };
             };
             for (const s of steps) {
                 let params = replaceVarsLocal(s.params);
