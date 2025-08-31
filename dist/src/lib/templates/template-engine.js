@@ -1,4 +1,5 @@
 import { BlockRegistry } from './blocks/block-registry.js';
+import { EvidenceCompletenessCalculator, getRequiredFieldsForTemplateType } from './evidence-scoring.js';
 export class TemplateEngine {
     constructor() { }
     expandBlocks(template, ctxVars) {
@@ -170,7 +171,7 @@ export class TemplateEngine {
                 present.push(key);
         }
         const missing = req.filter(k => !present.includes(k));
-        const completeness = req.length === 0 ? 1 : (req.length - missing.length) / req.length;
+        const completeness = EvidenceCompletenessCalculator.calculateCompleteness(Object.fromEntries(present.map(k => [k, true])), req);
         try {
             console.log(`Evidence completeness (${template.triageTarget}): ${completeness.toFixed(2)}`);
         }
@@ -195,14 +196,7 @@ export class TemplateEngine {
     }
     // Template-specific required fields (fallback when template contract is unavailable)
     getRequiredFieldsForTemplate(templateType) {
-        const t = String(templateType || '').toLowerCase();
-        if (t.includes('ingress'))
-            return ['routerPods', 'schedulingEvents', 'controllerStatus'];
-        if (t.includes('cluster-health'))
-            return ['nodesSummary', 'podSummary', 'controlPlaneAlerts', 'fanoutHint'];
-        if (t.includes('pvc'))
-            return ['pvcEvents', 'storageClass', 'topologyHints'];
-        return [];
+        return getRequiredFieldsForTemplateType(templateType);
     }
     calculateEvidenceCompletenessByTemplate(evidence, templateType) {
         const required = this.getRequiredFieldsForTemplate(templateType);

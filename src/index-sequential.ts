@@ -163,6 +163,32 @@ const templateRegistry = new TemplateRegistry();
 const templateEngine = new TemplateEngine();
 try { await templateRegistry.load(); } catch {}
 
+// Concurrency control and caching for dynamic discovery (P0/P1)
+type DiscoveryKey = string;
+const discoveryLocks: Map<DiscoveryKey, Promise<string[]>> = new Map();
+const discoveryCache: Map<DiscoveryKey, { data: string[]; ts: number }> = new Map();
+const DISCOVERY_TTL_MS = 30_000; // 30s
+
+function makeDiscoveryKey(placeholder: string, ctx: any): DiscoveryKey {
+  const ph = String(placeholder || '');
+  const sid = String(ctx?.sessionId || 'default');
+  const ns = String(ctx?.namespace || 'any');
+  return `${ph}::${sid}::${ns}`;
+}
+
+function sanitizeForLogging(data: any): string {
+  try {
+    const s = typeof data === 'string' ? data : JSON.stringify(data);
+    return s
+      .replace(/(?:password|token|secret|key)=\S+/gi, '[REDACTED]')
+      .replace(/Bearer\s+[A-Za-z0-9\-_.~+/=]+/g, 'Bearer REDACTED');
+  } catch { return '[unserializable]'; }
+}
+
+function isSafeInput(input: string): boolean {
+  return /^[A-Za-z0-9_.:\-\/]+$/.test(String(input || '')) && String(input || '').length <= 256;
+}
+
 // Create MCP server
 const server = new Server(
   { name: 'mcp-ocs', version: '1.0.0' },
@@ -213,8 +239,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const discoverResources = async (ph: string, ctx: any): Promise<string[]> => {
         const key = String(ph || '').replace(/[<>]/g, '');
         const sessionId = String(ctx?.sessionId || `session-${Date.now()}`);
-        try {
-          switch (key) {
+        const lockKey = makeDiscoveryKey(ph, ctx);
+        const cached = discoveryCache.get(lockKey);
+        if (cached && (Date.now() - cached.ts) < DISCOVERY_TTL_MS) return cached.data;
+        if (discoveryLocks.has(lockKey)) return discoveryLocks.get(lockKey)!;
+        const execPromise = (async () => {
+          try {
+            switch (key) {
             case 'ingressNamespace': {
               // Prefer standard namespace if pods exist; otherwise fallback will apply
               try {
@@ -239,11 +270,20 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
               return [];
           }
         } catch { return []; }
+        })();
+        discoveryLocks.set(lockKey, execPromise);
+        try {
+          const out = await execPromise;
+          discoveryCache.set(lockKey, { data: out, ts: Date.now() });
+          return out;
+        } finally {
+          discoveryLocks.delete(lockKey);
+        }
       };
 
       const handleResourceNotFound = (step: any, error: any) => {
         const msg = String(error?.message || error || 'Unknown error');
-        try { console.warn(`Resource not found for step ${step?.tool}: ${msg}`); } catch {}
+        try { console.warn(`Resource not found for step ${step?.tool}: ${sanitizeForLogging(msg)}`); } catch {}
         return { success: false, error: msg, recoverable: true };
       };
 
@@ -310,8 +350,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             return val;
           };
           if (typeof params === 'object' && params) {
-            if (typeof params.namespace === 'string') params.namespace = await tryResolve(params.namespace);
-            if (typeof params.name === 'string') params.name = await tryResolve(params.name);
+            if (typeof params.namespace === 'string') {
+              const ns = await tryResolve(params.namespace);
+              if (isSafeInput(ns)) params.namespace = ns;
+            }
+            if (typeof params.name === 'string') {
+              const nm = await tryResolve(params.name);
+              if (isSafeInput(nm)) params.name = nm;
+            }
           }
         } catch {}
 
@@ -321,14 +367,21 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           r = await toolRegistry.executeTool(s.tool, params);
         } catch (error: any) {
           const emsg = String(error?.message || error || '');
+          const sDur = Date.now() - sStart;
           if (/404|not found/i.test(emsg)) {
             const handled = handleResourceNotFound(s, error);
-            const sDur = Date.now() - sStart;
             exec.push({ step: { ...s, params }, result: handled, durationMs: sDur });
             continue;
           }
-          const sDur = Date.now() - sStart;
-          exec.push({ step: { ...s, params }, result: { success: false, error: emsg, recoverable: true }, durationMs: sDur });
+          if (/forbidden|permission|unauthorized/i.test(emsg)) {
+            exec.push({ step: { ...s, params }, result: { success: false, category: 'permission', error: sanitizeForLogging(emsg), recoverable: false }, durationMs: sDur });
+            continue;
+          }
+          if (/timed out|timeout|network|econnreset|unreachable/i.test(emsg)) {
+            exec.push({ step: { ...s, params }, result: { success: false, category: 'network', error: sanitizeForLogging(emsg), recoverable: true }, durationMs: sDur });
+            continue;
+          }
+          exec.push({ step: { ...s, params }, result: { success: false, category: 'unknown', error: sanitizeForLogging(emsg), recoverable: true }, durationMs: sDur });
           continue;
         }
         const sDur = Date.now() - sStart;

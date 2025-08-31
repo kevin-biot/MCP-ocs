@@ -1,3 +1,4 @@
+import { EvidenceCompletenessCalculator, getRequiredFieldsForTemplateType } from './evidence-scoring.js';
 export class EvidenceValidator {
     contract;
     constructor(contract) {
@@ -13,8 +14,7 @@ export class EvidenceValidator {
             if (!present)
                 missing.push(key);
         }
-        const have = required.length - missing.length;
-        const completeness = required.length === 0 ? 1 : have / required.length;
+        const completeness = EvidenceCompletenessCalculator.calculateCompleteness(evidence, required);
         return { completeness, missing };
     }
 }
@@ -31,16 +31,9 @@ export function calculateEvidenceCompleteness(evidence, templateType) {
         else
             missing.push(key);
     }
-    const score = required.length === 0 ? 1 : present.length / required.length;
+    const score = EvidenceCompletenessCalculator.calculateCompleteness(evidence, required);
     return { score, missing, present };
 }
 export function getRequiredFieldsForTemplate(templateType) {
-    const t = String(templateType || '').toLowerCase();
-    if (t.includes('ingress'))
-        return ['routerPods', 'schedulingEvents', 'controllerStatus'];
-    if (t.includes('cluster-health'))
-        return ['nodesSummary', 'podSummary', 'controlPlaneAlerts', 'fanoutHint'];
-    if (t.includes('pvc'))
-        return ['pvcEvents', 'storageClass', 'topologyHints'];
-    return [];
+    return getRequiredFieldsForTemplateType(templateType);
 }

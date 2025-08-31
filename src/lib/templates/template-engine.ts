@@ -1,5 +1,6 @@
 import { DiagnosticTemplate } from './template-types.js';
 import { BlockRegistry } from './blocks/block-registry.js';
+import { EvidenceCompletenessCalculator, getRequiredFieldsForTemplateType, EvidenceThresholdManager } from './evidence-scoring.js';
 
 export interface PlannedStep {
   tool: string;
@@ -150,7 +151,10 @@ export class TemplateEngine {
     };
     for (const key of req) { if (anyMatch(key)) present.push(key); }
     const missing = req.filter(k => !present.includes(k));
-    const completeness = req.length === 0 ? 1 : (req.length - missing.length) / req.length;
+    const completeness = EvidenceCompletenessCalculator.calculateCompleteness(
+      Object.fromEntries(present.map(k=>[k,true])),
+      req
+    );
     try { console.log(`Evidence completeness (${template.triageTarget}): ${completeness.toFixed(2)}`); } catch {}
     return { completeness, missing, present };
   }
@@ -170,11 +174,7 @@ export class TemplateEngine {
 
   // Template-specific required fields (fallback when template contract is unavailable)
   public getRequiredFieldsForTemplate(templateType: string): string[] {
-    const t = String(templateType || '').toLowerCase();
-    if (t.includes('ingress')) return ['routerPods', 'schedulingEvents', 'controllerStatus'];
-    if (t.includes('cluster-health')) return ['nodesSummary', 'podSummary', 'controlPlaneAlerts', 'fanoutHint'];
-    if (t.includes('pvc')) return ['pvcEvents', 'storageClass', 'topologyHints'];
-    return [];
+    return getRequiredFieldsForTemplateType(templateType);
   }
 
   public calculateEvidenceCompletenessByTemplate(evidence: Record<string, unknown>, templateType: string): number {
