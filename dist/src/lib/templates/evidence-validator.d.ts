@@ -10,3 +10,9 @@ export declare class EvidenceValidator {
         missing: string[];
     };
 }
+export declare function calculateEvidenceCompleteness(evidence: EvidenceMap, templateType: string): {
+    score: number;
+    missing: string[];
+    present: string[];
+};
+export declare function getRequiredFieldsForTemplate(templateType: string): string[];

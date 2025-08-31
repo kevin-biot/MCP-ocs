@@ -15,6 +15,8 @@ export interface PlanResult {
 export declare class TemplateEngine {
     constructor();
     private expandBlocks;
+    resolvePlaceholder(placeholder: string, context: any, discoverer?: (ph: string, ctx: any) => Promise<string[]>): Promise<string>;
+    getFallbackResource(placeholder: string): string;
     buildPlan(template: DiagnosticTemplate, context: {
         sessionId: string;
         bounded?: boolean;
@@ -32,4 +34,7 @@ export declare class TemplateEngine {
         missing: string[];
         present: string[];
     };
+    calculateEvidenceCompleteness(requiredFields: string[], evidence: Record<string, unknown>): number;
+    getRequiredFieldsForTemplate(templateType: string): string[];
+    calculateEvidenceCompletenessByTemplate(evidence: Record<string, unknown>, templateType: string): number;
 }

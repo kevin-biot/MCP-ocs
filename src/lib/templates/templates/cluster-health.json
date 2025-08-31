@@ -9,8 +9,8 @@
   "steps": [
     { "tool": "oc_diagnostic_cluster_health", "params": { "sessionId": "<sessionId>", "bounded": true }, "rationale": "Stage-0: cheap global health probe" },
     { "tool": "oc_read_nodes", "params": { "sessionId": "<sessionId>", "bounded": true }, "rationale": "Node readiness and pressure snapshot" },
-    { "tool": "oc_read_get_pods", "params": { "namespace": "openshift-ingress" }, "rationale": "Router pod readiness hints" },
-    { "tool": "oc_read_describe", "params": { "resourceType": "ingresscontroller", "namespace": "openshift-ingress-operator", "name": "default" }, "rationale": "IngressController CR conditions (replicas, rolling out, degraded)" }
+    { "tool": "oc_read_get_pods", "params": { "namespace": "<ingressNamespace>" }, "rationale": "Router pod readiness hints (dynamic namespace)" },
+    { "tool": "oc_read_describe", "params": { "resourceType": "ingresscontroller", "namespace": "<ingressControllerNamespace>", "name": "<ingressControllerName>" }, "rationale": "IngressController CR conditions (replicas, rolling out, degraded) (dynamic)" }
   ],
   "evidenceContract": {
     "version": "v1.0.0",

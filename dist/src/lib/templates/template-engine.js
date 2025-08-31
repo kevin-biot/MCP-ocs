@@ -19,6 +19,35 @@ export class TemplateEngine {
         }
         return out;
     }
+    // Dynamic placeholder resolution with graceful fallbacks
+    async resolvePlaceholder(placeholder, context, discoverer) {
+        try {
+            const resources = discoverer ? await discoverer(placeholder, context) : [];
+            if (Array.isArray(resources) && resources.length > 0)
+                return resources[0];
+            try {
+                console.warn(`No resources found for ${placeholder}, using fallback`);
+            }
+            catch { }
+            return this.getFallbackResource(placeholder);
+        }
+        catch (error) {
+            try {
+                console.error(`Resource discovery failed for ${placeholder}: ${error?.message || String(error)}`);
+            }
+            catch { }
+            return this.getFallbackResource(placeholder);
+        }
+    }
+    getFallbackResource(placeholder) {
+        const key = String(placeholder || '').replace(/[<>]/g, '');
+        switch (key) {
+            case 'ingressNamespace': return 'openshift-ingress';
+            case 'ingressControllerNamespace': return 'openshift-ingress-operator';
+            case 'ingressControllerName': return 'default';
+            default: return '';
+        }
+    }
     buildPlan(template, context) {
         const baseSteps = (template.steps || []).map(s => ({ tool: s.tool, params: this.replaceVars({ sessionId: context.sessionId, ...s.params }, context.vars || {}), rationale: s.rationale }));
         const blockSteps = this.expandBlocks(template, { sessionId: context.sessionId, ...(context.vars || {}) });
@@ -142,6 +171,41 @@ export class TemplateEngine {
         }
         const missing = req.filter(k => !present.includes(k));
         const completeness = req.length === 0 ? 1 : (req.length - missing.length) / req.length;
+        try {
+            console.log(`Evidence completeness (${template.triageTarget}): ${completeness.toFixed(2)}`);
+        }
+        catch { }
         return { completeness, missing, present };
+    }
+    // Monitoring-specific scoring helper (bounded, evidence-based math)
+    // Returns 0.0 - 1.0 based on presence of required fields
+    calculateEvidenceCompleteness(requiredFields, evidence) {
+        const completed = requiredFields.filter((field) => {
+            const v = evidence[field];
+            if (Array.isArray(v))
+                return v.length > 0;
+            return Boolean(v);
+        });
+        const score = requiredFields.length === 0 ? 1 : completed.length / requiredFields.length;
+        try {
+            console.log(`Evidence completeness: ${score.toFixed(2)} (${completed.length}/${requiredFields.length})`);
+        }
+        catch { }
+        return score;
+    }
+    // Template-specific required fields (fallback when template contract is unavailable)
+    getRequiredFieldsForTemplate(templateType) {
+        const t = String(templateType || '').toLowerCase();
+        if (t.includes('ingress'))
+            return ['routerPods', 'schedulingEvents', 'controllerStatus'];
+        if (t.includes('cluster-health'))
+            return ['nodesSummary', 'podSummary', 'controlPlaneAlerts', 'fanoutHint'];
+        if (t.includes('pvc'))
+            return ['pvcEvents', 'storageClass', 'topologyHints'];
+        return [];
+    }
+    calculateEvidenceCompletenessByTemplate(evidence, templateType) {
+        const required = this.getRequiredFieldsForTemplate(templateType);
+        return this.calculateEvidenceCompleteness(required, evidence);
     }
 }

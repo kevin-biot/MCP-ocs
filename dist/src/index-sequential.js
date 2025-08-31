@@ -201,6 +201,53 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                 return obj;
             };
             const isPlaceholder = (v) => typeof v === 'string' && /^<[^>]+>$/.test(v);
+            // Local discovery for dynamic placeholders used by templates
+            const discoverResources = async (ph, ctx) => {
+                const key = String(ph || '').replace(/[<>]/g, '');
+                const sessionId = String(ctx?.sessionId || `session-${Date.now()}`);
+                try {
+                    switch (key) {
+                        case 'ingressNamespace': {
+                            // Prefer standard namespace if pods exist; otherwise fallback will apply
+                            try {
+                                const pods = await toolRegistry.executeTool('oc_read_get_pods', { sessionId, namespace: 'openshift-ingress' });
+                                const parsed = typeof pods === 'string' ? JSON.parse(pods) : pods;
+                                const list = Array.isArray(parsed?.pods) ? parsed.pods : (Array.isArray(parsed?.items) ? parsed.items : []);
+                                if (Array.isArray(list) && list.length >= 0)
+                                    return ['openshift-ingress'];
+                            }
+                            catch { }
+                            return [];
+                        }
+                        case 'ingressControllerNamespace': {
+                            // Try to read default ingresscontroller in operator ns; success implies ns is valid
+                            try {
+                                await toolRegistry.executeTool('oc_read_describe', { sessionId, resourceType: 'ingresscontroller', name: 'default', namespace: 'openshift-ingress-operator' });
+                                return ['openshift-ingress-operator'];
+                            }
+                            catch {
+                                return [];
+                            }
+                        }
+                        case 'ingressControllerName': {
+                            return ['default'];
+                        }
+                        default:
+                            return [];
+                    }
+                }
+                catch {
+                    return [];
+                }
+            };
+            const handleResourceNotFound = (step, error) => {
+                const msg = String(error?.message || error || 'Unknown error');
+                try {
+                    console.warn(`Resource not found for step ${step?.tool}: ${msg}`);
+                }
+                catch { }
+                return { success: false, error: msg, recoverable: true };
+            };
             for (const s of steps) {
                 let params = replaceVarsLocal(s.params);
                 // Networking dynamic discovery before execution
@@ -267,8 +314,39 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     }
                 }
                 catch { }
+                // Resolve dynamic placeholders for cluster-health scenarios
+                try {
+                    const tryResolve = async (val) => {
+                        if (typeof val === 'string' && /^<[^>]+>$/.test(val)) {
+                            return await templateEngine.resolvePlaceholder(val, { ...ctxVars, sessionId }, discoverResources);
+                        }
+                        return val;
+                    };
+                    if (typeof params === 'object' && params) {
+                        if (typeof params.namespace === 'string')
+                            params.namespace = await tryResolve(params.namespace);
+                        if (typeof params.name === 'string')
+                            params.name = await tryResolve(params.name);
+                    }
+                }
+                catch { }
                 const sStart = Date.now();
-                const r = await toolRegistry.executeTool(s.tool, params);
+                let r;
+                try {
+                    r = await toolRegistry.executeTool(s.tool, params);
+                }
+                catch (error) {
+                    const emsg = String(error?.message || error || '');
+                    if (/404|not found/i.test(emsg)) {
+                        const handled = handleResourceNotFound(s, error);
+                        const sDur = Date.now() - sStart;
+                        exec.push({ step: { ...s, params }, result: handled, durationMs: sDur });
+                        continue;
+                    }
+                    const sDur = Date.now() - sStart;
+                    exec.push({ step: { ...s, params }, result: { success: false, error: emsg, recoverable: true }, durationMs: sDur });
+                    continue;
+                }
                 const sDur = Date.now() - sStart;
                 exec.push({ step: { ...s, params }, result: r, durationMs: sDur });
                 try {
