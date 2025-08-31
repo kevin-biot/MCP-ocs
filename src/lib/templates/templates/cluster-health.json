@@ -48,5 +48,5 @@
     },
     "completenessThreshold": 0.9
   },
-  "boundaries": { "maxSteps": 3, "timeoutMs": 15000 }
+  "boundaries": { "maxSteps": 4, "timeoutMs": 20000 }
 }
