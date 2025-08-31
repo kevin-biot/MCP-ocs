@@ -46,7 +46,7 @@
         { "type": "eventsRegex", "path": "UpdatingPrometheusOperator|prometheus-operator-admission-webhook|got\\s+1\\s+unavailable\\s+replicas" }
       ]
     },
-    "completenessThreshold": 0.7
+    "completenessThreshold": 0.9
   },
   "boundaries": { "maxSteps": 3, "timeoutMs": 15000 }
 }
