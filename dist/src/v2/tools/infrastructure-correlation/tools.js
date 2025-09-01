@@ -15,11 +15,10 @@ export function createInfrastructureCorrelationTools(ocWrapper, memoryManager) {
          */
         oc_diagnostic_infrastructure_correlation: async (input) => {
             try {
-                const result = await checker.checkInfrastructureCorrelation({
-                    namespace: input.namespace,
-                    sessionId: input.sessionId,
-                    focusArea: input.focusArea || 'all'
-                });
+                const args = { sessionId: input.sessionId, focusArea: input.focusArea || 'all' };
+                if (typeof input.namespace === 'string')
+                    args.namespace = input.namespace;
+                const result = await checker.checkInfrastructureCorrelation(args);
                 return {
                     success: true,
                     data: result,

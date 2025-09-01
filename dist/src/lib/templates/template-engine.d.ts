@@ -2,7 +2,7 @@ import { DiagnosticTemplate } from './template-types.js';
 export interface PlannedStep {
     tool: string;
     params: Record<string, any>;
-    rationale?: string;
+    rationale?: string | undefined;
 }
 export interface PlanResult {
     planId: string;

@@ -9,7 +9,7 @@ function tokenize(input) {
     const isAlpha = (c) => /[A-Za-z_]/.test(c);
     const isNum = (c) => /[0-9.]/.test(c);
     while (i < src.length) {
-        const c = src[i];
+        const c = src.charAt(i);
         if (isSpace(c)) {
             i++;
             continue;
@@ -64,7 +64,7 @@ function tokenize(input) {
         // number
         if (isNum(c)) {
             let j = i + 1;
-            while (j < src.length && isNum(src[j]))
+            while (j < src.length && isNum(src.charAt(j)))
                 j++;
             tokens.push({ type: 'num', value: src.slice(i, j) });
             i = j;
@@ -73,7 +73,7 @@ function tokenize(input) {
         // identifier / boolean
         if (isAlpha(c)) {
             let j = i + 1;
-            while (j < src.length && /[A-Za-z0-9_]/.test(src[j]))
+            while (j < src.length && /[A-Za-z0-9_]/.test(src.charAt(j)))
                 j++;
             const word = src.slice(i, j);
             if (/^(true|false)$/i.test(word))
@@ -180,7 +180,10 @@ export function normalize(value, spec) {
     const m = spec.match(/^clamp:(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)\-\>(\d+(?:\.\d+)?)\.\.(\d+(?:\.\d+)?)/i);
     if (!m)
         return value;
-    const [, inMin, inMax, outMin, outMax] = m;
+    const inMin = m[1] ?? '';
+    const inMax = m[2] ?? '';
+    const outMin = m[3] ?? '';
+    const outMax = m[4] ?? '';
     const imin = Number(inMin), imax = Number(inMax), omin = Number(outMin), omax = Number(outMax);
     const clamped = Math.max(imin, Math.min(imax, value));
     const ratio = (clamped - imin) / (imax - imin || 1);

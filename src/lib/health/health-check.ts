@@ -79,10 +79,11 @@ export class HealthCheckManager {
       if (result.status === 'fulfilled') {
         return result.value;
       } else {
+        const name = checkNames[index] ?? `check_${index}`;
         return {
-          name: checkNames[index],
+          name,
           status: 'unhealthy' as HealthStatus,
-          message: `Health check failed: ${result.reason.message}`,
+          message: `Health check failed: ${String((result as any).reason?.message ?? (result as any).reason ?? 'unknown')}`,
           timestamp: new Date().toISOString(),
           duration: 0
         };

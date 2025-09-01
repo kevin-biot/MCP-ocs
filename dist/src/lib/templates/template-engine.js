@@ -33,9 +33,12 @@ export class TemplateEngine {
             return obj;
         if (typeof obj === 'string') {
             const m = obj.match(/^<([^>]+)>$/);
-            if (m) {
+            if (m && typeof m[1] !== 'undefined') {
                 const k = m[1];
-                return typeof vars[k] !== 'undefined' ? vars[k] : obj;
+                if (Object.prototype.hasOwnProperty.call(vars, k) && typeof vars[k] !== 'undefined') {
+                    return vars[k];
+                }
+                return obj;
             }
             return obj;
         }
@@ -64,7 +67,7 @@ export class TemplateEngine {
     selectJsonPath(obj, path) {
         // Very small subset: paths like { .spec.taints[*].key } or {.spec.taints}
         const m = path.match(/^\{\.(.*)\}$/);
-        const dot = m ? m[1] : path.replace(/^\./, '');
+        const dot = (m?.[1] ?? path).replace(/^\./, '');
         const segs = dot
             .split('.')
             .filter(Boolean)

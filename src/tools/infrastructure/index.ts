@@ -152,7 +152,7 @@ export class InfrastructureTools implements ToolSuite {
         const byZone: Record<string, number> = {};
         sets.forEach((s:any)=>{ const z = String(s.zone||'unknown'); byZone[z] = (byZone[z]||0) + Number(s.replicas||0); });
         const zones = Object.keys(byZone);
-        const maxRatio = Math.max(...zones.map(z => byZone[z]/total));
+        const maxRatio = Math.max(...zones.map(z => (byZone[z] ?? 0)/total));
         const skew = Number(maxRatio.toFixed(2));
         const capacity = { utilization: 0.7 };
         const findings = skew >= 0.8 ? ['High zone skew detected'] : [];

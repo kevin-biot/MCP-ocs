@@ -41,8 +41,8 @@ export class TemplateRegistry {
     if (list.length === 0) return undefined;
     // For now, pick the latest by version lexical; future: semver compare
     const sorted = list.slice().sort((a, b) => (a.version || '').localeCompare(b.version || ''));
-    const pick = sorted[sorted.length - 1];
+    const pick = sorted.at(-1);
+    if (!pick) return undefined;
     return { template: pick, reason: `latest for target ${target}` };
   }
 }
-

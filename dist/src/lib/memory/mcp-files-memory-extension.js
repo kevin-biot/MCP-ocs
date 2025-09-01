@@ -180,7 +180,13 @@ export class ChromaMemoryManager {
             try {
                 this.log('📊 Attempting ChromaDB vector search...');
                 const embeddings = await this.embedTexts([query]);
-                let results = await this.restQuery(this.collectionName, embeddings[0], limit, sessionId);
+                let emb0 = [];
+                if (embeddings.length > 0) {
+                    const first = embeddings[0];
+                    if (first)
+                        emb0 = first;
+                }
+                let results = await this.restQuery(this.collectionName, emb0, limit, sessionId);
                 // Re-rank with phrase/session/tags boosts using hyphen/underscore normalization
                 try {
                     const ranked = results.map((r) => {
@@ -530,7 +536,8 @@ export class ChromaMemoryManager {
         const dim = Array.isArray(probe?.[0]) ? probe[0].length : (this.embedder?.dim || 0);
         const method = this.embedder?.method || 'unknown';
         const model = this.embedder?.model;
-        return { method, model, dimensions: dim, fallback: method !== 'xenova', speedMs: dt };
+        const base = { method, dimensions: dim, fallback: method !== 'xenova', speedMs: dt };
+        return (model ? { ...base, model } : base);
     }
     coerceMemoriesFromJson(fileBase, raw) {
         if (!raw)
@@ -754,14 +761,16 @@ function simpleHashEmbedding(text) {
     const dim = 384;
     const vec = new Array(dim).fill(0);
     const words = text.toLowerCase().split(/\s+/).filter(Boolean);
-    for (let i = 0; i < words.length; i++) {
+    let i = 0;
+    for (const word of words) {
         let h = 0;
-        for (let c = 0; c < words[i].length; c++) {
-            h = ((h << 5) - h) + words[i].charCodeAt(c);
+        for (let c = 0; c < word.length; c++) {
+            h = ((h << 5) - h) + word.charCodeAt(c);
             h |= 0;
         }
         const idx = Math.abs(h) % dim;
         vec[idx] += 1 / (i + 1);
+        i++;
     }
     // normalize
     const mag = Math.sqrt(vec.reduce((s, x) => s + x * x, 0));

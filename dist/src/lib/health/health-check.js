@@ -47,10 +47,11 @@ export class HealthCheckManager {
                 return result.value;
             }
             else {
+                const name = checkNames[index] ?? `check_${index}`;
                 return {
-                    name: checkNames[index],
+                    name,
                     status: 'unhealthy',
-                    message: `Health check failed: ${result.reason.message}`,
+                    message: `Health check failed: ${String(result.reason?.message ?? result.reason ?? 'unknown')}`,
                     timestamp: new Date().toISOString(),
                     duration: 0
                 };

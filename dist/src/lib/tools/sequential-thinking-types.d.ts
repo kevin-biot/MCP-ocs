@@ -33,7 +33,7 @@ export interface ToolStep {
         solutionPath: string;
         timestamp?: number;
         tags?: string[];
-    }>;
+    }> | undefined;
 }
 export interface SequentialThinkingResult {
     success: boolean;
@@ -56,5 +56,5 @@ export interface ThoughtProcess {
         solutionPath: string;
         timestamp?: number;
         tags?: string[];
-    }>;
+    }> | undefined;
 }

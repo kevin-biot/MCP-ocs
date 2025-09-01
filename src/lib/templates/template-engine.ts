@@ -4,7 +4,7 @@ import { BlockRegistry } from './blocks/block-registry.js';
 export interface PlannedStep {
   tool: string;
   params: Record<string, any>;
-  rationale?: string;
+  rationale?: string | undefined;
 }
 
 export interface PlanResult {
@@ -47,9 +47,12 @@ export class TemplateEngine {
     if (obj == null) return obj;
     if (typeof obj === 'string') {
       const m = obj.match(/^<([^>]+)>$/);
-      if (m) {
+      if (m && typeof m[1] !== 'undefined') {
         const k = m[1];
-        return typeof vars[k] !== 'undefined' ? vars[k] : obj;
+        if (Object.prototype.hasOwnProperty.call(vars, k) && typeof vars[k] !== 'undefined') {
+          return vars[k];
+        }
+        return obj;
       }
       return obj;
     }
@@ -72,7 +75,7 @@ export class TemplateEngine {
   private selectJsonPath(obj: any, path: string): any {
     // Very small subset: paths like { .spec.taints[*].key } or {.spec.taints}
     const m = path.match(/^\{\.(.*)\}$/);
-    const dot = m ? m[1] : path.replace(/^\./,'');
+    const dot = (m?.[1] ?? path).replace(/^\./,'');
     const segs = dot
       .split('.')
       .filter(Boolean)
@@ -86,7 +89,7 @@ export class TemplateEngine {
       if (cur == null) return undefined;
       if (Array.isArray(cur)) {
         // flatten arrays of objects by key
-        cur = cur.map(x=> (x ? x[seg] : undefined)).filter(x=> typeof x !== 'undefined');
+        cur = cur.map(x=> (x ? (x as any)[seg] : undefined)).filter(x=> typeof x !== 'undefined');
         if (cur.length === 1) cur = cur[0];
       } else {
         cur = cur[seg];

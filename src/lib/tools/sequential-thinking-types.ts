@@ -33,7 +33,7 @@ export interface ToolStep {
   parameters: any;
   rationale: string;
   dependencies?: string[];
-  memoryContext?: Array<{ problem: string; solutionPath: string; timestamp?: number; tags?: string[] }>;
+  memoryContext?: Array<{ problem: string; solutionPath: string; timestamp?: number; tags?: string[] }> | undefined;
 }
 
 export interface SequentialThinkingResult {
@@ -53,5 +53,5 @@ export interface ThoughtProcess {
   nextThoughtNeeded: boolean;
   totalThoughts?: number;
   needsMoreThoughts?: boolean;
-  memoryContext?: Array<{ problem: string; solutionPath: string; timestamp?: number; tags?: string[] }>;
+  memoryContext?: Array<{ problem: string; solutionPath: string; timestamp?: number; tags?: string[] }> | undefined;
 }

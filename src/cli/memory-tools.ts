@@ -138,7 +138,7 @@ async function main() {
     const infoSearch = await reader.getEmbeddingInfo();
     const results = await reader.searchRelevantMemories(phrase, undefined, 1);
     const usedVector = await reader.isAvailable();
-    const exactDist = results.length > 0 ? results[0].distance : null;
+    const exactDist = results.length > 0 && results[0] ? results[0].distance : null;
     const consistent = usedVector && exactDist !== null ? (exactDist < 0.4 && infoStore.method === infoSearch.method) : false;
     console.log(JSON.stringify({
       methodStore: infoStore.method,

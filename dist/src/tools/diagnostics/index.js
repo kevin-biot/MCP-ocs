@@ -253,13 +253,13 @@ export class DiagnosticToolsV2 {
             let namespaceAnalysis = null;
             let prioritization = null;
             if (includeNamespaceAnalysis && !bounded) {
-                const analysis = await this.prioritizeNamespaces({
+                const nsArgs = {
                     scope: namespaceScope,
-                    focusNamespace,
                     focusStrategy,
                     maxDetailed: maxNamespacesToAnalyze,
                     depth
-                });
+                };
+                const analysis = await this.prioritizeNamespaces(typeof focusNamespace === 'string' ? { ...nsArgs, focusNamespace } : nsArgs);
                 prioritization = analysis.prioritized;
                 namespaceAnalysis = analysis.output;
             }
@@ -893,12 +893,10 @@ export class DiagnosticToolsV2 {
         const { sessionId, namespace, outputFormat = 'json', includeDeepAnalysis = false, maxCheckTime = 60000 } = args;
         try {
             // Execute RCA checklist using v2 engine
-            const checklistResult = await this.rcaChecklistEngine.executeRCAChecklist({
-                namespace,
-                outputFormat,
-                includeDeepAnalysis,
-                maxCheckTime
-            });
+            const checklistArgs = { outputFormat, includeDeepAnalysis, maxCheckTime };
+            if (typeof namespace === 'string')
+                checklistArgs.namespace = namespace;
+            const checklistResult = await this.rcaChecklistEngine.executeRCAChecklist(checklistArgs);
             // Store RCA session in operational memory
             await this.memoryManager.storeOperational({
                 incidentId: `rca-checklist-${sessionId}`,

@@ -151,7 +151,9 @@ export class EnhancedNamespaceHealthChecker {
         const criticalConflicts = infraAnalysis.zoneAnalysis.zoneConflicts.filter(c => c.conflictSeverity === 'critical');
         if (criticalConflicts.length > 0) {
             const conflict = criticalConflicts[0];
-            return `Zone scale-down: ${conflict.requiredZone} unavailable for PV ${conflict.pvName}`;
+            if (conflict) {
+                return `Zone scale-down: ${conflict.requiredZone} unavailable for PV ${conflict.pvName}`;
+            }
         }
         // Check for zone availability issues
         const unavailableZones = infraAnalysis.zoneAnalysis.availableZones.filter(z => z.status === 'unavailable');
@@ -212,11 +214,12 @@ export class EnhancedNamespaceHealthChecker {
         // Top suspicion with infrastructure priority
         if (suspicions.length > 0) {
             const topSuspicion = suspicions[0];
-            if (topSuspicion.includes('INFRASTRUCTURE') || topSuspicion.includes('ZONE')) {
+            if (topSuspicion && (topSuspicion.includes('INFRASTRUCTURE') || topSuspicion.includes('ZONE'))) {
                 parts.push(`Infrastructure issue: ${topSuspicion.replace(/^[🏗️🚨⚠️]\s*[A-Z\s]+:\s*/, '')}`);
             }
             else {
-                parts.push(`Key issue: ${topSuspicion}`);
+                if (topSuspicion)
+                    parts.push(`Key issue: ${topSuspicion}`);
             }
         }
         return parts.join(' ');

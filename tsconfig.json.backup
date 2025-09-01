@@ -11,16 +11,28 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": ".",
     "resolveJsonModule": true,
-    "types": ["node"]
+    "types": ["node", "jest"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@tests/*": ["tests/*"]
+    }
   },
   "include": [
-    "src/**/*"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     "dist",
-    "tests"
+    "tests",
+    "MCP-files/**",
+    "src/tools/**",
+    "src/index.ts",
+    "src/lib/tools/**",
+    "src/lib/memory/chromadb-client-fixed.ts",
+    "src/build-test.ts",
+    "src/v2/tools/infrastructure-correlation/enhanced-infrastructure-tools.ts.backup"
   ]
 }

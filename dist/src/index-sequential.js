@@ -175,7 +175,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             const bounded = !!targs.bounded;
             const sessionId = String(targs.sessionId || `session-${Date.now()}`);
             const plan = templateEngine.buildPlan(sel.template, { sessionId, bounded, stepBudget, vars: args?.vars || {} });
-            const enforcer = new BoundaryEnforcer({ maxSteps: plan.boundaries.maxSteps, timeoutMs: plan.boundaries.timeoutMs, toolWhitelist: undefined, allowedNamespaces: targs.allowedNamespaces });
+            const enforcerConfig = { maxSteps: plan.boundaries.maxSteps, timeoutMs: plan.boundaries.timeoutMs };
+            if (targs.allowedNamespaces)
+                enforcerConfig.allowedNamespaces = targs.allowedNamespaces;
+            const enforcer = new BoundaryEnforcer(enforcerConfig);
             const steps = enforcer.filterSteps(plan.steps);
             const exec = [];
             const ctxVars = { ...(targs.vars || {}) };
@@ -184,9 +187,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                     return obj;
                 if (typeof obj === 'string') {
                     const m = obj.match(/^<([^>]+)>$/);
-                    if (m) {
+                    if (m && typeof m[1] !== 'undefined') {
                         const k = m[1];
-                        return typeof ctxVars[k] !== 'undefined' ? ctxVars[k] : obj;
+                        if (Object.prototype.hasOwnProperty.call(ctxVars, k) && typeof ctxVars[k] !== 'undefined') {
+                            return ctxVars[k];
+                        }
+                        return obj;
                     }
                     return obj;
                 }
@@ -224,7 +230,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
                             const sdesc = await toolRegistry.executeTool('oc_read_describe', { sessionId, resourceType: 'service', name: ctxVars.service, namespace: ns });
                             const txt = typeof sdesc === 'string' ? sdesc : JSON.stringify(sdesc);
                             const sel = txt.match(/Selector\s*:\s*([^\n]+)/);
-                            const selector = sel ? sel[1].trim().replace(/\s+/g, '').replace(/,/g, ',') : undefined;
+                            const captured = sel?.[1];
+                            const selector = captured ? captured.trim().replace(/\s+/g, '').replace(/,/g, ',') : undefined;
                             if (selector) {
                                 const pods = await toolRegistry.executeTool('oc_read_get_pods', { sessionId, namespace: ns, selector });
                                 try {

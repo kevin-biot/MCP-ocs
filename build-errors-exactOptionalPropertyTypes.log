@@ -1,0 +1,74 @@
+src/cli/memory-bench.ts(157,17): error TS2379: Argument of type '{ memoryDir: string; docs: number | undefined; queries: number | undefined; }' is not assignable to parameter of type 'BenchOpts' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'docs' are incompatible.
+    Type 'number | undefined' is not assignable to type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+src/index-sequential.ts(196,45): error TS2379: Argument of type '{ maxSteps: number; timeoutMs: number; toolWhitelist: undefined; allowedNamespaces: any; }' is not assignable to parameter of type 'EnforcerConfig' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'toolWhitelist' are incompatible.
+    Type 'undefined' is not assignable to type 'string[]'.
+src/lib/logging/structured-logger.ts(137,11): error TS2375: Type '{ level: LogLevel; message: string; timestamp: string; service: string; context: LogContext | undefined; }' is not assignable to type 'LogEntry' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'context' are incompatible.
+    Type 'LogContext | undefined' is not assignable to type 'LogContext'.
+      Type 'undefined' is not assignable to type 'LogContext'.
+src/lib/logging/structured-logger.ts(147,7): error TS2375: Type '{ message: string; stack: string | undefined; name: string; }' is not assignable to type '{ message: string; stack?: string; name?: string; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'stack' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/lib/logging/structured-logger.ts(154,7): error TS2412: Type '{ [key: string]: any; sessionId?: string; toolName?: string; namespace?: string; operation?: string; duration?: number; } | undefined' is not assignable to type 'LogContext' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the type of the target.
+  Type 'undefined' is not assignable to type 'LogContext'.
+src/lib/memory/mcp-files-memory-extension.ts(546,5): error TS2375: Type '{ method: string; model: string | undefined; dimensions: number; fallback: boolean; speedMs: number; }' is not assignable to type '{ method: string; model?: string; dimensions: number; fallback: boolean; speedMs: number; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'model' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/lib/openshift-client-enhanced.ts(122,5): error TS2412: Type 'string | undefined' is not assignable to type 'string' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the type of the target.
+  Type 'undefined' is not assignable to type 'string'.
+src/lib/openshift-client-enhanced.ts(123,5): error TS2412: Type 'string | undefined' is not assignable to type 'string' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the type of the target.
+  Type 'undefined' is not assignable to type 'string'.
+src/lib/openshift-client-enhanced.ts(124,5): error TS2412: Type 'string | undefined' is not assignable to type 'string' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the type of the target.
+  Type 'undefined' is not assignable to type 'string'.
+src/lib/openshift-client-enhanced.ts(449,101): error TS2379: Argument of type '{ namespace: string | undefined; selector: string | undefined; }' is not assignable to parameter of type 'LogContext' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'namespace' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/lib/rubrics/rubric-evaluator.ts(62,3): error TS2375: Type '{ id: string; kind: "weighted"; score: number; label: string | undefined; bands: Record<string, string>; inputs: Record<string, any>; breakdown: Record<string, number>; }' is not assignable to type 'WeightedRubricResult' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'label' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/lib/templates/template-engine.ts(43,41): error TS2322: Type '(PlannedStep | { tool: string; params: any; rationale: string | undefined; })[]' is not assignable to type 'PlannedStep[]'.
+  Type 'PlannedStep | { tool: string; params: any; rationale: string | undefined; }' is not assignable to type 'PlannedStep' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+    Type '{ tool: string; params: any; rationale: string | undefined; }' is not assignable to type 'PlannedStep' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+      Types of property 'rationale' are incompatible.
+        Type 'string | undefined' is not assignable to type 'string'.
+          Type 'undefined' is not assignable to type 'string'.
+src/lib/tools/sequential-thinking-with-memory.ts(776,5): error TS2375: Type '{ thoughtNumber: number; thought: string; timestamp: Date; nextThoughtNeeded: false; needsMoreThoughts: boolean; memoryContext: { problem: string; solutionPath: string; timestamp?: number; tags?: string[]; }[] | undefined; }' is not assignable to type 'ThoughtProcess' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'memoryContext' are incompatible.
+    Type '{ problem: string; solutionPath: string; timestamp?: number; tags?: string[]; }[] | undefined' is not assignable to type '{ problem: string; solutionPath: string; timestamp?: number; tags?: string[]; }[]'.
+      Type 'undefined' is not assignable to type '{ problem: string; solutionPath: string; timestamp?: number; tags?: string[]; }[]'.
+src/tools/diagnostics/index.ts(302,58): error TS2379: Argument of type '{ scope: "all" | "system" | "user"; focusNamespace: string | undefined; focusStrategy: "events" | "none" | "auto" | "resourcePressure"; maxDetailed: number; depth: "summary" | "detailed"; }' is not assignable to parameter of type '{ scope: "all" | "system" | "user"; focusNamespace?: string; focusStrategy: "events" | "none" | "auto" | "resourcePressure"; maxDetailed: number; depth: "summary" | "detailed"; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'focusNamespace' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/tools/diagnostics/index.ts(1040,81): error TS2379: Argument of type '{ namespace: string | undefined; outputFormat: "json" | "markdown"; includeDeepAnalysis: boolean; maxCheckTime: number; }' is not assignable to parameter of type 'RCAChecklistInput' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'namespace' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/tools/read-ops/index.ts(321,73): error TS2379: Argument of type '{ container: string | undefined; lines: number; since: string | undefined; }' is not assignable to parameter of type '{ container?: string; lines?: number; follow?: boolean; since?: string; }' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'container' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/v2/tools/infrastructure-correlation/enhanced-memory-integration.ts(95,13): error TS2375: Type '{ incidentId: string; domain: string; timestamp: number; symptoms: string[]; rootCause: string | undefined; resolution: string | undefined; environment: "prod"; affectedResources: string[]; diagnosticSteps: string[]; tags: string[]; }' is not assignable to type 'OperationalMemory' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'rootCause' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/v2/tools/infrastructure-correlation/enhanced-memory-integration.ts(215,5): error TS2322: Type '{ infrastructureRelevance: number; patternType: "zone-conflict" | "resource-constraint" | "network-issue" | "scaling-problem"; appliedResolution: string | undefined; resolutionEffectiveness: number | undefined; memory: ConversationMemory | OperationalMemory; similarity: number; relevance: number; }[]' is not assignable to type 'InfrastructureMemoryResult[]'.
+  Type '{ infrastructureRelevance: number; patternType: "zone-conflict" | "resource-constraint" | "network-issue" | "scaling-problem"; appliedResolution: string | undefined; resolutionEffectiveness: number | undefined; memory: ConversationMemory | OperationalMemory; similarity: number; relevance: number; }' is not assignable to type 'InfrastructureMemoryResult' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+    Types of property 'appliedResolution' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string'.
+        Type 'undefined' is not assignable to type 'string'.
+src/v2/tools/infrastructure-correlation/tools.ts(40,69): error TS2379: Argument of type '{ namespace: string | undefined; sessionId: string; focusArea: "all" | "storage" | "networking" | "compute"; }' is not assignable to parameter of type 'InfrastructureCorrelationInput' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'namespace' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/v2/tools/rca-checklist/index.ts(97,11): error TS2375: Type '{ reportId: string; namespace: string | undefined; timestamp: string; duration: number; overallStatus: "healthy"; checksPerformed: never[]; summary: { totalChecks: number; passed: number; failed: number; warnings: number; }; criticalIssues: never[]; nextActions: never[]; evidence: { ...; }; human: string; }' is not assignable to type 'RCAChecklistResult' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Types of property 'namespace' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.

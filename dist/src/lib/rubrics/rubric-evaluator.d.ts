@@ -3,7 +3,7 @@ export interface WeightedRubricResult {
     id: string;
     kind: 'weighted';
     score: number;
-    label?: string;
+    label?: string | undefined;
     bands?: Record<string, string>;
     inputs: Record<string, number>;
     breakdown: Record<string, number>;

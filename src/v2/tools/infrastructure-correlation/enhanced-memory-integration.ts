@@ -97,8 +97,6 @@ export class EnhancedInfrastructureMemory {
         domain: 'openshift',
         timestamp: Date.now(),
         symptoms: incident.symptoms,
-        rootCause: incident.rootCause,
-        resolution: incident.resolution,
         environment: 'prod', // Could be parameterized
         affectedResources: [
           ...incident.context.zones.map(z => `zone:${z}`),
@@ -119,6 +117,8 @@ export class EnhancedInfrastructureMemory {
           ...incident.context.resourceTypes.map(rt => `resource-type:${rt}`)
         ]
       };
+      if (typeof incident.rootCause === 'string') operationalMemory.rootCause = incident.rootCause;
+      if (typeof incident.resolution === 'string') operationalMemory.resolution = incident.resolution;
 
       return await this.memoryManager.storeOperational(operationalMemory);
     } catch (error) {
@@ -216,13 +216,16 @@ export class EnhancedInfrastructureMemory {
       const infrastructureRelevance = this.calculateInfrastructureRelevance(result, context);
       const patternType = this.identifyPatternType(result);
 
-      return {
+      const base: InfrastructureMemoryResult = {
         ...result,
         infrastructureRelevance,
         patternType,
-        appliedResolution: this.extractResolution(result),
-        resolutionEffectiveness: this.calculateResolutionEffectiveness(result)
       };
+      const applied = this.extractResolution(result);
+      if (typeof applied === 'string') base.appliedResolution = applied;
+      const eff = this.calculateResolutionEffectiveness(result);
+      if (typeof eff === 'number') base.resolutionEffectiveness = eff;
+      return base;
     });
   }
 
@@ -356,10 +359,11 @@ export class EnhancedInfrastructureMemory {
   } {
     // Group patterns by type
     const patternGroups = patterns.reduce((groups, pattern) => {
-      if (!groups[pattern.patternType]) {
-        groups[pattern.patternType] = [];
+      const key = pattern.patternType ?? 'unknown';
+      if (!groups[key]) {
+        groups[key] = [];
       }
-      groups[pattern.patternType].push(pattern);
+      groups[key]!.push(pattern);
       return groups;
     }, {} as { [key: string]: InfrastructureMemoryResult[] });
 

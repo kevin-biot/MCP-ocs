@@ -32,14 +32,14 @@ export interface StandardTool {
   
   /** Optional metadata */
   metadata?: {
-    author?: string;
-    deprecated?: boolean;
-    experimental?: boolean;
-    requiredPermissions?: string[];
-    maturity?: ToolMaturity;
-    lastValidated?: string;
-    testCoverage?: number;
-    mcpCompatible?: boolean;
+    author?: string | undefined;
+    deprecated?: boolean | undefined;
+    experimental?: boolean | undefined;
+    requiredPermissions?: string[] | undefined;
+    maturity?: ToolMaturity | undefined;
+    lastValidated?: string | undefined;
+    testCoverage?: number | undefined;
+    mcpCompatible?: boolean | undefined;
   };
 }
 

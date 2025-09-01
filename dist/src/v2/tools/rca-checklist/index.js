@@ -32,7 +32,6 @@ export class RCAChecklistEngine {
         const { namespace, outputFormat = 'json', includeDeepAnalysis = false, maxCheckTime = 60000 } = input;
         const result = {
             reportId,
-            namespace,
             timestamp: new Date().toISOString(),
             duration: 0,
             overallStatus: 'healthy',
@@ -43,6 +42,8 @@ export class RCAChecklistEngine {
             evidence: { symptoms: [], affectedResources: [], diagnosticSteps: [] },
             human: ''
         };
+        if (typeof namespace === 'string')
+            result.namespace = namespace;
         try {
             // Execute checklist with timeout protection
             await Promise.race([
@@ -636,15 +637,22 @@ export class RCAChecklistEngine {
         // Memory: binary (Ki, Mi, Gi, Ti, Pi, Ei) or decimal (k, K, M, G, T, P, E)
         const memMatch = v.match(/^(\d+(?:\.\d+)?)(Ki|Mi|Gi|Ti|Pi|Ei|k|K|M|G|T|P|E)$/);
         if (memMatch) {
-            const num = parseFloat(memMatch[1]);
+            const numStr = memMatch[1];
             const unit = memMatch[2];
+            if (!numStr || !unit)
+                return null;
+            const num = parseFloat(numStr);
             const pow2 = { Ki: 10, Mi: 20, Gi: 30, Ti: 40, Pi: 50, Ei: 60 };
             if (unit in pow2) {
-                return num * Math.pow(2, pow2[unit]);
+                const exp = pow2[unit];
+                if (typeof exp === 'number')
+                    return num * Math.pow(2, exp);
             }
             const dec = { k: 1e3, K: 1e3, M: 1e6, G: 1e9, T: 1e12, P: 1e15, E: 1e18 };
             if (unit in dec) {
-                return num * dec[unit];
+                const mul = dec[unit];
+                if (typeof mul === 'number')
+                    return num * mul;
             }
         }
         // Fallback: try parse float
@@ -654,7 +662,7 @@ export class RCAChecklistEngine {
     extractEventPatterns(events) {
         const patternCounts = new Map();
         for (const event of events) {
-            const pattern = event.reason;
+            const pattern = String(event?.reason ?? 'unknown');
             patternCounts.set(pattern, (patternCounts.get(pattern) || 0) + 1);
         }
         return Array.from(patternCounts.entries())
@@ -725,8 +733,9 @@ export class RCAChecklistEngine {
         }
         // Services without endpoints
         const svcNoEpMatch = networkTxt.match(/Services without endpoints:\s*(\d+)/i);
-        if (svcNoEpMatch && parseInt(svcNoEpMatch[1], 10) > 0) {
-            const count = parseInt(svcNoEpMatch[1], 10);
+        const svcCountStr = svcNoEpMatch?.[1];
+        if (svcCountStr && parseInt(svcCountStr, 10) > 0) {
+            const count = parseInt(svcCountStr, 10);
             evidence.push(`${count} services without endpoints`);
             result.rootCause = { type: 'service_no_backends', summary: 'Services have no active endpoints (backends not ready or selector mismatch)', confidence: 0.75, evidence };
             return;

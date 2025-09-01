@@ -111,7 +111,9 @@ export class MCPOcsMemoryAdapter {
                 }
             }
         }
-        return order[maxIndex];
+        const safeIndex = Math.max(0, Math.min(maxIndex, order.length - 1));
+        const sev = (order[safeIndex] ?? 'low');
+        return sev;
     }
     normalizeTags(raw) {
         if (!raw)

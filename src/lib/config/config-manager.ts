@@ -106,15 +106,17 @@ export class ConfigManager {
     const keys = path.split('.');
     let current: any = this.config;
     
-    for (let i = 0; i < keys.length - 1; i++) {
-      const key = keys[i];
+    for (const key of keys.slice(0, -1)) {
       if (!(key in current) || typeof current[key] !== 'object') {
         current[key] = {};
       }
       current = current[key];
     }
-    
-    current[keys[keys.length - 1]] = value;
+    const lastKey = keys[keys.length - 1];
+    if (typeof lastKey === 'undefined') {
+      throw new Error('Invalid configuration path');
+    }
+    current[lastKey] = value;
   }
 
   getAll(): Partial<ConfigSchema> {

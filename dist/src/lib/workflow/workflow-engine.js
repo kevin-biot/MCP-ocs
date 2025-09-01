@@ -353,14 +353,18 @@ export class WorkflowEngine {
         const suggestions = await this.memoryGuided.suggestNextSteps(session);
         let guidance = stateConfig.guidanceMessage;
         if (suggestions.length > 0) {
-            guidance += "\\n\\n" + suggestions[0].message;
+            const first = suggestions[0];
+            if (first)
+                guidance += "\\n\\n" + first.message;
         }
         return guidance;
     }
     async getNextRecommendedActions(session) {
         const suggestions = await this.memoryGuided.suggestNextSteps(session);
         if (suggestions.length > 0) {
-            return suggestions[0].recommendedActions.map(action => action.description);
+            const first = suggestions[0];
+            if (first)
+                return first.recommendedActions.map(action => action.description);
         }
         const stateConfig = STATE_MACHINE[session.currentState];
         return [stateConfig.guidanceMessage];

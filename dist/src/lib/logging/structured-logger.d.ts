@@ -5,12 +5,12 @@
  */
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 export interface LogContext {
-    sessionId?: string;
-    toolName?: string;
-    namespace?: string;
-    operation?: string;
-    duration?: number;
-    error?: Error;
+    sessionId?: string | undefined;
+    toolName?: string | undefined;
+    namespace?: string | undefined;
+    operation?: string | undefined;
+    duration?: number | undefined;
+    error?: Error | undefined;
     [key: string]: any;
 }
 export interface LogEntry {
@@ -18,11 +18,11 @@ export interface LogEntry {
     message: string;
     timestamp: string;
     service: string;
-    context?: LogContext;
+    context?: LogContext | undefined;
     error?: {
         message: string;
-        stack?: string;
-        name?: string;
+        stack?: string | undefined;
+        name?: string | undefined;
     };
 }
 /**

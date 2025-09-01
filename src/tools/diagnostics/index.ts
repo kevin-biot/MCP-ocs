@@ -299,13 +299,15 @@ export class DiagnosticToolsV2 implements ToolSuite {
       let namespaceAnalysis: any = null;
       let prioritization: any = null;
       if (includeNamespaceAnalysis && !bounded) {
-        const analysis = await this.prioritizeNamespaces({
+        const nsArgs = {
           scope: namespaceScope,
-          focusNamespace,
           focusStrategy,
           maxDetailed: maxNamespacesToAnalyze,
           depth
-        });
+        };
+        const analysis = await this.prioritizeNamespaces(
+          typeof focusNamespace === 'string' ? { ...nsArgs, focusNamespace } : nsArgs
+        );
         prioritization = analysis.prioritized;
         namespaceAnalysis = analysis.output;
       } else if (bounded) {
@@ -1037,12 +1039,9 @@ export class DiagnosticToolsV2 implements ToolSuite {
 
     try {
       // Execute RCA checklist using v2 engine
-      const checklistResult = await this.rcaChecklistEngine.executeRCAChecklist({
-        namespace,
-        outputFormat,
-        includeDeepAnalysis,
-        maxCheckTime
-      });
+      const checklistArgs = { outputFormat, includeDeepAnalysis, maxCheckTime } as { outputFormat: 'json' | 'markdown'; includeDeepAnalysis: boolean; maxCheckTime: number; namespace?: string };
+      if (typeof namespace === 'string') checklistArgs.namespace = namespace;
+      const checklistResult = await this.rcaChecklistEngine.executeRCAChecklist(checklistArgs);
 
       // Store RCA session in operational memory
       await this.memoryManager.storeOperational({

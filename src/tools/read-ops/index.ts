@@ -318,11 +318,10 @@ export class ReadOpsTools implements ToolSuite {
   private async getLogs(podName: string, namespace?: string, container?: string, lines?: number, since?: string, sessionId?: string): Promise<any> {
     console.error(`📄 Getting logs from pod: ${podName}, container: ${container}, lines: ${lines}`);
     
-    const logs = await this.openshiftClient.getLogs(podName, namespace, {
-      container,
-      lines: lines || 100,
-      since
-    });
+    const logOpts: { lines: number; container?: string; since?: string } = { lines: lines || 100 };
+    if (typeof container === 'string') logOpts.container = container;
+    if (typeof since === 'string') logOpts.since = since;
+    const logs = await this.openshiftClient.getLogs(podName, namespace, logOpts);
     
     const result = {
       podName,

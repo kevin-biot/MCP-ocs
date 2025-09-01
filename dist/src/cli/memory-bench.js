@@ -55,7 +55,13 @@ async function bench(opts, csvPath) {
         while (idx.size < n && idx.size < labels.length) {
             idx.add(Math.floor(Math.random() * labels.length));
         }
-        return Array.from(idx).map(i => labels[i]);
+        const out = [];
+        for (const i of Array.from(idx)) {
+            const v = labels[i];
+            if (typeof v === 'string')
+                out.push(v);
+        }
+        return out;
     };
     const insertElapsedAll = Date.now() - insertStartAll;
     const sample = pick(queries);
@@ -70,9 +76,13 @@ async function bench(opts, csvPath) {
         queryLat.push(dur);
         if (results.length > 0) {
             const top = results[0];
-            top1Dist.push(top.distance);
-            if ((top.content || '').includes(label) || (top.metadata?.userMessage || '').includes(label))
-                top1Hits++;
+            if (top) {
+                top1Dist.push(top.distance);
+                const content = top.content ?? '';
+                const userMessage = top.metadata?.userMessage ?? '';
+                if (content.includes(label) || userMessage.includes(label))
+                    top1Hits++;
+            }
         }
     }
     const p = (arr, q) => {
@@ -135,7 +145,14 @@ async function main() {
     if (cmd === 'run') {
         const docs = docsArg ? parseInt(docsArg, 10) : undefined;
         const queries = queriesArg ? parseInt(queriesArg, 10) : undefined;
-        await bench({ memoryDir: dirArg, docs, queries }, csvArg);
+        const opts = {};
+        if (typeof dirArg === 'string')
+            opts.memoryDir = dirArg;
+        if (typeof docs === 'number')
+            opts.docs = docs;
+        if (typeof queries === 'number')
+            opts.queries = queries;
+        await bench(opts, csvArg);
         return;
     }
     console.error('Unknown command:', cmd);

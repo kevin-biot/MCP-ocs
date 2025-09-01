@@ -1,0 +1,66 @@
+src/cli/memory-bench.ts(85,54): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/cli/memory-bench.ts(90,21): error TS18048: 'top' is possibly 'undefined'.
+src/cli/memory-bench.ts(91,12): error TS18048: 'top' is possibly 'undefined'.
+src/cli/memory-bench.ts(91,40): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/cli/memory-bench.ts(91,51): error TS18048: 'top' is possibly 'undefined'.
+src/cli/memory-tools.ts(141,44): error TS2532: Object is possibly 'undefined'.
+src/index-sequential.ts(204,58): error TS2538: Type 'undefined' cannot be used as an index type.
+src/index-sequential.ts(204,87): error TS2538: Type 'undefined' cannot be used as an index type.
+src/index-sequential.ts(232,38): error TS2532: Object is possibly 'undefined'.
+src/lib/config/config-manager.ts(111,13): error TS18048: 'key' is possibly 'undefined'.
+src/lib/config/config-manager.ts(111,47): error TS2538: Type 'undefined' cannot be used as an index type.
+src/lib/config/config-manager.ts(112,17): error TS2538: Type 'undefined' cannot be used as an index type.
+src/lib/config/config-manager.ts(114,25): error TS2538: Type 'undefined' cannot be used as an index type.
+src/lib/config/config-manager.ts(117,13): error TS2538: Type 'undefined' cannot be used as an index type.
+src/lib/health/health-check.ts(69,11): error TS2322: Type '(HealthCheck | { name: string | undefined; status: HealthStatus; message: string; timestamp: string; duration: number; })[]' is not assignable to type 'HealthCheck[]'.
+  Type 'HealthCheck | { name: string | undefined; status: HealthStatus; message: string; timestamp: string; duration: number; }' is not assignable to type 'HealthCheck'.
+    Type '{ name: string | undefined; status: HealthStatus; message: string; timestamp: string; duration: number; }' is not assignable to type 'HealthCheck'.
+      Types of property 'name' are incompatible.
+        Type 'string | undefined' is not assignable to type 'string'.
+          Type 'undefined' is not assignable to type 'string'.
+src/lib/memory/mcp-files-memory-extension.ts(202,65): error TS2345: Argument of type 'number[] | undefined' is not assignable to parameter of type 'number[]'.
+  Type 'undefined' is not assignable to type 'number[]'.
+src/lib/memory/mcp-files-memory-extension.ts(790,25): error TS2532: Object is possibly 'undefined'.
+src/lib/memory/mcp-files-memory-extension.ts(791,28): error TS2532: Object is possibly 'undefined'.
+src/lib/memory/mcp-ocs-memory-adapter.ts(165,5): error TS2322: Type '"low" | "medium" | "high" | "critical" | undefined' is not assignable to type '"low" | "medium" | "high" | "critical"'.
+  Type 'undefined' is not assignable to type '"low" | "medium" | "high" | "critical"'.
+src/lib/openshift-client-enhanced.ts(398,24): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/lib/rubrics/expr.ts(18,17): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/lib/rubrics/expr.ts(29,23): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/lib/rubrics/expr.ts(31,15): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/lib/rubrics/expr.ts(33,38): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/lib/rubrics/expr.ts(38,17): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/lib/rubrics/expr.ts(40,52): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/lib/templates/template-engine.ts(52,28): error TS2538: Type 'undefined' cannot be used as an index type.
+src/lib/templates/template-engine.ts(52,54): error TS2538: Type 'undefined' cannot be used as an index type.
+src/lib/templates/template-engine.ts(76,18): error TS18048: 'dot' is possibly 'undefined'.
+src/lib/templates/template-registry.ts(45,14): error TS2322: Type 'DiagnosticTemplate | undefined' is not assignable to type 'DiagnosticTemplate'.
+  Type 'undefined' is not assignable to type 'DiagnosticTemplate'.
+src/lib/workflow/workflow-engine.ts(528,30): error TS2532: Object is possibly 'undefined'.
+src/lib/workflow/workflow-engine.ts(538,14): error TS2532: Object is possibly 'undefined'.
+src/tools/infrastructure/index.ts(155,53): error TS2532: Object is possibly 'undefined'.
+src/v2/tools/check-namespace-health/enhanced-index.ts(266,34): error TS18048: 'conflict' is possibly 'undefined'.
+src/v2/tools/check-namespace-health/enhanced-index.ts(266,78): error TS18048: 'conflict' is possibly 'undefined'.
+src/v2/tools/check-namespace-health/enhanced-index.ts(343,11): error TS18048: 'topSuspicion' is possibly 'undefined'.
+src/v2/tools/check-namespace-health/enhanced-index.ts(343,54): error TS18048: 'topSuspicion' is possibly 'undefined'.
+src/v2/tools/check-namespace-health/enhanced-index.ts(344,45): error TS18048: 'topSuspicion' is possibly 'undefined'.
+src/v2/tools/infrastructure-correlation/enhanced-memory-integration.ts(362,7): error TS2532: Object is possibly 'undefined'.
+src/v2/tools/rca-checklist/index.ts(822,30): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/v2/tools/rca-checklist/index.ts(825,11): error TS18048: 'unit' is possibly 'undefined'.
+src/v2/tools/rca-checklist/index.ts(826,39): error TS2538: Type 'undefined' cannot be used as an index type.
+src/v2/tools/rca-checklist/index.ts(829,11): error TS18048: 'unit' is possibly 'undefined'.
+src/v2/tools/rca-checklist/index.ts(830,26): error TS2538: Type 'undefined' cannot be used as an index type.
+src/v2/tools/rca-checklist/index.ts(922,34): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/v2/tools/rca-checklist/index.ts(923,30): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.

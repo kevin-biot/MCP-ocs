@@ -100,18 +100,27 @@ export class StructuredLogger {
             message,
             timestamp: new Date().toISOString(),
             service: this.serviceName,
-            context: context ? this.sanitizeContext(context) : undefined
+            ...(context ? { context: this.sanitizeContext(context) } : {})
         };
         // Handle error objects specially
         if (context?.error) {
-            logEntry.error = {
+            const err = {
                 message: context.error.message,
-                stack: context.error.stack,
-                name: context.error.name
             };
+            if (context.error.stack)
+                err.stack = context.error.stack;
+            if (context.error.name)
+                err.name = context.error.name;
+            logEntry.error = err;
             // Remove error from context to avoid duplication
             const { error, ...cleanContext } = context;
-            logEntry.context = Object.keys(cleanContext).length > 0 ? cleanContext : undefined;
+            if (Object.keys(cleanContext).length > 0) {
+                logEntry.context = cleanContext;
+            }
+            else {
+                if ('context' in logEntry)
+                    delete logEntry.context;
+            }
         }
         // Use appropriate console method
         const output = JSON.stringify(logEntry);

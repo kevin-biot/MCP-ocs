@@ -74,9 +74,12 @@ export class OpenShiftClient {
         // Validate configuration before initialization
         this.validateConfigurationSync(config);
         this.ocPath = config.ocPath || 'oc';
-        this.kubeconfig = config.kubeconfig;
-        this.context = config.context;
-        this.defaultNamespace = config.defaultNamespace;
+        if (typeof config.kubeconfig === 'string')
+            this.kubeconfig = config.kubeconfig;
+        if (typeof config.context === 'string')
+            this.context = config.context;
+        if (typeof config.defaultNamespace === 'string')
+            this.defaultNamespace = config.defaultNamespace;
         this.timeout = config.timeout || 30000;
         this.circuitBreaker = new CircuitBreaker('openshift-cli', 5, 30000);
         logger.info('OpenShift client initialized', {
@@ -315,7 +318,8 @@ export class OpenShiftClient {
             catch (error) {
                 logger.debug('Failed to parse version JSON, extracting from text');
                 const match = result.value.match(/Client Version: ([\w\.-]+)/);
-                return match ? match[1] : 'unknown';
+                const captured = match?.[1];
+                return captured ?? 'unknown';
             }
         }
         return 'unknown';
