@@ -88,10 +88,40 @@
 
 ## NEXT SESSION STARTUP (V3.2):
 
-### **Trigger Phrases**:
-- "Let's do our daily standup using Process v3.2"
-- "Daily standup with enhanced Process v3.2 framework"
-- "Process v3.2 precision execution planning"
+### **HIGH-VELOCITY SPRINT MODEL** (V3.2 Enhancement):
+
+#### **Sprint Paradigm**:
+- **Multiple Focused Sprints Per Day**: When velocity is high
+- **45-Minute Sprint Target**: TIER 1 complexity optimal
+- **Complete Archive Cycle**: After each sprint completion
+- **Virtual "Standup"**: Sprint initialization trigger, not time-bound
+
+#### **Sprint Flow**:
+```
+"Process v3.2 sprint planning" → Interactive Pilot Checklist → CODEX Sprint → Archive
+[Repeat as capacity allows throughout day]
+```
+
+#### **Primary Trigger Phrase**:
+**"Process v3.2 sprint planning"** - Initiates 8-item Interactive Pilot Checklist
+
+#### **Archive Naming Convention**:
+**Multiple Daily Sprints**:
+```
+sprint-YYYY-MM-DD-[sequence]-[domain-or-epic]/
+├── final-sprint-status.md
+
+Examples:
+├── sprint-2025-09-02-01-architecture-validation/
+├── sprint-2025-09-02-02-template-hygiene/
+├── sprint-2025-09-02-03-security-review/
+```
+
+**Epic-Based Naming**:
+```
+d-002-epic-XXX-[description]/
+├── final-sprint-status.md
+```
 
 ### **Context Reconstruction Protocol**:
 1. Vector memory query for Process v3.2 context and historical data
