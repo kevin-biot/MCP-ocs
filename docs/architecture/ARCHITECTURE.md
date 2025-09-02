@@ -22,16 +22,20 @@
 
 ## 🎯 **System Overview**
 
-MCP-ocs (Model Context Protocol - OpenShift Container Platform) is an enterprise-grade operations platform that provides AI-enhanced diagnostic and management capabilities for OpenShift clusters. The system implements a hybrid memory architecture with workflow-based safety controls to prevent operational disasters while enabling intelligent incident response.
+MCP-ocs (Model Context Protocol - OpenShift Container Platform) is an enterprise-grade operations platform that provides AI-enhanced diagnostic and management capabilities for OpenShift clusters. The system implements a hybrid memory architecture with workflow-based safety controls and deterministic input processing to prevent operational disasters while enabling intelligent incident response.
 
 ### **Core Capabilities**
+- **Natural Language Processing**: Dictionary-based normalization transforming queries to canonical forms (ADR-021)
 - **Memory-Enhanced Diagnostics**: Vector similarity search for incident pattern recognition
+- **Deterministic Template Execution**: Consistent diagnostic workflows replacing dynamic LLM planning (ADR-014)
 - **Workflow-Based Safety**: Prevents dangerous operations through evidence-based workflows
 - **Tool Namespace Management**: Organized tool hierarchy preventing confusion
 - **Hybrid Memory System**: ChromaDB vector search + JSON backup for reliability
 - **OpenShift Integration**: Secure CLI wrapper with comprehensive safety controls
+- **Optional Semantic Type System**: Formal constraint validation for regulated domains (ADR-022)
 
 ### **Architecture Principles**
+- **Deterministic Processing**: Input normalization ensures consistent template routing
 - **Safety First**: Workflow engine prevents dangerous 4 AM operations
 - **Memory-Driven Intelligence**: Every incident builds organizational knowledge
 - **Modular Design**: Clear separation of concerns with defined interfaces
@@ -371,18 +375,74 @@ class StateMgmtTools {
 
 ## 🔄 **Data Flow**
 
-### **Request Processing Flow**
+### **Enhanced Request Processing Flow (with Input Processing Layer)**
 ```
-1. MCP Client → MCP Server (tools/call request)
-2. MCP Server → Workflow Engine (safety check)
-3. Workflow Engine → Panic Detector (rapid-fire detection)
-4. Workflow Engine → Memory System (pattern analysis)
-5. Workflow Engine → Tool Registry (if approved)
-6. Tool Registry → Specific Tool Implementation
-7. Tool Implementation → OpenShift Client (if cluster operation)
-8. OpenShift Client → OpenShift Cluster (sanitized commands)
-9. Response flows back through the chain
-10. Memory System stores operational data
+1. Natural Language Query → Dictionary Normalizer (ADR-021)
+   "show me failing pods in production"
+   ↓
+2. Dictionary Normalizer → Canonical Terms
+   {"action": "list_failing_pods", "scope": "production"}
+   ↓
+3. Canonical Terms → Template Router (ADR-014)
+   Selects appropriate diagnostic template
+   ↓  
+4. Template Router → Optional NFM Validator (ADR-022)
+   Validates semantic constraints if enabled
+   ↓
+5. Validated Request → MCP Server (tools/call)
+6. MCP Server → Workflow Engine (safety check)
+7. Workflow Engine → RCA Pattern Engine (ADR-011) 
+   Checks for known incident patterns
+   ↓
+8. Workflow Engine → Panic Detector (rapid-fire detection)
+9. Workflow Engine → Memory System (pattern analysis)
+10. Workflow Engine → Tool Registry (if approved)
+11. Tool Registry → Specific Tool Implementation
+12. Tool Implementation → OpenShift Client (if cluster operation)
+13. OpenShift Client → OpenShift Cluster (sanitized commands)
+14. Response flows back through the chain
+15. Memory System + RCA Engine store operational patterns
+```
+
+### **Input Processing Detail Flow**
+```
+Natural Language Input:
+  "Check if the ingress controller is having issues"
+  ↓
+Dictionary Normalization (F-006):
+  - "Check" → "diagnose" 
+  - "ingress controller" → "openshift_ingress"
+  - "having issues" → "health_problems"
+  Result: {"action": "diagnose", "target": "openshift_ingress", "type": "health_problems"}
+  ↓
+Template Selection (ADR-014):
+  Normalized terms → "ingress_controller_diagnostic_template"
+  ↓
+NFM Validation (F-007 - Optional):
+  Validate: target="openshift_ingress" matches IngressComponent type
+  Validate: action="diagnose" allowed for current user role
+  ↓
+Template Execution:
+  Execute diagnostic workflow with evidence collection
+```
+
+### **RCA Pattern Learning Flow (F-009)**
+```
+1. Incident Symptoms → RCA Pattern Engine
+2. Pattern Engine → Historical Analysis
+   Search for similar incident patterns
+   ↓
+3. Pattern Engine → Root Cause Hypothesis Generation
+   Generate probable causes with confidence scores
+   ↓
+4. Hypothesis → Diagnostic Template Enhancement
+   Prioritize diagnostic steps based on RCA suggestions
+   ↓
+5. Validation Results → Pattern Database Update
+   Learn from confirmed/refuted hypotheses
+   ↓
+6. Updated Patterns → Future Incident Recognition
+   Improved accuracy for similar incidents
 ```
 
 ### **Memory Storage Flow**

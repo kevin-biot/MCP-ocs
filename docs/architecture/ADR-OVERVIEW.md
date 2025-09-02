@@ -1,20 +1,24 @@
 # MCP-ocs Architecture Decision Records Overview
 
-**Document Version**: 2.0  
-**Date**: August 25, 2025  
-**Status**: Living Document - Updated after ADR numbering audit  
+**Document Version**: 3.0  
+**Date**: September 02, 2025  
+**Status**: Living Document - Updated with ADR-021 and ADR-022 additions  
 **Purpose**: Comprehensive catalog of all architectural decisions in MCP-ocs ecosystem
 
 ---
 
 ## Executive Summary
 
-This document provides a complete overview of all Architecture Decision Records (ADRs) in the MCP-ocs system, including their current status, dependencies, and implementation progress. The system currently has **19 ADRs** (ADR-001 through ADR-019) covering the complete architectural foundation.
+This document provides a complete overview of all Architecture Decision Records (ADRs) in the MCP-ocs system, including their current status, dependencies, and implementation progress. The system currently has **22 ADRs** (ADR-001 through ADR-022) covering the complete architectural foundation including advanced input processing and semantic type systems.
 
 **Current Architecture Status:**
-- ✅ **Implemented & Operational**: 8 ADRs (Solid foundation)
-- 🚧 **Proposed/In Progress**: 9 ADRs (Active development) 
-- 📋 **Deferred/Future**: 2 ADRs (Strategic planning)
+- ✅ **Implemented & Operational**: 5 ADRs (23% - Solid foundation)
+- 🚧 **Partially Implemented**: 4 ADRs (18% - Active completion)
+- 📋 **Designed but Not Implemented**: 13 ADRs (59% - Comprehensive future roadmap)
+
+**Recent Additions (September 2025):**
+- **ADR-021**: Natural Language Input Normalization Architecture (F-006 Epic)
+- **ADR-022**: Normalized Fact Model Type System Architecture (F-007 Epic)
 
 ---
 
@@ -24,13 +28,13 @@ This document provides a complete overview of all Architecture Decision Records 
 
 | ADR | Title | Status | Implementation Notes |
 |-----|-------|--------|---------------------|
-| **ADR-001** | OpenShift vs Kubernetes API Client Decision | ✅ **Implemented** | CLI wrapper operational, K8s API migration complete |
-| **ADR-002** | GitOps Integration Strategy | ✅ **Implemented** | Environment-based GitOps with emergency break-glass |
+| **ADR-001** | OpenShift vs Kubernetes API Client Decision | ✅ **Implemented** | CLI wrapper operational, K8s API migration in progress |
+| **ADR-002** | GitOps Integration Strategy | 🚧 **Partial** | Strategy documented, minimal code implementation |
 | **ADR-003** | Memory Storage and Retrieval Patterns | ✅ **Implemented** | ChromaDB + JSON hybrid with 156+ active sessions |
-| **ADR-004** | Tool Namespace Management | ✅ **Implemented** | Hierarchical tool namespacing operational |
-| **ADR-005** | Workflow State Machine Design | ✅ **Implemented** | Panic detection and structured workflows |
+| **ADR-004** | Tool Namespace Management | 🚧 **Partial** | Basic namespacing implemented, advanced features needed |
+| **ADR-005** | Workflow State Machine Design | ✅ **Implemented** | Panic detection and structured workflows operational |
 
-**Foundation Status**: ✅ **Complete and Production Ready**
+**Foundation Status**: ✅ **Core Complete - Enhancement needed for full implementation**
 
 ---
 
@@ -38,12 +42,12 @@ This document provides a complete overview of all Architecture Decision Records 
 
 | ADR | Title | Status | Implementation Notes |
 |-----|-------|--------|---------------------|
-| **ADR-006** | Modular Tool Plugin Architecture | ✅ **Implemented** | Plugin interface and auto-discovery operational |
+| **ADR-006** | Modular Tool Plugin Architecture | 📋 **Designed** | **F-008 Epic Created** - Plugin system and module organization |
 | **ADR-007** | Automatic Tool Memory Integration | ✅ **Implemented** | Auto-capture implemented and operational |
-| **ADR-008** | Production Operator Architecture | 🚧 **Proposed** | Multi-pod deployment architecture - pending |
-| **ADR-009** | RBAC Emergency Change Management | 🚧 **Proposed** | Security framework - pending |
+| **ADR-008** | Production Operator Architecture | 📋 **Designed** | **F-003 Epic (P1-CRITICAL)** - Multi-pod deployment architecture |
+| **ADR-009** | RBAC Emergency Change Management | 🚧 **Partial** | Strategy documented, implementation minimal |
 
-**Platform Status**: 🚧 **Core implemented, production deployment pending**
+**Platform Status**: 🚧 **Core implemented, critical production features pending**
 
 ---
 
@@ -51,222 +55,192 @@ This document provides a complete overview of all Architecture Decision Records 
 
 | ADR | Title | Status | Implementation Notes |
 |-----|-------|--------|---------------------|
-| **ADR-010** | Systemic Diagnostic Intelligence | ✅ **Implemented** | 23KB comprehensive implementation complete |
-| **ADR-011** | Fast RCA Framework Implementation | 🚧 **Proposed** | Extends ADR-010 with automated root cause analysis |
-| **ADR-012** | Operational Intelligence Data Model | 🚧 **Proposed** | Data structures for operational intelligence |
-| **ADR-013** | Automated Runbook Execution Framework | 🚧 **Proposed** | Safe automation with approval gates |
-| **ADR-014** | Deterministic Template Engine Architecture | ✅ **Implemented** | Production ready - core platform foundation |
+| **ADR-010** | Systemic Diagnostic Intelligence | 🚧 **Partial** | Infrastructure correlation partial, systemic engine incomplete |
+| **ADR-011** | Fast RCA Framework Implementation | 📋 **Designed** | **F-009 Epic Created** - Pattern recognition + automated diagnostics |
+| **ADR-012** | Operational Intelligence Data Model | 📋 **Designed** | **F-002 Integration** - Data structures within operational intelligence |
+| **ADR-013** | Automated Runbook Execution Framework | 📋 **Designed** | **F-002 Integration** - Automation framework within operational intelligence |
+| **ADR-014** | Deterministic Template Engine Architecture | ✅ **Implemented** | Production ready - core platform foundation (95%+ consistency) |
 
-**Intelligence Status**: ✅ **Strong foundation with ADR-010 + ADR-014 providing core capabilities**
+**Intelligence Status**: ✅ **Strong foundation with ADR-014, comprehensive enhancement planned**
 
 ---
 
-### **Enhanced Capabilities (ADR-015 through ADR-019)**
+### **Enhanced Capabilities (ADR-015 through ADR-020)**
 
 | ADR | Title | Status | Implementation Notes |
 |-----|-------|--------|---------------------|
-| **ADR-015** | Multi-Provider LLM Enhancement | 🚧 **Proposed** | gollm integration for enterprise LLM capabilities |
-| **ADR-016** | Multi-Tenancy Session Management | 🚧 **Proposed** | Secure multi-tenant operation for shared deployment |
-| **ADR-017** | AI War Room Commander Architecture | 🚧 **Proposed** | Transform to incident command system |
+| **ADR-015** | Multi-Provider LLM Enhancement | 📋 **Future** | gollm integration for enterprise LLM capabilities |
+| **ADR-016** | Multi-Tenancy Session Management | 📋 **Future** | Secure multi-tenant operation for shared deployment |
+| **ADR-017** | AI War Room Commander Architecture | 📋 **Future** | Transform to incident command system |
 | **ADR-018** | kubectl-ai Integration Enhancement | 📋 **Future** | Optional kubectl-ai integration consideration |
-| **ADR-019** | Multi-Tenancy Progressive Evolution | 📋 **Deferred** | Long-term multi-tenancy strategy |
+| **ADR-019** | Multi-Tenancy Progressive Evolution | 📋 **Future** | Long-term multi-tenancy strategy |
+| **ADR-020** | Risk-based Security Development Guidelines | 📋 **Future** | Security development standards |
 
-**Enhanced Capabilities Status**: 🚧 **Active proposals for next-generation features**
+**Enhanced Capabilities Status**: 📋 **Future consideration - not critical for current operational needs**
+
+---
+
+### **Input Processing & Semantic Systems (ADR-021 through ADR-022)** 🆕
+
+| ADR | Title | Status | Implementation Notes |
+|-----|-------|--------|---------------------|
+| **ADR-021** | Natural Language Input Normalization Architecture | 📋 **Designed** | **F-006 Epic** - Git-versioned dictionary system with AI-assisted generation |
+| **ADR-022** | Normalized Fact Model (NFM) Type System Architecture | 📋 **Designed** | **F-007 Epic** - Optional semantic type safety and constraint validation |
+
+**Input Processing Status**: 📋 **Comprehensive architecture designed - fills critical input processing gap**
 
 ---
 
 ## Current Implementation Status
 
-### **✅ Implemented & Operational (8 ADRs)**
+### **✅ Implemented & Operational (5 ADRs - 23%)**
 
-**Core Foundation Complete:**
-- **ADR-001**: OpenShift API client operational
-- **ADR-002**: GitOps integration with break-glass procedures
-- **ADR-003**: Memory system with 156+ sessions (ChromaDB + JSON)
-- **ADR-004**: Tool namespace management with context filtering
-- **ADR-005**: Workflow state machine with panic detection
-- **ADR-006**: Modular tool architecture with plugin system
-- **ADR-007**: Automatic tool-memory integration
-- **ADR-014**: Deterministic template engine (95%+ consistency)
+**Core Foundation:**
+- **ADR-001**: OpenShift API client operational (95% complete)
+- **ADR-003**: Memory system with 156+ sessions (ChromaDB + JSON) (100% complete)
+- **ADR-005**: Workflow state machine with panic detection (85% complete)
+- **ADR-007**: Automatic tool-memory integration (100% complete)
+- **ADR-014**: Deterministic template engine (100% complete, 95%+ consistency)
 
-**Systemic Intelligence:**
-- **ADR-010**: Comprehensive diagnostic intelligence (23KB implementation)
+### **🚧 Partially Implemented (4 ADRs - 18%)**
 
-### **🚧 Proposed/In Progress (9 ADRs)**
+**Active Completion Needed:**
+- **ADR-002**: GitOps strategy (30% - needs dedicated tasks)
+- **ADR-004**: Tool namespace management (60% - needs enhancement focus)
+- **ADR-009**: RBAC emergency management (20% - now has F-003 integration)
+- **ADR-010**: Systemic diagnostic intelligence (40% - needs completion focus)
 
-**Production Deployment:**
-- **ADR-008**: Production operator architecture (multi-pod deployment)
-- **ADR-009**: RBAC emergency change management
+### **📋 Designed with Feature Coverage (8 ADRs - 36%)**
 
-**Intelligence Enhancement:**
-- **ADR-011**: Fast RCA framework (builds on ADR-010)
-- **ADR-012**: Operational intelligence data model
-- **ADR-013**: Automated runbook execution
+**New Feature Epics Created:**
+- **ADR-006**: F-008 Modular Tool Architecture Epic
+- **ADR-008**: F-003 Production Platform Epic (Priority Elevated to P1-CRITICAL)
+- **ADR-011**: F-009 Fast RCA Framework Epic
+- **ADR-012**: F-002 Operational Intelligence (Data Model Integration)
+- **ADR-013**: F-002 Operational Intelligence (Automation Framework Integration)
+- **ADR-021**: F-006 Natural Language Input Normalization Epic  
+- **ADR-022**: F-007 NFM Type System Epic
 
-**Next-Generation Features:**
-- **ADR-015**: Multi-provider LLM enhancement (gollm)
-- **ADR-016**: Multi-tenancy session management
-- **ADR-017**: AI War Room Commander architecture
+### **📋 Future Consideration (5 ADRs - 23%)**
 
-### **📋 Future/Deferred (2 ADRs)**
-
-**Future Considerations:**
-- **ADR-018**: kubectl-ai integration (future enhancement)
-- **ADR-019**: Multi-tenancy progressive evolution (deferred)
+**Lower Priority - Acceptable for Now:**
+- **ADR-015** through **ADR-020**: Future enhancements when business requirements justify
 
 ---
 
-## Implementation Priorities
+## Implementation Priorities (Updated)
 
-### **Immediate Priority (Critical Path)**
+### **Critical Path (P1 - Immediate)**
 
-1. **ADR-008 & ADR-009**: Production deployment architecture
-   - Multi-pod operator deployment
-   - RBAC security framework
-   - Required for enterprise deployment
+1. **F-001**: Core Platform Foundation (Complete partial ADRs 002, 004, 009, 010)
+2. **F-003**: Production Platform (ADR-008 - PRIORITY ELEVATED)
+3. **F-004**: Template Quality & Validation
 
-2. **ADR-011**: Fast RCA Framework
-   - Builds on proven ADR-010 foundation
-   - High-value operational capability
+### **High Value Extensions (P2 - Next Phase)**
 
-### **Medium Priority (Enhancement)**
+4. **F-006**: Natural Language Input Normalization (ADR-021)
+5. **F-008**: Modular Tool Architecture (ADR-006)  
+6. **F-009**: Fast RCA Framework (ADR-011)
 
-3. **ADR-012 & ADR-013**: Operational intelligence expansion
-   - Data model formalization
-   - Automated runbook execution
+### **Operational Intelligence (P1/P2 - Enhanced)**
 
-4. **ADR-015**: Multi-provider LLM enhancement
-   - Enterprise LLM integration
-   - gollm multi-provider support
-
-### **Strategic Priority (Next Generation)**
-
-5. **ADR-016 & ADR-017**: Advanced capabilities
-   - Multi-tenancy for shared deployment
-   - AI War Room Commander positioning
+7. **F-002**: Comprehensive Operational Intelligence (includes ADR-012, ADR-013)
 
 ---
 
-## ADR Dependencies
+## ADR-to-Feature Coverage Analysis
 
-### **Critical Path Dependencies**
+### **Coverage Achievement**
+- **Before Remediation**: 65% ADR coverage (11/17 ADRs)
+- **After Remediation**: 89% ADR coverage (16/18 ADRs with new additions)
+- **Critical Gaps Eliminated**: All critical ADRs now have appropriate feature coverage
 
-```
-Foundation (Complete):
-ADR-001 → ADR-008 (Production Operator)
-ADR-003 → ADR-010 → ADR-011 (Intelligence Chain)
-ADR-005 → ADR-013 (Workflow → Runbooks)
-ADR-014 → All Template-based Features
-
-Production Path:
-ADR-008 ← ADR-009 (RBAC depends on Operator)
-ADR-002 → ADR-008 → ADR-009 (GitOps → Operator → RBAC)
-
-Intelligence Path:
-ADR-010 (Implemented) → ADR-011 → ADR-012 → ADR-013
-
-Enterprise Path:
-ADR-015 (Multi-LLM) + ADR-016 (Multi-tenant) → ADR-017 (War Room)
+### **Feature Epic Mapping**
+```yaml
+F-001: [ADR-001, ADR-002, ADR-003, ADR-004, ADR-005, ADR-007, ADR-009, ADR-010]
+F-002: [ADR-012, ADR-013] # Operational Intelligence includes data models + automation
+F-003: [ADR-008] # Production Platform (Priority Elevated)
+F-006: [ADR-021] # Input Normalization  
+F-007: [ADR-022] # NFM Type System
+F-008: [ADR-006] # Modular Tool Architecture
+F-009: [ADR-011] # Fast RCA Framework
 ```
 
-### **No-Dependency ADRs (Ready for Implementation)**
-
-- **ADR-011**: Fast RCA (depends only on implemented ADR-010)
-- **ADR-015**: Multi-provider LLM (independent enhancement)
-
 ---
 
-## Success Metrics
+## Success Metrics (Updated)
+
+### **Coverage Metrics**
+- **ADR Coverage Rate**: 89% (16/18 with new ADRs)
+- **Feature Epic Coverage**: 100% of critical ADRs have appropriate features
+- **Implementation Coverage**: 23% implemented, 77% with clear implementation path
 
 ### **Technical Metrics (Achieved)**
 - **Template Consistency**: 95%+ across models (ADR-014)
 - **Memory Performance**: <500ms search (ADR-003)
 - **Session Management**: 156+ active sessions (ADR-003)
-- **Tool Integration**: 13+ tools with auto-memory (ADR-007)
+- **Tool Integration**: Auto-memory capture operational (ADR-007)
 
-### **Architecture Metrics**
-- **Foundation Completeness**: 100% (5/5 foundation ADRs implemented)
-- **Platform Readiness**: 75% (6/8 platform ADRs implemented) 
-- **Intelligence Capability**: 40% (2/5 intelligence ADRs implemented)
-- **Overall Implementation**: 42% (8/19 ADRs implemented)
-
-### **Production Readiness**
-- **Core Functionality**: ✅ Ready (ADR-001, 003, 010, 014)
-- **Operational Capability**: ✅ Ready (ADR-005, 006, 007)
-- **Deployment Architecture**: 🚧 Pending (ADR-008, 009)
-- **Enterprise Features**: 🚧 In Development (ADR-011, 015, 016)
+### **Architecture Health**
+- **Foundation Readiness**: 5/5 core ADRs have implementation progress
+- **Critical Path Clarity**: F-001 → F-003 → F-006 → F-009 → F-002 sequence established
+- **Enterprise Readiness**: F-003 properly prioritized for enterprise deployment
 
 ---
 
-## Quality Assurance
+## Validation Framework
 
-### **ADR Content Quality**
-- **Numbering**: ✅ Sequential ADR-001 through ADR-019 (conflicts resolved)
-- **Status Tracking**: ✅ Accurate implementation status
-- **Dependencies**: ✅ Clear prerequisite relationships
-- **Technical Depth**: ✅ Implementation details documented
+### **Coverage Monitoring**
+- **Automated Script**: `./scripts/validate-adr-coverage.sh`
+- **Coverage Documentation**: `/sprint-management/features/adr-coverage-validation.md`
+- **Gap Summary**: `/sprint-management/features/coverage-gaps-summary.md`
 
-### **Architecture Consistency**
-- **No Conflicts**: All ADR numbers unique and sequential
-- **Clear Status**: Implemented/Proposed/Future/Deferred clearly marked
-- **Implementation Evidence**: 8 ADRs have verified implementations
-- **Dependency Clarity**: Critical path and blockers identified
+### **Review Schedule**
+- **Monthly**: ADR implementation status and coverage validation
+- **Quarterly**: Comprehensive architecture review and strategic alignment
+- **Ad-hoc**: After new ADR creation or major feature completion
 
 ---
 
-## Next Actions
+## Next Actions (Dependency-Driven)
 
-### **Week 1: Production Readiness**
-1. **Finalize ADR-008** (Production Operator Architecture)
-2. **Finalize ADR-009** (RBAC Emergency Change Management)
-3. **Begin ADR-011** implementation (Fast RCA Framework)
+### **Phase 1: Foundation & Critical Production (Days 1-60)**
+1. **Complete F-001** (finish partial ADRs 002, 004, 009, 010)
+2. **Implement F-003** (ADR-008 production deployment - CRITICAL)
+3. **Begin F-004** (template quality foundation)
 
-### **Month 1: Core Enhancement**
-4. **Complete ADR-011** (Fast RCA - builds on ADR-010)
-5. **Design ADR-015** implementation (Multi-provider LLM)
-6. **Prototype ADR-012** (Operational Intelligence Data Model)
+### **Phase 2: Input Processing & Tool Architecture (Days 61-120)**  
+4. **Implement F-006** (ADR-021 input normalization)
+5. **Implement F-008** (ADR-006 modular tools - can run parallel)
+6. **Complete F-005** (tool maturity - complements F-008)
 
-### **Month 2: Enterprise Features**
-7. **Implement ADR-015** (gollm integration)
-8. **Design ADR-016** (Multi-tenancy session management)
-9. **Evaluate ADR-017** (AI War Room Commander architecture)
-
----
-
-## Review Schedule
-
-### **Regular Reviews**
-- **Weekly**: Implementation progress on active ADRs (008, 009, 011)
-- **Monthly**: Overall architecture status and priority adjustments
-- **Quarterly**: Complete ADR portfolio review and strategic alignment
-
-### **Milestone Reviews**
-- **Production Deployment**: After ADR-008 & ADR-009 completion
-- **Intelligence Platform**: After ADR-011 & ADR-012 completion  
-- **Enterprise Readiness**: After ADR-015 & ADR-016 completion
+### **Phase 3: Intelligence & Operational Enhancement (Days 121-200)**
+7. **Implement F-009** (ADR-011 RCA framework - depends on F-006)
+8. **Complete F-002** (operational intelligence enhanced by F-009)
 
 ---
 
 ## Conclusion
 
-The MCP-ocs architecture has a **solid foundation** with 42% of ADRs implemented and operational. The system demonstrates production-level capabilities in core areas (memory, templates, diagnostics) while maintaining clear paths for enterprise enhancement.
+The MCP-ocs architecture has achieved **comprehensive ADR coverage** with 89% of architectural decisions mapped to specific feature epics. The **systematic gap remediation** completed in September 2025 eliminated critical architecture debt and established clear implementation paths.
 
-**Key Strengths:**
-- ✅ Complete foundation architecture (ADR-001 through ADR-007)
-- ✅ Production-ready intelligence (ADR-010, ADR-014) 
-- ✅ Operational memory system with 156+ sessions
-- ✅ Deterministic template engine with 95%+ consistency
+**Key Achievements:**
+- ✅ **Complete ADR catalog** - 22 ADRs covering full architectural vision
+- ✅ **Critical gap elimination** - All high-priority ADRs have feature coverage  
+- ✅ **Dependency-driven roadmap** - Clear implementation sequence established
+- ✅ **Validation framework** - Automated coverage monitoring prevents future gaps
 
-**Critical Next Steps:**
-- 🎯 Complete production deployment architecture (ADR-008, ADR-009)
-- 🎯 Implement fast RCA capabilities (ADR-011)
-- 🎯 Design enterprise LLM integration (ADR-015)
+**Strategic Position:**
+- **Solid Foundation**: 5 ADRs implemented providing operational capability
+- **Clear Path Forward**: 13 ADRs with dedicated feature epics and implementation plans
+- **Enterprise Ready**: Production deployment and input processing properly prioritized
+- **Sustainable Architecture**: Validation framework prevents architecture debt accumulation
 
-With systematic execution of the remaining 11 ADRs, MCP-ocs will evolve from a solid diagnostic platform to a comprehensive enterprise-grade operational intelligence system.
+With systematic execution of the feature epic roadmap, MCP-ocs will evolve from a solid diagnostic platform to a comprehensive enterprise-grade operational intelligence system with advanced natural language processing and semantic type safety capabilities.
 
 ---
 
-**Last Updated**: August 25, 2025 (Post ADR numbering audit)  
-**Next Review**: September 1, 2025  
+**Last Updated**: September 02, 2025 (Complete ADR coverage remediation)  
+**Next Review**: October 02, 2025 (Monthly coverage validation)  
 **Document Owner**: Architecture Team  
-**Status**: Living Document - Reflects actual ADR filesystem state
+**Status**: Living Document - Reflects complete architectural vision with implementation roadmap
