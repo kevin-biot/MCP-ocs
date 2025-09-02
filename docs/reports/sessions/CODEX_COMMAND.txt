@@ -1,0 +1,1 @@
+Read and execute CODEX_SESSION_BETA_BUILD.md - implement production beta build for MCP-OCS based on today's 8 validated tools (75% success rate). Build tool maturity system, enhanced registry, beta scripts, and v0.8.0-beta release. Foundation: MCPOcsMemoryAdapter + ToolMemoryGateway operational, real cluster tested with Qwen validation.

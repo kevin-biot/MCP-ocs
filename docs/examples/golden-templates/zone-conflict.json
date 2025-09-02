@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "1.0.0",
+  "engineVersion": "0.8.0-beta",
+  "templateId": "zone-conflict-detection-v1",
+  "templateVersion": "1.0.0",
+  "rubricVersions": {
+    "triage": "triage-priority.v1",
+    "confidence": "evidence-confidence.v1",
+    "safety": "remediation-safety.v1"
+  },
+  "determinism": {
+    "modelName": "none",
+    "system_fingerprint": "none",
+    "temperature": 0,
+    "top_p": 1,
+    "seed": 42
+  },
+  "evidenceThreshold": 0.9,
+  "target": "zone-conflict",
+  "steps": [
+    "oc_read_machinesets",
+    "oc_read_nodes",
+    "oc_analyze_zone_conflicts"
+  ],
+  "evidence": {
+    "completeness": 1,
+    "missing": [],
+    "present": [
+      "nodeZones",
+      "machinesets",
+      "zoneSkew",
+      "capacityPressure"
+    ]
+  },
+  "rubricInputs": {
+    "evidenceCompleteness": 1,
+    "toolAgreement": 0.85,
+    "freshnessMin": 5,
+    "etcdHealthy": true,
+    "controlPlaneReadyRatio": 0.67,
+    "affectedNamespaces": 1,
+    "noCriticalAlerts": true,
+    "blastRadius": 0.7,
+    "customerPaths": 0.5,
+    "operatorsDegraded": 0.5,
+    "timeSinceFirstEventMin": 72
+  },
+  "rubrics": {
+    "triage": {
+      "id": "triage-priority.v1",
+      "kind": "weighted",
+      "score": 0.57,
+      "label": "P2",
+      "bands": {
+        "P1": ">=0.8",
+        "P2": ">=0.55",
+        "P3": "otherwise"
+      },
+      "inputs": {
+        "blastRadius": 0.7,
+        "customerPaths": 0.5,
+        "operatorsDegraded": 0.5,
+        "timeSinceFirstEventMin": 72
+      },
+      "breakdown": {
+        "blastRadius": 0.7,
+        "customerPaths": 0.5,
+        "operatorsDegraded": 0.5,
+        "timeSinceFirstEventMin": 0.4
+      }
+    },
+    "confidence": {
+      "id": "evidence-confidence.v1",
+      "kind": "mapping",
+      "label": "High",
+      "matched": "evidenceCompleteness>=0.9 && toolAgreement>=0.8 && freshnessMin<=10"
+    },
+    "safety": {
+      "id": "remediation-safety.v1",
+      "kind": "guards",
+      "allowAuto": true,
+      "guards": [
+        "etcdHealthy == true",
+        "controlPlaneReadyRatio >= 0.66",
+        "affectedNamespaces <= 3",
+        "noCriticalAlerts == true"
+      ],
+      "failing": []
+    },
+    "slo": {
+      "id": "slo-impact.v1",
+      "kind": "mapping",
+      "label": "LOW",
+      "matched": "otherwise"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+✓ ChromaDB client initialized
+✓ ChromaDB client initialized
+✓ ChromaDB client initialized
+🔧 Executing: oc get namespace openshift-monitoring
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring pods -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring events --field-selector type!=Normal -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring pvc -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring route -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+🔧 Executing: oc get -n openshift-monitoring deployments -o json
+🔧 KUBECONFIG: /Users/kevinbrown/AWS-Bootcamp/auth/kubeconfig
+🔧 Current working directory: /Users/kevinbrown/MCP-ocs
+📝 Adding 1 documents to operational via MCP-files adapter
+📊 ACTUALLY stored operational memory in ChromaDB and JSON

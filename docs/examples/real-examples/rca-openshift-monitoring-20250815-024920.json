@@ -1,0 +1,21 @@
+{
+  "namespace": "openshift-monitoring",
+  "overallStatus": "degraded",
+  "rootCause": {
+    "type": "resource_pressure",
+    "summary": "Cluster resource pressure causing scheduling failures",
+    "confidence": 0.7,
+    "evidence": [
+      "Scheduling failures due to insufficient resources"
+    ]
+  },
+  "summary": {
+    "totalChecks": 6,
+    "passed": 4,
+    "failed": 0,
+    "warnings": 2
+  },
+  "nextActions": [
+    "Review recent critical events for patterns"
+  ]
+}

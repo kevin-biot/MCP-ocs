@@ -1,0 +1,146 @@
+{
+  "scope": "all",
+  "focus": null,
+  "strategy": "auto",
+  "depth": "summary",
+  "analyzedDetailedCount": 5,
+  "totalNamespaces": 116,
+  "topNamespaces": [
+    {
+      "namespace": "openshift-gitops-operator",
+      "status": "degraded",
+      "score": 7,
+      "reasons": [
+        "status:degraded",
+        "suspicions:2"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 2
+      }
+    },
+    {
+      "namespace": "openshift-builds",
+      "status": "healthy",
+      "score": 4,
+      "reasons": [
+        "suspicions:2"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 2
+      }
+    },
+    {
+      "namespace": "default",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "devops",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "kube-node-lease",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    }
+  ]
+}

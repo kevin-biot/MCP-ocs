@@ -1,0 +1,2 @@
+{ "template": "pvc-binding", "ns": "orders", "pvc": "db-storage" }
+
