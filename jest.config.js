@@ -12,6 +12,10 @@ export default {
     }],
   },
   moduleNameMapper: {
+    // Prefer compiled JS from dist for core modules used in unit tests to avoid TS transform issues
+    '^@/lib/errors/(.*)$': '<rootDir>/dist/src/lib/errors/$1.js',
+    '^@/utils/(.*)$': '<rootDir>/dist/src/utils/$1.js',
+    '^@/lib/tools/(.*)$': '<rootDir>/dist/src/lib/tools/$1.js',
     // Map alias to TS sources, prefer .ts when .js is imported in source
     '^@/(.*)\\.js$': '<rootDir>/src/$1.ts',
     '^@/(.*)$': '<rootDir>/src/$1',
