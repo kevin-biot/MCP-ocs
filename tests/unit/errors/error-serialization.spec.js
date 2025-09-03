@@ -1,7 +1,6 @@
-import { describe, it, expect } from '@jest/globals';
-// Import from compiled JS to avoid TS parsing under Jest
-import {
-  AppError,
+const { describe, it, expect, beforeAll } = require('@jest/globals');
+
+let AppError,
   ValidationError,
   ToolExecutionError,
   MemoryError,
@@ -9,8 +8,22 @@ import {
   NotFoundError,
   ExternalCommandError,
   serializeError,
-  mapKindToStatus,
-} from '../../../dist/src/lib/errors/error-types.js';
+  mapKindToStatus;
+
+beforeAll(async () => {
+  const m = await import('../../../dist/src/lib/errors/error-types.js');
+  ({
+    AppError,
+    ValidationError,
+    ToolExecutionError,
+    MemoryError,
+    TimeoutError,
+    NotFoundError,
+    ExternalCommandError,
+    serializeError,
+    mapKindToStatus,
+  } = m);
+});
 
 describe('Error taxonomy and serialization', () => {
   it('maps kinds to HTTP-like status codes', () => {

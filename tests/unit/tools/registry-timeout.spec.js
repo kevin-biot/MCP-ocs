@@ -1,6 +1,10 @@
-import { describe, it, expect } from '@jest/globals';
-// Pull registry from compiled JS to avoid TS transform pitfalls
-import { UnifiedToolRegistry } from '../../../dist/src/lib/tools/tool-registry.js';
+const { describe, it, expect, beforeAll } = require('@jest/globals');
+// Pull registry from compiled JS via dynamic import to avoid ESM/CJS interop issues
+let UnifiedToolRegistry;
+beforeAll(async () => {
+  const m = await import('../../../dist/src/lib/tools/tool-registry.js');
+  UnifiedToolRegistry = m.UnifiedToolRegistry;
+});
 
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

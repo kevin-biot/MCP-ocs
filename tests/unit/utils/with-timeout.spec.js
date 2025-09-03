@@ -1,7 +1,12 @@
-import { describe, it, expect } from '@jest/globals';
-// Use compiled JS outputs to prevent TS parse issues in Jest
-import { withTimeout } from '../../../dist/src/utils/async-timeout.js';
-import { TimeoutError } from '../../../dist/src/lib/errors/error-types.js';
+const { describe, it, expect, beforeAll } = require('@jest/globals');
+// Use dynamic import to load ESM modules in a CJS test context
+let withTimeout, TimeoutError;
+beforeAll(async () => {
+  const t = await import('../../../dist/src/utils/async-timeout.js');
+  const e = await import('../../../dist/src/lib/errors/error-types.js');
+  withTimeout = t.withTimeout;
+  TimeoutError = e.TimeoutError;
+});
 
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
