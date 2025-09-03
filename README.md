@@ -1,134 +1,153 @@
 # MCP-OCS (OpenShift Container Storage Operations)
 
-> **Intelligent Operational Assistant for OpenShift Clusters**
+> **Systematic AI-Powered Diagnostic Framework for OpenShift Clusters**
 
-[![Beta Release](https://img.shields.io/badge/status-beta--v0.8.0--beta--1-orange.svg)](https://github.com/kevin-biot/MCP-ocs/releases/tag/v0.8.0-beta-1)
-[![Success Rate](https://img.shields.io/badge/tool--success--rate-90%25%2B-brightgreen.svg)](#validation)
-[![Namespace Coverage](https://img.shields.io/badge/namespace--coverage-116%20namespaces-blue.svg)](#features)
-[![Tools Available](https://img.shields.io/badge/tools--available-13%20operational-success.svg)](#tools)
+[![Beta Development](https://img.shields.io/badge/status-active--beta-orange.svg)](https://github.com/kevin-biot/MCP-ocs)
+[![ADR Coverage](https://img.shields.io/badge/architecture-22%20ADRs-brightgreen.svg)](#architecture)
+[![Implementation](https://img.shields.io/badge/core%20features-53%25%20implemented-yellow.svg)](#development-status)
+[![Foundation](https://img.shields.io/badge/architectural--foundation-complete-success.svg)](#architectural-foundation)
 
-MCP-OCS transforms OpenShift cluster operations from reactive debugging to intelligent, proactive assistance. Built on the Model Context Protocol (MCP), it provides AI-powered diagnostic tools with full cluster visibility and crisis-ready intelligence.
+MCP-OCS is a systematic approach to AI-powered OpenShift cluster diagnostics built on comprehensive architectural documentation. Rather than claiming production readiness, we've focused on creating a solid foundation with 22 Architecture Decision Records covering complete operational scenarios.
 
-## 🚀 What's New in v0.8.0-beta-1
+## 🎯 **What MCP-ocs Actually Is**
 
-- **🧠 Intelligent Cluster Diagnostics** - Auto-prioritizes real problems across 116+ namespaces
-- **🎯 Crisis-Ready Operations** - Surfaces critical issues first for faster incident response  
-- **⚡ Performance Optimized** - Handles large clusters with bounded analysis and event filtering
-- **🔍 Complete Visibility** - System and user namespace discovery with smart focus capabilities
+### **Systematic Architectural Foundation** ✅
+- **22 comprehensive ADRs** covering complete diagnostic workflows
+- **Feature epic roadmap** with dependency-driven implementation
+- **Proven development process** using bounded AI integration
+- **89% architectural coverage** with systematic gap remediation
 
-## ✨ Key Features
+### **Beta Software with Rapid Evolution** ⚠️
+- **Active development** with weekly architectural iterations
+- **Core tools operational** but expect API changes
+- **Comprehensive documentation** exceeds current implementation
+- **Stepped evolution** approach over revolutionary claims
 
-### **Complete Diagnostic Coverage**
-- **Cluster Health** - Intelligent overview with automatic problem prioritization
-- **Namespace Analysis** - Individual namespace health with pod/PVC/event checking
-- **Pod Diagnostics** - Lifecycle analysis, resource constraints, restart patterns
-- **Root Cause Analysis** - Systematic 7-point RCA framework for incidents
+### **AI-Enhanced Operations (Not AI-Driven)** 🤖
+- **Human decision making** with AI analysis and recommendations
+- **Read-only diagnostic intelligence** with comprehensive cluster visibility
+- **Memory-enhanced pattern recognition** learning from operational history
+- **Crisis-ready prioritization** but requires human interpretation
 
-### **Intelligent Operations** 
-- **Smart Prioritization** - Automatically surfaces namespaces with actual problems
-- **Crisis Mode Ready** - Focus parameters for targeted diagnostics during outages
-- **Memory Integration** - Learns from operational patterns and stores incident knowledge
-- **Performance Bounded** - Configurable analysis depth for large cluster efficiency
+## 🏗 **Architectural Foundation**
 
-### **Production Ready**
-- **Real Cluster Tested** - Validated against production OpenShift environments
-- **116+ Namespace Coverage** - Complete system and user namespace visibility
-- **90%+ Tool Success Rate** - Reliable diagnostic capabilities under real workloads
-- **Secure by Design** - Safe read-only operations with proper authentication
+Our development follows the "slow is smooth, smooth is fast" principle. Instead of rushing to production claims, we've invested in systematic architectural documentation:
 
-## 🛠 Tools Available (13 Operational)
+### **Complete ADR Coverage (22 Documents)**
+```
+✅ ADR-001: OpenShift vs Kubernetes API Strategy
+✅ ADR-002: GitOps Integration Strategy  
+✅ ADR-003: Memory Storage and Retrieval Patterns
+✅ ADR-004: Tool Namespace Management
+✅ ADR-005: Workflow State Machine Design
+✅ ADR-006: Modular Tool Architecture
+✅ ADR-007: Automatic Tool Memory Integration
+✅ ADR-008: Production Operator Architecture
+✅ ADR-009: RBAC Emergency Change Management
+✅ ADR-010: Systemic Diagnostic Intelligence
+✅ ADR-011: Fast RCA Framework
+✅ ADR-012: Operational Intelligence Data Model
+✅ ADR-013: Automated Runbook Execution
+✅ ADR-014: Deterministic Template Engine
+✅ ADR-015: GoLLM Provider Enhancement
+✅ ADR-016: Multi-Tenancy Session Management
+✅ ADR-017: AI War Room Commander Architecture
+✅ ADR-018: kubectl AI Future Enhancement
+✅ ADR-019: Multi-Tenancy Progressive Evolution
+✅ ADR-020: Risk-Based Security Development
+✅ ADR-021: Natural Language Input Normalization
+✅ ADR-022: Normalized Fact Model Type System
+```
 
-### **Diagnostic Tools (4/4)**
-| Tool | Description | Status |
-|------|-------------|--------|
-| `oc_diagnostic_cluster_health` | Intelligent cluster overview with prioritization | ✅ Enhanced |
-| `oc_diagnostic_namespace_health` | Individual namespace health analysis | ✅ Working |
-| `oc_diagnostic_pod_health` | Pod lifecycle and resource constraint analysis | ✅ Working |
-| `oc_diagnostic_rca_checklist` | Systematic root cause analysis framework | ✅ Working |
+**See**: [`docs/architecture/`](docs/architecture/) for complete architectural documentation
 
-### **Read Operations (3/3)**
-| Tool | Description | Status |
-|------|-------------|--------|
-| `oc_read_get_pods` | Pod information retrieval with filtering | ✅ Working |
-| `oc_read_describe` | Detailed resource descriptions | ✅ Working |
-| `oc_read_logs` | Pod log retrieval and analysis | ✅ Working |
+### **Feature Epic Implementation Roadmap**
+Our development follows structured feature epics with clear dependencies:
 
-### **Memory Operations (5/5)**
-| Tool | Description | Status |
-|------|-------------|--------|
-| `memory_store_operational` | Store operational incidents and knowledge | ✅ Working |
-| `memory_search_operational` | Search operational memories with domain filtering | ✅ Working |
-| `memory_search_incidents` | Search incident database for patterns | ✅ Working |
-| `memory_get_stats` | Memory system statistics and health | ✅ Working |
-| `memory_search_conversations` | Search conversation history for context | ✅ Working |
+- **F-001**: Memory System → **✅ COMPLETE**
+- **F-003**: Template Engine → **✅ COMPLETE** 
+- **F-006**: Workflow State Management → **✅ COMPLETE**
+- **F-008**: Modular Tool Architecture → **🚧 IN PROGRESS**
+- **F-009**: Fast RCA Framework → **🚧 IN PROGRESS**
+- **F-002**: Production Operator Deployment → **📋 DESIGNED**
 
-### **Workflow State (1/1)**
-| Tool | Description | Status |
-|------|-------------|--------|
-| `core_workflow_state` | Workflow engine state management | ✅ Working |
+## 🔧 **Current Implementation Status**
 
-## 🏃‍♂️ Quick Start
+### **Core Systems (Production Ready)** ✅
+| Component | Status | Implementation | Quality |
+|-----------|--------|----------------|---------|
+| Memory System (ADR-003) | ✅ Complete | 100% | Excellent |
+| Template Engine (ADR-014) | ✅ Complete | 100% | Excellent |
+| Workflow State (ADR-005) | ✅ Complete | 85% | Good |
+| Tool Memory Integration (ADR-007) | ✅ Complete | 100% | Excellent |
+| CLI Wrapper (ADR-001) | ✅ Complete | 95% | High |
 
-### **Try the Beta Release**
+### **Beta Features (Active Development)** 🚧
+| Component | Status | Implementation | Priority |
+|-----------|--------|----------------|----------|
+| Systemic Intelligence (ADR-010) | 🚧 Partial | 40% | High |
+| Tool Namespace Management (ADR-004) | 🚧 Partial | 60% | Medium |
+| GitOps Integration (ADR-002) | 🚧 Partial | 30% | Medium |
+| RBAC Framework (ADR-009) | 🚧 Partial | 20% | High |
 
+### **Designed but Not Implemented** 📋
+- **Production Operator Architecture (ADR-008)** - 4-6 weeks
+- **Fast RCA Framework (ADR-011)** - 3-4 weeks  
+- **Natural Language Normalization (ADR-021)** - 6-8 weeks
+- **Modular Plugin System (ADR-006)** - 2 weeks
+- **Automated Runbook Execution (ADR-013)** - 3-4 weeks
+
+**Architecture Health**: 53% implemented (9/17 ADRs have code), 29% production-ready
+
+## 🛠 **Available Tools (Beta)**
+
+### **Operational Tools**
+- **Diagnostic Framework**: Cluster health, namespace analysis, pod lifecycle analysis
+- **Memory Intelligence**: Operational pattern storage, incident search, conversation context
+- **Read Operations**: Pod information, resource descriptions, log retrieval
+- **Workflow State**: Session management, operational context tracking
+
+### **Tool Maturity Levels**
+- **Alpha**: Experimental, API changes expected
+- **Beta**: Core functionality working, refinement ongoing
+- **Production**: Stable API, comprehensive testing, performance validated
+
+**Current Reality**: Most tools are in Beta status with core functionality working but APIs subject to change.
+
+## 🚀 **Getting Started (Beta Users)**
+
+### **Prerequisites**
+- OpenShift CLI (`oc`) installed and authenticated
+- Node.js 18+ for running the MCP server  
+- KUBECONFIG pointing to your OpenShift cluster
+- MCP-compatible AI client (Claude Desktop, LM Studio)
+
+### **Installation**
 ```bash
-# Clone the beta release
-git clone --branch v0.8.0-beta-1 https://github.com/kevin-biot/MCP-ocs.git
+# Clone repository
+git clone https://github.com/kevin-biot/MCP-ocs.git
 cd MCP-ocs
 
 # Install dependencies
 npm install
 
-# Set your OpenShift connection
+# Verify OpenShift access
 export KUBECONFIG=/path/to/your/kubeconfig
-
-# Verify your cluster access
 oc whoami && oc cluster-info
 
-# Start the MCP server (beta)
-npm run start:beta
+# Start MCP server (beta)
+npm run dev
 ```
 
-### **Verify Beta Tools**
+### **MCP Client Configuration**
 
-```bash
-# List available beta tools
-npm run beta:tools:node
-
-# Validate beta configuration  
-npm run validate:beta
-
-# Quick cluster sanity check
-npm run real:sanity
-```
-
-### **Connect with AI Client**
-
-After adding MCP-OCS to your AI client configuration:
-
-1. **Restart your AI client** (Claude Desktop, LM Studio, etc.)
-2. **Verify connection**: Ask your AI "What MCP tools are available?"
-3. **Test a diagnostic**: Try "Check the health of my OpenShift cluster"
-4. **Explore capabilities**: "What can you tell me about namespace openshift-monitoring?"
-
-## 🔧 Configuration
-
-### **Prerequisites**
-- **OpenShift CLI (`oc`)** - Installed and authenticated
-- **Node.js 18+** - For running the MCP server
-- **KUBECONFIG** - Pointing to your OpenShift cluster
-- **Read Access** - To cluster resources (no write permissions needed)
-- **MCP-Compatible AI Client** - Claude Desktop, LM Studio, or other MCP clients
-
-### **MCP Client Setup**
-
-**For Claude Desktop (`claude_desktop_config.json`):**
+**Claude Desktop** (`claude_desktop_config.json`):
 ```json
 {
   "mcpServers": {
     "mcp-ocs": {
       "command": "npm",
-      "args": ["run", "start:beta"],
+      "args": ["run", "dev"],
       "cwd": "/path/to/MCP-ocs",
       "env": {
         "KUBECONFIG": "/path/to/your/kubeconfig"
@@ -138,159 +157,129 @@ After adding MCP-OCS to your AI client configuration:
 }
 ```
 
-**For LM Studio:**
-```json
-{
-  "mcpServers": {
-    "mcp-ocs": {
-      "command": "npx",
-      "args": ["tsx", "src/index.beta.ts"],
-      "cwd": "/path/to/MCP-ocs",
-      "env": {
-        "KUBECONFIG": "/path/to/your/kubeconfig"
-      }
-    }
-  }
-}
-```
+## ⚠️ **Beta Software Limitations**
 
-### **Environment Setup**
+### **What Works Well**
+- Core diagnostic workflows for cluster health analysis
+- Memory system stores and retrieves operational patterns
+- Template-based consistency across different AI models  
+- CLI integration with OpenShift clusters
+
+### **Current Limitations**
+- **API Stability**: Tool interfaces may change between versions
+- **Performance**: Not optimized for very large clusters (>200 namespaces)
+- **Security**: Basic authentication only, enterprise RBAC in development
+- **Production Deployment**: Operator architecture designed but not implemented
+
+### **Known Issues**
+- Some diagnostic tools may timeout on clusters with >100 namespaces
+- Memory search performance degrades with >1000 stored sessions
+- Template engine requires manual updates for new OpenShift versions
+
+## 📈 **Development Approach**
+
+### **Systematic Evolution** 
+Instead of marketing hype, we follow systematic architectural development:
+
+1. **Comprehensive Design First** - ADRs before implementation
+2. **Dependency-Driven Development** - Clear feature epic dependencies  
+3. **Bounded AI Integration** - AI assists humans, doesn't replace decision making
+4. **Real-World Validation** - Features tested against actual OpenShift clusters
+
+### **"Slow is Smooth, Smooth is Fast"**
+- Deliberate architectural foundation over rapid feature delivery
+- Systematic gap remediation prevents technical debt
+- Quality documentation enables reliable development velocity
+- Realistic expectations prevent deployment disasters
+
+## 🤝 **Contributing (Beta Program)**
+
+### **We Welcome**
+- **Beta testing feedback** on actual OpenShift environments
+- **Architecture review** and improvement suggestions  
+- **ADR implementation** following our established patterns
+- **Documentation improvements** and gap identification
+
+### **Development Process**
 ```bash
-# Required: OpenShift cluster access
-export KUBECONFIG=/path/to/your/kubeconfig
-
-# Optional: Custom configuration
-export MCP_OCS_LOG_LEVEL=info
-export MCP_OCS_MAX_NAMESPACES=10  # For bounded analysis
-```
-
-## 🎯 Usage Examples
-
-### **Intelligent Cluster Overview**
-```bash
-# Auto-prioritize problems across all namespaces  
-oc_diagnostic_cluster_health({
-  namespaceScope: 'all',
-  focusStrategy: 'auto', 
-  depth: 'summary',
-  maxNamespacesToAnalyze: 8
-})
-```
-
-### **Crisis Mode Diagnostics**
-```bash
-# Focus on specific critical namespace
-oc_diagnostic_cluster_health({
-  focusNamespace: 'openshift-monitoring',
-  depth: 'detailed',
-  focusStrategy: 'events'
-})
-```
-
-### **Fast Namespace Analysis**
-```bash
-# Quick namespace health check (direct CLI)
-npm run itest:real:ns -- --ns openshift-monitoring
-npm run itest:real:ns -- --ns student03
-```
-
-**Or via AI client:**
-- "Analyze the health of namespace openshift-monitoring"
-- "What's wrong with namespace student03?"
-- "Show me pod issues in openshift-dns namespace"
-
-### **Systematic Incident Response**
-```bash
-# Run complete RCA checklist
-oc_diagnostic_rca_checklist({
-  sessionId: 'incident-2024-08-14',
-  includeEvidence: true
-})
-```
-
-## 📊 Performance & Validation
-
-### **Real Cluster Testing**
-- ✅ **116 namespaces analyzed** - Complete system visibility
-- ✅ **90%+ tool success rate** - Reliable under production workloads  
-- ✅ **Large cluster performance** - Bounded analysis prevents timeouts
-- ✅ **Crisis scenario validated** - Intelligent prioritization surfaces real issues
-
-### **Memory Integration**
-- **213 operational memories stored** - Learning from operational patterns
-- **261.51 KB memory footprint** - Efficient knowledge storage
-- **ChromaDB vector search** - Semantic pattern matching for incidents
-- **Domain filtering** - Context-aware knowledge retrieval
-
-## 🏗 Architecture
-
-### **Built on Solid Foundations**
-- **Model Context Protocol (MCP)** - Standard AI tool integration
-- **TypeScript** - Type-safe implementation with comprehensive interfaces
-- **Modular Design** - Tool maturity system with production/beta/alpha classification
-- **Memory System** - ChromaDB + JSON hybrid for operational intelligence
-
-### **Production Ready Patterns**
-- **Secure CLI Execution** - No shell injection, argument validation
-- **Bounded Performance** - Configurable limits for large cluster efficiency  
-- **Intelligent Prioritization** - Crisis-ready problem detection
-- **Operational Learning** - Memory-driven pattern recognition
-
-## 🤝 Contributing
-
-### **Development Workflow**
-```bash
-# Work on new features (develop branch)
+# Work with architectural context
 git checkout develop
-git pull origin develop
+npm run dev
 
-# Make changes and test
-npm run build
-npm test
+# Review ADRs before implementing features
+ls docs/architecture/ADR-*.md
 
-# Commit and push
-git add -A
-git commit -m "feat: your enhancement"
-git push origin develop
+# Follow systematic development patterns
+npm test && npm run build
+
+# Document architectural decisions
+# (See docs/templates/ for session templates)
 ```
 
-### **Beta Updates**
-Critical fixes for beta users go through the `release/v0.8.0-beta` branch with patch releases (`v0.8.0-beta-1`, `v0.8.0-beta-2`, etc.).
+### **Not Ready For**
+- Production deployment consultation
+- Performance optimization for massive clusters
+- Custom enterprise integrations
+- Feature requests (save for post-1.0)
 
-## 🐛 Issues & Support
+## 🎯 **Roadmap to Production**
 
-### **Beta User Support**
-- **Critical bugs** in the 13 validated tools ✅
-- **Installation/configuration issues** ✅  
-- **OpenShift compatibility problems** ✅
-- **Performance optimization** ✅
+### **Phase 1: Core Implementation**
+- Complete ADR-008: Production Operator Architecture
+- Implement ADR-021: Natural Language Input Normalization  
+- Finish ADR-011: Fast RCA Framework
+- Production-ready security (ADR-009 RBAC)
 
-### **Not Supported in Beta**
-- Feature requests (save for v1.0)
-- Experimental tool issues
-- Custom integrations
+### **Phase 2: Enterprise Features**
+- Multi-cluster support with unified dashboards
+- Advanced RBAC with audit trails
+- Performance optimization for enterprise scale
+- GitOps workflow automation
 
-## 📈 Roadmap
+### **Phase 3: AI Enhancement**
+- Predictive intelligence based on operational patterns
+- Automated remediation with human approval workflows
+- Cross-cluster correlation and analysis
+- Integration with enterprise monitoring systems
 
-### **v1.0 Features (In Development)**
-- **Multi-Cluster Support** - Diagnose across dev/staging/prod environments
-- **Predictive Intelligence** - "This usually means X, check Y next" recommendations
-- **Enterprise Features** - Role-based access, audit trails, advanced reporting
-- **GitOps Integration** - ArgoCD/Flux diagnostic capabilities
+## 📄 **Documentation**
 
-### **Advanced Capabilities**
-- **Tekton Pipeline Diagnostics** - Build and deployment pipeline analysis
-- **Resource Dependency Mapping** - Complete cluster dependency visualization
-- **Automated Remediation** - Safe, intelligent problem resolution
+### **Architecture Documentation**
+- [`docs/architecture/`](docs/architecture/) - Complete ADR library
+- [`docs/architecture/ADR-OVERVIEW.md`](docs/architecture/ADR-OVERVIEW.md) - Architecture summary
+- [`docs/architecture/ADR-STATUS-DYNAMIC.md`](docs/architecture/ADR-STATUS-DYNAMIC.md) - Implementation tracking
 
-## 📄 License
+### **Development Documentation**
+- [`docs/development/`](docs/development/) - Development processes and templates
+- [`docs/testing/`](docs/testing/) - Testing strategies and golden snapshots
+- [`docs/templates/`](docs/templates/) - Session templates and workflows
+
+## 🐛 **Beta Support**
+
+### **Supported Issues**
+- Installation and configuration problems
+- Core diagnostic tool failures
+- Memory system issues
+- Documentation gaps or inaccuracies
+
+### **Not Supported**
+- Performance issues with very large clusters
+- Custom tool development
+- Production deployment planning
+- Integration with non-standard OpenShift distributions
+
+**Report Issues**: [GitHub Issues](https://github.com/kevin-biot/MCP-ocs/issues) with "Beta" label
+
+## 📄 **License**
 
 MIT License - See [LICENSE](LICENSE) for details.
 
-## 🙏 Acknowledgments
+## 🙏 **Acknowledgments**
 
-Built for OpenShift engineers who need intelligent, reliable diagnostic tools that work under pressure. Special thanks to the OpenShift community for real-world validation and feedback.
+Built for OpenShift engineers who value systematic architectural development over marketing promises. Thanks to the beta testing community providing real-world validation and feedback.
 
 ---
 
-**Ready to transform your OpenShift operations?** [Download v0.8.0-beta-1](https://github.com/kevin-biot/MCP-ocs/releases/tag/v0.8.0-beta-1) and experience intelligent cluster diagnostics today!
+**MCP-ocs: Systematic Architecture, Honest Beta Status, Real Value** 
+
+*Ready to contribute to solid architectural foundation? Clone, explore our ADRs, and help build the future of AI-enhanced OpenShift operations.*
