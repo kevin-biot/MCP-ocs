@@ -60,7 +60,7 @@ const sharedMemory = new SharedMemoryManager({
   chromaPort: process.env.CHROMA_PORT ? Number(process.env.CHROMA_PORT) : 8000
 });
 // Ensure memory directories exist (conversations/operational)
-try { await sharedMemory.initialize(); } catch {}
+try { await sharedMemory.initialize(); } catch (e) { console.error('Shared memory initialization failed:', e instanceof Error ? e.message : e); }
 
 const workflowEngine = new WorkflowEngine({
   enablePanicDetection: true,
@@ -99,7 +99,7 @@ const ENABLE_TEMPLATE_ENGINE = process.env.ENABLE_TEMPLATE_ENGINE === 'true';
 const ENABLE_RUBRICS = process.env.ENABLE_RUBRICS === 'true';
 const templateRegistry = new TemplateRegistry();
 const templateEngine = new TemplateEngine();
-await templateRegistry.load().catch(()=>{});
+await templateRegistry.load().catch((e)=>{ console.error('Template registry load failed:', e instanceof Error ? e.message : e); });
 toolRegistry.registerTool({
   name: 'sequential_thinking',
   fullName: 'sequential_thinking',
