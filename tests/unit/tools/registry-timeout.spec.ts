@@ -1,5 +1,6 @@
 import { describe, it, expect } from '@jest/globals';
-import { UnifiedToolRegistry } from '@/lib/tools/tool-registry.js';
+// Pull registry from compiled JS to avoid TS transform pitfalls
+import { UnifiedToolRegistry } from '../../../dist/src/lib/tools/tool-registry.js';
 
 function delay(ms: number) {
   return new Promise<void>(resolve => setTimeout(resolve, ms));
@@ -49,4 +50,3 @@ describe('UnifiedToolRegistry timeouts and error payloads', () => {
     expect(obj.ok).toBe(true);
   });
 });
-

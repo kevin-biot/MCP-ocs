@@ -1,4 +1,5 @@
 import { describe, it, expect } from '@jest/globals';
+// Import from compiled JS to avoid TS parsing under Jest
 import {
   AppError,
   ValidationError,
@@ -9,7 +10,7 @@ import {
   ExternalCommandError,
   serializeError,
   mapKindToStatus,
-} from '@/lib/errors/error-types.js';
+} from '../../../dist/src/lib/errors/error-types.js';
 
 describe('Error taxonomy and serialization', () => {
   it('maps kinds to HTTP-like status codes', () => {
@@ -49,4 +50,3 @@ describe('Error taxonomy and serialization', () => {
     expect(s2.type).toBe('UnknownError');
   });
 });
-

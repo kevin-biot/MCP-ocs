@@ -1,6 +1,7 @@
 import { describe, it, expect } from '@jest/globals';
-import { withTimeout } from '@/utils/async-timeout.js';
-import { TimeoutError } from '@/lib/errors/error-types.js';
+// Use compiled JS outputs to prevent TS parse issues in Jest
+import { withTimeout } from '../../../dist/src/utils/async-timeout.js';
+import { TimeoutError } from '../../../dist/src/lib/errors/error-types.js';
 
 function delay(ms: number) {
   return new Promise<void>(resolve => setTimeout(resolve, ms));
@@ -24,4 +25,3 @@ describe('withTimeout helper', () => {
     expect(out).toBe(42);
   });
 });
-
