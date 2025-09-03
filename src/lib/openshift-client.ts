@@ -8,6 +8,7 @@
 import { execSync, spawn } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
+import { TimeoutError } from '../errors/index.js';
 
 export interface OpenShiftConfig {
   ocPath: string;
@@ -327,7 +328,7 @@ export class OpenShiftClient {
       // Set timeout
       setTimeout(() => {
         child.kill('SIGTERM');
-        reject(new (require('../errors').TimeoutError || Error)('Command timed out'));
+        reject(new TimeoutError('Command timed out'));
       }, this.config.timeout);
     });
   }

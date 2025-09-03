@@ -371,9 +371,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     
   } catch (toolError) {
     success = false;
-    error = toolError instanceof Error ? toolError.message : 'Unknown error';
-    console.error(`❌ Tool execution failed: ${error}`);
-    throw new Error(`Tool execution failed: ${error}`);
+    const { serializeError } = await import('./lib/errors/index.js');
+    const serialized = serializeError(toolError);
+    error = serialized.message;
+    console.error(`❌ Tool execution failed:`, serialized);
+    const contents: any[] = [{ type: 'text', text: JSON.stringify({ success: false, tool: name, error: serialized, timestamp: new Date().toISOString() }, null, 2) }];
+    return { content: contents };
     
   } finally {
     // Auto-capture this tool execution for future reference
