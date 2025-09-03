@@ -158,7 +158,8 @@
     "rubrics:memory:snapshot": "tsx scripts/e2e/rubrics-memory-snapshot.mjs",
     "ci:planning:check": "node scripts/ci/check-planning-location.mjs",
     "test:unit:esm": "npm run build && NODE_OPTIONS=--experimental-vm-modules jest tests/unit",
-    "test:unit:dist": "npm run build && jest -c jest.dist.config.cjs tests/unit"
+    "test:unit:dist": "npm run build && jest -c jest.dist.config.cjs tests/unit",
+    "test:unit:node": "npm run build && node --test tests/unit/**/*.node.test.js"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.8",
