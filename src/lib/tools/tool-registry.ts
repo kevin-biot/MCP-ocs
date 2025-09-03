@@ -198,7 +198,7 @@ export class UnifiedToolRegistry {
       
       // Validate result is string (MCP requirement)
       if (typeof result !== 'string') {
-        throw new Error(`Tool ${name} returned non-string result. Tools must return JSON strings.`);
+        throw new ToolExecutionError(`Tool ${name} returned non-string result. Tools must return JSON strings.`);
       }
       
       return result;
@@ -279,25 +279,25 @@ export class UnifiedToolRegistry {
     
     for (const field of required) {
       if (!tool[field as keyof StandardTool]) {
-        throw new Error(`Tool validation failed: missing required field '${field}'`);
+        throw new ValidationError(`Tool validation failed: missing required field '${field}'`, { details: { field } });
       }
     }
     
     // Validate execute method
     if (typeof tool.execute !== 'function') {
-      throw new Error(`Tool validation failed: execute must be a function`);
+      throw new ValidationError(`Tool validation failed: execute must be a function`);
     }
     
     // Validate category
     const validCategories = ['diagnostic', 'read-ops', 'memory', 'knowledge', 'workflow'];
     if (!validCategories.includes(tool.category)) {
-      throw new Error(`Tool validation failed: invalid category '${tool.category}'. Must be one of: ${validCategories.join(', ')}`);
+      throw new ValidationError(`Tool validation failed: invalid category '${tool.category}'. Must be one of: ${validCategories.join(', ')}`);
     }
     
     // Validate version
     const validVersions = ['v1', 'v2'];
     if (!validVersions.includes(tool.version)) {
-      throw new Error(`Tool validation failed: invalid version '${tool.version}'. Must be one of: ${validVersions.join(', ')}`);
+      throw new ValidationError(`Tool validation failed: invalid version '${tool.version}'. Must be one of: ${validVersions.join(', ')}`);
     }
   }
 }
