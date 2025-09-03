@@ -239,7 +239,7 @@ class ChromaDBClient {
             return;
         // Ensure tenant exists
         try {
-            const tenantsRes = await fetch(this.url(`/tenants`), { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+            const tenantsRes = await fetch(this.url(`/tenants`), { method: 'GET', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(5000) });
             let tenantExists = false;
             if (tenantsRes.ok) {
                 const t = await tenantsRes.json().catch(() => ({}));
@@ -248,7 +248,7 @@ class ChromaDBClient {
             }
             if (!tenantExists) {
                 const createTenant = await fetch(this.url(`/tenants`), {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: this.tenant })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: this.tenant }), signal: AbortSignal.timeout(5000)
                 });
                 if (!createTenant.ok) {
                     const body = await createTenant.text().catch(() => '');
@@ -256,7 +256,7 @@ class ChromaDBClient {
                 }
             }
             // Ensure database exists in tenant
-            const dbRes = await fetch(this.url(`/tenants/${this.tenant}/databases`), { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+            const dbRes = await fetch(this.url(`/tenants/${this.tenant}/databases`), { method: 'GET', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(5000) });
             let dbExists = false;
             if (dbRes.ok) {
                 const d = await dbRes.json().catch(() => ({}));
@@ -265,7 +265,7 @@ class ChromaDBClient {
             }
             if (!dbExists) {
                 const createDb = await fetch(this.url(`/tenants/${this.tenant}/databases`), {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: this.database })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: this.database }), signal: AbortSignal.timeout(5000)
                 });
                 if (!createDb.ok) {
                     const body = await createDb.text().catch(() => '');
@@ -296,7 +296,8 @@ class ChromaDBClient {
                     const response = await fetch(endpoint.url, {
                         method: endpoint.method,
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(endpoint.body)
+                        body: JSON.stringify(endpoint.body),
+                        signal: AbortSignal.timeout(8000)
                     });
                     if (response.ok || response.status === 409) { // 409 = already exists
                         const data = await response.json().catch(() => ({}));
@@ -326,14 +327,14 @@ class ChromaDBClient {
         // List collections (no filter) and find by name
         let listRes;
         if (this.apiVersion === 'v2') {
-            listRes = await fetch(this.url(`/tenants/${this.tenant}/databases/${this.database}/collections`), { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+            listRes = await fetch(this.url(`/tenants/${this.tenant}/databases/${this.database}/collections`), { method: 'GET', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(5000) });
             if (!listRes.ok) {
                 const txt = await listRes.text().catch(() => '');
                 console.error(`⚠️ List collections (tenant/db) returned ${listRes.status}: ${txt}`);
             }
         }
         if (!listRes || !listRes.ok) {
-            listRes = await fetch(this.url(`/collections`), { method: 'GET', headers: { 'Content-Type': 'application/json' } });
+            listRes = await fetch(this.url(`/collections`), { method: 'GET', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(5000) });
             if (!listRes.ok) {
                 const txt2 = await listRes.text().catch(() => '');
                 console.error(`⚠️ List collections (root) returned ${listRes.status}: ${txt2}`);
@@ -380,7 +381,8 @@ class ChromaDBClient {
                     const response = await fetch(endpoint, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ ids, embeddings, metadatas, documents: documentsContent })
+                        body: JSON.stringify({ ids, embeddings, metadatas, documents: documentsContent }),
+                        signal: AbortSignal.timeout(10000)
                     });
                     if (response.ok) {
                         console.error(`📝 Stored ${documents.length} documents in ChromaDB '${collectionName}'`);
@@ -415,7 +417,8 @@ class ChromaDBClient {
                             query_embeddings: [queryEmbedding],
                             n_results: limit,
                             include: ['documents', 'metadatas', 'distances']
-                        })
+                        }),
+                        signal: AbortSignal.timeout(8000)
                     });
                     if (response.ok) {
                         const data = await response.json();
@@ -481,6 +484,7 @@ export class SharedMemoryManager {
     contextExtractor;
     jsonStorage;
     chromaClient;
+    _mutexQueue = Promise.resolve();
     constructor(config) {
         this.config = config;
         this.contextExtractor = new ContextExtractor();
@@ -504,7 +508,7 @@ export class SharedMemoryManager {
             memory.tags = this.contextExtractor.generateTags(memory.userMessage, memory.assistantResponse, memory.domain);
         }
         // Always store in JSON (primary for fallback, backup for ChromaDB)
-        const jsonId = await this.jsonStorage.storeConversation(memory);
+        const jsonId = await this._runExclusive(async () => this.jsonStorage.storeConversation(memory));
         // Store in ChromaDB if available
         if (this.chromaClient.isChromaAvailable()) {
             try {
@@ -532,7 +536,7 @@ export class SharedMemoryManager {
     }
     async storeOperational(memory) {
         // Always store in JSON
-        const jsonId = await this.jsonStorage.storeOperational(memory);
+        const jsonId = await this._runExclusive(async () => this.jsonStorage.storeOperational(memory));
         // Store in ChromaDB if available
         if (this.chromaClient.isChromaAvailable()) {
             try {
@@ -559,6 +563,24 @@ export class SharedMemoryManager {
             console.error('📊 Stored operational memory in JSON (ChromaDB unavailable)');
         }
         return jsonId;
+    }
+    // Simple exclusive queue to avoid race conditions in concurrent file writes
+    async _runExclusive(fn) {
+        let resolvePrev;
+        const prev = this._mutexQueue;
+        this._mutexQueue = new Promise(res => (resolvePrev = res));
+        await prev.catch(() => { });
+        try {
+            const result = await fn();
+            return result;
+        }
+        catch (err) {
+            throw new MemoryError('Shared memory operation failed', { cause: err });
+        }
+        finally {
+            // @ts-ignore - resolvePrev is assigned above
+            resolvePrev();
+        }
     }
     async searchConversations(query, limit = 5) {
         if (this.chromaClient.isChromaAvailable()) {
@@ -630,8 +652,8 @@ export class SharedMemoryManager {
         }
         catch (error) {
             console.error('Vector search conversations failed:', error);
-            // Rethrow so caller can fallback to JSON
-            throw error;
+            // Rethrow so caller can fallback to JSON with context
+            throw new MemoryError('Vector search conversations failed', { cause: error });
         }
     }
     async vectorSearchOperational(query, limit) {
@@ -659,8 +681,8 @@ export class SharedMemoryManager {
         }
         catch (error) {
             console.error('Vector search operational failed:', error);
-            // Rethrow so caller can fallback to JSON
-            throw error;
+            // Rethrow so caller can fallback to JSON with context
+            throw new MemoryError('Vector search operational failed', { cause: error });
         }
     }
     async calculateStorageUsage() {

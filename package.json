@@ -66,6 +66,7 @@
     "test:performance": "k6 run tests/performance/load-test.js",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "smoke:tool-timeout": "tsx scripts/smoke/smoke-registry-timeout.ts",
     "test:ci": "jest --ci --coverage --watchAll=false",
     "test:adapter": "jest tests/unit/memory/mcp-ocs-memory-adapter.spec.ts --collectCoverage=false --runInBand",
     "itest:adapter": "tsx tests/integration/adapter-chroma-integration.ts",

@@ -6,6 +6,8 @@
  */
 import { ToolMaturity } from '../../types/tool-maturity.js';
 import { VALIDATED_TOOLS } from '../../registry/validated-tools.js';
+import { ValidationError, NotFoundError, ToolExecutionError, serializeError } from '../errors/index.js';
+import { withTimeout } from '../../utils/async-timeout.js';
 /**
  * Unified Tool Registry
  *
@@ -43,7 +45,7 @@ export class UnifiedToolRegistry {
         this.validateTool(tool);
         // Check for name conflicts
         if (this.tools.has(tool.name)) {
-            throw new Error(`Tool name conflict: ${tool.name} already registered`);
+            throw new ValidationError(`Tool name conflict: ${tool.name} already registered`, { details: { name: tool.name } });
         }
         // Enrich metadata with maturity info if available
         const validated = VALIDATED_TOOLS[tool.fullName];
@@ -107,28 +109,29 @@ export class UnifiedToolRegistry {
             tool = this.tools.get(name);
         }
         if (!tool) {
-            const availableTools = Array.from(this.tools.values()).map(t => t.fullName).join(', ');
-            throw new Error(`Tool not found: ${name}. Available tools: ${availableTools}`);
+            const availableTools = Array.from(this.tools.values()).map(t => t.fullName);
+            throw new NotFoundError(`Tool not found: ${name}`, { details: { requested: name, availableTools } });
         }
         console.error(`⚡ Executing ${tool.category}-${tool.version} tool: ${name}`);
         try {
-            const result = await tool.execute(args);
+            const timeoutMs = Number((args?.timeoutMs ?? process.env.TOOL_TIMEOUT_MS) || 0) || 0;
+            const result = await withTimeout(async () => tool.execute(args), timeoutMs, `tool:${name}`);
             // Validate result is string (MCP requirement)
             if (typeof result !== 'string') {
-                throw new Error(`Tool ${name} returned non-string result. Tools must return JSON strings.`);
+                throw new ToolExecutionError(`Tool ${name} returned non-string result. Tools must return JSON strings.`);
             }
             return result;
         }
         catch (error) {
             console.error(`❌ Tool execution failed for ${name}:`, error);
-            // Return standardized error response
-            const errorResponse = {
+            const err = error instanceof ToolExecutionError ? error : new ToolExecutionError(`Execution failed for ${name}`, { cause: error });
+            const payload = {
                 success: false,
                 tool: name,
-                error: error instanceof Error ? error.message : 'Unknown error',
-                timestamp: new Date().toISOString()
+                error: serializeError(err),
+                timestamp: new Date().toISOString(),
             };
-            return JSON.stringify(errorResponse, null, 2);
+            return JSON.stringify(payload, null, 2);
         }
     }
     /**
@@ -186,22 +189,22 @@ export class UnifiedToolRegistry {
         const required = ['name', 'fullName', 'description', 'inputSchema', 'execute', 'category', 'version'];
         for (const field of required) {
             if (!tool[field]) {
-                throw new Error(`Tool validation failed: missing required field '${field}'`);
+                throw new ValidationError(`Tool validation failed: missing required field '${field}'`, { details: { field } });
             }
         }
         // Validate execute method
         if (typeof tool.execute !== 'function') {
-            throw new Error(`Tool validation failed: execute must be a function`);
+            throw new ValidationError(`Tool validation failed: execute must be a function`);
         }
         // Validate category
         const validCategories = ['diagnostic', 'read-ops', 'memory', 'knowledge', 'workflow'];
         if (!validCategories.includes(tool.category)) {
-            throw new Error(`Tool validation failed: invalid category '${tool.category}'. Must be one of: ${validCategories.join(', ')}`);
+            throw new ValidationError(`Tool validation failed: invalid category '${tool.category}'. Must be one of: ${validCategories.join(', ')}`);
         }
         // Validate version
         const validVersions = ['v1', 'v2'];
         if (!validVersions.includes(tool.version)) {
-            throw new Error(`Tool validation failed: invalid version '${tool.version}'. Must be one of: ${validVersions.join(', ')}`);
+            throw new ValidationError(`Tool validation failed: invalid version '${tool.version}'. Must be one of: ${validVersions.join(', ')}`);
         }
     }
 }

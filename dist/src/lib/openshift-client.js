@@ -5,6 +5,7 @@
  * Uses `oc` command execution with proper error handling and output parsing
  */
 import { execSync, spawn } from 'child_process';
+import { TimeoutError } from '../errors/index.js';
 export class OpenShiftClient {
     config;
     envVars;
@@ -33,17 +34,24 @@ export class OpenShiftClient {
      */
     async getClusterInfo() {
         try {
-            const [versionOutput, whoamiOutput, projectOutput] = await Promise.all([
+            const settled = await Promise.allSettled([
                 this.executeOcCommand(['version', '-o', 'json']),
                 this.executeOcCommand(['whoami']),
-                this.executeOcCommand(['project', '-q']).catch(() => 'default')
+                this.executeOcCommand(['project', '-q'])
             ]);
+            const versionOutput = settled[0].status === 'fulfilled' ? settled[0].value : '{}';
+            const whoamiOutput = settled[1].status === 'fulfilled' ? settled[1].value : 'unknown';
+            const projectOutput = settled[2].status === 'fulfilled' ? settled[2].value : 'default';
             const versionData = JSON.parse(versionOutput);
             const currentUser = whoamiOutput.trim();
             const currentProject = projectOutput.trim();
-            // Get server URL
-            const configOutput = await this.executeOcCommand(['config', 'view', '--minify', '-o', 'jsonpath={.clusters[0].cluster.server}']);
-            const serverUrl = configOutput.trim();
+            // Get server URL (do not fail the whole call if this errors)
+            let serverUrl = 'unknown';
+            try {
+                const configOutput = await this.executeOcCommand(['config', 'view', '--minify', '-o', 'jsonpath={.clusters[0].cluster.server}']);
+                serverUrl = configOutput.trim() || 'unknown';
+            }
+            catch { }
             return {
                 version: versionData.clientVersion?.gitVersion || 'unknown',
                 serverUrl,
@@ -192,8 +200,14 @@ export class OpenShiftClient {
             return output.toString();
         }
         catch (error) {
-            const errorMessage = error.stderr ? error.stderr.toString() : error.message;
-            throw new Error(`OpenShift command failed: ${errorMessage}`);
+            const errorMessage = error?.stderr ? error.stderr.toString() : error?.message;
+            const details = {
+                args,
+                code: typeof error?.status === 'number' ? error.status : undefined,
+                stderr: error?.stderr ? String(error.stderr) : undefined,
+            };
+            const { ExternalCommandError } = await import('../errors/index.js');
+            throw new ExternalCommandError(`OpenShift command failed: ${errorMessage}`, { cause: error, details });
         }
     }
     async executeOcCommandWithInput(args, input) {
@@ -228,7 +242,7 @@ export class OpenShiftClient {
             // Set timeout
             setTimeout(() => {
                 child.kill('SIGTERM');
-                reject(new Error('Command timed out'));
+                reject(new TimeoutError('Command timed out'));
             }, this.config.timeout);
         });
     }

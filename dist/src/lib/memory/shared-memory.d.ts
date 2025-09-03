@@ -55,10 +55,12 @@ export declare class SharedMemoryManager {
     private contextExtractor;
     private jsonStorage;
     private chromaClient;
+    private _mutexQueue;
     constructor(config: SharedMemoryConfig);
     initialize(): Promise<void>;
     storeConversation(memory: ConversationMemory): Promise<string>;
     storeOperational(memory: OperationalMemory): Promise<string>;
+    private _runExclusive;
     searchConversations(query: string, limit?: number): Promise<MemorySearchResult[]>;
     searchOperational(query: string, limit?: number): Promise<MemorySearchResult[]>;
     getStats(): Promise<MemoryStats>;

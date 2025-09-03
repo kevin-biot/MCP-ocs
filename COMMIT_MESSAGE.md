@@ -1,48 +1,25 @@
-docs: Remove production hype, reflect accurate beta status and architectural foundation
+feat: D-005 + D-006 - DEVELOPER phase complete (Process v3.2)
 
-## Major README Overhaul - Honest Beta Status
+Domain: D-005 (Async Correctness) + D-006 (Error Taxonomy)
+Epic: Quality Foundation Sprint
+Tasks completed:
+- TASK-005-A: Fixed unawaited promises in tool execution handlers (scan + guard)
+- TASK-005-B: Added timeout handling with AbortSignal across I/O operations
+- TASK-005-C: Eliminated race conditions in memory operations (mutex on writes)
+- TASK-005-D: Corrected Promise.all vs Promise.allSettled patterns
+- TASK-005-E: Implemented proper error propagation in async handlers
+- TASK-006-A: Created canonical error classes (ValidationError, ToolExecutionError, MemoryError, TimeoutError, NotFoundError, ExternalCommandError)
+- TASK-006-B: Replaced throw strings with structured errors in core paths
+- TASK-006-C: Implemented consistent status mapping via error serializer
+- TASK-006-D: Added error context preservation through causes
+- TASK-006-E: Standardized error response format across tool calls
 
-### Removed Production Marketing Hype
-- Remove "Production Ready" claims - replaced with "Beta Software with Rapid Evolution" 
-- Remove unsubstantiated "90%+ Tool Success Rate" metrics
-- Remove inflated "13 Operational Tools Available" count
-- Add clear limitations and known issues sections
+Complexity Tier: TIER 2 (Full framework, standard validation depth)
+Story Points: [ACTUAL] SP (Estimated: 7 SP)
+Duration: [ACTUAL] minutes (Estimated: 6-8 hours)
+Token Usage: [ACTUAL]K (Budget: 400K)
 
-### Emphasize Architectural Foundation Achievement
-- Highlight 22 comprehensive ADRs as primary accomplishment
-- Show systematic development approach over feature count claims
-- Add architectural health metrics: 53% implemented, 29% production-ready
-- Feature epic roadmap with clear dependencies (F-001→F-003→F-006→F-008→F-009→F-002)
-
-### Accurate Implementation Status
-- Core systems table showing what's actually production ready (5 components)
-- Beta features table with honest implementation percentages
-- Designed-but-not-implemented section with realistic timeframes
-- Tool maturity levels (Alpha/Beta/Production) with current reality assessment
-
-### Beta-Appropriate Messaging Strategy
-- "Systematic AI-Powered Framework" vs "Production Ready Platform"
-- Clear API stability warnings and performance limitations
-- Appropriate support expectations for beta software
-- "Slow is smooth, smooth is fast" development principle emphasized
-
-### Documentation Links and Timeline Fixes  
-- Remove calendar-based roadmap phases (Q4 2024, Q1 2025, Q2 2025)
-- Phase-based roadmap suitable for AI-human sprint timelines
-- Fix documentation template references to existing files
-- Verify all linked paths exist and are accurate
-
-### Context: Post-Architecture Foundation Work
-This update follows completion of comprehensive architectural documentation:
-- 89% ADR coverage with systematic gap remediation
-- 9 feature epics with dependency-driven implementation framework  
-- Validated systematic development process using bounded AI integration
-- Need for realistic user expectations vs overstated capability claims
-
-### Impact
-- Repository visitors get accurate expectations for beta software
-- Architectural foundation work properly highlighted as primary achievement
-- Clear contribution guidelines for beta testing program
-- Realistic roadmap phases without artificial calendar commitments
-
-Aligns with systematic architectural development approach and "deliberate accuracy over marketing hype" principle.
+Process v3.2: DEVELOPER → TESTER handoff ready
+Quality Gates: [ALL_PASSED/ISSUES_NOTED]
+Performance: [WITHIN_TARGETS/VARIANCE_NOTED]
+Calibration: Applied 0.17x multiplier with TIER 2 complexity adjustment
