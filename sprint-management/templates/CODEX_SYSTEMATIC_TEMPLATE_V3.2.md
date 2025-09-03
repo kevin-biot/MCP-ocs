@@ -1,215 +1,374 @@
 # CODEX SYSTEMATIC EXECUTION TEMPLATE - Process v3.2
-## PRECISION PERFORMANCE FRAMEWORK - ENHANCED WITH TIMING & RESOURCE MONITORING
+**COMPLETE OPERATIONAL PROCEDURES FOR CODEX CLI SESSIONS**
 
-**MANDATORY CHECKLIST COMPLETION REQUIRED BEFORE EXECUTION**
-**SYSTEMATIC TIMING CAPTURE THROUGHOUT ALL PHASES**
+## 🎯 TEMPLATE PURPOSE
+This template generates complete, self-contained prompts for Codex CLI sessions following Process v3.2 Enhanced Framework. Each prompt contains ALL context, procedures, and requirements for systematic execution.
 
 ---
 
-## 🎯 ROLE: DEVELOPER - Process v3.2 Precision Framework
+## 📋 MANDATORY PROMPT COMPONENTS
 
-### ⏱️ **MANDATORY TIMING PROTOCOL - PHASE START**
-```bash
-# CAPTURE DEVELOPER PHASE START TIMESTAMP
-echo "DEVELOPER PHASE INITIATED - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+### **HEADER SECTION - ROLE & CONTEXT**
+```
+CODEX CLI: You are in [DEVELOPER/TESTER/REVIEWER] role for Process v3.2 [TIER] Sprint
+
+WORKING DIRECTORY: /Users/kevinbrown/MCP-ocs
+
+SPRINT CONTEXT:
+- Sprint: [DOMAIN] + [DOMAIN] [SPRINT_NAME]
+- Priority: [P0/P1/P2] [PRIORITY_LEVEL]
+- Duration: [X] hours calibrated execution  
+- Complexity Tier: [TIER_1/2/3] ([TIER_DESCRIPTION])
+- Historical Calibration: [MULTIPLIER] from previous sprint patterns
 ```
 
-### 📋 MANDATORY REFERENCE FILES - READ FIRST:
-```bash
-# Core Framework Definition (REQUIRED)
+### **GIT BRANCH SAFETY PROTOCOL**
+```
+GIT BRANCH DIRECTIVE - EXPLICIT COMMANDS:
+1. Check current branch: git branch --show-current
+2. Verify branch status: git status --porcelain
+3. Switch to work branch: git checkout [BRANCH_NAME]
+4. Confirm correct branch: git branch --show-current
+5. Pull latest changes: git pull origin [BRANCH_NAME]
+6. ALL work must be done on [BRANCH_NAME] branch
+7. Regular commits with structured messages throughout execution
+```
+
+### **MANDATORY REFERENCE FILES SECTION**
+```
+📋 MANDATORY REFERENCE FILES - READ FIRST:
+
+# Process Framework (REQUIRED)
 cat /Users/kevinbrown/MCP-ocs/sprint-management/PROCESS-V3.2-ENHANCED.md
 
 # Daily Checklist Verification (REQUIRED)  
 cat /Users/kevinbrown/MCP-ocs/sprint-management/templates/DAILY_STANDUP_CHECKLIST_V3.2.md
 
-# Domain Specification (REPLACE WITH SELECTED DOMAIN)
-cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/[SELECTED_DOMAIN]/README.md
+# Developer Guardrails (REQUIRED)
+cat /Users/kevinbrown/MCP-ocs/sprint-management/DEVELOPER-GUARDRAILS.md
 
-# Current Sprint Status (REQUIRED)
-cat /Users/kevinbrown/MCP-ocs/sprint-management/active-tasks/[CURRENT_SPRINT].md
+# Domain Specifications (REQUIRED)
+cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/[DOMAIN_1]/README.md
+cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/[DOMAIN_2]/README.md
 
-# Historical Performance Data
-# Query vector memory for similar task patterns, timing data, token consumption
+# Current Sprint Task Definition (REQUIRED)
+cat /Users/kevinbrown/MCP-ocs/sprint-management/active-tasks/[CURRENT_TASK_FILE].md
+
+# Historical Performance Data (REQUIRED)
+cat /Users/kevinbrown/MCP-ocs/sprint-management/historical-data/[PREVIOUS_SPRINT_METRICS].md
 ```
 
-### 🛡️ EXPLICIT GUARDRAILS V3.2 (NON-NEGOTIABLE):
-
-#### **QUALITY STANDARDS** (Preserved from V3.1):
-1. **Zero Technical Debt Acceptance**: No `any` types, `@ts-ignore`, or shortcuts
-2. **Systematic Error Resolution**: Fix methodically using established patterns  
-3. **Incremental Validation**: Test build success after each change
-4. **Quality Gate Enforcement**: All acceptance criteria pass before handoff
-
-#### **PERFORMANCE MONITORING** (New in V3.2):
-5. **Systematic Timing Capture**: Record phase transitions and duration
-6. **Token Consumption Tracking**: Monitor usage against estimated budget
-7. **Complexity Validation**: Confirm tier appropriateness during execution
-8. **Estimation Accuracy**: Log actual vs predicted metrics for learning
-
-#### **PROCESS COMPLIANCE** (Enhanced):
-9. **Tier-Appropriate Depth**: Execute validation appropriate to complexity tier
-10. **Resource Budget Adherence**: Stay within time and token allocations
-11. **Historical Data Integration**: Apply lessons from similar task patterns
-12. **Continuous Learning**: Document variance for future calibration
-
-### 🔄 SYSTEMATIC EXECUTION PHASES V3.2:
-
-#### **PHASE 1: BASELINE ESTABLISHMENT** (Enhanced - Mandatory)
-```bash
-# PHASE 1 START TIMESTAMP
-echo "PHASE 1 (BASELINE) START - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+### **SYSTEMATIC TIMING PROTOCOL**
 ```
-- [ ] **System State Analysis**: Current state vs domain specification requirements
-- [ ] **Historical Pattern Matching**: Query similar tasks from vector memory  
-- [ ] **Resource Baseline**: Document starting build status, error count, test results
-- [ ] **Complexity Confirmation**: Validate selected tier matches actual requirements
-- [ ] **File Change Identification**: Map all files requiring modification per specification
-- [ ] **Acceptance Criteria Review**: Confirm understanding of success metrics
-```bash
-# PHASE 1 COMPLETE TIMESTAMP  
-echo "PHASE 1 (BASELINE) COMPLETE - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+⏱️ MANDATORY TIMING PROTOCOL - SYSTEMATIC CAPTURE
+
+# EXECUTION START TIMESTAMP
+echo "[ROLE] PHASE INITIATED - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+echo "[SPRINT_NAME] - [ROLE] PHASE START"
+echo "Process v3.2 [TIER] Framework Execution"
+echo "Historical Calibration: [MULTIPLIER] applied"
+echo "Token Budget: [TOKEN_BUDGET]K allocated"
+echo "Time Budget: [TIME_BUDGET] minutes estimated"
 ```
 
-#### **PHASE 2: SYSTEMATIC IMPLEMENTATION** (Enhanced)
-```bash
-# PHASE 2 START TIMESTAMP
-echo "PHASE 2 (IMPLEMENTATION) START - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+### **DAILY LOG TEMPLATE CREATION**
 ```
-- [ ] **Incremental Change Application**: Apply modifications with validation at each step
-- [ ] **Pattern Adherence**: Follow established patterns from domain specification
-- [ ] **Continuous Testing**: Validate after each major change
-- [ ] **Token Monitoring**: Track consumption against budget estimation
-- [ ] **Time Tracking**: Monitor progress against tier-appropriate duration targets
-- [ ] **Quality Validation**: Ensure tier-appropriate validation depth maintained
-- [ ] **Deviation Documentation**: Record any changes from planned approach with rationale
-```bash
-# PHASE 2 COMPLETE TIMESTAMP
-echo "PHASE 2 (IMPLEMENTATION) COMPLETE - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
-```
+# CREATE DAILY EXECUTION LOG FOR PROGRESS TRACKING
+cat > /Users/kevinbrown/MCP-ocs/sprint-management/execution-logs/codex-execution-log-$(date +%Y-%m-%d).md << 'EOF'
+# Codex Execution Log - $(date +%Y-%m-%d)
 
-#### **PHASE 3: QUALITY VALIDATION** (Enhanced)
-```bash  
-# PHASE 3 START TIMESTAMP
-echo "PHASE 3 (VALIDATION) START - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
-```
-- [ ] **Acceptance Criteria Verification**: All requirements met per complexity tier
-- [ ] **Test Suite Execution**: Complete validation appropriate to tier depth
-- [ ] **Performance Metrics**: Actual vs estimated story points and resource usage
-- [ ] **Technical Debt Assessment**: Zero technical debt policy enforcement
-- [ ] **TESTER Handoff Preparation**: Create tier-appropriate validation artifacts
-- [ ] **Quality Gate Confirmation**: All tier-specific criteria satisfied
-```bash
-# PHASE 3 COMPLETE TIMESTAMP
-echo "PHASE 3 (VALIDATION) COMPLETE - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
-```
+## Sprint: [SPRINT_NAME]
+**Role**: [DEVELOPER/TESTER/REVIEWER]  
+**Complexity**: [TIER] ([TIER_DESCRIPTION])
+**Start Time**: $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)
 
-#### **PHASE 4: PROCESS V3.2 HANDOFF** (Enhanced)
-```bash
-# PHASE 4 START TIMESTAMP  
-echo "PHASE 4 (HANDOFF) START - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
-```
-- [ ] **Implementation Completion Report**: Comprehensive delivery documentation
-- [ ] **Performance Metrics Report**: Timing, token usage, complexity validation
-- [ ] **Testing Requirements**: Tier-appropriate validation specifications for TESTER
-- [ ] **Status Update**: Domain README and progress tracking updates
-- [ ] **Continuous Learning**: Document lessons for historical database
-- [ ] **Quality Evidence**: Build logs, test results, validation confirmation
-```bash
-# PHASE 4 COMPLETE TIMESTAMP + TOTAL DURATION
-echo "PHASE 4 (HANDOFF) COMPLETE - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
-echo "DEVELOPER PHASE TOTAL DURATION: [CALCULATE FROM START TO END]"
-```
+## PHASE EXECUTION TRACKING
 
-### 📊 MANDATORY DELIVERABLES V3.2:
+### PHASE 1: [PHASE_NAME]
+- Start: [CODEX UPDATES WITH TIMESTAMP]  
+- Tasks: [CODEX UPDATES PROGRESS]
+- Issues: [CODEX NOTES PROBLEMS]
+- Duration: [CODEX CALCULATES]
 
-#### **Implementation Artifacts**:
-1. **Implementation Report**: `sprint-management/completion-logs/[DOMAIN]-[EPIC]-developer-completion-v3.2.md`
-2. **Testing Requirements**: `sprint-management/completion-logs/[DOMAIN]-[EPIC]-testing-requirements-v3.2.md`
-3. **Performance Metrics**: `sprint-management/completion-logs/[DOMAIN]-[EPIC]-performance-metrics-v3.2.md`
+### PHASE 2: [PHASE_NAME]  
+- Start: [CODEX UPDATES WITH TIMESTAMP]
+- Tasks: [CODEX UPDATES PROGRESS]
+- Issues: [CODEX NOTES PROBLEMS] 
+- Duration: [CODEX CALCULATES]
 
-#### **Process Documentation**:  
-4. **Status Update**: Domain README with implementation progress
-5. **Quality Evidence**: Build logs, test results, validation confirmation
-6. **Lessons Learned**: Historical data for continuous improvement
+### PHASE 3: [PHASE_NAME]
+- Start: [CODEX UPDATES WITH TIMESTAMP]
+- Tasks: [CODEX UPDATES PROGRESS]
+- Issues: [CODEX NOTES PROBLEMS]
+- Duration: [CODEX CALCULATES]
 
-#### **Performance Data** (New in V3.2):
-7. **Timing Analysis**: Phase duration breakdown with variance analysis
-8. **Resource Consumption**: Token usage vs budget with efficiency metrics
-9. **Estimation Accuracy**: Actual vs predicted story points and complexity validation
+### PHASE 4: [PHASE_NAME]
+- Start: [CODEX UPDATES WITH TIMESTAMP]
+- Tasks: [CODEX UPDATES PROGRESS] 
+- Issues: [CODEX NOTES PROBLEMS]
+- Duration: [CODEX CALCULATES]
 
-### ✅ SUCCESS CRITERIA VERIFICATION V3.2:
+## PERFORMANCE METRICS
+- Total Duration: [CODEX CALCULATES AT END]
+- Token Usage: [CODEX TRACKS CONSUMPTION]
+- Story Points: [ACTUAL] vs [ESTIMATED]
+- Complexity Validation: [TIER_APPROPRIATE/NEEDS_ADJUSTMENT]
 
-#### **Quality Standards** (Preserved):
-- [ ] All specified tasks completed within defined scope
-- [ ] Zero compilation errors or warnings  
-- [ ] All tests passing without regression
-- [ ] TESTER handoff artifacts complete and validated
+## DELIVERABLES COMPLETED
+- [ ] [DELIVERABLE_1]: [STATUS]
+- [ ] [DELIVERABLE_2]: [STATUS]  
+- [ ] [DELIVERABLE_3]: [STATUS]
 
-#### **Performance Standards** (New in V3.2):
-- [ ] Execution time within tier-appropriate range (±15 minutes target)
-- [ ] Token consumption within budget (±20% target)
-- [ ] Story point estimation accuracy documented (±1 SP target)  
-- [ ] Complexity tier validation confirmed (appropriate depth maintained)
+## HANDOFF STATUS
+- Quality Gates: [ALL_PASSED/ISSUES_NOTED]
+- Next Phase: [TESTER/REVIEWER/COMPLETE]
+- Archive Ready: [YES/NO]
 
-### 🔄 PROCESS V3.2 COMMIT FORMAT (Enhanced):
-```bash
-git add .
-git commit -m "feat: [DOMAIN] [EPIC] - DEVELOPER phase complete (Process v3.2)
+EOF
 
-Domain: [DOMAIN_NAME]  
-Epic: [EPIC_NAME]
-Tasks completed: [LIST_TASKS]
-Complexity Tier: [TIER_1/2/3]
-Story Points: [ACTUAL] SP (Estimated: [ESTIMATED] SP)
-Duration: [ACTUAL] minutes (Estimated: [ESTIMATED] minutes)  
-Token Usage: [ACTUAL]K (Budget: [ESTIMATED]K)
-
-Process v3.2: DEVELOPER → TESTER handoff ready
-Quality Gates: [ALL_PASSED]
-Performance: [WITHIN_TARGETS/VARIANCE_NOTED]"
-```
-
-### 🚨 ENHANCED ABORT CONDITIONS:
-
-**Mandatory abort if:**
-- Reference files not accessible or framework components missing
-- Guardrails cannot be satisfied or quality standards not achievable
-- Resource budgets impossible to maintain (time/token overrun >50%)
-- Complexity tier inappropriate for actual requirements (escalation needed)
-- Success criteria unclear or validation requirements undefined
-
-**Escalation Procedures:**
-- **Time Overrun**: Scope reduction assessment with stakeholder notification  
-- **Token Limit Approach**: Context compression with priority preservation
-- **Complexity Explosion**: Tier escalation with enhanced validation procedures
-- **Quality Gate Failure**: Systematic correction cycle with root cause analysis
-
-### 🎯 HANDOFF AUTHORIZATION V3.2:
-
-**Only proceed to TESTER role when:**
-- [ ] All deliverables created and validated per tier requirements
-- [ ] Success criteria completely satisfied with documented evidence
-- [ ] Performance metrics within acceptable variance ranges
-- [ ] Implementation artifacts ready for independent tier-appropriate validation
-- [ ] Process v3.2 framework properly executed with timing/resource data captured
-
-### ⏱️ **MANDATORY TIMING PROTOCOL - PHASE COMPLETE**
-```bash
-# CAPTURE DEVELOPER PHASE END TIMESTAMP + PERFORMANCE SUMMARY
-echo "DEVELOPER PHASE COMPLETE - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
-echo "PERFORMANCE SUMMARY:"
-echo "- Story Points: [ACTUAL] (Estimated: [ESTIMATED]) - Variance: [XX]%"  
-echo "- Duration: [ACTUAL] minutes (Estimated: [ESTIMATED]) - Variance: [XX]%"
-echo "- Token Usage: [ACTUAL]K (Budget: [ESTIMATED]K) - Variance: [XX]%"
-echo "- Complexity Tier: [TIER] - Appropriateness: [CONFIRMED/NEEDS_ADJUSTMENT]"
-echo ""
-echo "HANDOFF TO TESTER: AUTHORIZED"
+# Confirm log file created
+echo "✅ Daily execution log created: execution-logs/codex-execution-log-$(date +%Y-%m-%d).md"
 ```
 
 ---
 
-**EXECUTE ONLY AFTER DAILY STANDUP CHECKLIST V3.2 COMPLETION**
-**NO EXCEPTIONS - NO SHORTCUTS - SYSTEMATIC TIMING REQUIRED**
+## 🔄 SYSTEMATIC EXECUTION PHASES
 
-**EVOLUTION**: V3.2 precision performance framework with data-driven continuous improvement.
-Replace [PLACEHOLDERS] with actual values from completed checklist before execution.
+### **PHASE 1: BASELINE ESTABLISHMENT**
+```
+# PHASE 1 START TIMESTAMP  
+echo "PHASE 1 (BASELINE) START - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+echo "[DOMAIN_DESCRIPTION] Baseline Analysis"
+
+# Update daily log
+echo "### PHASE 1 PROGRESS" >> /Users/kevinbrown/MCP-ocs/sprint-management/execution-logs/codex-execution-log-$(date +%Y-%m-%d).md
+echo "- Start: $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)" >> /Users/kevinbrown/MCP-ocs/sprint-management/execution-logs/codex-execution-log-$(date +%Y-%m-%d).md
+
+BASELINE TASKS:
+☐ [TASK_1]: [TASK_DESCRIPTION]
+☐ [TASK_2]: [TASK_DESCRIPTION] 
+☐ [TASK_3]: [TASK_DESCRIPTION]
+
+# PHASE 1 COMPLETE TIMESTAMP
+echo "PHASE 1 (BASELINE) COMPLETE - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+echo "Baseline Duration: [CALCULATE MINUTES] minutes"
+
+# Update daily log with completion
+echo "- Duration: [CALCULATE] minutes" >> /Users/kevinbrown/MCP-ocs/sprint-management/execution-logs/codex-execution-log-$(date +%Y-%m-%d).md
+```
+
+### **PHASE 2: SYSTEMATIC IMPLEMENTATION**
+```
+# PHASE 2 START TIMESTAMP
+echo "PHASE 2 (IMPLEMENTATION) START - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+echo "[DOMAIN_DESCRIPTION] Implementation"
+
+# Update daily log
+echo "### PHASE 2 PROGRESS" >> /Users/kevinbrown/MCP-ocs/sprint-management/execution-logs/codex-execution-log-$(date +%Y-%m-%d).md
+echo "- Start: $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)" >> /Users/kevinbrown/MCP-ocs/sprint-management/execution-logs/codex-execution-log-$(date +%Y-%m-%d).md
+
+IMPLEMENTATION TASKS:
+[DETAILED_TASK_BREAKDOWN_WITH_CALIBRATED_ESTIMATES]
+
+# PHASE 2 COMPLETE TIMESTAMP  
+echo "PHASE 2 (IMPLEMENTATION) COMPLETE - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+echo "Implementation Duration: [CALCULATE] minutes"
+echo "Token Usage Check: [MONITOR against BUDGET]"
+```
+
+### **PHASE 3: QUALITY VALIDATION**  
+```
+# PHASE 3 START TIMESTAMP
+echo "PHASE 3 (VALIDATION) START - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+echo "[DOMAIN_DESCRIPTION] Quality Validation"
+
+VALIDATION TASKS:
+☐ [VALIDATION_CRITERIA_1]: [DESCRIPTION]
+☐ [VALIDATION_CRITERIA_2]: [DESCRIPTION]
+☐ [VALIDATION_CRITERIA_3]: [DESCRIPTION]
+
+# PHASE 3 COMPLETE TIMESTAMP
+echo "PHASE 3 (VALIDATION) COMPLETE - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+echo "Validation Duration: [CALCULATE] minutes"
+```
+
+### **PHASE 4: HANDOFF PREPARATION**
+```
+# PHASE 4 START TIMESTAMP
+echo "PHASE 4 (HANDOFF) START - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)" 
+echo "[SPRINT_NAME] Documentation and Handoff"
+
+HANDOFF TASKS:
+☐ Implementation completion report creation
+☐ Performance metrics documentation  
+☐ Testing requirements specification
+☐ Quality evidence compilation
+☐ Archive preparation
+
+# PHASE 4 COMPLETE + TOTAL DURATION
+echo "PHASE 4 (HANDOFF) COMPLETE - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+echo "[ROLE] PHASE TOTAL DURATION: [CALCULATE FROM START TO END]"
+echo "Target: [TARGET] minutes | Actual: [CALCULATE] | Variance: [XX]%"
+echo "Token Usage: [ACTUAL]K | Budget: [BUDGET]K | Efficiency: [XX]%"
+```
+
+---
+
+## 📊 MANDATORY DELIVERABLES TEMPLATE
+
+### **COMPLETION ARTIFACTS**
+```
+📊 MANDATORY DELIVERABLES - [SPRINT_NAME]:
+
+Implementation Artifacts:
+☐ Implementation Report: sprint-management/completion-logs/[SPRINT_ID]-developer-completion-v3.2.md
+☐ Testing Requirements: sprint-management/completion-logs/[SPRINT_ID]-testing-requirements-v3.2.md  
+☐ Performance Metrics: sprint-management/completion-logs/[SPRINT_ID]-performance-metrics-v3.2.md
+
+Technical Deliverables:
+[SPECIFIC_TECHNICAL_DELIVERABLES_FOR_DOMAIN]
+
+Performance Data (Process v3.2):
+☐ Timing Analysis: Phase duration breakdown vs [TARGET]-minute target
+☐ Resource Consumption: Token usage vs [BUDGET]K budget with efficiency metrics
+☐ Estimation Accuracy: Actual vs predicted [SP] SP with complexity validation
+```
+
+---
+
+## 🔄 PROCESS V3.2 COMMIT TEMPLATE
+
+### **STRUCTURED COMMIT FORMAT**
+```
+# SYSTEMATIC GIT COMMIT - Process v3.2
+git add .
+git commit -m "[TYPE]: [SPRINT_ID] - [ROLE] phase complete (Process v3.2)
+
+Domain: [DOMAIN_NAME] 
+Epic: [EPIC_NAME]
+Tasks completed:
+- [TASK_1]: [BRIEF_OUTCOME]
+- [TASK_2]: [BRIEF_OUTCOME]  
+- [TASK_3]: [BRIEF_OUTCOME]
+
+Complexity Tier: [TIER] ([TIER_DESCRIPTION])
+Story Points: [ACTUAL] SP (Estimated: [ESTIMATED] SP)
+Duration: [ACTUAL] minutes (Estimated: [TARGET] minutes)
+Token Usage: [ACTUAL]K (Budget: [BUDGET]K)
+
+Process v3.2: [CURRENT_ROLE] → [NEXT_ROLE] handoff ready
+Quality Gates: [STATUS]
+Performance: [WITHIN_TARGETS/VARIANCE_NOTED]
+Calibration: Applied [MULTIPLIER] multiplier with [COMPLEXITY] adjustment"
+
+# Push changes
+git push origin [BRANCH_NAME]
+```
+
+---
+
+## ✅ SUCCESS CRITERIA VERIFICATION TEMPLATE
+
+### **COMPLETION CHECKLIST**
+```
+✅ SUCCESS CRITERIA VERIFICATION - [SPRINT_NAME]:
+
+Quality Standards:
+☐ All [DOMAIN] tasks completed within scope
+☐ [SPECIFIC_QUALITY_CRITERIA_1] achieved
+☐ [SPECIFIC_QUALITY_CRITERIA_2] validated
+☐ [NEXT_ROLE] handoff artifacts complete and validated
+
+Performance Standards (Process v3.2):
+☐ Execution time within [TIER] range ([TARGET] minutes ±15 minutes)
+☐ Token consumption within budget ([BUDGET]K ±20% target)
+☐ Story point estimation accuracy ([ESTIMATED] vs [ACTUAL] SP)
+☐ [TIER] complexity validation confirmed
+
+Process Standards:
+☐ Systematic timing capture completed throughout all phases
+☐ Daily execution log updated with complete progress tracking
+☐ All reference files read and applied according to guardrails
+☐ Quality gates enforced with evidence-based validation
+```
+
+---
+
+## 🚨 ENHANCED ABORT CONDITIONS TEMPLATE
+
+### **MANDATORY ABORT TRIGGERS**
+```
+🚨 ENHANCED ABORT CONDITIONS - [SPRINT_NAME]:
+
+Mandatory abort if:
+☐ [DOMAIN]-specific files not accessible or requirements unclear
+☐ [SPECIFIC_BLOCKING_CONDITION_1] cannot be satisfied
+☐ Token budget overrun >50% ([THRESHOLD]K exceeded)
+☐ [TIER] complexity requirements exceed current framework capacity
+
+Escalation Procedures:
+☐ Time Overrun: Prioritize [CRITICAL_TASKS] over [OPTIONAL_TASKS]
+☐ Token Limit Approach: Focus on [CORE_DELIVERABLES], defer [ENHANCEMENTS]
+☐ Complexity Explosion: Escalate to [TIER+1] if [CONDITIONS]
+☐ Quality Gate Failure: [SPECIFIC_RECOVERY_PROCEDURES]
+```
+
+---
+
+## 🎯 HANDOFF AUTHORIZATION TEMPLATE
+
+### **ROLE TRANSITION CRITERIA**
+```
+🎯 HANDOFF AUTHORIZATION - [SPRINT_NAME]:
+
+Only proceed to [NEXT_ROLE] when:
+☐ All [DOMAIN] tasks completed with documented deliverables
+☐ [SPECIFIC_COMPLETION_CRITERIA_1] satisfied with evidence
+☐ [SPECIFIC_COMPLETION_CRITERIA_2] validated with metrics
+☐ Process v3.2 [TIER] framework executed with performance data captured
+☐ Daily execution log complete with timing and progress documentation
+
+HANDOFF SIGNAL:
+"[ROLE] PHASE COMPLETE - READY FOR [NEXT_ROLE] ROLE TRANSITION"
+```
+
+---
+
+## ⏱️ FINAL TIMING PROTOCOL TEMPLATE
+
+### **PERFORMANCE SUMMARY**
+```
+⏱️ MANDATORY TIMING PROTOCOL - PHASE COMPLETE
+
+# CAPTURE FINAL PERFORMANCE SUMMARY
+echo "[ROLE] PHASE COMPLETE - $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)"
+echo "[SPRINT_NAME] - [ROLE] EXECUTION COMPLETE"
+echo ""
+echo "PERFORMANCE SUMMARY:"
+echo "- Story Points: [ACTUAL] (Estimated: [ESTIMATED]) - Variance: [XX]%"
+echo "- Duration: [ACTUAL] minutes (Target: [TARGET] minutes) - Variance: [XX]%"  
+echo "- Token Usage: [ACTUAL]K (Budget: [BUDGET]K) - Variance: [XX]%"
+echo "- Complexity Tier: [TIER] - Appropriateness: [CONFIRMED/NEEDS_ADJUSTMENT]"
+echo "- Calibration Applied: [MULTIPLIER] multiplier with [COMPLEXITY] adjustment"
+echo ""
+echo "[DOMAIN] DELIVERABLES:"
+echo "- [DELIVERABLE_1]: [STATUS]"
+echo "- [DELIVERABLE_2]: [STATUS]"
+echo "- [DELIVERABLE_3]: [STATUS]"
+echo ""
+echo "HANDOFF TO [NEXT_ROLE]: AUTHORIZED"
+echo "Next Phase: [NEXT_PHASE_DESCRIPTION]"
+
+# Update final status in daily log
+echo "## FINAL STATUS" >> /Users/kevinbrown/MCP-ocs/sprint-management/execution-logs/codex-execution-log-$(date +%Y-%m-%d).md
+echo "- Total Duration: [ACTUAL] minutes" >> /Users/kevinbrown/MCP-ocs/sprint-management/execution-logs/codex-execution-log-$(date +%Y-%m-%d).md  
+echo "- Performance: [STATUS]" >> /Users/kevinbrown/MCP-ocs/sprint-management/execution-logs/codex-execution-log-$(date +%Y-%m-%d).md
+echo "- Handoff: [NEXT_ROLE] authorized" >> /Users/kevinbrown/MCP-ocs/sprint-management/execution-logs/codex-execution-log-$(date +%Y-%m-%d).md
+```
+
+---
+
+**TEMPLATE USAGE**: Replace bracketed placeholders with actual sprint values
+**SESSION SAFETY**: Every prompt generated from this template is self-contained
+**PROCESS COMPLIANCE**: Follows Process v3.2 Enhanced Framework completely  
+**PILOT APPROVED**: Complete operational procedures for systematic execution
