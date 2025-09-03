@@ -156,7 +156,8 @@
     "rubrics:coverage:check": "node scripts/rubrics/rubrics-coverage-check.mjs",
     "plan:ledger:append": "node scripts/plan/append-ledger.mjs",
     "rubrics:memory:snapshot": "tsx scripts/e2e/rubrics-memory-snapshot.mjs",
-    "ci:planning:check": "node scripts/ci/check-planning-location.mjs"
+    "ci:planning:check": "node scripts/ci/check-planning-location.mjs",
+    "test:unit:esm": "npm run build && NODE_OPTIONS=--experimental-vm-modules jest tests/unit"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.8",
