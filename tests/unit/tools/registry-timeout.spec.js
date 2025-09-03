@@ -2,8 +2,8 @@ import { describe, it, expect } from '@jest/globals';
 // Pull registry from compiled JS to avoid TS transform pitfalls
 import { UnifiedToolRegistry } from '../../../dist/src/lib/tools/tool-registry.js';
 
-function delay(ms: number) {
-  return new Promise<void>(resolve => setTimeout(resolve, ms));
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 describe('UnifiedToolRegistry timeouts and error payloads', () => {
@@ -25,7 +25,7 @@ describe('UnifiedToolRegistry timeouts and error payloads', () => {
     const res = await registry.executeTool('unit_slow', { timeoutMs: 10 });
     const obj = JSON.parse(res);
     expect(obj.success).toBe(false);
-    expect(obj.error?.type).toBe('TimeoutError');
+    expect(obj.error && obj.error.type).toBe('TimeoutError');
     expect(obj.tool).toBe('unit_slow');
   });
 
@@ -45,7 +45,6 @@ describe('UnifiedToolRegistry timeouts and error payloads', () => {
     });
 
     const res = await registry.executeTool('unit_fast', { timeoutMs: 200 });
-    // Should be a string already
     const obj = JSON.parse(res);
     expect(obj.ok).toBe(true);
   });
