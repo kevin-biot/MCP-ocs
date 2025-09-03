@@ -25,7 +25,9 @@ export class AppError extends Error {
     this.name = kind;
     this.kind = kind;
     this.statusCode = options.statusCode ?? mapKindToStatus(kind);
-    this.details = options.details;
+    if (typeof options.details !== 'undefined') {
+      this.details = options.details as Record<string, unknown>;
+    }
   }
 }
 
@@ -81,17 +83,25 @@ export function mapKindToStatus(kind: ErrorKind): number {
 
 export function serializeError(err: unknown): { type: string; message: string; statusCode: number; details?: Record<string, unknown>; cause?: string } {
   if (err instanceof AppError) {
-    return {
+    const out: { type: string; message: string; statusCode: number; details?: Record<string, unknown>; cause?: string } = {
       type: err.kind,
       message: err.message,
       statusCode: err.statusCode,
-      details: err.details,
-      cause: err.cause ? String((err.cause as any)?.message ?? err.cause) : undefined,
     };
+    if (typeof err.details !== 'undefined') out.details = err.details;
+    const causeMsg = err.cause ? String((err.cause as any)?.message ?? err.cause) : undefined;
+    if (typeof causeMsg !== 'undefined') out.cause = causeMsg;
+    return out;
   }
   if (err instanceof Error) {
-    return { type: err.name || 'Error', message: err.message, statusCode: 500, cause: (err as any).cause ? String((err as any).cause) : undefined };
+    const out: { type: string; message: string; statusCode: number; details?: Record<string, unknown>; cause?: string } = {
+      type: err.name || 'Error',
+      message: err.message,
+      statusCode: 500,
+    };
+    const cause = (err as any).cause ? String((err as any).cause) : undefined;
+    if (typeof cause !== 'undefined') out.cause = cause;
+    return out;
   }
   return { type: 'UnknownError', message: String(err), statusCode: 500 };
 }
-
