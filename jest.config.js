@@ -48,3 +48,4 @@ export default {
     // Map additional relative ESM .js imports to TS sources for tests
     '^\\.\\./lib/errors/(.*)\\.js$': '<rootDir>/src/lib/errors/$1.ts',
     '^\\.\\./errors/(.*)\\.js$': '<rootDir>/src/lib/errors/$1.ts',
+    '^\\.\\.\\/\\.\\.\\/utils/(.*)\\.js$': '<rootDir>/src/utils/$1.ts',
