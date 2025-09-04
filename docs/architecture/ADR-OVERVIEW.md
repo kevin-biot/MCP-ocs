@@ -1,15 +1,15 @@
 # MCP-ocs Architecture Decision Records Overview
 
-**Document Version**: 3.0  
-**Date**: September 02, 2025  
-**Status**: Living Document - Updated with ADR-021 and ADR-022 additions  
+**Document Version**: 3.1  
+**Date**: September 04, 2025  
+**Status**: Living Document - Updated with ADR-023 Rubric Framework Remediation  
 **Purpose**: Comprehensive catalog of all architectural decisions in MCP-ocs ecosystem
 
 ---
 
 ## Executive Summary
 
-This document provides a complete overview of all Architecture Decision Records (ADRs) in the MCP-ocs system, including their current status, dependencies, and implementation progress. The system currently has **22 ADRs** (ADR-001 through ADR-022) covering the complete architectural foundation including advanced input processing and semantic type systems.
+This document provides a complete overview of all Architecture Decision Records (ADRs) in the MCP-ocs system, including their current status, dependencies, and implementation progress. The system currently has **23 ADRs** (ADR-001 through ADR-023) covering the complete architectural foundation including advanced input processing, semantic type systems, and critical rubric framework remediation.
 
 **Current Architecture Status:**
 - ✅ **Implemented & Operational**: 5 ADRs (23% - Solid foundation)
@@ -19,6 +19,7 @@ This document provides a complete overview of all Architecture Decision Records 
 **Recent Additions (September 2025):**
 - **ADR-021**: Natural Language Input Normalization Architecture (F-006 Epic)
 - **ADR-022**: Normalized Fact Model Type System Architecture (F-007 Epic)
+- **ADR-023**: Rubric Framework Architecture Remediation (RFR-001/002/003 - CRITICAL P0)
 
 ---
 
@@ -91,6 +92,16 @@ This document provides a complete overview of all Architecture Decision Records 
 
 ---
 
+### **Critical Remediation (ADR-023)** ⚠️ **P0 PRIORITY**
+
+| ADR | Title | Status | Implementation Notes |
+|-----|-------|--------|---------------------|
+| **ADR-023** | Rubric Framework Architecture Remediation | 🚧 **ACTIVE** | **RFR-001/002/003 Domains** - P0 blocking priority, prevents technical debt explosion |
+
+**Remediation Status**: ⚠️ **CRITICAL - All development frozen until completion, 5-8 sprint investment**
+
+---
+
 ## Current Implementation Status
 
 ### **✅ Implemented & Operational (5 ADRs - 23%)**
@@ -128,13 +139,21 @@ This document provides a complete overview of all Architecture Decision Records 
 
 ---
 
-## Implementation Priorities (Updated)
+## Implementation Priorities (Updated September 4, 2025)
 
-### **Critical Path (P1 - Immediate)**
+### **P0 - BLOCKING PRIORITY (ACTIVE)**
 
-1. **F-001**: Core Platform Foundation (Complete partial ADRs 002, 004, 009, 010)
-2. **F-003**: Production Platform (ADR-008 - PRIORITY ELEVATED)
-3. **F-004**: Template Quality & Validation
+1. **RFR-001/002/003**: Rubric Framework Remediation (ADR-023 - ALL DEVELOPMENT FROZEN)
+   - Registry Infrastructure (2-3 sprints)
+   - Versioning & Evolution (1-2 sprints) 
+   - Coverage Expansion (2-3 sprints)
+   - **Total**: 5-8 sprints investment to prevent exponential technical debt
+
+### **P1 - Critical Path (Post-Remediation)**
+
+2. **F-001**: Core Platform Foundation (Complete partial ADRs 002, 004, 009, 010)
+3. **F-003**: Production Platform (ADR-008 - PRIORITY ELEVATED)
+4. **F-004**: Template Quality & Validation
 
 ### **High Value Extensions (P2 - Next Phase)**
 
@@ -202,12 +221,19 @@ F-009: [ADR-011] # Fast RCA Framework
 
 ---
 
-## Next Actions (Dependency-Driven)
+## Next Actions (Dependency-Driven - Updated September 4, 2025)
 
-### **Phase 1: Foundation & Critical Production (Days 1-60)**
-1. **Complete F-001** (finish partial ADRs 002, 004, 009, 010)
-2. **Implement F-003** (ADR-008 production deployment - CRITICAL)
-3. **Begin F-004** (template quality foundation)
+### **IMMEDIATE: Rubric Framework Remediation (Days 1-40)**
+1. **RFR-001**: Registry Infrastructure (2-3 sprints)
+2. **RFR-002**: Versioning & Evolution (1-2 sprints)
+3. **RFR-003**: Coverage Expansion (2-3 sprints)
+   - **CRITICAL**: All other development frozen during remediation
+   - **Outcome**: Transform MCP-ocs from prototype to framework-ready platform
+
+### **Phase 1: Foundation & Critical Production (Days 41-100)**
+4. **Complete F-001** (finish partial ADRs 002, 004, 009, 010)
+5. **Implement F-003** (ADR-008 production deployment - CRITICAL)
+6. **Begin F-004** (template quality foundation)
 
 ### **Phase 2: Input Processing & Tool Architecture (Days 61-120)**  
 4. **Implement F-006** (ADR-021 input normalization)
@@ -240,7 +266,7 @@ With systematic execution of the feature epic roadmap, MCP-ocs will evolve from 
 
 ---
 
-**Last Updated**: September 02, 2025 (Complete ADR coverage remediation)  
-**Next Review**: October 02, 2025 (Monthly coverage validation)  
+**Last Updated**: September 04, 2025 (ADR-023 Rubric Framework Remediation added - P0 PRIORITY)  
+**Next Review**: October 04, 2025 (Monthly coverage validation)  
 **Document Owner**: Architecture Team  
-**Status**: Living Document - Reflects complete architectural vision with implementation roadmap
+**Status**: Living Document - Reflects complete architectural vision with CRITICAL remediation priority
