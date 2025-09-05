@@ -1,0 +1,26 @@
+{
+  "domain": "exhaustiveness-checking",
+  "backlog_mapping": {
+    "d-011-exhaustiveness-checking": {
+      "description": "Exhaustiveness and state machine completeness improvements",
+      "priority_mapping": {
+        "P0": "CRITICAL",
+        "P1": "HIGH", 
+        "P2": "MEDIUM",
+        "P3": "LOW"
+      },
+      "task_template": {
+        "title": "EXHAUST-{category}-{file_basename}-L{line}",
+        "description": "Fix {category} exhaustiveness issue in {file}",
+        "effort_estimate": "varies by severity",
+        "tags": ["exhaustiveness-checking", "logic", "state-machine", "type-safety"]
+      }
+    }
+  },
+  "automated_actions": {
+    "create_tasks": true,
+    "mark_resolved": true,
+    "escalate_stale": true
+  },
+  "last_updated": "2025-09-05"
+}

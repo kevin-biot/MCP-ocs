@@ -1,0 +1,137 @@
+domain:
+  name: "trust-boundaries"
+  version: "1.0"
+  description: "Detect trust boundary violations that could lead to security vulnerabilities, privilege escalation, or data exposure"
+  maintainer: "Quality Engineering Team"
+  last_updated: "2025-09-05"
+  
+review:
+  prompt_version: "v1.0"
+  estimated_duration: "20-30 minutes"
+  file_patterns:
+    - "src/**/*.ts"
+    - "src/**/*.js"
+    - "!src/**/*.test.ts"
+    - "!src/**/*.spec.ts"
+    - "!src/**/__tests__/**"
+    - "!src/**/*.mock.ts"
+    - "!src/**/*.config.ts"
+  llm_requirements:
+    - "code-analysis"
+    - "pattern-detection"
+    - "security-knowledge"
+    - "typescript-understanding"
+
+severity_levels:
+  P0:
+    name: "Critical"
+    description: "Block merge immediately - Security vulnerability risk"
+    sla: "Fix within 2 hours"
+    escalation: "Page security team + on-call engineer"
+    action: "BLOCK_MERGE"
+  P1:
+    name: "High"  
+    description: "Fix within current sprint - Privilege escalation risk"
+    sla: "Fix within 1 day"
+    escalation: "Security team notification + sprint priority"
+    action: "FIX_THIS_SPRINT"
+  P2:
+    name: "Medium"
+    description: "Security debt - address in security sprint"
+    sla: "Fix within 1 week"
+    escalation: "Security sprint allocation"
+    action: "SECURITY_DEBT"
+  P3:
+    name: "Low"
+    description: "Security hygiene - improve when convenient"
+    sla: "Fix when touching related code"
+    escalation: "Code review reminder"
+    action: "OPPORTUNISTIC_FIX"
+
+categories:
+  unsanitized-input:
+    description: "User input crossing trust boundary without sanitization"
+    typical_effort: "45-90 minutes"
+    risk_level: "critical"
+    examples: 
+      - "direct database query with user input"
+      - "file path manipulation from request"
+      - "command execution with user data"
+  privilege-escalation:
+    description: "Operations performed with elevated privileges without proper checks"
+    typical_effort: "60-120 minutes" 
+    risk_level: "critical"
+    examples:
+      - "admin operations without role verification"
+      - "bypassing authorization middleware"
+      - "direct database access without permission check"
+  data-exposure:
+    description: "Sensitive data returned without proper authorization checks"
+    typical_effort: "30-60 minutes"
+    risk_level: "high"
+    examples:
+      - "user data returned without ownership verification"
+      - "internal system details exposed in error messages"
+      - "database queries returning unauthorized fields"
+  insufficient-validation:
+    description: "Trust boundary validation insufficient for security context"
+    typical_effort: "30-45 minutes"
+    risk_level: "medium" 
+    examples:
+      - "weak input validation allowing injection"
+      - "missing boundary checks on array access"
+      - "insufficient type validation on critical operations"
+  logging-exposure:
+    description: "Sensitive information logged without proper sanitization"
+    typical_effort: "15-30 minutes"
+    risk_level: "low"
+    examples:
+      - "passwords or tokens in log messages"
+      - "personal information in debug logs"
+      - "internal system details in error logs"
+
+integration:
+  backlog_domain: "d-008-trust-boundaries"
+  task_prefix: "TRUST"
+  sprint_estimation:
+    P0: "4-8 hours"
+    P1: "2-4 hours"
+    P2: "1-2 hours" 
+    P3: "30-60 minutes"
+  auto_actions:
+    - "create_tasks_for_new_findings"
+    - "mark_resolved_when_not_found"
+    - "escalate_persistent_p0_after_4_hours"
+    - "escalate_persistent_p1_after_1_day"
+    - "notify_security_team_for_p0_p1"
+
+quality_gates:
+  clean_threshold:
+    P0: 0  # Zero P0 issues to be considered "clean"
+    P1: 0  # Zero P1 issues for security
+    P2: 2  # Maximum 2 P2 issues acceptable
+  regression_detection:
+    enabled: true
+    alert_on_new_p0: true
+    alert_on_new_p1: true
+    alert_on_p2_increase: true
+  trend_analysis:
+    track_resolution_time: true
+    track_recurrence_rate: true
+    security_report: true
+
+tooling:
+  compatible_llms:
+    - "qwen"
+    - "claude-3"
+    - "gpt-4"
+    - "codellama"
+  output_validation:
+    required_fields: ["fingerprint", "severity", "category", "file", "line", "description", "evidence", "recommendation", "security_impact"]
+    fingerprint_pattern: "^trust-boundaries:[^:]+:[0-9]+:(unsanitized-input|privilege-escalation|data-exposure|insufficient-validation|logging-exposure):[a-z0-9]{8}$"
+    fingerprint_components:
+      - "domain: trust-boundaries"
+      - "file: relative path from repo root"
+      - "line: line number where issue occurs"
+      - "category: issue type"
+      - "content_hash: 8-char hash of normalized code evidence"

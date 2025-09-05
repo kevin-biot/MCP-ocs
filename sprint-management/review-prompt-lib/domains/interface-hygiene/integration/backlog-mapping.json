@@ -1,0 +1,26 @@
+{
+  "domain": "interface-hygiene",
+  "backlog_mapping": {
+    "d-010-interface-hygiene": {
+      "description": "TypeScript interface and type safety improvements",
+      "priority_mapping": {
+        "P0": "CRITICAL",
+        "P1": "HIGH", 
+        "P2": "MEDIUM",
+        "P3": "LOW"
+      },
+      "task_template": {
+        "title": "INTERFACE-{category}-{file_basename}-L{line}",
+        "description": "Fix {category} type safety issue in {file}",
+        "effort_estimate": "varies by severity",
+        "tags": ["interface-hygiene", "type-safety", "typescript"]
+      }
+    }
+  },
+  "automated_actions": {
+    "create_tasks": true,
+    "mark_resolved": true,
+    "escalate_stale": true
+  },
+  "last_updated": "2025-09-05"
+}

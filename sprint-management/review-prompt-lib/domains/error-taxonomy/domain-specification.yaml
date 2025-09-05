@@ -1,0 +1,135 @@
+domain:
+  name: "error-taxonomy"
+  version: "1.0"
+  description: "Detect inconsistent error handling patterns, missing error classes, and improper HTTP status code mapping"
+  maintainer: "Quality Engineering Team"
+  last_updated: "2025-09-05"
+  
+review:
+  prompt_version: "v1.0"
+  estimated_duration: "15-25 minutes"
+  file_patterns:
+    - "src/**/*.ts"
+    - "src/**/*.js"
+    - "!src/**/*.test.ts"
+    - "!src/**/*.spec.ts"
+    - "!src/**/__tests__/**"
+    - "!src/**/*.mock.ts"
+    - "!src/**/*.config.ts"
+  llm_requirements:
+    - "code-analysis"
+    - "pattern-detection"
+    - "error-handling-knowledge"
+    - "http-status-understanding"
+
+severity_levels:
+  P0:
+    name: "Critical"
+    description: "Block merge immediately - Error handling failure risk"
+    sla: "Fix within 4 hours"
+    escalation: "Page on-call engineer"
+    action: "BLOCK_MERGE"
+  P1:
+    name: "High"  
+    description: "Fix within current sprint - Operational reliability risk"
+    sla: "Fix within 2 days"
+    escalation: "Sprint backlog priority"
+    action: "FIX_THIS_SPRINT"
+  P2:
+    name: "Medium"
+    description: "Technical debt - inconsistent error handling"
+    sla: "Fix within 1 week"
+    escalation: "Quality sprint allocation"
+    action: "ERROR_DEBT"
+  P3:
+    name: "Low"
+    description: "Error hygiene - improve when convenient"
+    sla: "Fix when touching related code"
+    escalation: "Code review reminder"
+    action: "OPPORTUNISTIC_FIX"
+
+categories:
+  throw-string-antipattern:
+    description: "Throwing raw strings instead of structured Error objects"
+    typical_effort: "15-30 minutes"
+    risk_level: "critical"
+    examples: 
+      - "throw 'Something went wrong'"
+      - "reject('Invalid input')"
+      - "throwing non-Error objects"
+  inconsistent-http-status:
+    description: "Inconsistent or incorrect HTTP status codes for error conditions"
+    typical_effort: "30-45 minutes" 
+    risk_level: "high"
+    examples:
+      - "validation errors returning 500 instead of 400"
+      - "not found errors returning 400 instead of 404"
+      - "authorization failures returning generic 500"
+  missing-error-context:
+    description: "Error messages without sufficient context for debugging"
+    typical_effort: "20-40 minutes"
+    risk_level: "high"
+    examples:
+      - "generic 'Database error' without details"
+      - "missing correlation IDs or request context"
+      - "no stack trace preservation in error chains"
+  unstructured-error-responses:
+    description: "Inconsistent error response formats across endpoints"
+    typical_effort: "45-90 minutes"
+    risk_level: "medium" 
+    examples:
+      - "different error object structures"
+      - "mixing string and object error responses"
+      - "inconsistent error field naming"
+  missing-error-classification:
+    description: "No structured error classes for different failure types"
+    typical_effort: "60-120 minutes"
+    risk_level: "medium"
+    examples:
+      - "all errors using generic Error class"
+      - "no distinction between validation, network, and system errors"
+      - "missing domain-specific error types"
+
+integration:
+  backlog_domain: "d-006-error-taxonomy"
+  task_prefix: "ERROR"
+  sprint_estimation:
+    P0: "2-4 hours"
+    P1: "1-2 hours"
+    P2: "30-90 minutes" 
+    P3: "15-30 minutes"
+  auto_actions:
+    - "create_tasks_for_new_findings"
+    - "mark_resolved_when_not_found"
+    - "escalate_persistent_p0_after_4_hours"
+    - "escalate_persistent_p1_after_1_day"
+
+quality_gates:
+  clean_threshold:
+    P0: 0  # Zero P0 issues to be considered "clean"
+    P1: 2  # Maximum 2 P1 issues acceptable
+    P2: 5  # Maximum 5 P2 issues acceptable
+  regression_detection:
+    enabled: true
+    alert_on_new_p0: true
+    alert_on_p1_increase: true
+  trend_analysis:
+    track_resolution_time: true
+    track_recurrence_rate: true
+    error_handling_report: true
+
+tooling:
+  compatible_llms:
+    - "qwen"
+    - "claude-3"
+    - "gpt-4"
+    - "codellama"
+  output_validation:
+    required_fields: ["fingerprint", "severity", "category", "file", "line", "description", "evidence", "recommendation", "operational_impact"]
+    fingerprint_pattern: "^error-taxonomy:[^:]+:[0-9]+:(throw-string-antipattern|inconsistent-http-status|missing-error-context|unstructured-error-responses|missing-error-classification):[a-z0-9]{8}$"
+    fingerprint_components:
+      - "domain: error-taxonomy"
+      - "file: relative path from repo root"
+      - "line: line number where issue occurs"
+      - "category: issue type"
+      - "content_hash: 8-char hash of normalized code evidence"

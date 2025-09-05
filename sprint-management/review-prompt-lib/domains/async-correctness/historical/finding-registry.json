@@ -1,0 +1,37 @@
+{
+  "domain": "async-correctness",
+  "version": "1.0", 
+  "created": "2025-09-05T00:00:00Z",
+  "last_updated": "2025-09-05T00:00:00Z",
+  
+  "findings": [],
+  
+  "statistics": {
+    "total_findings_ever": 0,
+    "active_findings": 0,
+    "resolved_findings": 0,
+    "regressed_findings": 0,
+    "findings_by_severity": {
+      "P0": 0,
+      "P1": 0, 
+      "P2": 0,
+      "P3": 0
+    },
+    "findings_by_category": {
+      "unawaited-promise": 0,
+      "missing-timeout": 0,
+      "race-condition": 0,
+      "promise-pattern": 0,
+      "error-propagation": 0
+    }
+  },
+  
+  "scan_history": [],
+  
+  "configuration": {
+    "fingerprint_version": "1.0",
+    "deduplication_enabled": true,
+    "auto_resolve_when_not_found": true,
+    "regression_detection_enabled": true
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "severity_classification": {
+    "P0_CRITICAL": {
+      "description": "Block merge immediately - production safety risk",
+      "triggers": [
+        "unawaited promise in request handler",
+        "unawaited promise in error handler", 
+        "network operation without timeout in critical path",
+        "database operation without timeout",
+        "unhandled promise rejection in main execution flow"
+      ],
+      "examples": [
+        "async function handler(req) { processReq(req); return res; }",
+        "await fetch(url) // no timeout",
+        "doAsyncWork().catch(() => {}); // fire and forget in handler"
+      ],
+      "action": "BLOCK_MERGE",
+      "escalation_time": "4 hours",
+      "business_impact": "Could cause memory leaks, hanging requests, or crashes in production"
+    },
+    
+    "P1_HIGH": {
+      "description": "Fix within current sprint - reliability risk",
+      "triggers": [
+        "race condition in shared state modification",
+        "Promise.all misuse with optional operations",
+        "concurrent access to shared objects without synchronization",
+        "async operation in loop without proper handling"
+      ],
+      "examples": [
+        "user.status = 'active'; await save(user); // race condition",
+        "await Promise.all([optional1(), optional2()]); // should be allSettled",
+        "for (item of items) { processAsync(item); } // concurrent without control"
+      ],
+      "action": "FIX_THIS_SPRINT",
+      "escalation_time": "3 days", 
+      "business_impact": "Could cause data corruption, inconsistent state, or partial failures"
+    },
+    
+    "P2_MEDIUM": {
+      "description": "Technical debt - address in quality sprint",
+      "triggers": [
+        "missing error context in async chains",
+        "inefficient async patterns",
+        "missing async test coverage",
+        "async function without return type annotation"
+      ],
+      "examples": [
+        "catch(err) { throw new Error('Failed'); } // lost original error",
+        "await asyncOp(); await anotherOp(); // could be parallel",
+        "async function process() { // missing Promise<T> return type"
+      ],
+      "action": "QUALITY_DEBT",
+      "escalation_time": "2 weeks",
+      "business_impact": "Reduces debuggability, maintainability, or performance"
+    },
+    
+    "P3_LOW": {
+      "description": "Cleanup when convenient - minor improvements",
+      "triggers": [
+        "verbose async patterns that could be simplified",
+        "missing async/await syntax modernization",
+        "async utility functions that could be extracted"
+      ],
+      "examples": [
+        "promise.then().then() // could use async/await",
+        "repeated async patterns // could be utility function"
+      ],
+      "action": "OPPORTUNISTIC_FIX", 
+      "escalation_time": "when touching related code",
+      "business_impact": "Minor code quality improvement"
+    }
+  },
+  
+  "category_severity_mapping": {
+    "unawaited-promise": {
+      "in_request_handler": "P0",
+      "in_error_handler": "P0", 
+      "in_background_task": "P1",
+      "in_utility_function": "P2"
+    },
+    "missing-timeout": {
+      "network_request": "P0",
+      "database_operation": "P0",
+      "file_operation": "P1",
+      "internal_service_call": "P1"
+    },
+    "race-condition": {
+      "shared_user_data": "P1",
+      "shared_system_state": "P1", 
+      "cache_operations": "P2",
+      "logging_operations": "P3"
+    },
+    "promise-pattern": {
+      "critical_operations": "P1",
+      "optional_operations": "P2",
+      "background_operations": "P2"
+    },
+    "error-propagation": {
+      "user_facing_errors": "P1",
+      "api_responses": "P1",
+      "internal_errors": "P2",
+      "debug_logging": "P3"
+    }
+  },
+  
+  "context_modifiers": {
+    "file_context": {
+      "src/api/": "+1 severity", 
+      "src/handlers/": "+1 severity",
+      "src/middleware/": "+1 severity",
+      "src/utils/": "base severity",
+      "src/lib/": "base severity"
+    },
+    "function_context": {
+      "request_handler": "+1 severity",
+      "error_handler": "+1 severity", 
+      "middleware": "+1 severity",
+      "utility": "base severity",
+      "test": "-1 severity"
+    }
+  },
+  
+  "validation_rules": {
+    "required_evidence": [
+      "actual code snippet showing the issue",
+      "line number where issue occurs",
+      "specific recommendation for fix"
+    ],
+    "fingerprint_stability": [
+      "same issue at same location must have same fingerprint",
+      "moving code to different file creates new fingerprint",
+      "changing line numbers updates fingerprint"
+    ],
+    "severity_consistency": [
+      "same pattern in same context gets same severity",
+      "context modifiers applied consistently", 
+      "escalation rules followed for persistent issues"
+    ]
+  }
+}

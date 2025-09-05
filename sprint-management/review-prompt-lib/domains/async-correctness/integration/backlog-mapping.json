@@ -1,0 +1,22 @@
+{
+  "domain": "async-correctness",
+  "version": "1.0",
+  "created": "2025-09-05T00:00:00Z",
+  "last_updated": "2025-09-05T00:00:00Z",
+  
+  "findings_to_tasks": {},
+  
+  "tasks_to_findings": {},
+  
+  "mapping_statistics": {
+    "total_mappings": 0,
+    "active_mappings": 0,
+    "resolved_mappings": 0
+  },
+  
+  "notes": [
+    "This file tracks which findings map to which backlog tasks",
+    "Prevents creating duplicate tasks for the same finding",
+    "Updated automatically by weekly sweep process"
+  ]
+}

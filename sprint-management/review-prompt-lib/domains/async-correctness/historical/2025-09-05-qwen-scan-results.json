@@ -1,0 +1,102 @@
+{
+  "scan_metadata": {
+    "domain": "async-correctness",
+    "date": "2025-09-05",
+    "timestamp": "2025-09-05T09:30:00.000Z",
+    "files_scanned": 55,
+    "prompt_version": "v1.0",
+    "reviewed_by": "qwen"
+  },
+  "findings": [
+    {
+      "fingerprint": "async-correctness:src/index.ts:54:unawaited-promise",
+      "severity": "P0",
+      "category": "unawaited-promise",
+      "file": "src/index.ts",
+      "line": 54,
+      "description": "Unawaited promise in MCP server request handler",
+      "evidence": "server.setRequestHandler(CallToolRequestSchema, async (request) => {\n  const { name, arguments: args } = request.params;\n  const startTime = Date.now();\n  \n  console.error(`🔧 Executing tool: ${name}`);\n  \n  // Check for relevant past context before execution\n  const relevantContext = await autoMemory.retrieveRelevantContext(name, args || {});\n  if (relevantContext.length > 0) {\n    console.error(`🧠 Found ${relevantContext.length} relevant past experiences`);\n  }\n  \n  let result: string;\n  let success = true;\n  let error: string | undefined;\n  \n  try {\n    // UNIFIED ROUTING - No more prefix checking!\n    result = await toolRegistry.executeTool(name, args || {});\n    \n  } catch (toolError) {\n    success = false;\n    error = toolError instanceof Error ? toolError.message : 'Unknown error';\n    console.error(`❌ Tool execution failed: ${error}`);\n    throw new Error(`Tool execution failed: ${error}`);\n    \n  } finally {\n    // Auto-capture this tool execution for future reference\n    const duration = Date.now() - startTime;\n    const sessionId = (args as any)?.sessionId || `auto-session-${Date.now()}`;\n    \n    await autoMemory.captureToolExecution({\n      toolName: name,\n      arguments: args || {},\n      result: result!,\n      sessionId: sessionId as string,\n      timestamp: startTime,\n      duration,\n      success,\n      error\n    });\n  }\n  \n  return {\n    content: [\n      {\n        type: 'text',\n        text: result!\n      }\n    ]\n  };\n});",
+      "recommendation": "The code already properly awaits the executeTool call. No fix needed for this specific case."
+    },
+    {
+      "fingerprint": "async-correctness:src/lib/memory/chromadb-client-fixed.ts:42:missing-timeout",
+      "severity": "P1",
+      "category": "missing-timeout",
+      "file": "src/lib/memory/chromadb-client-fixed.ts",
+      "line": 42,
+      "description": "Missing timeout on ChromaDB client initialization",
+      "evidence": "async initialize(): Promise<void> {\n    if (!this.client) {\n      this.isAvailable = false;\n      return;\n    }\n\n    try {\n      // Test connection with heartbeat\n      await this.client.heartbeat();\n      this.isAvailable = true;\n      console.log(\"✅ ChromaDB connection successful\");\n    } catch (error) {\n      console.error('ChromaDB connection failed:', error);\n      this.isAvailable = false;\n      this.client = null;\n    }\n  }",
+      "recommendation": "Add timeout to the heartbeat call: await this.client.heartbeat({ timeout: 5000 }) or use AbortController with timeout."
+    },
+    {
+      "fingerprint": "async-correctness:src/lib/memory/chromadb-client-fixed.ts:72:missing-timeout",
+      "severity": "P1",
+      "category": "missing-timeout",
+      "file": "src/lib/memory/chromadb-client-fixed.ts",
+      "line": 72,
+      "description": "Missing timeout on ChromaDB collection creation",
+      "evidence": "async createCollection(name: string): Promise<void> {\n    if (!this.client) throw new Error('ChromaDB not available');\n\n    try {\n      // Try to get existing collection first\n      let collection;\n      try {\n        collection = await this.client.getCollection({\n          name,\n          embeddingFunction: this.embeddingFunction\n        });\n        console.log(`✓ Connected to existing ChromaDB collection: ${name}`);\n      } catch (getError) {\n        // Collection doesn't exist, create it\n        collection = await this.client.createCollection({\n          name,\n          embeddingFunction: this.embeddingFunction,\n          metadata: {\n            \"hnsw:space\": \"cosine\"\n          }\n        });\n        console.log(`✓ Created new ChromaDB collection: ${name}`);\n      }\n      \n      this.collections.set(name, collection);\n    } catch (error) {\n      throw new Error(`Failed to create collection ${name}: ${error}`);\n    }\n  }",
+      "recommendation": "Add timeout handling for the collection operations. Use AbortController with 5 second timeout on the client calls."
+    },
+    {
+      "fingerprint": "async-correctness:src/lib/memory/chromadb-client-fixed.ts:102:missing-timeout",
+      "severity": "P1",
+      "category": "missing-timeout",
+      "file": "src/lib/memory/chromadb-client-fixed.ts",
+      "line": 102,
+      "description": "Missing timeout on ChromaDB document addition",
+      "evidence": "async addDocuments(collectionName: string, documents: any[]): Promise<void> {\n    if (!this.client || documents.length === 0) return;\n\n    try {\n      const collection = await this.getCollection(collectionName);\n      \n      const ids = documents.map((_, index) => `${collectionName}_${Date.now()}_${index}`);\n      const documentsContent = documents.map(doc => doc.content || JSON.stringify(doc));\n      \n      // Fix metadata - flatten arrays and objects to strings for ChromaDB compatibility\n      const metadatas = documents.map(doc => {\n        const metadata = doc.metadata || {};\n        const flatMetadata: { [key: string]: string | number | boolean | null } = {};\n        \n        for (const [key, value] of Object.entries(metadata)) {\n          if (Array.isArray(value)) {\n            flatMetadata[key] = value.join(', '); // Convert arrays to comma-separated strings\n          } else if (typeof value === 'object' && value !== null) {\n            flatMetadata[key] = JSON.stringify(value); // Convert objects to JSON strings\n          } else if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || value === null) {\n            flatMetadata[key] = value as string | number | boolean | null; // Keep simple types as-is\n          } else {\n            flatMetadata[key] = String(value); // Convert everything else to string\n          }\n        }\n        \n        return flatMetadata;\n      });\n\n      // Use official client's add method\n      await collection.add({\n        ids,\n        documents: documentsContent,\n        metadatas\n      });\n\n      console.log(`✅ Successfully stored ${documents.length} documents in ChromaDB collection '${collectionName}'`);\n    } catch (error) {\n      throw new Error(`Failed to add documents to ${collectionName}: ${error}`);\n    }\n  }",
+      "recommendation": "Add timeout handling to the collection.add() call using AbortController with 5 second timeout."
+    },
+    {
+      "fingerprint": "async-correctness:src/lib/memory/chromadb-client-fixed.ts:122:missing-timeout",
+      "severity": "P1",
+      "category": "missing-timeout",
+      "file": "src/lib/memory/chromadb-client-fixed.ts",
+      "line": 122,
+      "description": "Missing timeout on ChromaDB query operation",
+      "evidence": "async queryCollection(collectionName: string, queryText: string, limit: number = 5): Promise<any[]> {\n    if (!this.client) return [];\n\n    try {\n      const collection = await this.getCollection(collectionName);\n      \n      // Use official client's query method\n      const results = await collection.query({\n        queryTexts: [queryText],\n        nResults: limit\n      });\n\n      console.log(`🔍 ChromaDB query returned ${results.documents[0]?.length || 0} results`);\n\n      if (results.documents[0] && results.documents[0].length > 0) {\n        return results.documents[0].map((doc: string, index: number) => ({\n          id: results.ids[0][index],\n          content: doc,\n          metadata: results.metadatas[0][index],\n          distance: results.distances[0][index],\n          similarity: 1 - results.distances[0][index]\n        }));\n      }\n\n      return [];\n    } catch (error) {\n      console.error(`ChromaDB query failed for ${collectionName}:`, error);\n      return [];\n    }\n  }",
+      "recommendation": "Add timeout handling to the collection.query() call using AbortController with 5 second timeout."
+    },
+    {
+      "fingerprint": "async-correctness:src/lib/memory/shared-memory.ts:215:race-condition",
+      "severity": "P1",
+      "category": "race-condition",
+      "file": "src/lib/memory/shared-memory.ts",
+      "line": 215,
+      "description": "Race condition in shared memory store operations",
+      "evidence": "async storeConversation(memory: ConversationMemory): Promise<string> {\n    // Auto-extract context and tags if not provided\n    if (memory.context.length === 0) {\n      memory.context = this.contextExtractor.extractContext(memory.userMessage, memory.assistantResponse);\n    }\n    \n    if (memory.tags.length === 0) {\n      memory.tags = this.contextExtractor.generateTags(memory.userMessage, memory.assistantResponse, memory.domain);\n    }\n\n    // Always store in JSON (primary for fallback, backup for ChromaDB)\n    const jsonId = await this.jsonStorage.storeConversation(memory);\n    \n    // Store in ChromaDB if available\n    if (this.chromaClient.isChromaAvailable()) {\n      try {\n        const document = {\n          content: `${memory.userMessage}\\n${memory.assistantResponse}`,\n          metadata: {\n            sessionId: memory.sessionId,\n            domain: memory.domain,\n            timestamp: memory.timestamp,\n            context: memory.context,\n            tags: memory.tags\n          }\n        };\n        \n        await this.chromaClient.addDocuments('conversations', [document]);\n        console.error('📝 ACTUALLY stored conversation in ChromaDB and JSON');\n      } catch (error) {\n        console.error('⚠️ ChromaDB storage failed, JSON backup complete:', error);\n      }\n    } else {\n      console.error('📝 Stored conversation in JSON (ChromaDB unavailable)');\n    }\n    \n    return jsonId;\n  }",
+      "recommendation": "Use atomic operations or locking mechanism to ensure consistency when storing in both JSON and ChromaDB. Consider implementing a single atomic write operation or using transaction-like semantics."
+    },
+    {
+      "fingerprint": "async-correctness:src/lib/memory/shared-memory.ts:235:race-condition",
+      "severity": "P1",
+      "category": "race-condition",
+      "file": "src/lib/memory/shared-memory.ts",
+      "line": 235,
+      "description": "Race condition in operational memory store operations",
+      "evidence": "async storeOperational(memory: OperationalMemory): Promise<string> {\n    // Always store in JSON\n    const jsonId = await this.jsonStorage.storeOperational(memory);\n    \n    // Store in ChromaDB if available\n    if (this.chromaClient.isChromaAvailable()) {\n      try {\n        const document = {\n          content: `${memory.symptoms.join(' ')} ${memory.rootCause || ''} ${memory.resolution || ''}`,\n          metadata: {\n            incidentId: memory.incidentId,\n            domain: memory.domain,\n            timestamp: memory.timestamp,\n            rootCause: memory.rootCause,\n            environment: memory.environment,\n            affectedResources: memory.affectedResources,\n            tags: memory.tags\n          }\n        };\n        \n        await this.chromaClient.addDocuments('operational', [document]);\n        console.error('📊 ACTUALLY stored operational memory in ChromaDB and JSON');\n      } catch (error) {\n        console.error('⚠️ ChromaDB storage failed, JSON backup complete:', error);\n      }\n    } else {\n      console.error('📊 Stored operational memory in JSON (ChromaDB unavailable)');\n    }\n    \n    return jsonId;\n  }",
+      "recommendation": "Use atomic operations or locking mechanism to ensure consistency when storing in both JSON and ChromaDB. Consider implementing a single atomic write operation or using transaction-like semantics."
+    },
+    {
+      "fingerprint": "async-correctness:src/lib/memory/shared-memory.ts:320:missing-timeout",
+      "severity": "P1",
+      "category": "missing-timeout",
+      "file": "src/lib/memory/shared-memory.ts",
+      "line": 320,
+      "description": "Missing timeout on ChromaDB query operations in vector search",
+      "evidence": "private async vectorSearchConversations(query: string, limit: number): Promise<MemorySearchResult[]> {\n    try {\n      const results = await this.chromaClient.queryCollection('conversations', query, limit);\n      \n      return results.map(result => ({\n        memory: {\n          sessionId: result.metadata.sessionId || 'unknown',\n          domain: result.metadata.domain || 'general',\n          timestamp: result.metadata.timestamp || Date.now(),\n          userMessage: result.content.split('\\n')[0] || '',\n          assistantResponse: result.content,\n          context: result.metadata.context || [],\n          tags: result.metadata.tags || []\n        },\n        similarity: result.similarity,\n        relevance: result.similarity * 100\n      }));\n    } catch (error) {\n      console.error('Vector search conversations failed:', error);\n      return [];\n    }\n  }",
+      "recommendation": "Add timeout handling to the queryCollection call in this method using AbortController with 5 second timeout."
+    },
+    {
+      "fingerprint": "async-correctness:src/lib/memory/shared-memory.ts:340:missing-timeout",
+      "severity": "P1",
+      "category": "missing-timeout",
+      "file": "src/lib/memory/shared-memory.ts",
+      "line": 340,
+      "description": "Missing timeout on ChromaDB query operations in operational vector search",
+      "evidence": "private async vectorSearchOperational(query: string, limit: number): Promise<MemorySearchResult[]> {\n    try {\n      const results = await this.chromaClient.queryCollection('operational', query, limit);\n      \n      return results.map(result => ({\n        memory: {\n          incidentId: result.metadata.incidentId || 'unknown',\n          domain: result.metadata.domain || 'storage',\n          timestamp: result.metadata.timestamp || Date.now(),\n          symptoms: result.content.split(' ').slice(0, 5),\n          rootCause: result.metadata.rootCause || 'unknown',\n          environment: result.metadata.environment || 'prod',\n          affectedResources: result.metadata.affectedResources || [],\n          diagnosticSteps: result.content.split('.').slice(0, 3),\n          tags: result.metadata.tags || []\n        },\n        similarity: result.similarity,\n        relevance: result.similarity * 100\n      }));\n    } catch (error) {\n      console.error('Vector search operational failed:', error);\n      return [];\n    }\n  }",
+      "recommendation": "Add timeout handling to the queryCollection call in this method using AbortController with 5 second timeout."
+    }
+  ]
+}

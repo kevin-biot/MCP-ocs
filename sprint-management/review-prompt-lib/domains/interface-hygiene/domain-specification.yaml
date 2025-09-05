@@ -1,0 +1,135 @@
+domain:
+  name: "interface-hygiene"
+  version: "1.0"
+  description: "Detect TypeScript interface and structural typing issues that could cause runtime type errors or accidental structural matches"
+  maintainer: "Quality Engineering Team"
+  last_updated: "2025-09-05"
+  
+review:
+  prompt_version: "v1.0"
+  estimated_duration: "20-25 minutes"
+  file_patterns:
+    - "src/**/*.ts"
+    - "src/**/*.d.ts"
+    - "!src/**/*.test.ts"
+    - "!src/**/*.spec.ts"
+    - "!src/**/__tests__/**"
+    - "!src/**/*.mock.ts"
+    - "!src/**/*.config.ts"
+  llm_requirements:
+    - "code-analysis"
+    - "pattern-detection"
+    - "typescript-understanding"
+    - "structural-typing-knowledge"
+
+severity_levels:
+  P0:
+    name: "Critical"
+    description: "Block merge immediately - Type safety violation risk"
+    sla: "Fix within 4 hours"
+    escalation: "Page on-call engineer + TS expert"
+    action: "BLOCK_MERGE"
+  P1:
+    name: "High"  
+    description: "Fix within current sprint - Type confusion risk"
+    sla: "Fix within 2 days"
+    escalation: "Sprint backlog priority"
+    action: "FIX_THIS_SPRINT"
+  P2:
+    name: "Medium"
+    description: "Technical debt - type safety erosion"
+    sla: "Fix within 1 week"
+    escalation: "Quality sprint allocation"
+    action: "TYPE_DEBT"
+  P3:
+    name: "Low"
+    description: "Type hygiene - improve when convenient"
+    sla: "Fix when touching related code"
+    escalation: "Code review reminder"
+    action: "OPPORTUNISTIC_FIX"
+
+categories:
+  unsafe-any-usage:
+    description: "Unsafe `any` type usage that bypasses type checking"
+    typical_effort: "30-60 minutes"
+    risk_level: "critical"
+    examples: 
+      - "function parameters typed as any"
+      - "return types declared as any"
+      - "any assertions in critical paths"
+  dangerous-type-assertions:
+    description: "Unsafe `as` assertions that could cause runtime errors"
+    typical_effort: "45-90 minutes" 
+    risk_level: "critical"
+    examples:
+      - "unchecked as assertions on external data"
+      - "as unknown as T without validation"
+      - "DOM element assertions without null checks"
+  structural-type-confusion:
+    description: "Interfaces that could structurally match unintended types"
+    typical_effort: "60-120 minutes"
+    risk_level: "high"
+    examples:
+      - "generic objects matching specific interfaces"
+      - "string IDs matching across different domains"
+      - "number types used interchangeably"
+  missing-branded-types:
+    description: "Primitive types used where branded types would prevent confusion"
+    typical_effort: "45-90 minutes"
+    risk_level: "medium" 
+    examples:
+      - "string used for user IDs and product IDs"
+      - "number used for prices and quantities"
+      - "Date vs timestamp number confusion"
+  incomplete-interface-definitions:
+    description: "Interfaces missing required properties or having unclear optionality"
+    typical_effort: "30-45 minutes"
+    risk_level: "medium"
+    examples:
+      - "optional properties that should be required"
+      - "missing discriminant properties for unions"
+      - "unclear null/undefined handling"
+
+integration:
+  backlog_domain: "d-010-interface-hygiene"
+  task_prefix: "INTERFACE"
+  sprint_estimation:
+    P0: "2-4 hours"
+    P1: "1-2 hours"
+    P2: "30-90 minutes" 
+    P3: "15-30 minutes"
+  auto_actions:
+    - "create_tasks_for_new_findings"
+    - "mark_resolved_when_not_found"
+    - "escalate_persistent_p0_after_6_hours"
+    - "escalate_persistent_p1_after_1_day"
+
+quality_gates:
+  clean_threshold:
+    P0: 0  # Zero P0 issues to be considered "clean"
+    P1: 1  # Maximum 1 P1 issue acceptable
+    P2: 3  # Maximum 3 P2 issues acceptable
+  regression_detection:
+    enabled: true
+    alert_on_new_p0: true
+    alert_on_p1_increase: true
+  trend_analysis:
+    track_resolution_time: true
+    track_recurrence_rate: true
+    type_safety_report: true
+
+tooling:
+  compatible_llms:
+    - "qwen"
+    - "claude-3"
+    - "gpt-4"
+    - "codellama"
+  output_validation:
+    required_fields: ["fingerprint", "severity", "category", "file", "line", "description", "evidence", "recommendation", "type_safety_impact"]
+    fingerprint_pattern: "^interface-hygiene:[^:]+:[0-9]+:(unsafe-any-usage|dangerous-type-assertions|structural-type-confusion|missing-branded-types|incomplete-interface-definitions):[a-z0-9]{8}$"
+    fingerprint_components:
+      - "domain: interface-hygiene"
+      - "file: relative path from repo root"
+      - "line: line number where issue occurs"
+      - "category: issue type"
+      - "content_hash: 8-char hash of normalized code evidence"
