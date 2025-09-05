@@ -1,0 +1,87 @@
+{
+  "registry_metadata": {
+    "created": "2025-09-05T00:00:00.000Z",
+    "last_updated": "2025-09-05T00:00:00.000Z",
+    "version": "1.0",
+    "framework": "Process v3.3 + Review-Prompt-Lib 1.0",
+    "total_sprints": 0
+  },
+  "completed_sprints": [
+    {
+      "sprint_id": "example-sprint-entry",
+      "completion_date": "2025-09-05",
+      "problem_category": "interface-hygiene",
+      "framework_version": "v3.3",
+      "metrics": {
+        "duration_minutes": 185,
+        "files_modified": 12,
+        "quality_findings": 15,
+        "resolution_rate": 0.87
+      },
+      "archive_location": "archive/completed-sprints/example-sprint-entry/",
+      "quality_integration": "completed"
+    }
+  ],
+  "metrics_trends": {
+    "average_duration_minutes": 0,
+    "average_resolution_rate": 0,
+    "framework_effectiveness": "unknown",
+    "quality_integration_success": 0
+  },
+  "domain_statistics": {
+    "async-correctness": {
+      "sprints_completed": 0,
+      "average_duration": 0,
+      "average_resolution_rate": 0
+    },
+    "interface-hygiene": {
+      "sprints_completed": 0,
+      "average_duration": 0,
+      "average_resolution_rate": 0
+    },
+    "trust-boundaries": {
+      "sprints_completed": 0,
+      "average_duration": 0,
+      "average_resolution_rate": 0
+    },
+    "security-patterns": {
+      "sprints_completed": 0,
+      "average_duration": 0,
+      "average_resolution_rate": 0
+    },
+    "exhaustiveness-checking": {
+      "sprints_completed": 0,
+      "average_duration": 0,
+      "average_resolution_rate": 0
+    },
+    "api-contracts": {
+      "sprints_completed": 0,
+      "average_duration": 0,
+      "average_resolution_rate": 0
+    },
+    "error-taxonomy": {
+      "sprints_completed": 0,
+      "average_duration": 0,
+      "average_resolution_rate": 0
+    },
+    "date-time-safety": {
+      "sprints_completed": 0,
+      "average_duration": 0,
+      "average_resolution_rate": 0
+    }
+  },
+  "framework_evolution": {
+    "v3.1": {
+      "sprints_completed": 0,
+      "effectiveness_score": "unknown"
+    },
+    "v3.2": {
+      "sprints_completed": 0,
+      "effectiveness_score": "field_validated"
+    },
+    "v3.3": {
+      "sprints_completed": 0,
+      "effectiveness_score": "unknown"
+    }
+  }
+}
