@@ -9,6 +9,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { createHash } from 'crypto';
 import { MCPFilesChromaAdapter } from '@/lib/memory/mcp-files-adapter';
+import { MemoryError } from '@/lib/errors/index.js';
 
 // Types
 export interface ConversationMemory {

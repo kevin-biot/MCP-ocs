@@ -118,11 +118,11 @@ export class MCPOcsMemoryAdapter {
     return 'Common patterns suggest resource allocation or configuration issues.';
   }
   
-  private extractRecommendations(memories: any[]): string[] {
+  private extractRecommendations(memories: Array<{ metadata?: { tags?: unknown } }>): string[] {
     const tags = new Set<string>();
-    for (const m of memories as any[]) {
+    for (const m of memories) {
       const mtags = this.normalizeTags(m?.metadata?.tags);
-      mtags.forEach((t: string) => tags.add(t));
+      mtags.forEach((t) => tags.add(t));
     }
 
     const recs = new Set<string>();
@@ -149,11 +149,11 @@ export class MCPOcsMemoryAdapter {
     return Array.from(recs);
   }
 
-  private classifyAggregateSeverity(memories: any[]): 'low' | 'medium' | 'high' | 'critical' {
+  private classifyAggregateSeverity(memories: Array<{ metadata?: { tags?: unknown } }>): 'low' | 'medium' | 'high' | 'critical' {
     const order = ['low', 'medium', 'high', 'critical'] as const;
     let maxIndex = 0;
-    for (const m of memories as any[]) {
-      const tags: string[] = this.normalizeTags(m?.metadata?.tags);
+    for (const m of memories) {
+      const tags = this.normalizeTags(m?.metadata?.tags);
       for (const t of tags) {
         if (t.startsWith('severity:')) {
           const sev = t.split(':')[1] as 'low'|'medium'|'high'|'critical' | undefined;

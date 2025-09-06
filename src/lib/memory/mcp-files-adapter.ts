@@ -69,30 +69,32 @@ export class MCPFilesChromaAdapter {
   async searchConversations(query: string, limit: number = 5): Promise<any[]> {
     const results = await this.chromaManager.searchRelevantMemories(query, undefined, limit);
 
-    return results.map((result: any) => {
-      const meta = result.metadata || {};
-      const context = Array.isArray(meta.context)
-        ? meta.context
-        : typeof meta.context === 'string'
-          ? meta.context.split(/,\s*/).filter(Boolean)
-          : [];
-      const tags = Array.isArray(meta.tags)
-        ? meta.tags
-        : typeof meta.tags === 'string'
-          ? meta.tags.split(/,\s*/).filter(Boolean)
-          : [];
+    return results.map((result) => {
+      const metaRaw = (result && typeof result === 'object' && 'metadata' in result) ? (result as any).metadata : {};
+      const content = (result && typeof result === 'object' && 'content' in result) ? (result as any).content : '';
+      const distance = (result && typeof result === 'object' && typeof (result as any).distance === 'number') ? (result as any).distance : undefined;
+      const meta = (typeof metaRaw === 'object' && metaRaw !== null) ? metaRaw as Record<string, unknown> : {};
+      const ctx = meta.context;
+      const tagsRaw = meta.tags;
+      const context: string[] = Array.isArray(ctx)
+        ? (ctx as unknown[]).filter((t): t is string => typeof t === 'string')
+        : (typeof ctx === 'string' ? (ctx as string).split(/,\s*/).filter(Boolean) : []);
+      const tags: string[] = Array.isArray(tagsRaw)
+        ? (tagsRaw as unknown[]).filter((t): t is string => typeof t === 'string')
+        : (typeof tagsRaw === 'string' ? (tagsRaw as string).split(/,\s*/).filter(Boolean) : []);
+
       return {
         memory: {
-          sessionId: meta.sessionId || 'unknown',
-          domain: meta.domain || 'mcp-ocs',
-          timestamp: meta.timestamp || Date.now(),
-          userMessage: meta.userMessage || (typeof result.content === 'string' ? result.content.split('\n')[0] : ''),
-          assistantResponse: meta.assistantResponse || result.content || '',
+          sessionId: typeof meta.sessionId === 'string' ? meta.sessionId : 'unknown',
+          domain: typeof meta.domain === 'string' ? meta.domain : 'mcp-ocs',
+          timestamp: typeof meta.timestamp === 'number' ? meta.timestamp : Date.now(),
+          userMessage: typeof meta.userMessage === 'string' ? meta.userMessage : (typeof content === 'string' ? content.split('\n')[0] : ''),
+          assistantResponse: typeof meta.assistantResponse === 'string' ? meta.assistantResponse : (typeof content === 'string' ? content : ''),
           context,
           tags
         },
-        similarity: typeof result.distance === 'number' ? (1 - result.distance) : (result.similarity ?? 0.5),
-        relevance: typeof result.distance === 'number' ? (1 - result.distance) * 100 : (result.relevance ?? 50)
+        similarity: typeof distance === 'number' ? (1 - distance) : (typeof (result as any)?.similarity === 'number' ? (result as any).similarity : 0.5),
+        relevance: typeof distance === 'number' ? (1 - distance) * 100 : (typeof (result as any)?.relevance === 'number' ? (result as any).relevance : 50)
       };
     });
   }
@@ -128,38 +130,42 @@ export class MCPFilesChromaAdapter {
       });
     } catch {}
 
-    return results.map((result: any) => {
-      const meta = result.metadata || {};
-      const context = Array.isArray(meta.affectedResources)
-        ? meta.affectedResources
-        : Array.isArray(meta.context)
-          ? meta.context
-          : typeof meta.context === 'string'
-            ? meta.context.split(/,\s*/).filter(Boolean)
-            : [];
-      const tags = Array.isArray(meta.tags)
-        ? meta.tags
-        : typeof meta.tags === 'string'
-          ? meta.tags.split(/,\s*/).filter(Boolean)
-          : [];
-      const assistant = meta.assistantResponse || '';
-      const root = (assistant.split('Root Cause: ')[1] || '').split('\n')[0] || meta.rootCause || 'Unknown';
-      const resolution = (assistant.split('Resolution: ')[1] || '') || meta.resolution || 'Pending';
+    return results.map((result) => {
+      const metaRaw = (result && typeof result === 'object' && 'metadata' in result) ? (result as any).metadata : {};
+      const content = (result && typeof result === 'object' && 'content' in result) ? (result as any).content : '';
+      const distance = (result && typeof result === 'object' && typeof (result as any).distance === 'number') ? (result as any).distance : undefined;
+      const meta = (typeof metaRaw === 'object' && metaRaw !== null) ? metaRaw as Record<string, unknown> : {};
+      const affected = meta.affectedResources;
+      const ctx = meta.context;
+      const tagsRaw = meta.tags;
+      const context: string[] = Array.isArray(affected)
+        ? (affected as unknown[]).filter((t): t is string => typeof t === 'string')
+        : Array.isArray(ctx)
+          ? (ctx as unknown[]).filter((t): t is string => typeof t === 'string')
+          : (typeof ctx === 'string' ? (ctx as string).split(/,\s*/).filter(Boolean) : []);
+      const tags: string[] = Array.isArray(tagsRaw)
+        ? (tagsRaw as unknown[]).filter((t): t is string => typeof t === 'string')
+        : (typeof tagsRaw === 'string' ? (tagsRaw as string).split(/,\s*/).filter(Boolean) : []);
+      const assistant = typeof meta.assistantResponse === 'string' ? meta.assistantResponse : '';
+      const root = (assistant.split('Root Cause: ')[1] || '').split('\n')[0] || (typeof meta.rootCause === 'string' ? meta.rootCause : 'Unknown');
+      const resolution = (assistant.split('Resolution: ')[1] || '') || (typeof meta.resolution === 'string' ? meta.resolution : 'Pending');
+      const rawId = (typeof meta.incidentId === 'string' ? meta.incidentId : (typeof meta.sessionId === 'string' ? meta.sessionId : 'unknown'));
+      const incidentId = String(rawId).replace(/^incident-/, '');
       return {
         memory: {
-          incidentId: (meta.incidentId || meta.sessionId || 'unknown').toString().replace(/^incident-/, ''),
-          domain: meta.domain || 'mcp-ocs',
-          timestamp: meta.timestamp || Date.now(),
-          symptoms: [meta.userMessage || 'Unknown'],
+          incidentId,
+          domain: typeof meta.domain === 'string' ? meta.domain : 'mcp-ocs',
+          timestamp: typeof meta.timestamp === 'number' ? meta.timestamp : Date.now(),
+          symptoms: [typeof meta.userMessage === 'string' ? meta.userMessage : (typeof content === 'string' ? content : 'Unknown')],
           rootCause: root,
           resolution,
-          environment: (meta.environment as any) || 'unknown',
+          environment: typeof meta.environment === 'string' ? meta.environment : 'unknown',
           affectedResources: context,
           diagnosticSteps: [],
           tags
         },
-        similarity: typeof result.distance === 'number' ? (1 - result.distance) : (result.similarity ?? 0.5),
-        relevance: typeof result.distance === 'number' ? (1 - result.distance) * 100 : (result.relevance ?? 50)
+        similarity: typeof distance === 'number' ? (1 - distance) : (typeof (result as any)?.similarity === 'number' ? (result as any).similarity : 0.5),
+        relevance: typeof distance === 'number' ? (1 - distance) * 100 : (typeof (result as any)?.relevance === 'number' ? (result as any).relevance : 50)
       };
     });
   }

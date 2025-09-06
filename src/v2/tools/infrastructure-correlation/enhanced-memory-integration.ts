@@ -12,7 +12,7 @@
  */
 
 import { SharedMemoryManager, MemorySearchResult, OperationalMemory } from '../../../lib/memory/shared-memory';
-import { nowIso } from '../../../utils/time.js';
+import { nowEpoch } from '../../../utils/time.js';
 import type { ZoneAvailability, StorageZoneConflict, InfrastructureCorrelationInput } from './index';
 
 export interface InfrastructureContext {
@@ -96,7 +96,7 @@ export class EnhancedInfrastructureMemory {
       const operationalMemory: OperationalMemory = {
         incidentId: `infra_${Date.now()}_${sessionId}`,
         domain: 'openshift',
-        timestamp: nowIso(),
+        timestamp: nowEpoch(),
         symptoms: incident.symptoms,
         environment: 'prod', // Could be parameterized
         affectedResources: [

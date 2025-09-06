@@ -7,36 +7,13 @@
 import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
 import { SharedMemoryManager } from '../../../lib/memory/shared-memory';
 import { InfrastructureCorrelationChecker, InfrastructureCorrelationResult } from '../infrastructure-correlation';
+import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
 export interface EnhancedNamespaceHealthInput {
     namespace: string;
     includeIngressTest?: boolean;
     includeInfrastructureCorrelation?: boolean;
     maxLogLinesPerPod?: number;
     sessionId: string;
-}
-export interface PodHealthSummary {
-    ready: number;
-    total: number;
-    crashloops: string[];
-    pending: string[];
-    imagePullErrors: string[];
-    oomKilled: string[];
-}
-export interface PVCHealthSummary {
-    bound: number;
-    pending: number;
-    failed: number;
-    total: number;
-    errors: string[];
-}
-export interface RouteHealthSummary {
-    total: number;
-    reachable?: boolean;
-    probe?: {
-        url: string;
-        code: number;
-        message: string;
-    };
 }
 export interface ScaleDownAnalysis {
     isScaleDown: boolean;

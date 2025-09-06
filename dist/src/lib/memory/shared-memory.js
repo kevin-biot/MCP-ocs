@@ -7,6 +7,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { MCPFilesChromaAdapter } from '@/lib/memory/mcp-files-adapter';
+import { MemoryError } from '@/lib/errors/index.js';
 /**
  * Context Extractor for automatic tag and context generation
  */

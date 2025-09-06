@@ -4,6 +4,7 @@
  * Now includes infrastructure correlation to detect zone/storage conflicts
  * that cause pods to remain pending for hours (like tekton-results-postgres)
  */
+import { nowIso, nowEpoch } from '../../../utils/time.js';
 import { InfrastructureCorrelationChecker } from '../infrastructure-correlation';
 export class EnhancedNamespaceHealthChecker {
     ocWrapper;
@@ -22,7 +23,7 @@ export class EnhancedNamespaceHealthChecker {
      * Enhanced health check with optional infrastructure correlation
      */
     async checkHealth(input) {
-        const startTime = Date.now();
+        const startTime = nowEpoch();
         const { namespace, includeIngressTest = false, includeInfrastructureCorrelation = true } = input;
         // Validate namespace exists first
         const namespaceExists = await this.ocWrapper.validateNamespaceExists(namespace);
@@ -89,8 +90,8 @@ export class EnhancedNamespaceHealthChecker {
                 suspicions: infrastructureCorrelation.enhancedSuspicions,
                 infrastructureCorrelation,
                 human,
-                timestamp: new Date().toISOString(),
-                duration: Date.now() - startTime
+                timestamp: nowIso(),
+                duration: nowEpoch() - startTime
             };
             return result;
         }
@@ -332,10 +333,15 @@ export class EnhancedNamespaceHealthChecker {
     analyzeCriticalEvents(eventsData) {
         const events = eventsData.items || [];
         const criticalEvents = [];
-        const cutoffTime = Date.now() - (10 * 60 * 1000); // Last 10 minutes
+        const cutoffTime = nowEpoch() - (10 * 60 * 1000); // Last 10 minutes
         for (const event of events) {
             if (event.type !== 'Normal') {
-                const eventTime = new Date(event.lastTimestamp || event.eventTime).getTime();
+                const raw = event.lastTimestamp || event.eventTime;
+                const parsed = new Date(raw);
+                const eventTime = parsed.getTime();
+                if (isNaN(eventTime)) {
+                    continue; // skip invalid dates
+                }
                 if (eventTime > cutoffTime) {
                     const reason = event.reason;
                     const message = event.message;
@@ -372,17 +378,29 @@ export class EnhancedNamespaceHealthChecker {
                 analysis.deploymentStatus.scaledToZero++;
                 analysis.evidence.push(`Deployment ${name} intentionally scaled to 0 replicas`);
             }
-            const lastUpdateTime = new Date(deployment.metadata.resourceVersion || 0).getTime();
-            const recentThreshold = Date.now() - (2 * 60 * 60 * 1000);
-            if (lastUpdateTime > recentThreshold && desiredReplicas !== availableReplicas) {
+            // resourceVersion is not a timestamp; prefer valid timestamps when available
+            const candidateTimestamp = deployment.metadata?.creationTimestamp ||
+                (deployment.status?.conditions || []).find((c) => c?.lastUpdateTime)?.lastUpdateTime ||
+                (deployment.status?.conditions || []).find((c) => c?.lastTransitionTime)?.lastTransitionTime;
+            let lastUpdateTime = NaN;
+            if (candidateTimestamp) {
+                const d = new Date(candidateTimestamp);
+                lastUpdateTime = d.getTime();
+            }
+            const recentThreshold = nowEpoch() - (2 * 60 * 60 * 1000);
+            if (!isNaN(lastUpdateTime) && lastUpdateTime > recentThreshold && desiredReplicas !== availableReplicas) {
                 analysis.deploymentStatus.recentlyScaled.push(name);
                 analysis.evidence.push(`Deployment ${name} recently modified (desired: ${desiredReplicas}, available: ${availableReplicas})`);
             }
         }
         // Analyze events for scale-down indicators
         const recentEvents = events.filter((event) => {
-            const eventTime = new Date(event.lastTimestamp || event.eventTime).getTime();
-            const cutoff = Date.now() - (60 * 60 * 1000);
+            const raw = event.lastTimestamp || event.eventTime;
+            const d = new Date(raw);
+            const eventTime = d.getTime();
+            const cutoff = nowEpoch() - (60 * 60 * 1000);
+            if (isNaN(eventTime))
+                return false;
             return eventTime > cutoff;
         });
         for (const event of recentEvents) {
@@ -508,8 +526,8 @@ export class EnhancedNamespaceHealthChecker {
             suspicions: [error],
             infrastructureCorrelation: { enabled: false, enhancedSuspicions: [error] },
             human: `Namespace ${namespace} health check failed: ${error}`,
-            timestamp: new Date().toISOString(),
-            duration: Date.now() - startTime
+            timestamp: nowIso(),
+            duration: nowEpoch() - startTime
         };
     }
     isPodStuckCreating(pod) {

@@ -280,14 +280,17 @@ export class OcWrapperV2 {
         env: { ...process.env, KUBECONFIG: process.env.KUBECONFIG }
       });
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(`❌ Command failed: ${command}`);
-      console.error(`❌ Error: ${error.message}`);
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error(`❌ Error: ${msg}`);
       
-      if (error.code === 'ETIMEDOUT') {
+      // Narrow error for code property
+      const code = (typeof (error as any)?.code === 'string' || typeof (error as any)?.code === 'number') ? (error as any).code : undefined;
+      if (code === 'ETIMEDOUT') {
         throw new Error(`Command timed out after ${timeout}ms: ${command}`);
       }
-      throw new Error(`Command failed: ${command} - ${error.message}`);
+      throw new Error(`Command failed: ${command} - ${msg}`);
     }
   }
 

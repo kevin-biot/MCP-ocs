@@ -25,12 +25,101 @@ export interface PVCBindingFailure {
   affectedResources: string[];
 }
 
-export interface Evidence {
-  type: 'pvcStatus' | 'events' | 'storageClass' | 'nodes' | 'pods' | 'provisioner' | 'persistent_volumes' | 'resource_quotas';
-  data: any;
+// Evidence as discriminated union for stronger typing
+interface PVCStatusEvidence {
+  type: 'pvcStatus';
+  data: {
+    phase: string;
+    capacity?: string;
+    accessModes?: string[];
+    name?: string;
+  };
   reasoning: string;
-  weight: number; // Evidence strength 0-1
+  weight: number;
 }
+
+interface EventsEvidence {
+  type: 'events';
+  data: {
+    items: Array<Record<string, unknown>>;
+    warningCount?: number;
+  };
+  reasoning: string;
+  weight: number;
+}
+
+interface StorageClassEvidence {
+  type: 'storageClass';
+  data: {
+    name: string;
+    provisioner?: string;
+    parameters?: Record<string, unknown>;
+    bindingMode?: string;
+  };
+  reasoning: string;
+  weight: number;
+}
+
+interface NodesEvidence {
+  type: 'nodes';
+  data: {
+    count: number;
+    zones?: string[];
+    conditions?: Record<string, unknown>[];
+  };
+  reasoning: string;
+  weight: number;
+}
+
+interface PodsEvidence {
+  type: 'pods';
+  data: {
+    pending: number;
+    crashLooping?: string[];
+  };
+  reasoning: string;
+  weight: number;
+}
+
+interface ProvisionerEvidence {
+  type: 'provisioner';
+  data: {
+    name: string;
+    healthy?: boolean;
+  };
+  reasoning: string;
+  weight: number;
+}
+
+interface PersistentVolumesEvidence {
+  type: 'persistent_volumes';
+  data: {
+    total: number;
+    available: number;
+  };
+  reasoning: string;
+  weight: number;
+}
+
+interface ResourceQuotasEvidence {
+  type: 'resource_quotas';
+  data: {
+    limits?: Record<string, unknown>;
+    hits?: string[];
+  };
+  reasoning: string;
+  weight: number;
+}
+
+export type Evidence =
+  | PVCStatusEvidence
+  | EventsEvidence
+  | StorageClassEvidence
+  | NodesEvidence
+  | PodsEvidence
+  | ProvisionerEvidence
+  | PersistentVolumesEvidence
+  | ResourceQuotasEvidence;
 
 export interface ResolutionStep {
   action: string;

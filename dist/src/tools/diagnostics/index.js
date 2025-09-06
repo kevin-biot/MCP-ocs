@@ -7,6 +7,7 @@
  * - Comprehensive health analysis
  * - Real-world operational patterns
  */
+import { nowIso, nowEpoch } from '../../utils/time.js';
 import { ToolMemoryGateway } from '../../lib/tools/tool-memory-gateway.js';
 import { OcWrapperV2 } from '../../v2/lib/oc-wrapper-v2.js';
 import { NamespaceHealthChecker } from '../../v2/tools/check-namespace-health/index.js';
@@ -189,17 +190,19 @@ export class DiagnosticToolsV2 {
         };
     }
     async executeTool(toolName, args) {
-        const { sessionId } = args;
+        const rec = (v) => (v && typeof v === 'object') ? v : {};
+        const raw = rec(args);
+        const sessionId = typeof raw.sessionId === 'string' ? raw.sessionId : `session-${Date.now()}`;
         try {
             switch (toolName) {
                 case 'oc_diagnostic_cluster_health':
-                    return await this.enhancedClusterHealth(args);
+                    return await this.enhancedClusterHealth(raw);
                 case 'oc_diagnostic_namespace_health':
-                    return await this.executeNamespaceHealthV2(args); // Use V2 implementation
+                    return await this.executeNamespaceHealthV2(raw); // Use V2 implementation
                 case 'oc_diagnostic_pod_health':
-                    return await this.enhancedPodHealth(args);
+                    return await this.enhancedPodHealth(raw);
                 case 'oc_diagnostic_rca_checklist':
-                    return await this.executeRCAChecklist(args);
+                    return await this.executeRCAChecklist(raw);
                 default:
                     throw new Error(`Unknown diagnostic tool: ${toolName}`);
             }
@@ -209,7 +212,7 @@ export class DiagnosticToolsV2 {
             await this.memoryManager.storeOperational({
                 incidentId: `diagnostic-error-${sessionId}-${Date.now()}`,
                 domain: 'cluster',
-                timestamp: Date.now(),
+                timestamp: nowEpoch(),
                 symptoms: [`Diagnostic tool error: ${toolName}`],
                 rootCause: error instanceof Error ? error.message : 'Unknown error',
                 affectedResources: [],
@@ -332,7 +335,7 @@ export class DiagnosticToolsV2 {
                         await this.memoryManager.storeOperational({
                             incidentId: `plan-strategy-${sessionId}`,
                             domain: 'cluster',
-                            timestamp: Date.now(),
+                            timestamp: nowIso(),
                             symptoms: ['plan_strategy', sessionId, 'mini_plan'],
                             affectedResources: steps.map((s) => s.tool),
                             diagnosticSteps: steps.map((s) => `Planned ${s.tool}`),
@@ -518,7 +521,7 @@ export class DiagnosticToolsV2 {
             await this.memoryManager.storeOperational({
                 incidentId: `namespace-health-${sessionId}`,
                 domain: 'cluster',
-                timestamp: Date.now(),
+                timestamp: nowEpoch(),
                 symptoms: healthResult.suspicions.length > 0 ? healthResult.suspicions : ['namespace_healthy'],
                 affectedResources: [`namespace/${namespace}`],
                 diagnosticSteps: ['Enhanced namespace health check completed'],
@@ -557,7 +560,7 @@ export class DiagnosticToolsV2 {
                 sessionId,
                 namespace,
                 podName,
-                timestamp: new Date().toISOString(),
+                timestamp: nowIso(),
                 health: podAnalysis,
                 dependencies,
                 resources: resourceAnalysis,
@@ -570,7 +573,7 @@ export class DiagnosticToolsV2 {
             await this.memoryManager.storeOperational({
                 incidentId: `pod-health-${sessionId}`,
                 domain: 'cluster',
-                timestamp: Date.now(),
+                timestamp: nowEpoch(),
                 symptoms: podAnalysis.issues.length > 0 ? podAnalysis.issues : ['pod_healthy'],
                 affectedResources: [`pod/${podName}`, `namespace/${namespace}`],
                 diagnosticSteps: ['Enhanced pod health check completed'],
@@ -901,7 +904,7 @@ export class DiagnosticToolsV2 {
             await this.memoryManager.storeOperational({
                 incidentId: `rca-checklist-${sessionId}`,
                 domain: 'cluster',
-                timestamp: Date.now(),
+                timestamp: nowEpoch(),
                 symptoms: checklistResult.evidence.symptoms,
                 affectedResources: checklistResult.evidence.affectedResources,
                 diagnosticSteps: checklistResult.evidence.diagnosticSteps,

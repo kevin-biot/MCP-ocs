@@ -27,7 +27,7 @@ export declare class DiagnosticToolsV2 implements ToolSuite {
     getTools(): StandardTool[];
     private getToolDefinitions;
     private convertToStandardTool;
-    executeTool(toolName: string, args: any): Promise<string>;
+    executeTool(toolName: string, args: unknown): Promise<string>;
     /**
      * Enhanced cluster health check with v2 capabilities
      */

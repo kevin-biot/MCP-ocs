@@ -10,6 +10,7 @@
  * - Cross-incident pattern recognition
  * - Historical infrastructure trend analysis
  */
+import { nowEpoch } from '../../../utils/time.js';
 export class EnhancedInfrastructureMemory {
     memoryManager;
     constructor(memoryManager) {
@@ -48,7 +49,7 @@ export class EnhancedInfrastructureMemory {
             const operationalMemory = {
                 incidentId: `infra_${Date.now()}_${sessionId}`,
                 domain: 'openshift',
-                timestamp: Date.now(),
+                timestamp: nowEpoch(),
                 symptoms: incident.symptoms,
                 environment: 'prod', // Could be parameterized
                 affectedResources: [

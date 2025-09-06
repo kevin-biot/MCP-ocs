@@ -8,6 +8,7 @@
  * - Route/Ingress connectivity testing
  * - Intelligent suspicion generation
  */
+import { nowEpoch } from '../../../utils/time.js';
 export class NamespaceHealthChecker {
     ocWrapper;
     constructor(ocWrapper) {
@@ -42,18 +43,29 @@ export class NamespaceHealthChecker {
                 analysis.deploymentStatus.scaledToZero++;
                 analysis.evidence.push(`Deployment ${name} intentionally scaled to 0 replicas`);
             }
-            // Check for recent scaling activity
-            const lastUpdateTime = new Date(deployment.metadata.resourceVersion || 0).getTime();
-            const recentThreshold = Date.now() - (2 * 60 * 60 * 1000); // Last 2 hours
-            if (lastUpdateTime > recentThreshold && desiredReplicas !== availableReplicas) {
+            // Check for recent scaling activity (validate date fields; resourceVersion is not a timestamp)
+            const candidateTimestamp = deployment.metadata?.creationTimestamp ||
+                (deployment.status?.conditions || []).find((c) => c?.lastUpdateTime)?.lastUpdateTime ||
+                (deployment.status?.conditions || []).find((c) => c?.lastTransitionTime)?.lastTransitionTime;
+            let lastUpdateTime = NaN;
+            if (candidateTimestamp) {
+                const d = new Date(candidateTimestamp);
+                lastUpdateTime = d.getTime();
+            }
+            const recentThreshold = nowEpoch() - (2 * 60 * 60 * 1000); // Last 2 hours
+            if (!isNaN(lastUpdateTime) && lastUpdateTime > recentThreshold && desiredReplicas !== availableReplicas) {
                 analysis.deploymentStatus.recentlyScaled.push(name);
                 analysis.evidence.push(`Deployment ${name} recently modified (desired: ${desiredReplicas}, available: ${availableReplicas})`);
             }
         }
         // Analyze events for scale-down indicators
         const recentEvents = events.filter((event) => {
-            const eventTime = new Date(event.lastTimestamp || event.eventTime).getTime();
-            const cutoff = Date.now() - (60 * 60 * 1000); // Last hour
+            const raw = event.lastTimestamp || event.eventTime;
+            const d = new Date(raw);
+            const eventTime = d.getTime();
+            const cutoff = nowEpoch() - (60 * 60 * 1000); // Last hour
+            if (isNaN(eventTime))
+                return false;
             return eventTime > cutoff;
         });
         for (const event of recentEvents) {

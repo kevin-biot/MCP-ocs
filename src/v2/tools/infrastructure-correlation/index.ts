@@ -9,7 +9,7 @@
  */
 
 import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
-import { nowIso } from '../../../utils/time.js';
+import { nowEpoch } from '../../../utils/time.js';
 import { SharedMemoryManager, MemorySearchResult } from '../../../lib/memory/shared-memory';
 
 // Core Types for Infrastructure Correlation
@@ -550,7 +550,7 @@ Primary concern: ${result.summary.primaryConcern}`;
       const conversationMemory = {
         sessionId,
         domain: 'openshift',
-        timestamp: nowIso(),
+        timestamp: nowEpoch(),
         userMessage,
         assistantResponse,
         context: [

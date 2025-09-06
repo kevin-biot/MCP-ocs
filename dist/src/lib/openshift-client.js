@@ -5,7 +5,7 @@
  * Uses `oc` command execution with proper error handling and output parsing
  */
 import { execSync, spawn } from 'child_process';
-import { TimeoutError } from '../errors/index.js';
+import { TimeoutError } from './errors/index.js';
 export class OpenShiftClient {
     config;
     envVars;
@@ -206,7 +206,7 @@ export class OpenShiftClient {
                 code: typeof error?.status === 'number' ? error.status : undefined,
                 stderr: error?.stderr ? String(error.stderr) : undefined,
             };
-            const { ExternalCommandError } = await import('../errors/index.js');
+            const { ExternalCommandError } = await import('./errors/index.js');
             throw new ExternalCommandError(`OpenShift command failed: ${errorMessage}`, { cause: error, details });
         }
     }

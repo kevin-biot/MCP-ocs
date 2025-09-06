@@ -10,7 +10,8 @@
  */
 
 import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
-import { nowEpoch } from '../../utils/time.js';
+import { nowEpoch } from '../../../utils/time.js';
+import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
 
 export interface NamespaceHealthInput {
   namespace: string;
@@ -18,32 +19,7 @@ export interface NamespaceHealthInput {
   maxLogLinesPerPod?: number;
 }
 
-export interface PodHealthSummary {
-  ready: number;
-  total: number;
-  crashloops: string[];
-  pending: string[];
-  imagePullErrors: string[];
-  oomKilled: string[];
-}
-
-export interface PVCHealthSummary {
-  bound: number;
-  pending: number;
-  failed: number;
-  total: number;
-  errors: string[];
-}
-
-export interface RouteHealthSummary {
-  total: number;
-  reachable?: boolean;
-  probe?: {
-    url: string;
-    code: number;
-    message: string;
-  };
-}
+// Types moved to './types'
 
 export interface ScaleDownAnalysis {
   isScaleDown: boolean;

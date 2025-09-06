@@ -8,7 +8,9 @@ export class AppError extends Error {
         this.name = kind;
         this.kind = kind;
         this.statusCode = options.statusCode ?? mapKindToStatus(kind);
-        this.details = options.details;
+        if (typeof options.details !== 'undefined') {
+            this.details = options.details;
+        }
     }
 }
 export class ValidationError extends AppError {
@@ -56,16 +58,28 @@ export function mapKindToStatus(kind) {
 }
 export function serializeError(err) {
     if (err instanceof AppError) {
-        return {
+        const out = {
             type: err.kind,
             message: err.message,
             statusCode: err.statusCode,
-            details: err.details,
-            cause: err.cause ? String(err.cause?.message ?? err.cause) : undefined,
         };
+        if (typeof err.details !== 'undefined')
+            out.details = err.details;
+        const causeMsg = err.cause ? String(err.cause?.message ?? err.cause) : undefined;
+        if (typeof causeMsg !== 'undefined')
+            out.cause = causeMsg;
+        return out;
     }
     if (err instanceof Error) {
-        return { type: err.name || 'Error', message: err.message, statusCode: 500, cause: err.cause ? String(err.cause) : undefined };
+        const out = {
+            type: err.name || 'Error',
+            message: err.message,
+            statusCode: 500,
+        };
+        const cause = err.cause ? String(err.cause) : undefined;
+        if (typeof cause !== 'undefined')
+            out.cause = cause;
+        return out;
     }
     return { type: 'UnknownError', message: String(err), statusCode: 500 };
 }

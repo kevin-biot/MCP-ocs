@@ -10,7 +10,7 @@
 
 import { ToolDefinition } from '../../lib/tools/tool-types.js';
 import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
-import { nowIso } from '../../utils/time.js';
+import { nowIso, nowEpoch } from '../../utils/time.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
 import { ToolMemoryGateway } from '../../lib/tools/tool-memory-gateway.js';
@@ -210,26 +210,28 @@ export class DiagnosticToolsV2 implements ToolSuite {
       inputSchema: toolDef.inputSchema,
       category: 'diagnostic' as const,
       version: 'v2' as const,
-      execute: async (args: any) => this.executeTool(toolDef.fullName, args)
+      execute: async (args: unknown) => this.executeTool(toolDef.fullName, args)
     };
   }
 
-  async executeTool(toolName: string, args: any): Promise<string> {
-    const { sessionId } = args;
+  async executeTool(toolName: string, args: unknown): Promise<string> {
+    const rec = (v: unknown): Record<string, unknown> => (v && typeof v === 'object') ? (v as Record<string, unknown>) : {};
+    const raw = rec(args);
+    const sessionId = typeof raw.sessionId === 'string' ? raw.sessionId : `session-${Date.now()}`;
 
     try {
       switch (toolName) {
         case 'oc_diagnostic_cluster_health':
-          return await this.enhancedClusterHealth(args);
+          return await this.enhancedClusterHealth(raw as any);
           
         case 'oc_diagnostic_namespace_health':
-          return await this.executeNamespaceHealthV2(args);  // Use V2 implementation
+          return await this.executeNamespaceHealthV2(raw as any);  // Use V2 implementation
           
         case 'oc_diagnostic_pod_health':
-          return await this.enhancedPodHealth(args);
+          return await this.enhancedPodHealth(raw as any);
           
         case 'oc_diagnostic_rca_checklist':
-          return await this.executeRCAChecklist(args);
+          return await this.executeRCAChecklist(raw as any);
           
         default:
           throw new Error(`Unknown diagnostic tool: ${toolName}`);
@@ -239,7 +241,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
       await this.memoryManager.storeOperational({
         incidentId: `diagnostic-error-${sessionId}-${Date.now()}`,
         domain: 'cluster',
-        timestamp: nowIso(),
+        timestamp: nowEpoch(),
         symptoms: [`Diagnostic tool error: ${toolName}`],
         rootCause: error instanceof Error ? error.message : 'Unknown error',
         affectedResources: [],
@@ -602,7 +604,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
       await this.memoryManager.storeOperational({
         incidentId: `namespace-health-${sessionId}`,
         domain: 'cluster',
-        timestamp: nowIso(),
+        timestamp: nowEpoch(),
         symptoms: healthResult.suspicions.length > 0 ? healthResult.suspicions : ['namespace_healthy'],
         affectedResources: [`namespace/${namespace}`],
         diagnosticSteps: ['Enhanced namespace health check completed'],
@@ -672,7 +674,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
       await this.memoryManager.storeOperational({
         incidentId: `pod-health-${sessionId}`,
         domain: 'cluster',
-        timestamp: nowIso(),
+        timestamp: nowEpoch(),
         symptoms: podAnalysis.issues.length > 0 ? podAnalysis.issues : ['pod_healthy'],
         affectedResources: [`pod/${podName}`, `namespace/${namespace}`],
         diagnosticSteps: ['Enhanced pod health check completed'],
@@ -1048,7 +1050,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
       await this.memoryManager.storeOperational({
         incidentId: `rca-checklist-${sessionId}`,
         domain: 'cluster',
-        timestamp: new Date().toISOString(),
+        timestamp: nowEpoch(),
         symptoms: checklistResult.evidence.symptoms,
         affectedResources: checklistResult.evidence.affectedResources,
         diagnosticSteps: checklistResult.evidence.diagnosticSteps,

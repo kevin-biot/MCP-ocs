@@ -7,6 +7,7 @@
  * This tool automates infrastructure → storage → operator correlation analysis
  * Following ADR-003 (Memory), ADR-004 (Tool Naming), ADR-006 (Modularity)
  */
+import { nowEpoch } from '../../../utils/time.js';
 export class InfrastructureCorrelationChecker {
     ocWrapper;
     memoryManager;
@@ -402,7 +403,7 @@ Primary concern: ${result.summary.primaryConcern}`;
             const conversationMemory = {
                 sessionId,
                 domain: 'openshift',
-                timestamp: Date.now(),
+                timestamp: nowEpoch(),
                 userMessage,
                 assistantResponse,
                 context: [

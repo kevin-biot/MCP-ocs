@@ -265,26 +265,27 @@ export class OpenShiftClient {
       });
       
       return result.stdout.trim();
-    } catch (error) {
+    } catch (error: unknown) {
       const duration = Date.now() - startTime;
       logger.error('OpenShift command failed', error instanceof Error ? error : new Error(String(error)), {
         operation: sanitizedArgs[0],
         duration,
-        exitCode: error instanceof Error && 'code' in error ? (error as any).code : undefined,
+        exitCode: (typeof (error as any)?.code === 'string' || typeof (error as any)?.code === 'number') ? (error as any).code : undefined,
         // Truncate stderr for logging (avoid log pollution)
-        stderr: error instanceof Error && 'stderr' in error ? (error as any).stderr?.substring(0, 200) : undefined
+        stderr: typeof (error as any)?.stderr === 'string' ? (error as any).stderr.substring(0, 200) : undefined
       });
       
       // Provide user-friendly error messages
-      if (error instanceof Error && 'code' in error && (error as any).code === 'ETIMEDOUT') {
+      if ((typeof (error as any)?.code === 'string' || typeof (error as any)?.code === 'number') && (error as any).code === 'ETIMEDOUT') {
         throw new Error(`OpenShift operation timed out: ${sanitizedArgs[0]}`);
-      } else if (error instanceof Error && 'stderr' in error && (error as any).stderr?.includes('not found')) {
+      } else if (typeof (error as any)?.stderr === 'string' && (error as any).stderr.includes('not found')) {
         throw new Error(`OpenShift resource not found: ${sanitizedArgs[0]}`);
-      } else if (error instanceof Error && 'stderr' in error && (error as any).stderr?.includes('Unauthorized')) {
+      } else if (typeof (error as any)?.stderr === 'string' && (error as any).stderr.includes('Unauthorized')) {
         throw new Error(`OpenShift authentication failed: ${sanitizedArgs[0]}`);
       }
       
-      throw new Error(`OpenShift command failed: ${sanitizedArgs[0]} - ${error instanceof Error ? error.message : String(error)}`);
+      const msg = error instanceof Error ? error.message : String(error);
+      throw new Error(`OpenShift command failed: ${sanitizedArgs[0]} - ${msg}`);
     }
   }
 

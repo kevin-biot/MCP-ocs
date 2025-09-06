@@ -4,6 +4,7 @@
  * Following ADR-004 namespace conventions: oc_state_*
  * Tools for managing workflow state and operational memory
  */
+import { nowIso, nowEpoch } from '../../utils/time.js';
 export class StateMgmtTools {
     memoryManager;
     workflowEngine;
@@ -197,7 +198,7 @@ export class StateMgmtTools {
         await this.memoryManager.storeOperational({
             incidentId: args.incidentId,
             domain: 'operations',
-            timestamp: Date.now(),
+            timestamp: nowEpoch(),
             symptoms: args.symptoms || [],
             rootCause: args.rootCause || '',
             resolution: args.resolution || '',
@@ -211,7 +212,7 @@ export class StateMgmtTools {
             await this.memoryManager.storeConversation({
                 sessionId: args.sessionId,
                 domain: 'operations',
-                timestamp: Date.now(),
+                timestamp: nowEpoch(),
                 userMessage: `Store incident: ${args.incidentId}`,
                 assistantResponse: 'Incident stored successfully',
                 context: ['incident_storage'],
@@ -234,16 +235,27 @@ export class StateMgmtTools {
             limit: limit || 5,
             resultsFound: results.length,
             results: results.map(r => {
-                // Type guard to ensure we're working with OperationalMemory
-                const memory = r.memory; // Use any for now to bypass type issues
+                const { isOperationalMemory } = require('@/lib/type-guards');
+                const mem = (r && typeof r === 'object' && 'memory' in r) ? r.memory : undefined;
+                if (isOperationalMemory(mem)) {
+                    return {
+                        similarity: Number(r.similarity ?? 0),
+                        incidentId: mem.incidentId || 'unknown',
+                        symptoms: mem.symptoms || [],
+                        rootCause: mem.rootCause || 'not specified',
+                        resolution: mem.resolution || 'not specified',
+                        environment: mem.environment || 'unknown',
+                        timestamp: mem.timestamp
+                    };
+                }
                 return {
-                    similarity: r.similarity,
-                    incidentId: memory.incidentId || 'unknown',
-                    symptoms: memory.symptoms || [],
-                    rootCause: memory.rootCause || 'not specified',
-                    resolution: memory.resolution || 'not specified',
-                    environment: memory.environment || 'unknown',
-                    timestamp: memory.timestamp
+                    similarity: Number(r?.similarity ?? 0),
+                    incidentId: 'unknown',
+                    symptoms: [],
+                    rootCause: 'not specified',
+                    resolution: 'not specified',
+                    environment: 'unknown',
+                    timestamp: undefined
                 };
             }),
             timestamp: new Date().toISOString()
@@ -261,7 +273,7 @@ export class StateMgmtTools {
             panicSignals: [],
             startTime: null,
             lastStateChange: null,
-            timestamp: new Date().toISOString(),
+            timestamp: nowIso(),
             note: 'Workflow state tracking not fully implemented yet'
         };
     }
@@ -318,7 +330,7 @@ export class StateMgmtTools {
             await this.memoryManager.storeConversation({
                 sessionId,
                 domain: 'knowledge',
-                timestamp: Date.now(),
+                timestamp: nowEpoch(),
                 userMessage: `Search conversations for: ${query}`,
                 assistantResponse: `Found ${results.length} relevant conversations`,
                 context: ['conversation_search', query],
@@ -354,7 +366,7 @@ export class StateMgmtTools {
             await this.memoryManager.storeOperational({
                 incidentId: `state-mgmt-error-${sessionId}-${Date.now()}`,
                 domain: 'system',
-                timestamp: Date.now(),
+                timestamp: nowEpoch(),
                 symptoms: [`State management tool error: ${toolName}`],
                 rootCause: error instanceof Error ? error.message : 'Unknown error',
                 affectedResources: [],

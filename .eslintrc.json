@@ -12,11 +12,33 @@
   "plugins": [
     "@typescript-eslint"
   ],
+  "rules": {},
   "overrides": [
     {
       "files": ["src/**/*.ts"],
       "parserOptions": {
         "project": ["./tsconfig.json"]
+      }
+    },
+    {
+      "files": [
+        "src/tools/state-mgmt/index.ts",
+        "src/tools/read-ops/index.ts",
+        "src/tools/diagnostics/index.ts",
+        "src/lib/memory/mcp-files-adapter.ts",
+        "src/lib/memory/mcp-ocs-memory-adapter.ts",
+        
+        "src/v2/tools/check-namespace-health/**/*.ts",
+        "src/tools/storage-intelligence/types.ts",
+        "src/index.ts"
+      ],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/no-unsafe-assignment": "error",
+        "@typescript-eslint/no-unsafe-member-access": "error",
+        "@typescript-eslint/no-unsafe-argument": "error",
+        "@typescript-eslint/no-unsafe-call": "error",
+        "@typescript-eslint/no-unsafe-return": "error"
       }
     },
     {

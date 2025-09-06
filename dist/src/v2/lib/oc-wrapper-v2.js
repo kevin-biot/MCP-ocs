@@ -219,11 +219,14 @@ export class OcWrapperV2 {
         }
         catch (error) {
             console.error(`❌ Command failed: ${command}`);
-            console.error(`❌ Error: ${error.message}`);
-            if (error.code === 'ETIMEDOUT') {
+            const msg = error instanceof Error ? error.message : String(error);
+            console.error(`❌ Error: ${msg}`);
+            // Narrow error for code property
+            const code = (typeof error?.code === 'string' || typeof error?.code === 'number') ? error.code : undefined;
+            if (code === 'ETIMEDOUT') {
                 throw new Error(`Command timed out after ${timeout}ms: ${command}`);
             }
-            throw new Error(`Command failed: ${command} - ${error.message}`);
+            throw new Error(`Command failed: ${command} - ${msg}`);
         }
     }
     validateArgs(args) {

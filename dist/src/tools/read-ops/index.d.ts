@@ -17,7 +17,7 @@ export declare class ReadOpsTools implements ToolSuite {
     getTools(): StandardTool[];
     private getToolDefinitions;
     private convertToStandardTool;
-    executeTool(toolName: string, args: any): Promise<string>;
+    executeTool(toolName: string, args: unknown): Promise<string>;
     private getPods;
     private describeResource;
     private getLogs;

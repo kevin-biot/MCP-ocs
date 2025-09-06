@@ -8,7 +8,7 @@
 import { execSync, spawn } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
-import { TimeoutError } from '../errors/index.js';
+import { TimeoutError } from './errors/index.js';
 
 export interface OpenShiftConfig {
   ocPath: string;
@@ -284,7 +284,7 @@ export class OpenShiftClient {
         code: typeof error?.status === 'number' ? error.status : undefined,
         stderr: error?.stderr ? String(error.stderr) : undefined,
       } as any;
-      const { ExternalCommandError } = await import('../errors/index.js');
+      const { ExternalCommandError } = await import('./errors/index.js');
       throw new ExternalCommandError(`OpenShift command failed: ${errorMessage}`, { cause: error, details });
     }
   }

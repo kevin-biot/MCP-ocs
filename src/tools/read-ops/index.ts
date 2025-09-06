@@ -6,7 +6,7 @@
  */
 
 import { ToolDefinition } from '../../lib/tools/namespace-manager.js';
-import { nowIso } from '../../utils/time.js';
+import { nowIso, nowEpoch } from '../../utils/time.js';
 import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
@@ -188,31 +188,58 @@ export class ReadOpsTools implements ToolSuite {
       inputSchema: toolDef.inputSchema,
       category: 'read-ops' as const,
       version: 'v2' as const,
-      execute: async (args: any) => this.executeTool(toolDef.fullName, args)
+      execute: async (args: unknown) => this.executeTool(toolDef.fullName, args)
     };
   }
 
-  async executeTool(toolName: string, args: any): Promise<string> {
-    const sessionId = args.sessionId || `read-${Date.now()}`;
+  async executeTool(toolName: string, args: unknown): Promise<string> {
+    const asRecord = (v: unknown): Record<string, unknown> => (v && typeof v === 'object') ? (v as Record<string, unknown>) : {};
+    const raw = asRecord(args);
+    const sessionId = typeof raw.sessionId === 'string' ? raw.sessionId : `read-${Date.now()}`;
     
     try {
-      let result: any;
+      let result: unknown;
       
       switch (toolName) {
         case 'oc_read_get_pods':
-          result = await this.getPods(args.namespace, args.selector, sessionId);
+          result = await this.getPods(
+            typeof raw.namespace === 'string' ? raw.namespace : undefined,
+            typeof raw.selector === 'string' ? raw.selector : undefined,
+            sessionId
+          );
           break;
           
         case 'oc_read_describe':
-          result = await this.describeResource(args.resourceType, args.name, args.namespace, sessionId);
+          result = await this.describeResource(
+            String(raw.resourceType ?? ''),
+            String(raw.name ?? ''),
+            typeof raw.namespace === 'string' ? raw.namespace : undefined,
+            sessionId
+          );
           break;
           
         case 'oc_read_logs':
-          result = await this.getLogs(args.podName, args.namespace, args.container, args.lines, args.since, sessionId);
+          result = await this.getLogs(
+            String(raw.podName ?? ''),
+            typeof raw.namespace === 'string' ? raw.namespace : undefined,
+            typeof raw.container === 'string' ? raw.container : undefined,
+            typeof raw.lines === 'number' ? raw.lines : (typeof raw.lines === 'string' ? Number(raw.lines) || undefined : undefined),
+            typeof raw.since === 'string' ? raw.since : undefined,
+            sessionId
+          );
           break;
           
         case 'memory_search_incidents':
-          result = await this.searchMemory(args.query, args.limit, sessionId, args.domainFilter);
+          result = await this.searchMemory(
+            String(raw.query ?? ''),
+            typeof raw.limit === 'number' ? raw.limit : (typeof raw.limit === 'string' ? Number(raw.limit) || undefined : undefined),
+            sessionId,
+            ((): 'openshift' | 'kubernetes' | 'devops' | 'production' | undefined => {
+              const v = raw.domainFilter;
+              const s = typeof v === 'string' ? v : undefined;
+              return s === 'openshift' || s === 'kubernetes' || s === 'devops' || s === 'production' ? s : undefined;
+            })()
+          );
           break;
           
         default:
@@ -278,7 +305,7 @@ export class ReadOpsTools implements ToolSuite {
     await this.memoryManager.storeConversation({
       sessionId: sessionId || 'unknown',
       domain: 'cluster',
-      timestamp: nowIso(),
+      timestamp: nowEpoch(),
       userMessage: `Get pods ${namespace || 'default'} ${selector || ''}`.trim(),
       assistantResponse: `Found ${result.totalPods} pods (running=${result.summary.running})`,
       context: [namespace || 'default', selector || 'none'],
@@ -350,7 +377,7 @@ export class ReadOpsTools implements ToolSuite {
     await this.memoryManager.storeConversation({
       sessionId: sessionId || 'unknown',
       domain: 'cluster',
-      timestamp: new Date().toISOString(),
+      timestamp: nowEpoch(),
       userMessage: `Read logs ${podName}`,
       assistantResponse: `Returned ${result.logLines} line segments`,
       context: [namespace || 'default', container || 'default'],
@@ -399,7 +426,7 @@ export class ReadOpsTools implements ToolSuite {
     await this.memoryManager.storeConversation({
       sessionId: sessionId || 'unknown',
       domain: 'knowledge',
-      timestamp: nowIso(),
+      timestamp: nowEpoch(),
       userMessage: `Search memory for: ${query}`,
       assistantResponse: `Found ${results.length} relevant incidents in operational memory`,
       context: ['memory_search', query],

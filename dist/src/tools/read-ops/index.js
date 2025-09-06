@@ -4,6 +4,7 @@
  * Following ADR-004 namespace conventions: oc_read_*
  * Read-only operations for information gathering
  */
+import { nowIso, nowEpoch } from '../../utils/time.js';
 import { ToolMemoryGateway } from '../../lib/tools/tool-memory-gateway.js';
 export class ReadOpsTools {
     openshiftClient;
@@ -182,21 +183,27 @@ export class ReadOpsTools {
         };
     }
     async executeTool(toolName, args) {
-        const sessionId = args.sessionId || `read-${Date.now()}`;
+        const asRecord = (v) => (v && typeof v === 'object') ? v : {};
+        const raw = asRecord(args);
+        const sessionId = typeof raw.sessionId === 'string' ? raw.sessionId : `read-${Date.now()}`;
         try {
             let result;
             switch (toolName) {
                 case 'oc_read_get_pods':
-                    result = await this.getPods(args.namespace, args.selector, sessionId);
+                    result = await this.getPods(typeof raw.namespace === 'string' ? raw.namespace : undefined, typeof raw.selector === 'string' ? raw.selector : undefined, sessionId);
                     break;
                 case 'oc_read_describe':
-                    result = await this.describeResource(args.resourceType, args.name, args.namespace, sessionId);
+                    result = await this.describeResource(String(raw.resourceType ?? ''), String(raw.name ?? ''), typeof raw.namespace === 'string' ? raw.namespace : undefined, sessionId);
                     break;
                 case 'oc_read_logs':
-                    result = await this.getLogs(args.podName, args.namespace, args.container, args.lines, args.since, sessionId);
+                    result = await this.getLogs(String(raw.podName ?? ''), typeof raw.namespace === 'string' ? raw.namespace : undefined, typeof raw.container === 'string' ? raw.container : undefined, typeof raw.lines === 'number' ? raw.lines : (typeof raw.lines === 'string' ? Number(raw.lines) || undefined : undefined), typeof raw.since === 'string' ? raw.since : undefined, sessionId);
                     break;
                 case 'memory_search_incidents':
-                    result = await this.searchMemory(args.query, args.limit, sessionId, args.domainFilter);
+                    result = await this.searchMemory(String(raw.query ?? ''), typeof raw.limit === 'number' ? raw.limit : (typeof raw.limit === 'string' ? Number(raw.limit) || undefined : undefined), sessionId, (() => {
+                        const v = raw.domainFilter;
+                        const s = typeof v === 'string' ? v : undefined;
+                        return s === 'openshift' || s === 'kubernetes' || s === 'devops' || s === 'production' ? s : undefined;
+                    })());
                     break;
                 default:
                     throw new Error(`Unknown read operation tool: ${toolName}`);
@@ -236,7 +243,7 @@ export class ReadOpsTools {
                 failed: pods.filter(p => p.status === 'Failed').length,
                 unknown: pods.filter(p => !['Running', 'Pending', 'Failed'].includes(p.status)).length
             },
-            timestamp: new Date().toISOString()
+            timestamp: nowIso()
         };
         // Store via adapter-backed gateway for Chroma v2 integration
         await this.memoryGateway.storeToolExecution('oc_read_get_pods', { namespace: namespace || 'default', selector: selector || 'none' }, result, sessionId || 'unknown', ['read_operation', 'pods', 'cluster_state'], 'openshift', 'prod', 'low');
@@ -244,7 +251,7 @@ export class ReadOpsTools {
         await this.memoryManager.storeConversation({
             sessionId: sessionId || 'unknown',
             domain: 'cluster',
-            timestamp: Date.now(),
+            timestamp: nowEpoch(),
             userMessage: `Get pods ${namespace || 'default'} ${selector || ''}`.trim(),
             assistantResponse: `Found ${result.totalPods} pods (running=${result.summary.running})`,
             context: [namespace || 'default', selector || 'none'],
@@ -290,7 +297,7 @@ export class ReadOpsTools {
         await this.memoryManager.storeConversation({
             sessionId: sessionId || 'unknown',
             domain: 'cluster',
-            timestamp: Date.now(),
+            timestamp: nowEpoch(),
             userMessage: `Read logs ${podName}`,
             assistantResponse: `Returned ${result.logLines} line segments`,
             context: [namespace || 'default', container || 'default'],
@@ -324,15 +331,15 @@ export class ReadOpsTools {
                 incidentId: r.memory?.incidentId || r.metadata?.incidentId || '',
                 symptoms: r.memory?.symptoms || [],
                 resolution: r.memory?.resolution || '',
-                timestamp: r.memory?.timestamp || r.metadata?.timestamp || Date.now()
+                timestamp: r.memory?.timestamp || r.metadata?.timestamp || nowIso()
             })),
-            timestamp: new Date().toISOString()
+            timestamp: nowIso()
         };
         // Store search in memory for analytics
         await this.memoryManager.storeConversation({
             sessionId: sessionId || 'unknown',
             domain: 'knowledge',
-            timestamp: Date.now(),
+            timestamp: nowEpoch(),
             userMessage: `Search memory for: ${query}`,
             assistantResponse: `Found ${results.length} relevant incidents in operational memory`,
             context: ['memory_search', query],
