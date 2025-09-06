@@ -1,1 +1,388 @@
-[]
+{
+  "domain": "interface-hygiene",
+  "created_date": "2025-09-06",
+  "last_updated": "2025-09-06T17:58:49.990Z",
+  "total_findings_ever": 0,
+  "findings": [
+    {
+      "fingerprint": "interface-hygiene:src/example.ts:42:unawaited-promise:n05qg3",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "resolved",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/example.ts:42:unawaited-promise",
+        "severity": "P1",
+        "category": "unawaited-promise",
+        "file": "src/example.ts",
+        "line": 42,
+        "description": "PLACEHOLDER (codex): Example finding for testing",
+        "evidence": "// PLACEHOLDER CODE\nasync function test() {\n  someAsync(); // Missing await\n}",
+        "recommendation": "PLACEHOLDER: Add await keyword"
+      },
+      "resolved_date": "2025-09-06T17:58:49.990Z"
+    },
+    {
+      "fingerprint": "interface-hygiene:src/tools/state-mgmt/index.ts:199:unsafe-any-usage:ry79cc",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/tools/state-mgmt/index.ts:199:unsafe-any-usage",
+        "severity": "P0",
+        "category": "unsafe-any-usage",
+        "file": "src/tools/state-mgmt/index.ts",
+        "line": 199,
+        "description": "Function parameter 'args' typed as any in execute handler bypasses type checking at the tool boundary.",
+        "evidence": "// Code snippet\nreturn {\n  name: toolDef.name,\n  ...\n  execute: async (args: any) => this.executeTool(toolDef.fullName, args)\n};",
+        "recommendation": "Define a specific input type for each tool (e.g., type StoreIncidentArgs, SearchArgs) and use it instead of any.",
+        "type_safety_impact": "Loss of compile-time guarantees on input shape can lead to runtime errors when accessing missing properties."
+      }
+    },
+    {
+      "fingerprint": "interface-hygiene:src/tools/state-mgmt/index.ts:203:unsafe-any-usage:xmbtvm",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/tools/state-mgmt/index.ts:203:unsafe-any-usage",
+        "severity": "P0",
+        "category": "unsafe-any-usage",
+        "file": "src/tools/state-mgmt/index.ts",
+        "line": 203,
+        "description": "Method parameter 'args' typed as any for storeIncident hides required fields and weakens checks.",
+        "evidence": "// Code snippet\nprivate async storeIncident(args: any): Promise<string> {\n  console.error(`💾 Storing incident: ${args.incidentId}`);\n  ...\n}",
+        "recommendation": "Introduce an interface (e.g., StoreIncidentArgs) with required/optional fields and use it in the signature.",
+        "type_safety_impact": "Unvalidated access like args.incidentId can throw if the shape is wrong, reducing reliability."
+      }
+    },
+    {
+      "fingerprint": "interface-hygiene:src/tools/state-mgmt/index.ts:286:unsafe-any-usage:9spxo",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/tools/state-mgmt/index.ts:286:unsafe-any-usage",
+        "severity": "P0",
+        "category": "unsafe-any-usage",
+        "file": "src/tools/state-mgmt/index.ts",
+        "line": 286,
+        "description": "Method getMemoryStats declares Promise<any> return type, eroding downstream type safety.",
+        "evidence": "// Code snippet\nprivate async getMemoryStats(detailed?: boolean): Promise<any> {\n  ...\n  const result: any = {\n    totalConversations: stats.totalConversations,\n    ...\n  };",
+        "recommendation": "Define a MemoryStatsResult interface and use Promise<MemoryStatsResult> for accurate return typing.",
+        "type_safety_impact": "Callers cannot rely on properties at compile time, increasing the chance of runtime errors."
+      }
+    },
+    {
+      "fingerprint": "interface-hygiene:src/tools/read-ops/index.ts:194:unsafe-any-usage:96vmkt",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/tools/read-ops/index.ts:194:unsafe-any-usage",
+        "severity": "P0",
+        "category": "unsafe-any-usage",
+        "file": "src/tools/read-ops/index.ts",
+        "line": 194,
+        "description": "executeTool receives 'args' as any and returns Promise<string>, losing structure of per-tool inputs.",
+        "evidence": "// Code snippet\nasync executeTool(toolName: string, args: any): Promise<string> {\n  const sessionId = args.sessionId || `read-${Date.now()}`;\n  let result: any;\n  ...",
+        "recommendation": "Use a discriminated union of input types keyed by toolName and return typed results instead of any/string.",
+        "type_safety_impact": "Loose typing can allow invalid arguments and cause branching logic to access properties that don't exist."
+      }
+    },
+    {
+      "fingerprint": "interface-hygiene:src/tools/diagnostics/index.ts:60:unsafe-any-usage:xb6s95",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/tools/diagnostics/index.ts:60:unsafe-any-usage",
+        "severity": "P0",
+        "category": "unsafe-any-usage",
+        "file": "src/tools/diagnostics/index.ts",
+        "line": 60,
+        "description": "Intermediate payload typed as any obscures expected structure of the parsed namespace health output.",
+        "evidence": "// Code snippet\nlet payload: any;\ntry {\n  payload = typeof raw === 'string' ? JSON.parse(raw) : raw;\n} catch {\n  payload = { result: raw };\n}",
+        "recommendation": "Define a NamespaceHealthResult type and use a type guard (e.g., isNamespaceHealthResult) before assignment.",
+        "type_safety_impact": "Unchecked payload usage propagates untyped data, risking runtime property access errors."
+      }
+    },
+    {
+      "fingerprint": "interface-hygiene:src/v2/lib/oc-wrapper-v2.ts:281:unsafe-any-usage:fxc6gx",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/v2/lib/oc-wrapper-v2.ts:281:unsafe-any-usage",
+        "severity": "P0",
+        "category": "unsafe-any-usage",
+        "file": "src/v2/lib/oc-wrapper-v2.ts",
+        "line": 281,
+        "description": "Catch parameter 'error' typed as any inhibits safe narrowing and encourages unsafe property access.",
+        "evidence": "// Code snippet\n} catch (error: any) {\n  console.error(`❌ Command failed: ${command}`);\n  console.error(`❌ Error: ${error.message}`);\n  if (error.code === 'ETIMEDOUT') { ... }\n}",
+        "recommendation": "Use 'unknown' for error and narrow via guards (e.g., error instanceof Error) before property access.",
+        "type_safety_impact": "Assuming structure of error may throw at runtime if a non-Error is caught."
+      }
+    },
+    {
+      "fingerprint": "interface-hygiene:src/lib/memory/mcp-files-adapter.ts:61:unsafe-any-usage:3rf3wc",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/lib/memory/mcp-files-adapter.ts:61:unsafe-any-usage",
+        "severity": "P0",
+        "category": "unsafe-any-usage",
+        "file": "src/lib/memory/mcp-files-adapter.ts",
+        "line": 61,
+        "description": "Mapping results with '(result: any)' obscures the shape of vector search results.",
+        "evidence": "// Code snippet\nreturn results.map((result: any) => ({\n  memory: {\n    sessionId: result.metadata.sessionId,\n    ...\n  },\n  similarity: 1 - result.distance\n}));",
+        "recommendation": "Define a ChromaSearchResult type (content, metadata, distance) and annotate 'results' and mapping callback with it.",
+        "type_safety_impact": "Unvalidated access to result.metadata can break if upstream changes structure."
+      }
+    },
+    {
+      "fingerprint": "interface-hygiene:src/tools/state-mgmt/index.ts:252:dangerous-type-assertions:2xd4q3",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/tools/state-mgmt/index.ts:252:dangerous-type-assertions",
+        "severity": "P0",
+        "category": "dangerous-type-assertions",
+        "file": "src/tools/state-mgmt/index.ts",
+        "line": 252,
+        "description": "Unchecked 'as any' assertion on memory object bypasses type safety.",
+        "evidence": "// Code snippet\n// Type guard to ensure we're working with OperationalMemory\nconst memory = r.memory as any; // Use any for now to bypass type issues\nreturn {\n  incidentId: memory.incidentId || 'unknown',\n  ...\n};",
+        "recommendation": "Introduce a type guard (isOperationalMemory) or refine API types so 'r.memory' is strongly typed before use.",
+        "type_safety_impact": "If r.memory lacks expected fields, accesses like memory.incidentId may throw at runtime."
+      }
+    },
+    {
+      "fingerprint": "interface-hygiene:src/lib/memory/mcp-ocs-memory-adapter.ts:123:dangerous-type-assertions:qvsnd9",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/lib/memory/mcp-ocs-memory-adapter.ts:123:dangerous-type-assertions",
+        "severity": "P0",
+        "category": "dangerous-type-assertions",
+        "file": "src/lib/memory/mcp-ocs-memory-adapter.ts",
+        "line": 123,
+        "description": "Casting 'memories as any[]' to iterate skips validation of the array element shape.",
+        "evidence": "// Code snippet\nfor (const m of memories as any[]) {\n  const mtags = this.normalizeTags(m?.metadata?.tags);\n  ...\n}",
+        "recommendation": "Parametrize 'memories' with a typed array (e.g., MemoryRecord[]) and validate/transform elements via a type guard.",
+        "type_safety_impact": "Malformed elements can cause runtime errors when accessing nested metadata fields."
+      }
+    },
+    {
+      "fingerprint": "interface-hygiene:src/lib/openshift-client-enhanced.ts:273:dangerous-type-assertions:yrs2mu",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/lib/openshift-client-enhanced.ts:273:dangerous-type-assertions",
+        "severity": "P0",
+        "category": "dangerous-type-assertions",
+        "file": "src/lib/openshift-client-enhanced.ts",
+        "line": 273,
+        "description": "Casting to any for error meta fields leads to unchecked property access on unknown error shapes.",
+        "evidence": "// Code snippet\nexitCode: error instanceof Error && 'code' in error ? (error as any).code : undefined,\nstderr: error instanceof Error && 'stderr' in error ? (error as any).stderr?.substring(0, 200) : undefined",
+        "recommendation": "Narrow error types using custom predicate (hasCode, hasStderr) and refine to a union with exact fields.",
+        "type_safety_impact": "Unexpected error objects without expected properties can cause runtime failures."
+      }
+    },
+    {
+      "fingerprint": "interface-hygiene:src/lib/memory/shared-memory.ts:341:dangerous-type-assertions:rw2i54",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/lib/memory/shared-memory.ts:341:dangerous-type-assertions",
+        "severity": "P0",
+        "category": "dangerous-type-assertions",
+        "file": "src/lib/memory/shared-memory.ts",
+        "line": 341,
+        "description": "Using '({} as any)' on failed JSON read silently inserts unknown shape into flow.",
+        "evidence": "// Code snippet\nconst t = await tenantsRes.json().catch(() => ({} as any));\nconst list = t?.tenants || t?.result || (Array.isArray(t) ? t : []);\n",
+        "recommendation": "On parse failure, return a well-typed empty structure (e.g., { tenants: [] }) and validate response shape.",
+        "type_safety_impact": "Downstream code assumes fields exist and may break if the object is not structured as expected."
+      }
+    },
+    {
+      "fingerprint": "interface-hygiene:src/index.ts:138:dangerous-type-assertions:da8xe2",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/index.ts:138:dangerous-type-assertions",
+        "severity": "P0",
+        "category": "dangerous-type-assertions",
+        "file": "src/index.ts",
+        "line": 138,
+        "description": "Casting 'args as any' to read sessionId encourages unchecked access rather than validating the inbound shape.",
+        "evidence": "// Code snippet\nconst duration = Date.now() - startTime;\nconst sessionId = (args as any)?.sessionId || `auto-session-${Date.now()}`;",
+        "recommendation": "Define a RequestArgs type with optional sessionId and use a type guard or schema validation (e.g., zod) before access.",
+        "type_safety_impact": "If args is primitive or has unexpected structure, property access may fail at runtime."
+      }
+    },
+    {
+      "fingerprint": "interface-hygiene:src/v2/tools/check-namespace-health/index.ts:20:structural-type-confusion:5262n7",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/v2/tools/check-namespace-health/index.ts:20:structural-type-confusion",
+        "severity": "P1",
+        "category": "structural-type-confusion",
+        "file": "src/v2/tools/check-namespace-health/index.ts",
+        "line": 20,
+        "description": "PodHealthSummary interface duplicates the exact structure of a similarly named interface in enhanced-index.ts, risking unintended structural matches.",
+        "evidence": "// Code snippet\nexport interface PodHealthSummary {\n  ready: number;\n  total: number;\n  crashloops: string[];\n  pending: string[];\n  imagePullErrors: string[];\n  oomKilled: string[];\n}",
+        "recommendation": "Extract a shared type (e.g., in a common types module) or add a discriminant property if semantics differ to prevent accidental cross-usage.",
+        "type_safety_impact": "Structurally identical but semantically distinct interfaces can be interchanged by the compiler, causing logic mistakes."
+      }
+    },
+    {
+      "fingerprint": "interface-hygiene:src/v2/tools/check-namespace-health/enhanced-index.ts:20:structural-type-confusion:5262n7",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/v2/tools/check-namespace-health/enhanced-index.ts:20:structural-type-confusion",
+        "severity": "P1",
+        "category": "structural-type-confusion",
+        "file": "src/v2/tools/check-namespace-health/enhanced-index.ts",
+        "line": 20,
+        "description": "PodHealthSummary interface mirrors the structure defined in check-namespace-health/index.ts, enabling accidental interchange.",
+        "evidence": "// Code snippet\nexport interface PodHealthSummary {\n  ready: number;\n  total: number;\n  crashloops: string[];\n  pending: string[];\n  imagePullErrors: string[];\n  oomKilled: string[];\n}",
+        "recommendation": "Consolidate to a single exported type or brand one variant to encode intended domain differences.",
+        "type_safety_impact": "Developers may pass one summary type where the other is expected without compiler warnings."
+      }
+    },
+    {
+      "fingerprint": "interface-hygiene:src/tools/storage-intelligence/types.ts:30:incomplete-interface-definitions:aijnif",
+      "first_seen": "2025-09-06",
+      "last_seen": "2025-09-06",
+      "status": "active",
+      "weeks_seen": 1,
+      "scan_history": [
+        "2025-09-06"
+      ],
+      "backlog_task_id": null,
+      "finding_data": {
+        "fingerprint": "interface-hygiene:src/tools/storage-intelligence/types.ts:30:incomplete-interface-definitions",
+        "severity": "P2",
+        "category": "incomplete-interface-definitions",
+        "file": "src/tools/storage-intelligence/types.ts",
+        "line": 30,
+        "description": "Evidence.data is typed as any within an exported interface, losing shape and weakening consumers.",
+        "evidence": "// Code snippet\nexport interface Evidence {\n  type: 'pvcStatus' | 'events' | 'storageClass' | 'nodes' | 'pods' | 'provisioner' | 'persistent_volumes' | 'resource_quotas';\n  data: any;\n  reasoning: string;\n  weight: number;\n}",
+        "recommendation": "Model 'data' as a discriminated union keyed by 'type' (e.g., EvidenceDataByType) or at least unknown with downstream type guards.",
+        "type_safety_impact": "Arbitrary shapes pass the compiler but may cause runtime failures when consumers assume specific fields."
+      }
+    }
+  ],
+  "statistics": {
+    "total_findings_ever": 16,
+    "active_findings": 15,
+    "resolved_findings": 1,
+    "regressed_findings": 0,
+    "findings_by_severity": {},
+    "findings_by_category": {}
+  },
+  "scan_history": [
+    {
+      "date": "2025-09-06",
+      "timestamp": "2025-09-06T17:40:20.137Z",
+      "files_scanned": 55,
+      "findings_count": 1,
+      "new_findings": 1,
+      "resolved_findings": 0,
+      "regressed_findings": 0
+    },
+    {
+      "date": "2025-09-06",
+      "timestamp": "2025-09-06T17:58:49.990Z",
+      "files_scanned": 55,
+      "findings_count": 15,
+      "new_findings": 15,
+      "resolved_findings": 1,
+      "regressed_findings": 0
+    }
+  ]
+}
