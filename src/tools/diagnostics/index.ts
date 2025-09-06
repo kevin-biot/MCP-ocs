@@ -10,6 +10,7 @@
 
 import { ToolDefinition } from '../../lib/tools/tool-types.js';
 import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
+import { nowIso } from '../../utils/time.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
 import { ToolMemoryGateway } from '../../lib/tools/tool-memory-gateway.js';
@@ -238,7 +239,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
       await this.memoryManager.storeOperational({
         incidentId: `diagnostic-error-${sessionId}-${Date.now()}`,
         domain: 'cluster',
-        timestamp: new Date().toISOString(),
+        timestamp: nowIso(),
         symptoms: [`Diagnostic tool error: ${toolName}`],
         rootCause: error instanceof Error ? error.message : 'Unknown error',
         affectedResources: [],
@@ -390,7 +391,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
             await this.memoryManager.storeOperational({
               incidentId: `plan-strategy-${sessionId}`,
               domain: 'cluster',
-              timestamp: new Date().toISOString(),
+              timestamp: nowIso(),
               symptoms: ['plan_strategy', sessionId, 'mini_plan'],
               affectedResources: steps.map((s: any) => s.tool),
               diagnosticSteps: steps.map((s: any) => `Planned ${s.tool}`),
@@ -601,7 +602,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
       await this.memoryManager.storeOperational({
         incidentId: `namespace-health-${sessionId}`,
         domain: 'cluster',
-        timestamp: new Date().toISOString(),
+        timestamp: nowIso(),
         symptoms: healthResult.suspicions.length > 0 ? healthResult.suspicions : ['namespace_healthy'],
         affectedResources: [`namespace/${namespace}`],
         diagnosticSteps: ['Enhanced namespace health check completed'],
@@ -653,7 +654,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
         sessionId,
         namespace,
         podName,
-        timestamp: new Date().toISOString(),
+        timestamp: nowIso(),
         
         health: podAnalysis,
         dependencies,
@@ -671,7 +672,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
       await this.memoryManager.storeOperational({
         incidentId: `pod-health-${sessionId}`,
         domain: 'cluster',
-        timestamp: new Date().toISOString(),
+        timestamp: nowIso(),
         symptoms: podAnalysis.issues.length > 0 ? podAnalysis.issues : ['pod_healthy'],
         affectedResources: [`pod/${podName}`, `namespace/${namespace}`],
         diagnosticSteps: ['Enhanced pod health check completed'],

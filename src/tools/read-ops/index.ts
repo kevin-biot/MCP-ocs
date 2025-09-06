@@ -6,6 +6,7 @@
  */
 
 import { ToolDefinition } from '../../lib/tools/namespace-manager.js';
+import { nowIso } from '../../utils/time.js';
 import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
@@ -259,7 +260,7 @@ export class ReadOpsTools implements ToolSuite {
         failed: pods.filter(p => p.status === 'Failed').length,
         unknown: pods.filter(p => !['Running', 'Pending', 'Failed'].includes(p.status)).length
       },
-      timestamp: new Date().toISOString()
+      timestamp: nowIso()
     };
     
     // Store via adapter-backed gateway for Chroma v2 integration
@@ -277,7 +278,7 @@ export class ReadOpsTools implements ToolSuite {
     await this.memoryManager.storeConversation({
       sessionId: sessionId || 'unknown',
       domain: 'cluster',
-      timestamp: new Date().toISOString(),
+      timestamp: nowIso(),
       userMessage: `Get pods ${namespace || 'default'} ${selector || ''}`.trim(),
       assistantResponse: `Found ${result.totalPods} pods (running=${result.summary.running})`,
       context: [namespace || 'default', selector || 'none'],
@@ -389,16 +390,16 @@ export class ReadOpsTools implements ToolSuite {
         incidentId: r.memory?.incidentId || r.metadata?.incidentId || '',
         symptoms: r.memory?.symptoms || [],
         resolution: r.memory?.resolution || '',
-        timestamp: r.memory?.timestamp || r.metadata?.timestamp || new Date().toISOString()
+        timestamp: r.memory?.timestamp || r.metadata?.timestamp || nowIso()
       })),
-      timestamp: new Date().toISOString()
+      timestamp: nowIso()
     };
     
     // Store search in memory for analytics
     await this.memoryManager.storeConversation({
       sessionId: sessionId || 'unknown',
       domain: 'knowledge',
-      timestamp: new Date().toISOString(),
+      timestamp: nowIso(),
       userMessage: `Search memory for: ${query}`,
       assistantResponse: `Found ${results.length} relevant incidents in operational memory`,
       context: ['memory_search', query],

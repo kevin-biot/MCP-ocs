@@ -6,6 +6,7 @@
  */
 
 import { ToolDefinition } from '../../lib/tools/namespace-manager.js';
+import { nowIso } from '../../utils/time.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
 import { WorkflowEngine } from '../../lib/workflow/workflow-engine.js';
@@ -184,7 +185,7 @@ export class WriteOpsTools {
         namespace: namespace || 'default',
         status: 'simulated',
         message: 'Configuration would be applied successfully',
-        timestamp: new Date().toISOString()
+        timestamp: nowIso()
       };
     }
     
@@ -196,14 +197,14 @@ export class WriteOpsTools {
       namespace: namespace || 'default',
       status: 'success',
       result,
-      timestamp: new Date().toISOString()
+      timestamp: nowIso()
     };
     
     // Store successful operation in memory
     await this.memoryManager.storeOperational({
       incidentId: `config-apply-${sessionId}`,
       domain: 'cluster',
-      timestamp: new Date().toISOString(),
+      timestamp: nowIso(),
       symptoms: ['Configuration applied successfully'],
       resolution: `Applied configuration to ${namespace || 'default'} namespace`,
       affectedResources: [],
@@ -234,7 +235,7 @@ export class WriteOpsTools {
     await this.memoryManager.storeOperational({
       incidentId: `scale-deployment-${sessionId}`,
       domain: 'cluster',
-      timestamp: new Date().toISOString(),
+      timestamp: nowIso(),
       symptoms: [`Deployment ${deploymentName} required scaling`],
       resolution: `Scaled ${deploymentName} to ${replicas} replicas`,
       diagnosticSteps: ['Identified scaling requirement', `Executed oc scale for ${deploymentName}`],
@@ -266,7 +267,7 @@ export class WriteOpsTools {
     await this.memoryManager.storeOperational({
       incidentId: `restart-deployment-${sessionId}`,
       domain: 'cluster',
-      timestamp: new Date().toISOString(),
+      timestamp: nowIso(),
       symptoms: [`Deployment ${deploymentName} required restart`],
       resolution: `Successfully restarted ${deploymentName}`,
       diagnosticSteps: ['Identified restart requirement', `Executed rollout restart for ${deploymentName}`],

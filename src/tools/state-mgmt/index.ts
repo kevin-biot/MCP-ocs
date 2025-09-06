@@ -6,6 +6,7 @@
  */
 
 import { ToolDefinition } from '../../lib/tools/namespace-manager.js';
+import { nowIso } from '../../utils/time.js';
 import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
 import { WorkflowEngine } from '../../lib/workflow/workflow-engine.js';
@@ -206,7 +207,7 @@ export class StateMgmtTools implements ToolSuite {
     await this.memoryManager.storeOperational({
       incidentId: args.incidentId,
       domain: 'operations',
-      timestamp: new Date().toISOString(),
+      timestamp: nowIso(),
       symptoms: args.symptoms || [],
       rootCause: args.rootCause || '',
       resolution: args.resolution || '',
@@ -221,7 +222,7 @@ export class StateMgmtTools implements ToolSuite {
       await this.memoryManager.storeConversation({
         sessionId: args.sessionId,
         domain: 'operations',
-        timestamp: new Date().toISOString(),
+        timestamp: nowIso(),
         userMessage: `Store incident: ${args.incidentId}`,
         assistantResponse: 'Incident stored successfully',
         context: ['incident_storage'],
@@ -278,7 +279,7 @@ export class StateMgmtTools implements ToolSuite {
       panicSignals: [],
       startTime: null,
       lastStateChange: null,
-      timestamp: new Date().toISOString(),
+      timestamp: nowIso(),
       note: 'Workflow state tracking not fully implemented yet'
     };
   }

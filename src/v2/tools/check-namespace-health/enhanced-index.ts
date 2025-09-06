@@ -6,6 +6,7 @@
  */
 
 import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+import { nowIso } from '../../../utils/time.js';
 import { SharedMemoryManager } from '../../../lib/memory/shared-memory';
 import { InfrastructureCorrelationChecker, InfrastructureCorrelationResult } from '../infrastructure-correlation';
 
@@ -179,7 +180,7 @@ export class EnhancedNamespaceHealthChecker {
         suspicions: infrastructureCorrelation.enhancedSuspicions,
         infrastructureCorrelation,
         human,
-        timestamp: new Date().toISOString(),
+        timestamp: nowIso(),
         duration: Date.now() - startTime
       };
 
