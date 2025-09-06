@@ -549,7 +549,7 @@ Primary concern: ${result.summary.primaryConcern}`;
       const conversationMemory = {
         sessionId,
         domain: 'openshift',
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         userMessage,
         assistantResponse,
         context: [
