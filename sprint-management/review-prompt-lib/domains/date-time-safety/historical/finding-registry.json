@@ -1,1 +1,17 @@
-[]
+{
+  "metadata": {
+    "domain": "date-time-safety",
+    "created": "2025-09-06T12:20:56.000Z",
+    "last_updated": "2025-09-06T12:20:56.000Z",
+    "version": "1.0"
+  },
+  "findings": [],
+  "stats": {
+    "total_findings_ever": 0,
+    "active_findings": 0,
+    "resolved_findings": 0,
+    "regressed_findings": 0,
+    "findings_by_severity": {},
+    "findings_by_category": {}
+  }
+}

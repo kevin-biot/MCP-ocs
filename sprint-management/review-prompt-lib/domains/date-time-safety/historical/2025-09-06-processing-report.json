@@ -1,0 +1,56 @@
+{
+  "scan_date": "2025-09-06",
+  "processed_at": "2025-09-06T12:33:34.255Z",
+  "domain": "date-time-safety",
+  "summary": {
+    "new_findings": 14,
+    "existing_findings": 0,
+    "regressed_findings": 0,
+    "resolved_findings": 0,
+    "total_processed": 14
+  },
+  "actions": {
+    "create": [
+      {
+        "finding": {
+          "fingerprint": "date-time-safety:src/tools/state-mgmt/index.ts:209:inconsistent-serialization",
+          "severity": "P1",
+          "category": "inconsistent-serialization",
+          "file": "src/tools/state-mgmt/index.ts",
+          "line": 209,
+          "description": "Mixed timestamp serialization: numeric Date.now for storage and ISO string for responses within the same module"
+        },
+        "fingerprint": "date-time-safety:src/tools/state-mgmt/index.ts:209:inconsistent-serialization:d70poy",
+        "reason": "New issue discovered"
+      },
+      {
+        "finding": {
+          "fingerprint": "date-time-safety:src/tools/state-mgmt/index.ts:224:inconsistent-serialization",
+          "severity": "P1",
+          "category": "inconsistent-serialization",
+          "file": "src/tools/state-mgmt/index.ts",
+          "line": 224,
+          "description": "Stores conversation timestamp as numeric Date.now while other responses use ISO string"
+        },
+        "fingerprint": "date-time-safety:src/tools/state-mgmt/index.ts:224:inconsistent-serialization:ai7qsq",
+        "reason": "New issue discovered"
+      }
+    ],
+    "skip": [],
+    "reopen": [],
+    "resolved": []
+  },
+  "registry_stats": {
+    "total_findings_ever": 14,
+    "active_findings": 14,
+    "resolved_findings": 0,
+    "regressed_findings": 0,
+    "findings_by_severity": {
+      "P1": 14
+    },
+    "findings_by_category": {
+      "inconsistent-serialization": 9,
+      "date-validation-missing": 5
+    }
+  }
+}
