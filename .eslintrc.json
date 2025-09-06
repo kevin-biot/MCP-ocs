@@ -24,6 +24,15 @@
           { "object": "Date", "property": "now", "message": "Use new Date().toISOString() for timestamps (D-009 Date-Time Safety)." }
         ]
       }
+    },
+    {
+      "files": ["src/tools/**/*.ts", "src/v2/tools/**/*.ts"],
+      "rules": {
+        "no-restricted-properties": [
+          "error",
+          { "object": "Date", "property": "now", "message": "Use nowIso() for persisted timestamps or nowEpoch() for calculations (D-009)." }
+        ]
+      }
     }
   ]
 }

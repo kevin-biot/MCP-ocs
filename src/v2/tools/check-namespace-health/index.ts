@@ -10,6 +10,7 @@
  */
 
 import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+import { nowEpoch } from '../../utils/time.js';
 
 export interface NamespaceHealthInput {
   namespace: string;
@@ -126,7 +127,7 @@ export class NamespaceHealthChecker {
         const d = new Date(candidateTimestamp);
         lastUpdateTime = d.getTime();
       }
-      const recentThreshold = Date.now() - (2 * 60 * 60 * 1000); // Last 2 hours
+      const recentThreshold = nowEpoch() - (2 * 60 * 60 * 1000); // Last 2 hours
       
       if (!isNaN(lastUpdateTime) && lastUpdateTime > recentThreshold && desiredReplicas !== availableReplicas) {
         analysis.deploymentStatus.recentlyScaled.push(name);
@@ -139,7 +140,7 @@ export class NamespaceHealthChecker {
       const raw = event.lastTimestamp || event.eventTime;
       const d = new Date(raw);
       const eventTime = d.getTime();
-      const cutoff = Date.now() - (60 * 60 * 1000); // Last hour
+      const cutoff = nowEpoch() - (60 * 60 * 1000); // Last hour
       if (isNaN(eventTime)) return false;
       return eventTime > cutoff;
     });

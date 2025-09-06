@@ -6,7 +6,7 @@
  */
 
 import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
-import { nowIso } from '../../../utils/time.js';
+import { nowIso, nowEpoch } from '../../../utils/time.js';
 import { SharedMemoryManager } from '../../../lib/memory/shared-memory';
 import { InfrastructureCorrelationChecker, InfrastructureCorrelationResult } from '../infrastructure-correlation';
 
@@ -94,7 +94,7 @@ export class EnhancedNamespaceHealthChecker {
    * Enhanced health check with optional infrastructure correlation
    */
   async checkHealth(input: EnhancedNamespaceHealthInput): Promise<EnhancedNamespaceHealthResult> {
-    const startTime = Date.now();
+    const startTime = nowEpoch();
     const { namespace, includeIngressTest = false, includeInfrastructureCorrelation = true } = input;
 
     // Validate namespace exists first
@@ -181,7 +181,7 @@ export class EnhancedNamespaceHealthChecker {
         infrastructureCorrelation,
         human,
         timestamp: nowIso(),
-        duration: Date.now() - startTime
+        duration: nowEpoch() - startTime
       };
 
       return result;
@@ -483,7 +483,7 @@ export class EnhancedNamespaceHealthChecker {
     const events = eventsData.items || [];
     const criticalEvents: string[] = [];
 
-    const cutoffTime = Date.now() - (10 * 60 * 1000); // Last 10 minutes
+    const cutoffTime = nowEpoch() - (10 * 60 * 1000); // Last 10 minutes
 
     for (const event of events) {
       if (event.type !== 'Normal') {
@@ -551,7 +551,7 @@ export class EnhancedNamespaceHealthChecker {
         const d = new Date(candidateTimestamp);
         lastUpdateTime = d.getTime();
       }
-      const recentThreshold = Date.now() - (2 * 60 * 60 * 1000);
+      const recentThreshold = nowEpoch() - (2 * 60 * 60 * 1000);
       
       if (!isNaN(lastUpdateTime) && lastUpdateTime > recentThreshold && desiredReplicas !== availableReplicas) {
         analysis.deploymentStatus.recentlyScaled.push(name);
@@ -564,7 +564,7 @@ export class EnhancedNamespaceHealthChecker {
       const raw = event.lastTimestamp || event.eventTime;
       const d = new Date(raw);
       const eventTime = d.getTime();
-      const cutoff = Date.now() - (60 * 60 * 1000);
+      const cutoff = nowEpoch() - (60 * 60 * 1000);
       if (isNaN(eventTime)) return false;
       return eventTime > cutoff;
     });
@@ -725,9 +725,9 @@ export class EnhancedNamespaceHealthChecker {
       suspicions: [error],
       infrastructureCorrelation: { enabled: false, enhancedSuspicions: [error] },
       human: `Namespace ${namespace} health check failed: ${error}`,
-      timestamp: new Date().toISOString(),
-      duration: Date.now() - startTime
-    };
+        timestamp: nowIso(),
+        duration: nowEpoch() - startTime
+      };
   }
 
   private isPodStuckCreating(pod: any): boolean {
