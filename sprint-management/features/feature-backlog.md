@@ -4,27 +4,20 @@
 **Strategy**: Architecture Decision Records (ADRs) drive feature development  
 **Purpose**: Transform strategic architectural decisions into implementable features  
 **Integration**: Complements quality backlog (d-001 through d-015) with feature delivery  
-**Review Period**: September 02, 2025 - Updated with complete ADR coverage
-
-**🎯 STRATEGIC INTEGRATION**: This feature backlog implements the execution plan for [Unified Strategic Roadmap](../../docs/implementation/UNIFIED_STRATEGIC_ROADMAP.md)
-- **Phase 0**: RFR remediation (Critical architectural debt resolution)  
-- **Phase 1**: OpenShift MCP Delivery (Core platform features F-001, F-002, F-003, F-004)
-- **Phase 2**: DOP Architecture Enhancement (Advanced features F-006, F-007, F-008, F-009)
-- **Phase 3**: Framework extraction (Multi-domain evolution)  
+**Review Period**: September 02, 2025 - Updated with complete ADR coverage  
 
 ---
 
-## 🎯 Implementation Order Priority (UPDATED - RFR BLOCKING PRIORITY)
+## 🎯 Implementation Order Priority (IMPORTANT: Not Sequential by Feature Number)
 
-**⚠️ CRITICAL NOTE**: RFR (Rubric Framework Remediation) is **P0 BLOCKING** - ALL other development frozen until completion.
+**⚠️ CRITICAL NOTE**: Feature numbers (F-001, F-002, etc.) are **organizational identifiers**, NOT implementation sequence. Sprint planning must follow **dependency-driven priority order** below:
 
-### **Sprint Implementation Sequence (Updated)**
+### **Sprint Implementation Sequence**
 ```
-Phase 0 (IMMEDIATE):     RFR-001 → RFR-002 → RFR-003 (5-8 sprints - BLOCKING)
-Phase 1 (Post-RFR):      F-001 → F-003 → F-004
-Phase 2 (Foundation):     F-006 → F-008 → F-005  
-Phase 3 (Intelligence):   F-009 → F-002
-Phase 4 (Advanced):       F-007 (Optional)
+Phase 1 (Immediate):     F-001 → F-003 → F-004
+Phase 2 (Foundation):    F-006 → F-008 → F-005  
+Phase 3 (Intelligence):  F-009 → F-002
+Phase 4 (Advanced):      F-007 (Optional)
 ```
 
 ### **Why This Order Matters**
@@ -35,37 +28,23 @@ Phase 4 (Advanced):       F-007 (Optional)
 - **F-002 Enhanced**: Operational intelligence gets full value after F-009 RCA patterns
 - **F-007 Optional**: NFM only if domain complexity justifies the architectural investment
 
-### **Dependencies That Drive Order (Updated)**
+### **Dependencies That Drive Order**
 ```yaml
-RFR-001: blocks: [ALL_OTHER_WORK]  # Registry infrastructure foundation
-RFR-002: depends_on: [RFR-001]     # Versioning requires registry
-RFR-003: depends_on: [RFR-002]     # Coverage expansion requires versioning
-F-001: depends_on: [RFR-003]       # Core platform needs rubric foundation
-F-003: depends_on: [F-001]         # Production needs stable core platform
-F-006: depends_on: [F-001]         # Input normalization needs template engine  
-F-008: depends_on: [F-001]         # Tool architecture needs stable tool registry
-F-009: depends_on: [F-006]         # RCA needs input normalization for pattern consistency
-F-002: enhanced_by: [F-009]        # Operational intelligence enhanced by RCA patterns
-F-007: depends_on: [F-006]         # NFM needs dictionary normalization foundation
-F-004: depends_on: [F-001, F-006]  # Quality validation needs templates + normalization
-F-005: parallel_with: [F-008]      # Tool maturity complements modular architecture
+F-003: depends_on: [F-001]  # Production needs stable core platform
+F-006: depends_on: [F-001]  # Input normalization needs template engine  
+F-008: depends_on: [F-001]  # Tool architecture needs stable tool registry
+F-009: depends_on: [F-006]  # RCA needs input normalization for pattern consistency
+F-002: enhanced_by: [F-009] # Operational intelligence enhanced by RCA patterns
+F-007: depends_on: [F-006]  # NFM needs dictionary normalization foundation
+F-004: depends_on: [F-001, F-006] # Quality validation needs templates + normalization
+F-005: parallel_with: [F-008] # Tool maturity complements modular architecture
 ```
 
-**Sprint Planning Rule**: RFR MUST complete before any feature work. Then check dependency graph, not feature numbers, when sequencing work.
+**Sprint Planning Rule**: Always check dependency graph, not feature numbers, when sequencing work.
 
 ---
 
-## Feature Epic Status (Updated with RFR Remediation)
-
-### 🚨 CRITICAL REMEDIATION EPIC (P0 - BLOCKS ALL OTHER DEVELOPMENT)
-
-| Epic ID | Epic Name | ADR Coverage | Status | Priority | Tasks | Effort Estimate |
-|---------|-----------|--------------|--------|----------|-------|------------------|
-| **RFR** | **Rubric Framework Remediation** | **ADR-023** | 🚨 **BLOCKING** | **P0 - CRITICAL** | 21 tasks (3 domains) | 138 hours (5-8 sprints) |
-
-**🚨 DEVELOPMENT FREEZE**: All feature development suspended until RFR completion
-
-### 📋 STANDARD FEATURE EPICS (FROZEN UNTIL RFR COMPLETION)
+## Feature Epic Status
 
 | Epic ID | Epic Name | ADR Coverage | Status | Priority | Tasks | Effort Estimate |
 |---------|-----------|--------------|--------|----------|-------|------------------|

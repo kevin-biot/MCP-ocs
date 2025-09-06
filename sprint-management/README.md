@@ -7,44 +7,46 @@ This framework provides structured, role-based AI agent coordination for MCP-ocs
 
 ### 1. Morning Setup (Human + Claude)
 ```bash
-# Load sprint context with quality intelligence
-bash scripts/get-sprint-context.sh --domain={target_domain} --include-weekly-findings
+# Validate framework readiness
+bash scripts/validate-sprint.sh
 
-# Collect current sprint metrics
-bash scripts/collect-sprint-metrics.sh
+# Create today's files
+bash scripts/setup-sprint-day.sh
 ```
 
 ### 2. Development Execution (Agent Sessions)
 
-#### DEVELOPER Session (Codex) - Process v3.3
+#### DEVELOPER Session (Codex)
 ```bash
-# Start with problem-resolution role context
-codex --context sprint-management/templates/role-context-developer-v3.3-template.md
+# Start with today's role context
+codex --context sprint-management/active-tasks/role-context-developer-$(date +%Y-%m-%d).md
 
 # Or manually reference:
-# Read: sprint-management/templates/DAILY_STANDUP_CHECKLIST_V3.3.md
-# Read: sprint-management/templates/CODEX_SYSTEMATIC_TEMPLATE_V3.3.md
-# Create: sprint-management/execution-logs/problem-resolution-log-YYYY-MM-DD.md
+# Read: sprint-management/active-tasks/role-context-developer-YYYY-MM-DD.md
+# Update: sprint-management/active-tasks/task-status-YYYY-MM-DD.md
+# Create: sprint-management/completion-logs/dev-completion-log-YYYY-MM-DD.md
 ```
 
-#### TESTER Session (Codex) - Process v3.3
+#### TESTER Session (Codex)
 ```bash
-# Start after DEVELOPER problem-resolution completion
-codex --context sprint-management/templates/role-context-tester-v3.3-template.md
+# Start after DEVELOPER completion
+codex --context sprint-management/active-tasks/role-context-tester-$(date +%Y-%m-%d).md
 
 # Or manually reference:
-# Read: sprint-management/execution-logs/problem-resolution-log-YYYY-MM-DD.md
-# Create: sprint-management/completion-logs/evidence-validation-v3.3-YYYY-MM-DD.md
+# Read: sprint-management/completion-logs/dev-completion-log-YYYY-MM-DD.md
+# Update: sprint-management/active-tasks/task-status-YYYY-MM-DD.md  
+# Create: sprint-management/completion-logs/test-completion-log-YYYY-MM-DD.md
 ```
 
-#### REVIEWER Session (Codex) - Process v3.3
+#### REVIEWER Session (Codex)
 ```bash
-# Start after TESTER evidence validation completion
-codex --context sprint-management/templates/role-context-reviewer-v3.3-template.md
+# Start after TESTER completion
+codex --context sprint-management/active-tasks/role-context-reviewer-$(date +%Y-%m-%d).md
 
 # Or manually reference:
-# Read: both problem-resolution and evidence-validation logs
-# Create: sprint-management/completion-logs/quality-gate-assessment-v3.3-YYYY-MM-DD.md
+# Read: both dev and test completion logs
+# Update: sprint-management/active-tasks/task-status-YYYY-MM-DD.md
+# Create: sprint-management/completion-logs/review-completion-log-YYYY-MM-DD.md
 ```
 
 ### 3. Evening Review (Human + Claude)
