@@ -10,6 +10,34 @@ Systematic weekly quality reviews using Review-Prompt-Lib to establish baseline 
 
 ---
 
+## 🔄 **GIT WORKFLOW INTEGRATION**
+
+Review-Prompt-Lib requires systematic git synchronization to ensure evidence files and process documentation are available across all branches.
+
+### **Framework Synchronization Scripts**
+
+#### **Main Branch Updates** (Process Evolution)
+```bash
+# When updating process framework on main branch
+./push-sprint-management-to-main.sh
+```
+
+#### **Feature Branch Sync** (Before Any Work)
+```bash
+# Mandatory before sprint work or Codex CLI usage
+./sprint-management/scripts/sync-framework-to-branch.sh
+```
+
+### **Why Complete Directory Sync Matters**
+- **Evidence Files**: Historical scan results inform systematic analysis
+- **Process Documentation**: Latest templates and procedures available
+- **Domain Evolution**: Updated review prompts and severity criteria
+- **Script Dependencies**: Executable permissions and latest automation
+
+**Never Cherry-Pick Files**: Always sync complete sprint-management directory to prevent missing artifacts that can lead to incomplete analysis.
+
+---
+
 ## 📋 PROCESS 1.0 CHECKLIST
 
 ### **Phase 1: Environment Preparation** ⏱️ 10 minutes

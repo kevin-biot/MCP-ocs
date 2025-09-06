@@ -39,7 +39,14 @@ V3.3: "Systematically eliminate async-correctness quality debt"
 
 ### **ENHANCED DEVELOPER CHECKLIST:**
 
-#### **Phase 1: Problem Context & Quality Intelligence** ⏱️ 10 minutes
+#### **Phase 1: Framework Sync & Problem Context** ⏱️ 15 minutes
+
+- [ ] **MANDATORY: Sync sprint-management framework** (See Review-Prompt-Lib v1.0)
+```bash
+# Ensure complete framework availability before work
+./sprint-management/review-prompt-lib/scripts/sync-framework-to-branch.sh
+```
+
 - [ ] **Load sprint context with quality intelligence**
 ```bash
 # Historical quality context
@@ -47,6 +54,12 @@ V3.3: "Systematically eliminate async-correctness quality debt"
 
 # Recent findings in target areas
 ./scripts/get-quality-context.sh --files="$(git diff --name-only main)"
+```
+
+- [ ] **Verify evidence availability**
+```bash
+# Confirm historical findings accessible
+ls -la sprint-management/review-prompt-lib/domains/*/historical/
 ```
 
 - [ ] **Understand problem scope, not task scope**
