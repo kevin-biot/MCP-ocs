@@ -1,0 +1,132 @@
+domain:
+  name: "async-correctness"
+  version: "1.0"
+  description: "Detect async/await correctness issues that could cause memory leaks, crashes, or race conditions"
+  maintainer: "Quality Engineering Team"
+  last_updated: "2025-09-05"
+  
+review:
+  prompt_version: "v1.0"
+  estimated_duration: "15-20 minutes"
+  file_patterns:
+    - "src/**/*.ts"
+    - "!src/**/*.test.ts"
+    - "!src/**/*.spec.ts"
+    - "!src/**/__tests__/**"
+    - "!src/**/*.mock.ts"
+    - "!src/**/*.config.ts"
+  llm_requirements:
+    - "code-analysis"
+    - "pattern-detection"
+    - "typescript-understanding"
+
+severity_levels:
+  P0:
+    name: "Critical"
+    description: "Block merge immediately - production safety risk"
+    sla: "Fix within 4 hours"
+    escalation: "Page on-call engineer"
+    action: "BLOCK_MERGE"
+  P1:
+    name: "High"  
+    description: "Fix within current sprint - reliability risk"
+    sla: "Fix within 3 days"
+    escalation: "Sprint backlog priority"
+    action: "FIX_THIS_SPRINT"
+  P2:
+    name: "Medium"
+    description: "Technical debt - address in quality sprint"
+    sla: "Fix within 2 weeks"
+    escalation: "Quality sprint allocation"
+    action: "QUALITY_DEBT"
+  P3:
+    name: "Low"
+    description: "Cleanup when convenient"
+    sla: "Fix when touching related code"
+    escalation: "Code review reminder"
+    action: "OPPORTUNISTIC_FIX"
+
+categories:
+  unawaited-promise:
+    description: "Async operation missing await keyword"
+    typical_effort: "15-30 minutes"
+    risk_level: "high"
+    examples: 
+      - "handler missing await"
+      - "floating promise in critical path"
+      - "fire-and-forget in request handler"
+  missing-timeout:
+    description: "Network operation without timeout protection"
+    typical_effort: "30-45 minutes" 
+    risk_level: "critical"
+    examples:
+      - "fetch without timeout"
+      - "database query without limit"
+      - "external API call without abort signal"
+  race-condition:
+    description: "Concurrent access to shared state"
+    typical_effort: "60-120 minutes"
+    risk_level: "high"
+    examples:
+      - "shared object mutation"
+      - "non-atomic read-modify-write"
+      - "concurrent state updates"
+  promise-pattern:
+    description: "Incorrect Promise.all vs Promise.allSettled usage"
+    typical_effort: "15-30 minutes"
+    risk_level: "medium" 
+    examples:
+      - "Promise.all with optional operations"
+      - "failure cascade in parallel operations"
+  error-propagation:
+    description: "Lost error context in async chains"
+    typical_effort: "20-40 minutes"
+    risk_level: "medium"
+    examples:
+      - "generic error messages"
+      - "lost stack traces"
+      - "missing error cause chains"
+
+integration:
+  backlog_domain: "d-005-async-correctness"
+  task_prefix: "ASYNC"
+  sprint_estimation:
+    P0: "2-4 hours"
+    P1: "1-2 hours"
+    P2: "30-60 minutes" 
+    P3: "15-30 minutes"
+  auto_actions:
+    - "create_tasks_for_new_findings"
+    - "mark_resolved_when_not_found"
+    - "escalate_persistent_p0_after_1_week"
+    - "escalate_persistent_p1_after_2_weeks"
+
+quality_gates:
+  clean_threshold:
+    P0: 0  # Zero P0 issues to be considered "clean"
+    P1: 2  # Maximum 2 P1 issues acceptable
+    P2: 5  # Maximum 5 P2 issues acceptable
+  regression_detection:
+    enabled: true
+    alert_on_new_p0: true
+    alert_on_p1_increase: true
+  trend_analysis:
+    track_resolution_time: true
+    track_recurrence_rate: true
+    weekly_report: true
+
+tooling:
+  compatible_llms:
+    - "qwen"
+    - "claude-3"
+    - "gpt-4"
+    - "codellama"
+  output_validation:
+    required_fields: ["fingerprint", "severity", "category", "file", "line", "description", "evidence", "recommendation"]
+    fingerprint_pattern: "^async-correctness:[^:]+:[0-9]+:(unawaited-promise|missing-timeout|race-condition|promise-pattern|error-propagation):[a-z0-9]{8}$"
+    fingerprint_components:
+      - "domain: async-correctness"
+      - "file: relative path from repo root"
+      - "line: line number where issue occurs"
+      - "category: issue type"
+      - "content_hash: 8-char hash of normalized code evidence"

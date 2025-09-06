@@ -1,0 +1,26 @@
+{
+  "domain": "date-time-safety",
+  "backlog_mapping": {
+    "d-012-date-time-safety": {
+      "description": "Date and time handling safety improvements",
+      "priority_mapping": {
+        "P0": "CRITICAL",
+        "P1": "HIGH", 
+        "P2": "MEDIUM",
+        "P3": "LOW"
+      },
+      "task_template": {
+        "title": "DATE-{category}-{file_basename}-L{line}",
+        "description": "Fix {category} date safety issue in {file}",
+        "effort_estimate": "varies by severity",
+        "tags": ["date-time-safety", "timezone", "serialization"]
+      }
+    }
+  },
+  "automated_actions": {
+    "create_tasks": true,
+    "mark_resolved": true,
+    "escalate_stale": true
+  },
+  "last_updated": "2025-09-05"
+}

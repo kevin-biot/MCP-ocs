@@ -1,0 +1,27 @@
+{
+  "domain": "trust-boundaries",
+  "backlog_mapping": {
+    "d-008-trust-boundaries": {
+      "description": "Trust boundary security improvements",
+      "priority_mapping": {
+        "P0": "CRITICAL",
+        "P1": "HIGH", 
+        "P2": "MEDIUM",
+        "P3": "LOW"
+      },
+      "task_template": {
+        "title": "TRUST-{category}-{file_basename}-L{line}",
+        "description": "Fix {category} security issue in {file}",
+        "effort_estimate": "varies by severity",
+        "tags": ["trust-boundaries", "security", "vulnerability"]
+      }
+    }
+  },
+  "automated_actions": {
+    "create_tasks": true,
+    "mark_resolved": true,
+    "escalate_stale": true,
+    "notify_security_team": true
+  },
+  "last_updated": "2025-09-05"
+}
