@@ -1,34 +1,72 @@
-# DEVELOPER Role Guardrails - Process v3.2 Enhanced Framework
+# DEVELOPER Role Guardrails - Process v3.3.1-Enhanced Framework
+**Template Version**: v3.3.1-enhanced (2025-09-06)  
+**Process Framework**: Process v3.3 Enhanced with Aviation Safety Integration  
+**Template Type**: Current/Active - DEVELOPER Role Standards  
+**Supersedes**: v3.2.x Enhanced Framework (archived)
 
-**Role**: DEVELOPER  
-**Framework**: Process v3.2 Enhanced  
-**Status**: Comprehensive Execution and Quality Standards  
-**Last Updated**: 2025-09-02  
+**Role**: DEVELOPER (Problem Solver)  
+**Framework**: Process v3.3.1-Enhanced with Aviation Safety Integration  
+**Status**: Comprehensive Problem-Resolution Standards  
+**Last Updated**: 2025-09-06  
 
-## SYSTEMATIC EXECUTION FRAMEWORK
+---
 
-### Phase-by-Phase Development Protocol
+---
 
-#### **PHASE 1: Analysis and Planning** (15-30 minutes)
-- [ ] **Requirements Analysis**: Review domain specifications and acceptance criteria
-- [ ] **Historical Pattern Review**: Check similar implementations for proven approaches
-- [ ] **Risk Assessment**: Identify potential security and architectural pitfalls
-- [ ] **Implementation Strategy**: Plan systematic approach using established patterns
-- [ ] **Resource Planning**: Estimate time, complexity tier, and token budget
+## CRITICAL STYLE PATTERNS (Process v3.3.1-Enhanced)
+**Minimal Rules for High-Frequency Issues:**
 
-#### **PHASE 2: Systematic Implementation** (60-120 minutes)
-- [ ] **Incremental Development**: Build functionality step-by-step with validation
-- [ ] **Pattern Adherence**: Follow established successful patterns consistently
-- [ ] **Quality Integration**: Apply security and architectural standards throughout
-- [ ] **Continuous Testing**: Validate changes at each major milestone
-- [ ] **Documentation**: Maintain clear implementation notes for handoff
+- **Date Consistency**: 
+  - Logs/user-facing JSON: `nowIso()` (TZ-aware ISO 8601)
+  - Memory/internal timing: `nowEpoch()` (numeric ms)
+  - NEVER use `Date.now()` or inconsistent formats
 
-#### **PHASE 3: Validation and Handoff** (20-40 minutes)
-- [ ] **Comprehensive Testing**: Execute full test suite and verify functionality
+- **Type Boundaries**: Validate at all tool/API boundaries (NEVER bypass with 'any')
+
+- **Async Discipline**: 
+  - Always await Promises (NEVER floating promises)
+  - Use Promise.allSettled for parallel operations (not Promise.all for optional ops)
+  - Add timeouts to external calls (fetch, DB queries)
+
+- **Error Structure**: Use domain-specific error classes, never generic Error()
+
+- **Trust Boundaries**: 
+  - Validate all req.body, req.params, req.query (NEVER trust user input)
+  - Sanitize file paths and external data
+
+**Note**: These patterns address the most frequent style debt identified through systematic code reviews. Focus on core functionality - formal review will catch additional style issues.
+
+---
+
+## SYSTEMATIC PROBLEM-RESOLUTION FRAMEWORK
+
+### Phase-by-Phase Problem Elimination Protocol
+
+#### **PHASE 1: Problem Baseline & Analysis** (15-30 minutes)
+- [ ] **Problem Category Definition**: Identify specific quality debt type for systematic elimination
+- [ ] **Evidence Collection**: Document current state with measurable baseline
+- [ ] **Historical Pattern Review**: Check similar elimination attempts for proven approaches
+- [ ] **Risk Assessment**: Identify potential cross-domain impacts and architectural considerations
+- [ ] **Elimination Strategy**: Plan systematic approach using evidence-based patterns
+- [ ] **Archive Preparation**: Initialize landing protocol structure early
+
+#### **PHASE 2: Systematic Problem Elimination** (60-120 minutes)
+- [ ] **Incremental Elimination**: Remove problems step-by-step with validation
+- [ ] **Pattern Consistency**: Apply elimination approach consistently across codebase
+- [ ] **Quality Integration**: Maintain security and architectural standards throughout
+- [ ] **Continuous Verification**: Validate elimination at each major milestone
+- [ ] **Prevention Implementation**: Add safeguards against problem recurrence
+- [ ] **Evidence Generation**: Create systematic proof of elimination
+
+#### **PHASE 3: Verification & Landing Preparation** (20-40 minutes)
+- [ ] **Elimination Verification**: Confirm zero instances of problem category remain
 - [ ] **Quality Gate Verification**: Ensure all standards met before handoff
 - [ ] **Documentation Completion**: Create detailed handoff artifacts
-- [ ] **TESTER Preparation**: Provide comprehensive testing requirements
+- [ ] **TESTER Preparation**: Provide comprehensive validation requirements
+- [ ] **Archive Organization**: Prepare all artifacts for aviation safety landing protocol
 - [ ] **Process Documentation**: Record lessons learned and performance data
+
+---
 
 ## SECURITY GUARDRAILS (P0 - MANDATORY)
 
@@ -76,6 +114,8 @@ try {
 }
 ```
 
+---
+
 ## QUALITY STANDARDS (P1 - HIGH PRIORITY)
 
 ### Type Safety Requirements
@@ -103,21 +143,26 @@ function assertIsUser(obj: unknown): asserts obj is User {
 const user = data as User; // NEVER do this without validation
 ```
 
-#### **D-003: Interface Hygiene**
-**Structural Safety (High Priority):**
-- [ ] **Branded Types**: Use branded types for critical identifiers
-- [ ] **No Structural Collisions**: Prevent accidental interface matches
-- [ ] **Generic Constraints**: Properly constrain generic type parameters
-- [ ] **Return Consistency**: Consistent return patterns across similar functions
+#### **D-009: Interface Hygiene** (Enhanced from Process v3.3)
+**Systematic Interface Safety (High Priority):**
+- [ ] **Tool Boundary Protection**: No `any` types at tool interfaces
+- [ ] **Memory Adapter Safety**: Proper typing for all memory operations
+- [ ] **Date-Time Safety**: ISO-8601 format with timezone handling
+- [ ] **Dangerous Assertion Elimination**: Remove unsafe type assertions
+- [ ] **Prevention Measures**: ESLint rules and type guards implemented
 
 ```typescript
-// REQUIRED pattern for critical identifiers
-type UserId = string & { __brand: 'UserId' };
-type SessionId = string & { __brand: 'SessionId' };
-
-function createUserId(value: string): UserId {
-    return value as UserId; // Safe because of validation context
+// REQUIRED pattern for tool boundaries (Enhanced v3.3)
+interface ToolResponse<T = unknown> {
+    success: boolean;
+    data: T;
+    timestamp: string; // ISO-8601 format required
+    evidence: Evidence[];
 }
+
+// PROHIBITED patterns from interface hygiene elimination
+const result = toolResponse as any; // NEVER bypass tool boundaries
+const timestamp = Date.now(); // Use new Date().toISOString()
 ```
 
 ### Error Handling Standards
@@ -131,47 +176,144 @@ function createUserId(value: string): UserId {
 
 ```typescript
 // REQUIRED pattern for structured errors
-export class ValidationError extends Error {
+export class ProblemEliminationError extends Error {
     constructor(
         message: string,
-        public field: string,
-        public value: unknown,
-        public constraint: string
+        public problemCategory: string,
+        public context: unknown,
+        public phase: string
     ) {
         super(message);
-        this.name = 'ValidationError';
+        this.name = 'ProblemEliminationError';
     }
 }
 
 // PROHIBITED pattern
-throw new Error('Something went wrong'); // Too generic
+throw new Error('Problem elimination failed'); // Too generic
 ```
+
+---
+
+## PROBLEM-RESOLUTION STANDARDS (Process v3.3.1-Enhanced)
+
+### Evidence-Based Elimination Requirements
+
+#### **Evidence Completeness Standards**
+**Evidence Quality (Mandatory ≥ 0.9):**
+- [ ] **Before State Documentation**: Baseline with measurable metrics
+- [ ] **Elimination Process Evidence**: Step-by-step systematic proof
+- [ ] **After State Verification**: Zero instances confirmed with scanning
+- [ ] **Prevention Measure Validation**: Safeguards tested and working
+- [ ] **Cross-Domain Impact Assessment**: No regression in related domains
+
+```typescript
+// REQUIRED pattern for evidence collection
+interface EliminationEvidence {
+    problemCategory: string;
+    beforeState: {
+        instanceCount: number;
+        severity: 'P0' | 'P1' | 'P2';
+        examples: ProblemInstance[];
+        baseline: QualityMetrics;
+    };
+    eliminationProcess: {
+        methodology: string;
+        steps: EliminationStep[];
+        duration: number;
+        toolsUsed: string[];
+    };
+    afterState: {
+        instanceCount: 0; // Must be zero
+        verification: VerificationResult[];
+        improvement: QualityMetrics;
+    };
+    prevention: {
+        safeguards: PreventionMeasure[];
+        testing: PreventionTest[];
+        monitoring: MonitoringStrategy[];
+    };
+    completenessScore: number; // Must be ≥ 0.9
+}
+```
+
+#### **Systematic Elimination Methodology**
+**Problem Resolution Approach (Mandatory):**
+- [ ] **Pattern-Based Elimination**: Consistent approach across similar problems
+- [ ] **Scope Discipline**: Clear boundaries preventing scope explosion
+- [ ] **Prevention Integration**: Safeguards implemented during elimination
+- [ ] **Cross-Domain Awareness**: Related domain impact assessment
+- [ ] **Quality Intelligence Integration**: Weekly findings inform approach
+
+---
+
+## AVIATION SAFETY INTEGRATION (Process v3.3.1-Enhanced)
+
+### Landing Protocol Preparation Requirements
+
+#### **Archive Organization During Development**
+**Systematic Closure Preparation (Mandatory):**
+- [ ] **Execution Log Maintenance**: Real-time documentation with timestamps
+- [ ] **Evidence Organization**: All artifacts structured for landing protocol
+- [ ] **Quality Documentation**: Evidence completeness tracking throughout
+- [ ] **Prevention Documentation**: Safeguard implementation evidence
+- [ ] **Handoff Preparation**: TESTER validation requirements documented
+
+#### **Organizational Hygiene Standards**
+**Debt Prevention (Mandatory):**
+- [ ] **No Scattered Artifacts**: All outputs organized systematically
+- [ ] **Real-Time Organization**: Archive structure maintained during development
+- [ ] **Template Compliance**: All outputs compatible with landing checklist
+- [ ] **Framework Consistency**: v3.3.1-enhanced standards maintained
+- [ ] **Emergency Prevention**: Organizational debt accumulation avoided
+
+---
 
 ## HISTORICAL ANTI-PATTERNS (CRITICAL AVOIDANCE)
 
-### Common Failures from Previous Sprints
+### Problem-Resolution Failures from Previous Sprints
 
-#### **Type Safety Shortcuts (Previous Production Issues)**
+#### **Completion Theater vs. Genuine Resolution**
+**NEVER DO (Process v3.3 Discovery):**
+```typescript
+// These patterns created completion theater without problem resolution
+markTaskComplete(); // Without eliminating underlying problems
+updateStatus('DONE'); // Without evidence of systematic elimination
+closeTicket(); // Without prevention measures implemented
+```
+
+**ALWAYS DO (Process v3.3.1-Enhanced):**
+```typescript
+// These patterns ensure genuine problem resolution
+const evidence = await validateElimination(problemCategory);
+if (evidence.completenessScore < 0.9) {
+    throw new EvidenceInsufficientError('More elimination required');
+}
+await implementPrevention(problemCategory, evidence.patterns);
+```
+
+#### **Interface Hygiene Violations (D-009 Systematic Findings)**
 **NEVER DO:**
 ```typescript
-// These patterns caused production failures
-const data = response as any; // Type safety bypass
-const user = getUserData() as User; // Unchecked assertion
-const items = data.items || []; // Unsafe fallback
+// These patterns from D-009 interface hygiene elimination
+const args: any = request.params; // Tool boundary violation
+const timestamp = Date.now(); // Inconsistent serialization  
+const memory = adapter.get() as any[]; // Memory adapter type bypass
+const result = data as ExpectedType; // Dangerous type assertion
 ```
 
 **ALWAYS DO:**
 ```typescript
-// These patterns prevented issues
-const data = validateResponse(response, responseSchema);
-const user = parseUser(getUserData()); // With validation
-const items = Array.isArray(data.items) ? data.items : [];
+// These patterns prevent interface hygiene problems
+const args = validateToolParams(request.params, paramSchema);
+const timestamp = new Date().toISOString(); // ISO-8601 format
+const memory = adapter.getTypedMemory<MemoryType>();
+const result = parseAndValidate(data, resultSchema);
 ```
 
-#### **Async Handling Mistakes (Caused Race Conditions)**
+#### **Async Handling Mistakes (Systematic Race Conditions)**
 **NEVER DO:**
 ```typescript
-// These patterns caused data corruption
+// These patterns caused data corruption and race conditions
 Promise.all([op1(), op2(), op3()]); // Without error handling
 const result = asyncOperation(); // Missing await
 setTimeout(() => cleanup(), 100); // Race condition
@@ -179,181 +321,237 @@ setTimeout(() => cleanup(), 100); // Race condition
 
 **ALWAYS DO:**
 ```typescript
-// These patterns prevented issues
+// These patterns prevented issues and enable systematic elimination
 const results = await Promise.allSettled([op1(), op2(), op3()]);
 const result = await asyncOperation();
 await delay(100); // Proper async delay
 ```
 
-#### **Input Validation Gaps (Security Vulnerabilities)**
-**NEVER DO:**
-```typescript
-// These patterns created security holes
-const query = `SELECT * FROM users WHERE id = ${userId}`;
-const filePath = path.join(basePath, req.params.file);
-exec(`rm -rf ${userPath}`);
-```
+---
 
-**ALWAYS DO:**
-```typescript
-// These patterns prevented vulnerabilities
-const query = 'SELECT * FROM users WHERE id = ?';
-db.execute(query, [userId]);
-const filePath = path.resolve(basePath, sanitize(req.params.file));
-await fs.unlink(validatedPath); // No shell execution
-```
+## PROVEN SUCCESSFUL PATTERNS (Process v3.3 Validated)
 
-## PROVEN SUCCESSFUL PATTERNS
+### Problem-Resolution Patterns
 
-### Dynamic Resource Discovery (From Ingress Template Success)
+#### **Systematic Domain Scanning (Review-Prompt-Lib Integration)**
 ```typescript
-// This pattern has proven reliable across multiple implementations
-async function discoverResources(namespace: string, selector: Record<string, string>) {
+// This pattern consistently achieves high evidence completeness
+async function scanProblemDomain(domain: string, problemCategory: string): Promise<ProblemBaseline> {
     try {
-        const resources = await k8sApi.listNamespacedResources(namespace, {
-            labelSelector: Object.entries(selector)
-                .map(([k, v]) => `${k}=${v}`)
-                .join(',')
+        const findings = await reviewPromptLib.scanDomain(domain, {
+            problemType: problemCategory,
+            includeHistorical: true,
+            severityFilter: ['P0', 'P1', 'P2']
         });
         
-        if (resources.body.items.length === 0) {
-            logger.info('No resources found', { namespace, selector });
-            return [];
+        if (findings.length === 0) {
+            logger.info('No problems found in domain', { domain, problemCategory });
+            return { instanceCount: 0, baseline: 'clean' };
         }
         
-        return resources.body.items.map(item => ({
-            name: item.metadata?.name || 'unknown',
-            namespace: item.metadata?.namespace || namespace,
-            labels: item.metadata?.labels || {},
-            status: extractStatus(item)
-        }));
+        return {
+            instanceCount: findings.length,
+            severity: assessSeverity(findings),
+            examples: findings.slice(0, 3), // Sample for evidence
+            patterns: identifyPatterns(findings),
+            baseline: calculateQualityMetrics(findings)
+        };
     } catch (error) {
-        logger.error('Resource discovery failed', { namespace, selector, error });
-        throw new ResourceDiscoveryError('Failed to discover resources', error);
+        logger.error('Domain scanning failed', { domain, problemCategory, error });
+        throw new ProblemAnalysisError('Failed to establish baseline', error);
     }
 }
 ```
 
-### Evidence Completeness Scoring (Consistently Reliable)
+#### **Evidence Completeness Scoring (Consistently Reliable ≥ 0.9)**
 ```typescript
-// This pattern achieves consistent 0.9+ completeness scores
-function calculateCompleteness(evidence: Evidence[]): number {
-    const requiredFields = ['timestamp', 'source', 'data', 'confidence'];
-    const optionalFields = ['metadata', 'correlations', 'context'];
+// This pattern achieves consistent 0.9+ completeness scores in Process v3.3
+function calculateEliminationCompleteness(evidence: EliminationEvidence): number {
+    const requiredEvidence = [
+        'beforeState', 'eliminationProcess', 'afterState', 'prevention'
+    ];
+    const qualityFactors = [
+        'baseline', 'methodology', 'verification', 'safeguards'
+    ];
     
     let totalScore = 0;
     let maxScore = 0;
     
-    for (const item of evidence) {
-        let itemScore = 0;
-        
-        // Required fields (80% of score)
-        for (const field of requiredFields) {
-            maxScore += 0.8 / requiredFields.length;
-            if (item[field] && isValidField(item[field])) {
-                itemScore += 0.8 / requiredFields.length;
-            }
+    // Required evidence (70% of score)
+    for (const requirement of requiredEvidence) {
+        maxScore += 0.7 / requiredEvidence.length;
+        if (evidence[requirement] && isCompleteEvidence(evidence[requirement])) {
+            totalScore += 0.7 / requiredEvidence.length;
         }
-        
-        // Optional fields (20% of score)  
-        for (const field of optionalFields) {
-            maxScore += 0.2 / optionalFields.length;
-            if (item[field] && isValidField(item[field])) {
-                itemScore += 0.2 / optionalFields.length;
-            }
-        }
-        
-        totalScore += itemScore;
     }
     
-    return maxScore > 0 ? totalScore / maxScore : 0;
+    // Quality factors (30% of score)  
+    for (const factor of qualityFactors) {
+        maxScore += 0.3 / qualityFactors.length;
+        if (hasHighQualityEvidence(evidence, factor)) {
+            totalScore += 0.3 / qualityFactors.length;
+        }
+    }
+    
+    return maxScore > 0 ? Math.min(totalScore / maxScore, 1.0) : 0;
 }
 ```
 
-## IMPLEMENTATION CHECKLIST
+#### **Prevention Implementation (Systematic Safeguards)**
+```typescript
+// This pattern successfully prevents problem recurrence
+async function implementPrevention(
+    problemCategory: string, 
+    eliminationPatterns: EliminationPattern[]
+): Promise<PreventionResult> {
+    const safeguards: PreventionMeasure[] = [];
+    
+    // ESLint rules for automated prevention
+    if (problemCategory === 'interface-hygiene') {
+        safeguards.push({
+            type: 'eslint-rule',
+            rule: '@typescript-eslint/no-explicit-any',
+            severity: 'error',
+            scope: ['src/tools/**', 'src/lib/memory/**']
+        });
+    }
+    
+    // Type guards for runtime protection
+    for (const pattern of eliminationPatterns) {
+        safeguards.push({
+            type: 'type-guard',
+            function: generateTypeGuard(pattern),
+            location: pattern.commonLocations
+        });
+    }
+    
+    // Testing requirements
+    safeguards.push({
+        type: 'test-requirement',
+        testSuite: `${problemCategory}-prevention.test.ts`,
+        coverage: 'comprehensive'
+    });
+    
+    return { safeguards, tested: true, effective: true };
+}
+```
+
+---
+
+## IMPLEMENTATION CHECKLIST (Process v3.3.1-Enhanced)
 
 ### Pre-Implementation Verification
-- [ ] **Domain README reviewed** - Understanding of requirements complete
-- [ ] **Historical patterns identified** - Similar implementations analyzed
-- [ ] **Security requirements clear** - P0 trust boundaries identified
-- [ ] **Success patterns selected** - Proven approaches chosen
-- [ ] **Anti-patterns noted** - Historical failures to avoid
+- [ ] **Problem Category Defined** - Specific quality debt type identified
+- [ ] **Evidence Standards Clear** - ≥ 0.9 completeness requirements understood
+- [ ] **Historical Patterns Analyzed** - Similar elimination approaches reviewed
+- [ ] **Security Requirements Clear** - P0 trust boundaries identified
+- [ ] **Prevention Strategy Planned** - Safeguards approach determined
+- [ ] **Archive Structure Initialized** - Landing protocol preparation begun
 
-### During Implementation
-- [ ] **Incremental validation** - Test after each major change
-- [ ] **Pattern adherence** - Following established successful approaches
-- [ ] **Security integration** - Trust boundaries maintained throughout
-- [ ] **Type safety maintained** - No shortcuts or any types introduced
-- [ ] **Error handling complete** - Structured error management implemented
+### During Problem Elimination
+- [ ] **Systematic Documentation** - Real-time execution log maintenance
+- [ ] **Pattern Consistency** - Uniform elimination approach across instances
+- [ ] **Evidence Collection** - Before/during/after state capture
+- [ ] **Prevention Integration** - Safeguards implemented alongside elimination
+- [ ] **Quality Standards Maintained** - Security and type safety preserved
+- [ ] **Cross-Domain Awareness** - Related domain impact monitored
 
 ### Pre-Handoff Verification
-- [ ] **All tests passing** - Full test suite execution successful
-- [ ] **Security review complete** - P0 requirements satisfied
-- [ ] **Quality standards met** - Code quality requirements achieved
-- [ ] **Documentation ready** - TESTER handoff artifacts prepared
-- [ ] **Performance acceptable** - No obvious efficiency problems
+- [ ] **Zero Instances Confirmed** - Systematic scanning validates elimination
+- [ ] **Evidence Completeness ≥ 0.9** - Quality standards achieved
+- [ ] **Prevention Measures Tested** - Safeguards validated and working
+- [ ] **Security Review Complete** - P0 requirements satisfied
+- [ ] **Documentation Ready** - TESTER handoff artifacts prepared
+- [ ] **Archive Organized** - Landing protocol compatibility verified
 
-## HANDOFF REQUIREMENTS
+---
+
+## HANDOFF REQUIREMENTS (Enhanced Process v3.3.1)
 
 ### TESTER Handoff Documentation
 
 #### **Required Artifacts**
-- [ ] **Implementation Report**: `[domain]-[epic]-developer-completion-v3.2.md`
-- [ ] **Testing Requirements**: `[domain]-[epic]-testing-requirements-v3.2.md`
-- [ ] **Performance Metrics**: `[domain]-[epic]-performance-metrics-v3.2.md`
+- [ ] **Problem Elimination Report**: `[sprint-id]-developer-elimination-v3.3.1.md`
+- [ ] **Evidence Validation Requirements**: `[sprint-id]-evidence-requirements-v3.3.1.md`
+- [ ] **Prevention Testing Guide**: `[sprint-id]-prevention-testing-v3.3.1.md`
 - [ ] **Security Validation**: Evidence of P0 requirement compliance
-- [ ] **Quality Evidence**: Test results, build logs, validation confirmation
+- [ ] **Quality Evidence**: Elimination proof, prevention validation, completeness scoring
 
-#### **Implementation Report Format**
+#### **Problem Elimination Report Format**
 ```markdown
-## DEVELOPER IMPLEMENTATION SUMMARY
+## DEVELOPER PROBLEM ELIMINATION SUMMARY
 
-**Domain**: [domain-name]
-**Epic**: [epic-name]  
-**Complexity Tier**: [TIER_1/2/3]
-**Implementation Duration**: [actual] minutes (estimated: [estimated])
+**Problem Category**: [specific-quality-debt-type]
+**Domain**: [primary-domain] + [secondary-domain]  
+**Process Framework**: v3.3.1-Enhanced with Aviation Safety Integration
+**Elimination Duration**: [actual] minutes (estimated: [estimated])
 
-**Tasks Completed**:
-- [ ] [Task 1]: [Brief description and outcome]
-- [ ] [Task 2]: [Brief description and outcome]
+**Problems Eliminated**:
+- **Instance Count**: [before] → 0 (verified)
+- **Pattern 1**: [Specific elimination approach and outcome]
+- **Pattern 2**: [Specific elimination approach and outcome]
+- **Evidence Score**: [score] / 1.0 (≥ 0.9 achieved)
 
 **Security Compliance**:
-- [ ] Trust Boundaries: [Specific validations implemented]
-- [ ] Async Safety: [Concurrency protections added]
-- [ ] Type Safety: [Zero any types confirmed]
-- [ ] Error Handling: [Structured error taxonomy used]
+- [ ] Trust Boundaries: [Specific validations maintained during elimination]
+- [ ] Async Safety: [Concurrency protections preserved]
+- [ ] Type Safety: [Zero any types confirmed after elimination]
+- [ ] Interface Hygiene: [Tool boundary protection maintained]
 
-**Patterns Applied**:
-- [Successful Pattern 1]: [Where and how used]
-- [Successful Pattern 2]: [Where and how used]
+**Prevention Measures Implemented**:
+- [Safeguard 1]: [ESLint rule/type guard/test requirement]
+- [Safeguard 2]: [Where implemented and how tested]
+- [Monitoring]: [Continuous prevention approach]
 
-**Testing Requirements for TESTER**:
-- [Specific test 1]: [What to validate and how]
-- [Specific test 2]: [What to validate and how]
-- [Edge cases]: [Boundary conditions to test]
+**Evidence for TESTER Validation**:
+- [Before State]: [Baseline metrics and problem instances]
+- [Elimination Process]: [Methodology and systematic approach]
+- [After State]: [Zero instances with verification method]
+- [Prevention Tests]: [Safeguard validation requirements]
 
-**Quality Gates Status**: ALL PASSED
-**Ready for TESTER validation**: YES
+**Cross-Domain Impact**: [Assessment of related domains - NO REGRESSION]
+**Quality Gate Status**: ALL PASSED
+**Evidence Completeness**: ≥ 0.9 ACHIEVED
+**Ready for TESTER validation**: YES with systematic evidence
 ```
-
-## CONTINUOUS IMPROVEMENT
-
-### Performance Tracking
-- [ ] **Implementation Efficiency**: Time spent vs complexity achieved
-- [ ] **Pattern Effectiveness**: Success rate of chosen patterns
-- [ ] **Quality Consistency**: Standards maintained across implementations
-- [ ] **Security Compliance**: P0 requirement satisfaction rate
-
-### Learning Documentation
-- [ ] **New Pattern Discovery**: Successful approaches worth reusing
-- [ ] **Anti-Pattern Identification**: Approaches that should be avoided
-- [ ] **Efficiency Improvements**: Ways to reduce implementation time
-- [ ] **Quality Enhancements**: Methods to improve output quality
 
 ---
 
-**Framework Integration**: This guardrails file integrates with TESTER-GUARDRAILS.md and REVIEWER-GUARDRAILS.md to provide systematic quality assurance throughout Process v3.2 execution.
+## CONTINUOUS IMPROVEMENT (Process v3.3.1-Enhanced)
 
-**Historical Context**: Security requirements and anti-patterns derived from D-001 through D-014 domain analysis ensure previously identified vulnerabilities and issues don't reoccur.
+### Performance Tracking
+- [ ] **Problem Resolution Efficiency**: Time vs systematic elimination achieved
+- [ ] **Evidence Quality Consistency**: Completeness scores maintained ≥ 0.9
+- [ ] **Prevention Effectiveness**: Safeguard success rate tracking
+- [ ] **Cross-Domain Impact**: Regression prevention rate
 
-**Process Authority**: DEVELOPER role maintains implementation autonomy while following systematic framework for security, quality, and consistency.
+### Learning Documentation
+- [ ] **Successful Elimination Patterns**: Approaches worth systematic reuse
+- [ ] **Prevention Strategy Effectiveness**: Safeguards that successfully prevent recurrence
+- [ ] **Evidence Collection Improvements**: Methods to enhance completeness scoring
+- [ ] **Framework Evolution**: Process v3.3.1-enhanced effectiveness assessment
+
+---
+
+## Template Evolution History
+- **v3.3.1-enhanced (2025-09-06)**: Added aviation safety integration, problem-resolution standards, evidence requirements
+- **v3.2.x (archived)**: Task-completion framework with quality gates
+- **v3.1.x (archived)**: Basic development execution framework
+
+## Usage Notes
+- **Current Status**: Active guardrails for all Process v3.3.1-Enhanced DEVELOPER role execution
+- **Problem-Resolution Focus**: Systematic elimination vs task completion orientation
+- **Evidence Standards**: Mandatory ≥ 0.9 completeness scoring
+- **Aviation Safety**: Landing protocol preparation integrated throughout
+
+---
+*Template Version: v3.3.1-enhanced*  
+*Last Updated: 2025-09-06*  
+*Framework Compatibility: Process v3.3.1-Enhanced (Aviation Safety Integration)*  
+*Integration: Works with TESTER-GUARDRAILS.md and REVIEWER-GUARDRAILS.md for systematic quality assurance*
+
+**Framework Integration**: This guardrails file integrates with TESTER-GUARDRAILS.md and REVIEWER-GUARDRAILS.md to provide systematic quality assurance throughout Process v3.3.1-enhanced execution with aviation safety landing protocol.
+
+**Historical Context**: Security requirements and anti-patterns derived from D-001 through D-014 domain analysis, enhanced with D-009 interface hygiene systematic findings, ensure previously identified vulnerabilities and completion theater patterns don't reoccur.
+
+**Process Authority**: DEVELOPER role maintains problem-resolution autonomy while following systematic framework for security, quality, evidence collection, and organizational hygiene with aviation safety integration.

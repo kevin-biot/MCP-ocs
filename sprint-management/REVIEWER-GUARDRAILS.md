@@ -1,356 +1,407 @@
-# REVIEWER Role Guardrails - Process v3.2 Enhanced Framework
-
-**Role**: REVIEWER  
-**Framework**: Process v3.2 Enhanced  
-**Status**: Comprehensive Execution and Quality Standards  
-**Last Updated**: 2025-09-02  
-
-## SYSTEMATIC EXECUTION FRAMEWORK
-
-### Phase-by-Phase Review Protocol
-
-#### **PHASE 1: Context Analysis and Planning** (10-15 minutes)
-- [ ] **Implementation Review**: Analyze DEVELOPER completion logs and code changes
-- [ ] **Testing Assessment**: Review TESTER validation results and quality gates
-- [ ] **Architecture Impact**: Evaluate changes against system architecture and ADRs
-- [ ] **Quality Standards Selection**: Choose appropriate review depth for complexity tier
-- [ ] **Review Strategy Definition**: Plan systematic assessment approach
-
-#### **PHASE 2: Comprehensive Quality Assessment** (45-75 minutes)
-- [ ] **Code Quality Analysis**: Systematic evaluation against standards
-- [ ] **Architecture Compliance**: Verify alignment with established patterns
-- [ ] **Security Assessment**: Validate trust boundaries and input handling
-- [ ] **Performance Evaluation**: Review efficiency and resource usage
-- [ ] **Integration Impact**: Assess effects on broader system
-
-#### **PHASE 3: Decision and Handoff** (15-20 minutes)
-- [ ] **Quality Scoring**: Systematic evaluation with numerical assessment
-- [ ] **Risk Assessment**: Identify potential issues and mitigation strategies
-- [ ] **Release Readiness**: Determine approval status with clear rationale
-- [ ] **Improvement Recommendations**: Provide actionable feedback
-- [ ] **Documentation Completion**: Create comprehensive review summary
-
-### Complexity Tier Review Standards
-
-#### **TIER 1 Review (1-2 SP - Simple Tasks)**
-- **Review Depth**: Core functionality, basic patterns, obvious issues
-- **Time Allocation**: 45-60 minutes
-- **Quality Threshold**: 7.0/10 minimum for approval
-- **Focus Areas**: Functionality, basic security, pattern consistency
-
-#### **TIER 2 Review (3-5 SP - Standard Implementation)**
-- **Review Depth**: Comprehensive analysis, architecture alignment, security review
-- **Time Allocation**: 75-90 minutes
-- **Quality Threshold**: 7.5/10 minimum for approval
-- **Focus Areas**: Quality, security, performance, integration impact
-
-#### **TIER 3 Review (6+ SP - Complex Architecture)**
-- **Review Depth**: Complete systematic analysis, architectural impact assessment
-- **Time Allocation**: 90-120 minutes
-- **Quality Threshold**: 8.0/10 minimum for approval
-- **Focus Areas**: Architecture, scalability, security, long-term maintainability
-
-## QUALITY STANDARDS AND SCORING CRITERIA
-
-### Systematic Quality Assessment Framework
-
-#### **Code Quality Scoring (25% of total score)**
-**9-10 Points: Exceptional**
-- [ ] **Pattern Consistency**: Perfect adherence to established patterns
-- [ ] **Readability**: Self-documenting code with clear intent
-- [ ] **Maintainability**: Easy to understand and modify
-- [ ] **Efficiency**: Optimal algorithms and data structures
-
-**7-8 Points: Good**
-- [ ] **Pattern Adherence**: Mostly follows established patterns
-- [ ] **Clear Structure**: Logical organization with minor issues
-- [ ] **Reasonable Efficiency**: Acceptable performance characteristics
-- [ ] **Minor Issues**: Small deviations that don't impact functionality
-
-**5-6 Points: Adequate**
-- [ ] **Basic Functionality**: Works but with pattern deviations
-- [ ] **Structural Issues**: Organization problems affecting readability
-- [ ] **Performance Concerns**: Inefficient but acceptable approaches
-- [ ] **Maintenance Risk**: Harder to modify or extend
-
-**Below 5 Points: Inadequate (Automatic Failure)**
-- [ ] **Pattern Violations**: Significant deviations from standards
-- [ ] **Poor Structure**: Difficult to understand or maintain
-- [ ] **Performance Problems**: Unacceptable resource usage
-- [ ] **Critical Issues**: Problems affecting functionality or security
-
-#### **Architecture Compliance (25% of total score)**
-**9-10 Points: Perfect Alignment**
-- [ ] **ADR Compliance**: Full alignment with architectural decisions
-- [ ] **Integration Harmony**: Seamless fit with existing systems
-- [ ] **Future-Proof**: Extensible design supporting growth
-- [ ] **Abstraction Levels**: Appropriate separation of concerns
-
-**7-8 Points: Good Alignment**
-- [ ] **Mostly Compliant**: Minor deviations from ADRs
-- [ ] **Good Integration**: Works well with existing systems
-- [ ] **Reasonable Design**: Adequate extensibility
-- [ ] **Minor Issues**: Small architectural inconsistencies
-
-**5-6 Points: Acceptable**
-- [ ] **Basic Compliance**: Meets minimum architectural standards
-- [ ] **Integration Works**: Functions with existing systems
-- [ ] **Limited Extensibility**: Harder to modify or extend
-- [ ] **Some Violations**: Architectural pattern deviations
-
-#### **Security Assessment (25% of total score)**
-**9-10 Points: Comprehensive Security**
-- [ ] **Input Validation**: All inputs properly validated with schemas
-- [ ] **Trust Boundaries**: Clear security boundaries maintained
-- [ ] **Error Handling**: Security-conscious error responses
-- [ ] **Data Protection**: Sensitive data properly handled
-
-**7-8 Points: Good Security**
-- [ ] **Most Inputs Validated**: Minor validation gaps
-- [ ] **Boundaries Mostly Clear**: Some trust boundary issues
-- [ ] **Adequate Error Handling**: Minor information leakage risk
-- [ ] **Basic Data Protection**: Acceptable data handling
-
-**5-6 Points: Minimum Security**
-- [ ] **Basic Validation**: Some input validation present
-- [ ] **Boundary Issues**: Trust boundary problems present
-- [ ] **Poor Error Handling**: Information leakage risks
-- [ ] **Data Concerns**: Suboptimal sensitive data handling
-
-#### **Testing and Validation (25% of total score)**
-**9-10 Points: Comprehensive Testing**
-- [ ] **Full Coverage**: All critical paths tested
-- [ ] **Edge Cases**: Boundary conditions properly tested
-- [ ] **Integration Testing**: Component interactions validated
-- [ ] **Performance Testing**: Appropriate performance validation
-
-**7-8 Points: Good Testing**
-- [ ] **Good Coverage**: Most critical paths tested
-- [ ] **Some Edge Cases**: Basic boundary testing
-- [ ] **Basic Integration**: Core interactions tested
-- [ ] **Limited Performance**: Some performance validation
-
-**5-6 Points: Adequate Testing**
-- [ ] **Basic Coverage**: Core functionality tested
-- [ ] **Minimal Edge Cases**: Limited boundary testing
-- [ ] **No Integration**: Little integration testing
-- [ ] **No Performance**: Performance not validated
-
-## HISTORICAL PATTERNS - CRITICAL REVIEW FOCUS
-
-### High-Risk Areas Requiring Special Attention
-
-#### **D-001: Trust Boundary Security** (P0 - Always Review)
-**Critical Review Points:**
-- [ ] **Input Validation Schemas**: Every user input must have validation schema
-- [ ] **SQL Parameterization**: No dynamic query construction without parameters
-- [ ] **File Path Security**: All file operations must sanitize paths
-- [ ] **Command Execution**: No shell execution with unsanitized input
-
-**Review Questions:**
-- Does this create any new attack vectors?
-- Are all external inputs properly validated?
-- Could an attacker manipulate this functionality?
-
-**Historical Context**: Previous sprints missed input validation leading to security vulnerabilities
-
-#### **D-002: Type Safety** (P1 - Pattern Enforcement)
-**Critical Review Points:**
-- [ ] **No Any Types**: Verify complete elimination of `any` usage
-- [ ] **Safe Type Assertions**: All type assertions have runtime validation
-- [ ] **Null Safety**: Proper handling of null/undefined throughout
-- [ ] **Interface Compliance**: Runtime data matches declared interfaces
-
-**Review Questions:**
-- Will this break with unexpected data shapes?
-- Are type assumptions properly validated?
-- Could this fail silently with wrong types?
-
-**Historical Context**: Type shortcuts cause runtime failures in production
-
-#### **D-005: Async Correctness** (P0 - Concurrency Safety)
-**Critical Review Points:**
-- [ ] **Promise Handling**: All async operations properly awaited
-- [ ] **Race Condition Prevention**: Concurrent operations safely managed
-- [ ] **Error Propagation**: Async errors properly caught and handled
-- [ ] **Timeout Management**: Long operations have appropriate limits
-
-**Review Questions:**
-- Could concurrent execution cause data corruption?
-- Are all async operations properly sequenced?
-- What happens if operations take too long?
-
-**Historical Context**: Race conditions in tool execution caused data inconsistencies
-
-#### **D-006: Error Handling** (P1 - Operational Reliability)
-**Critical Review Points:**
-- [ ] **Structured Errors**: Proper error taxonomy instead of generic Error
-- [ ] **Context Preservation**: Error messages include sufficient debugging context
-- [ ] **User-Appropriate Messages**: Different error messages for different audiences
-- [ ] **Recovery Strategies**: Clear error recovery or graceful degradation
-
-**Review Questions:**
-- Will errors provide sufficient debugging information?
-- Are user-facing errors appropriate and helpful?
-- Can the system recover gracefully from failures?
-
-**Historical Context**: Generic error handling made production debugging difficult
-
-### Proven Successful Patterns (Encourage Usage)
-
-#### **Dynamic Resource Discovery Pattern**
-```typescript
-// Successful pattern from ingress template
-const resources = await discoverResources(namespace, selector);
-if (resources.length === 0) {
-    return createEmptyEvidence("No matching resources found");
-}
-```
-
-**Review Validation:**
-- [ ] Handles empty resource scenarios gracefully
-- [ ] Provides meaningful fallback behavior
-- [ ] Includes appropriate logging for debugging
-
-#### **Evidence Completeness Scoring**
-```typescript
-// Proven reliability pattern
-const completeness = calculateCompleteness(evidence);
-if (completeness < 0.9) {
-    addDiagnosticSteps(evidence, "Increase resource discovery scope");
-}
-```
-
-**Review Validation:**
-- [ ] Scoring calculation is transparent and auditable
-- [ ] Threshold handling provides actionable feedback
-- [ ] Results are consistent across similar scenarios
-
-## APPROVAL DECISION FRAMEWORK
-
-### Decision Matrix
-
-#### **APPROVE** (Score ≥ 7.5 for TIER 2, ≥ 8.0 for TIER 3)
-**All Criteria Met:**
-- [ ] **Quality Standards**: Score meets tier threshold
-- [ ] **Security Clearance**: No critical security issues
-- [ ] **Architecture Compliance**: Aligns with established patterns
-- [ ] **Testing Validation**: TESTER quality gates passed
-- [ ] **Integration Safety**: No risk to existing functionality
-
-**Documentation Required:**
-- Quality score with breakdown
-- Specific strengths noted
-- Minor improvement recommendations
-- Release readiness confirmation
-
-#### **CONDITIONAL APPROVAL** (Score 6.0-7.4)
-**Criteria:**
-- [ ] **Core Functionality**: Works as specified
-- [ ] **No Critical Issues**: Security and functionality acceptable
-- [ ] **Documented Limitations**: Issues clearly identified
-- [ ] **Risk Assessment**: Risks understood and acceptable
-
-**Required Documentation:**
-- Specific conditions for final approval
-- Timeline for addressing identified issues
-- Risk mitigation strategies
-- Monitoring recommendations
-
-#### **REJECT** (Score < 6.0 or Critical Issues)
-**Automatic Rejection Triggers:**
-- [ ] **Security Vulnerabilities**: Critical security issues present
-- [ ] **Functional Failures**: Core functionality not working
-- [ ] **Architecture Violations**: Significant pattern violations
-- [ ] **Integration Breakage**: Existing functionality compromised
-
-**Required Documentation:**
-- Specific reasons for rejection
-- Detailed improvement requirements
-- Recommended remediation approach
-- Re-review criteria
-
-### Risk Assessment Framework
-
-#### **Low Risk** (Proceed with standard monitoring)
-- [ ] **Isolated Changes**: Minimal system interaction
-- [ ] **Proven Patterns**: Uses established successful approaches
-- [ ] **Comprehensive Testing**: Full validation completed
-- [ ] **Easy Rollback**: Changes easily reversible
-
-#### **Medium Risk** (Enhanced monitoring required)
-- [ ] **Broad Impact**: Affects multiple system components
-- [ ] **New Patterns**: Uses approaches not previously validated
-- [ ] **Partial Testing**: Some test coverage gaps
-- [ ] **Complex Rollback**: Rollback requires coordination
-
-#### **High Risk** (Special deployment procedures)
-- [ ] **System-Wide Impact**: Changes affect core functionality
-- [ ] **Unproven Approaches**: Significant deviation from patterns
-- [ ] **Limited Testing**: Insufficient validation coverage
-- [ ] **Difficult Rollback**: Rollback could cause disruption
-
-## HANDOFF REQUIREMENTS
-
-### Final Documentation Package
-
-#### **Required Artifacts**
-- [ ] **Review Completion Report**: `[domain]-[epic]-reviewer-completion-v3.2.md`
-- [ ] **Quality Assessment**: `[domain]-[epic]-quality-assessment-v3.2.md`
-- [ ] **Strategic Assessment**: `[domain]-[epic]-strategic-assessment-v3.2.md`
-- [ ] **Risk Analysis**: Risk level and mitigation strategies
-- [ ] **Improvement Recommendations**: Actionable feedback for future work
-
-#### **Quality Gate Summary Format**
-```markdown
-## REVIEWER QUALITY GATE ASSESSMENT
-
-**Overall Decision**: APPROVE / CONDITIONAL / REJECT
-**Quality Score**: [X.X]/10.0 (Threshold: [threshold] for [TIER])
-**Complexity Tier**: [TIER_1/2/3]
-**Review Duration**: [actual] minutes (estimated: [estimated])
-
-**Score Breakdown**:
-- Code Quality: [X.X]/10 ([25%] weight)
-- Architecture: [X.X]/10 ([25%] weight)
-- Security: [X.X]/10 ([25%] weight)
-- Testing: [X.X]/10 ([25%] weight)
-
-**Risk Assessment**: Low / Medium / High
-**Security Clearance**: Pass / Conditional / Fail
-**Architecture Compliance**: Full / Partial / Non-compliant
-
-**Key Strengths**: [2-3 specific positive observations]
-**Improvement Areas**: [2-3 specific recommendations]
-**Strategic Value**: [Assessment of long-term benefit]
-
-**Release Recommendation**: [Specific guidance for deployment]
-```
-
-## CONTINUOUS IMPROVEMENT
-
-### Review Effectiveness Metrics
-- [ ] **Accuracy Rate**: Issues found vs issues that reach production
-- [ ] **Consistency**: Score reliability across similar implementations
-- [ ] **Timeliness**: Review completion within allocated time
-- [ ] **Value Addition**: Improvement recommendations adoption rate
-
-### Process Learning Documentation
-- [ ] **Pattern Recognition**: Which patterns led to higher quality scores
-- [ ] **Risk Prediction**: Accuracy of risk assessments
-- [ ] **Time Allocation**: Efficiency of review time distribution
-- [ ] **Decision Outcomes**: Quality of approval/rejection decisions
-
-### Framework Evolution
-- [ ] **Scoring Calibration**: Adjust thresholds based on outcomes
-- [ ] **Pattern Updates**: Incorporate new successful/failed patterns
-- [ ] **Risk Refinement**: Improve risk assessment accuracy
-- [ ] **Process Efficiency**: Optimize review workflow based on experience
+# REVIEWER Role Guardrails - Process v3.3.1-Enhanced Framework
+**Template Version**: v3.3.1-enhanced (2025-09-06)  
+**Process Framework**: Process v3.3 Enhanced with Aviation Safety Integration  
+**Template Type**: Current/Active - REVIEWER Role Standards  
+**Supersedes**: v3.2.x Enhanced Framework (archived)
+
+**Role**: REVIEWER (Resolution Verifier)  
+**Framework**: Process v3.3.1-Enhanced with Aviation Safety Integration  
+**Status**: Comprehensive Resolution Verification Standards  
+**Last Updated**: 2025-09-06  
 
 ---
 
-**Framework Integration**: This guardrails file integrates with DEVELOPER-GUARDRAILS.md and TESTER-GUARDRAILS.md to provide systematic quality assurance throughout Process v3.2 execution.
+## SYSTEMATIC RESOLUTION VERIFICATION FRAMEWORK
 
-**Historical Context**: Review criteria and risk patterns derived from D-001 through D-014 domain analysis ensure comprehensive quality assessment.
+### Phase-by-Phase Resolution Assessment Protocol
 
-**Process Authority**: REVIEWER role maintains independent assessment authority while following systematic framework for consistency and accountability.
+#### **PHASE 1: Evidence Chain Validation** (15-25 minutes)
+- [ ] **Complete Evidence Chain Review**: Verify systematic trail from problem identification to resolution
+- [ ] **DEVELOPER Claims Assessment**: Analyze elimination evidence and prevention measures
+- [ ] **TESTER Validation Review**: Evaluate evidence scoring and validation methodology
+- [ ] **Process Framework Effectiveness**: Assess multi-role workflow performance
+- [ ] **Quality Standards Verification**: Confirm ≥ 0.9 evidence completeness achieved
+- [ ] **Archive Assessment**: Review landing protocol preparation completeness
+
+#### **PHASE 2: Resolution Verification and Framework Analysis** (45-75 minutes)
+- [ ] **Problem Resolution Verification**: Independent confirmation of systematic elimination
+- [ ] **Prevention Effectiveness Assessment**: Validate safeguards work as intended
+- [ ] **Cross-Domain Impact Analysis**: Assess effects on related quality domains
+- [ ] **Quality Baseline Improvement**: Verify measurable enhancement achieved
+- [ ] **Process Framework Performance**: Analyze v3.3.1-enhanced effectiveness
+- [ ] **Organizational Learning Extraction**: Identify insights for future application
+
+#### **PHASE 3: Final Closure Decision and Landing Protocol** (20-30 minutes)
+- [ ] **Resolution Approval Decision**: Systematic evaluation with clear criteria
+- [ ] **Evidence Quality Certification**: Final evidence completeness verification
+- [ ] **Process Improvement Identification**: Document framework enhancement opportunities
+- [ ] **Landing Protocol Execution**: Complete aviation safety closure checklist
+- [ ] **Archive Certification**: Verify organizational hygiene and systematic closure
+- [ ] **Organizational Learning Integration**: Capture insights for future sprints
+
+---
+
+## RESOLUTION VERIFICATION STANDARDS (Process v3.3.1-Enhanced)
+
+### Final Closure Authority Framework
+
+#### **Resolution Approval Criteria (Systematic Decision Making)**
+- [ ] **Problem Elimination Verified**: Independent confirmation of zero instances
+- [ ] **Evidence Quality Certified**: ≥ 0.9 completeness score achieved with validation
+- [ ] **Prevention Measures Effective**: Safeguards tested and proven functional
+- [ ] **Quality Improvement Demonstrated**: Measurable baseline enhancement confirmed
+- [ ] **Cross-Domain Safety Assured**: No regression in related domains
+- [ ] **Process Framework Validated**: v3.3.1-enhanced effectiveness confirmed
+
+#### **Resolution Decision Authority Framework**
+```typescript
+// REQUIRED pattern for resolution decision making
+interface ResolutionDecision {
+    decision: 'APPROVE' | 'CONDITIONAL' | 'REJECT';
+    evidenceScore: number;
+    problemsRemaining: number;
+    preventionEffectiveness: number;
+    crossDomainSafety: boolean;
+    qualityImprovement: number;
+    rationale: string;
+    requirements?: string[];
+}
+
+function makeResolutionDecision(
+    evidence: ValidationEvidence,
+    verification: IndependentVerification
+): ResolutionDecision {
+    if (verification.problemsRemaining > 0) {
+        return {
+            decision: 'REJECT',
+            evidenceScore: evidence.overallScore,
+            problemsRemaining: verification.problemsRemaining,
+            preventionEffectiveness: verification.preventionScore,
+            crossDomainSafety: verification.noRegression,
+            qualityImprovement: verification.baselineImprovement,
+            rationale: 'Problem elimination incomplete - instances remain',
+            requirements: ['Complete systematic elimination', 'Provide evidence of zero instances']
+        };
+    }
+    
+    if (evidence.overallScore < 0.9) {
+        return {
+            decision: 'CONDITIONAL',
+            evidenceScore: evidence.overallScore,
+            problemsRemaining: 0,
+            preventionEffectiveness: verification.preventionScore,
+            crossDomainSafety: verification.noRegression,
+            qualityImprovement: verification.baselineImprovement,
+            rationale: 'Evidence quality insufficient for systematic closure',
+            requirements: ['Enhance evidence documentation', 'Achieve ≥ 0.9 completeness score']
+        };
+    }
+    
+    return {
+        decision: 'APPROVE',
+        evidenceScore: evidence.overallScore,
+        problemsRemaining: 0,
+        preventionEffectiveness: verification.preventionScore,
+        crossDomainSafety: verification.noRegression,
+        qualityImprovement: verification.baselineImprovement,
+        rationale: 'Systematic problem resolution achieved with high evidence quality'
+    };
+}
+```
+
+### Evidence Chain Validation Methodology
+
+#### **Complete Evidence Trail Verification**
+- [ ] **Original Evidence**: Review systematic findings from quality intelligence
+- [ ] **DEVELOPER Claims**: Verify execution log claims against actual implementation
+- [ ] **TESTER Validation**: Assess validation report completeness and accuracy
+- [ ] **Current State**: Independent verification of final code state
+- [ ] **Prevention Validation**: Confirm safeguards implemented and effective
+
+---
+
+## AVIATION SAFETY INTEGRATION (Process v3.3.1-Enhanced)
+
+### Landing Protocol Execution Requirements
+
+#### **Systematic Closure Verification**
+**Archive Certification (Mandatory):**
+- [ ] **All Mandatory Artifacts Present**: 11 required artifacts verified complete
+- [ ] **Evidence Standards Met**: ≥ 0.9 completeness documented across all artifacts
+- [ ] **Framework Consistency Verified**: v3.3.1-enhanced standards maintained
+- [ ] **Archive Naming Standard**: Directory follows `d-{id}-{description}-{yyyy-mm-dd}` format
+- [ ] **Organizational Hygiene Confirmed**: No scattered artifacts or process evolution debt
+
+#### **Landing Checklist Execution**
+**Aviation Safety Protocol (Mandatory):**
+- [ ] **Pre-Landing Verification**: All resolution artifacts ready for archive
+- [ ] **Landing Sequence Execution**: Systematic closure with aviation safety protocols
+- [ ] **Post-Landing Assessment**: Complete organizational hygiene verification
+- [ ] **Emergency Prevention**: Organizational debt prevention measures validated
+- [ ] **Framework Evolution Integration**: Process improvements documented systematically
+
+---
+
+## PROCESS FRAMEWORK EFFECTIVENESS ANALYSIS
+
+### Multi-Role Workflow Assessment
+
+#### **Process v3.3.1-Enhanced Validation Framework**
+```typescript
+// REQUIRED pattern for process effectiveness analysis
+interface ProcessEffectivenessAnalysis {
+    developerPhaseEffectiveness: number;
+    testerValidationQuality: number;
+    reviewerDecisionAccuracy: number;
+    evidenceBasedApproach: number;
+    qualityGatePerformance: number;
+    frameworkEvolution: ProcessEvolutionInsights;
+}
+
+function analyzeProcessEffectiveness(
+    developerEvidence: DeveloperEvidence,
+    testerValidation: TesterValidation,
+    reviewerAssessment: ReviewerAssessment
+): ProcessEffectivenessAnalysis {
+    return {
+        developerPhaseEffectiveness: assessDeveloperSystematicApproach(developerEvidence),
+        testerValidationQuality: assessTesterEvidenceValidation(testerValidation),
+        reviewerDecisionAccuracy: assessReviewerDecisionQuality(reviewerAssessment),
+        evidenceBasedApproach: calculateEvidenceBasedScore(
+            developerEvidence, 
+            testerValidation, 
+            reviewerAssessment
+        ),
+        qualityGatePerformance: analyzeQualityGateEffectiveness(),
+        frameworkEvolution: identifyProcessImprovements()
+    };
+}
+```
+
+#### **Quality Gate Validation Assessment**
+- [ ] **DEVELOPER → TESTER Handoff**: Evidence quality maintained across transition
+- [ ] **TESTER → REVIEWER Handoff**: Validation completeness preserved
+- [ ] **Quality Standards Enforcement**: ≥ 0.9 evidence requirement maintained
+- [ ] **Framework Discipline**: v3.3.1-enhanced standards followed throughout
+- [ ] **Aviation Safety Integration**: Landing protocol compliance verified
+
+---
+
+## RESOLUTION VERIFICATION COMPLEXITY TIERS
+
+### Resolution Assessment Requirements by Complexity
+
+#### **TIER 1 Resolution (1-2 SP - Focused Problem Elimination)**
+- **Verification Scope**: Direct problem elimination with basic prevention
+- **Evidence Standards**: ≥ 0.9 completeness with straightforward validation
+- **Time Allocation**: 60-90 minutes
+- **Decision Criteria**: Clear elimination evidence, working prevention, no regression
+
+#### **TIER 2 Resolution (3-5 SP - Systematic Problem Elimination)**
+- **Verification Scope**: Comprehensive elimination with cross-domain impact assessment
+- **Evidence Standards**: ≥ 0.9 completeness with systematic validation methodology
+- **Time Allocation**: 90-120 minutes
+- **Decision Criteria**: Systematic evidence, effective prevention, cross-domain safety
+
+#### **TIER 3 Resolution (6+ SP - Domain-Wide Quality Transformation)**
+- **Verification Scope**: Domain transformation with measurable quality improvement
+- **Evidence Standards**: ≥ 0.9 completeness with statistical validation
+- **Time Allocation**: 120-180 minutes
+- **Decision Criteria**: Quantifiable improvement, comprehensive prevention, framework evolution
+
+---
+
+## SYSTEMATIC VERIFICATION PATTERNS (Process v3.3 Validated)
+
+### Independent Resolution Verification
+
+#### **Problem Elimination Confirmation (Systematic Approach)**
+```bash
+# REQUIRED pattern for independent resolution verification
+# Independent confirmation of zero problem instances
+
+# Pattern 1: Direct elimination verification
+echo "REVIEWER VERIFICATION: $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)" >> reviewer-log.md
+./review-prompt-lib/scripts/scan-domain.sh [DOMAIN] [PROBLEM_CATEGORY] >> reviewer-log.md
+
+# Pattern 2: Cross-cutting verification
+grep -rn "[PROBLEM_PATTERN]" src/ --exclude-dir=node_modules >> reviewer-log.md
+find . -name "*.ts" -exec grep -l "[ANTI_PATTERN]" {} \; >> reviewer-log.md
+
+# Pattern 3: Prevention measure verification
+./scripts/test-prevention-measures.sh [PROBLEM_CATEGORY] >> reviewer-log.md
+
+# Required: Document ALL verification results with evidence
+echo "VERIFICATION COMPLETE: Problems found: [COUNT]" >> reviewer-log.md
+echo "Prevention effectiveness: [SCORE]" >> reviewer-log.md
+echo "Cross-domain safety: [STATUS]" >> reviewer-log.md
+```
+
+#### **Quality Improvement Verification (Measurable Assessment)**
+```typescript
+// REQUIRED pattern for quality baseline verification
+async function verifyQualityImprovement(
+    problemCategory: string,
+    beforeBaseline: QualityMetrics,
+    afterClaims: QualityMetrics
+): Promise<QualityImprovementVerification> {
+    // Independent measurement of current quality state
+    const currentMetrics = await measureCurrentQuality(problemCategory);
+    
+    // Verify improvement claims against independent measurement
+    const improvement = {
+        problemInstanceReduction: beforeBaseline.instances - currentMetrics.instances,
+        qualityScoreImprovement: currentMetrics.score - beforeBaseline.score,
+        preventionMeasureCount: currentMetrics.preventionMeasures.length,
+        crossDomainImpact: await assessCrossDomainImpact(problemCategory)
+    };
+    
+    return {
+        verified: improvement.problemInstanceReduction >= 0 && 
+                 improvement.qualityScoreImprovement > 0,
+        metrics: improvement,
+        confidence: calculateVerificationConfidence(improvement)
+    };
+}
+```
+
+---
+
+## RESOLUTION REJECTION PROTOCOLS
+
+### Systematic Closure Failure Response
+
+#### **When Resolution Cannot Be Approved**
+```typescript
+// REQUIRED pattern for resolution rejection
+interface ResolutionRejection {
+    category: 'incomplete-elimination' | 'insufficient-evidence' | 'ineffective-prevention' | 'cross-domain-regression';
+    severity: 'critical' | 'major' | 'minor';
+    specificFindings: string[];
+    requiredActions: string[];
+    revalidationRequired: boolean;
+}
+
+async function handleResolutionRejection(
+    rejectionReasons: ResolutionRejection[]
+): Promise<RejectionResponse> {
+    const criticalIssues = rejectionReasons.filter(r => r.severity === 'critical');
+    
+    if (criticalIssues.length > 0) {
+        return {
+            decision: 'IMMEDIATE_REJECTION',
+            reason: 'Critical resolution failures prevent approval',
+            requiredActions: criticalIssues.map(i => i.requiredActions).flat(),
+            escalation: 'HUMAN_REVIEW_REQUIRED'
+        };
+    }
+    
+    return {
+        decision: 'CONDITIONAL_REJECTION',
+        reason: 'Resolution gaps require systematic address',
+        requiredActions: rejectionReasons.map(r => r.requiredActions).flat(),
+        revalidationCycle: true
+    };
+}
+```
+
+#### **Prevention Failure Response**
+**When Safeguards Are Insufficient (Critical Rejection):**
+- [ ] **Immediate Rejection**: Block sprint closure if prevention ineffective
+- [ ] **Root Cause Analysis**: Identify systematic gaps in prevention approach
+- [ ] **Enhanced Requirements**: Specify comprehensive prevention measures needed
+- [ ] **Full Re-validation Required**: Complete cycle after prevention enhancement
+
+---
+
+## HANDOFF REQUIREMENTS (Enhanced Process v3.3.1)
+
+### Final Sprint Closure Documentation
+
+#### **Required Resolution Verification Artifacts**
+- [ ] **Final Resolution Report**: `[sprint-id]-reviewer-resolution-v3.3.1.md`
+- [ ] **Process Effectiveness Analysis**: `[sprint-id]-framework-analysis-v3.3.1.md`
+- [ ] **Landing Protocol Completion**: `[sprint-id]-landing-certification-v3.3.1.md`
+- [ ] **Organizational Learning Report**: Insights for future sprint improvement
+- [ ] **Archive Certification**: Complete closure verification with aviation safety
+
+#### **Final Resolution Report Format**
+```markdown
+## REVIEWER RESOLUTION VERIFICATION SUMMARY
+
+**Problem Category**: [specific-quality-debt-type]
+**Domain**: [primary-domain] + [secondary-domain]  
+**Process Framework**: v3.3.1-Enhanced with Aviation Safety Integration
+**Resolution Verification Duration**: [actual] minutes (estimated: [estimated])
+
+**Resolution Decision**: [APPROVE/CONDITIONAL/REJECT]
+
+**Evidence Chain Validation**:
+- **Original Evidence**: [QUALITY] baseline from quality intelligence
+- **DEVELOPER Claims**: [VERIFIED/PARTIAL/UNVERIFIED] against implementation
+- **TESTER Validation**: [COMPREHENSIVE/ADEQUATE/INSUFFICIENT] evidence scoring
+- **Independent Verification**: [CONFIRMED/GAPS_FOUND] resolution claims
+
+**Resolution Verification Results**:
+- **Problem Elimination**: [COMPLETE/INCOMPLETE] - [COUNT] instances remain
+- **Evidence Quality**: [SCORE] / 1.0 (≥ 0.9 required for approval)
+- **Prevention Effectiveness**: [EFFECTIVE/NEEDS_WORK] - [DETAILS]
+- **Cross-Domain Safety**: [SAFE/REGRESSION_DETECTED] - [DOMAINS] checked
+- **Quality Improvement**: [IMPROVEMENT]% measurable enhancement
+
+**Process Framework Analysis**:
+- **Multi-Role Effectiveness**: [EFFECTIVE/ISSUES] - [DETAILS]
+- **Evidence-Based Approach**: [SYSTEMATIC/GAPS] - [ASSESSMENT]
+- **Quality Gate Performance**: [ALL_PASSED/FAILURES] - [DETAILS]
+- **Framework Evolution**: [IMPROVEMENTS] identified for v3.3.2
+
+**Landing Protocol Certification**:
+- **Archive Completeness**: [COMPLETE/GAPS] - [STATUS]
+- **Organizational Hygiene**: [MAINTAINED/ISSUES] - [DETAILS]
+- **Aviation Safety**: [PROTOCOL_COMPLETE/INCOMPLETE] - [STATUS]
+
+**Final Decision Rationale**: [DETAILED_REASONING]
+**Sprint Status**: [APPROVED_FOR_CLOSURE/REQUIRES_ADDITIONAL_WORK]
+**Archive Certified**: [YES/NO]
+```
+
+---
+
+## CONTINUOUS IMPROVEMENT (Process v3.3.1-Enhanced)
+
+### Resolution Verification Effectiveness Tracking
+- [ ] **Decision Accuracy**: Resolution approval accuracy vs subsequent quality metrics
+- [ ] **Evidence Assessment Quality**: Verification thoroughness and gap identification
+- [ ] **Process Framework Evolution**: v3.3.1-enhanced effectiveness vs v3.2 baseline
+- [ ] **Landing Protocol Effectiveness**: Organizational debt prevention success rate
+
+### Framework Evolution Documentation
+- [ ] **Successful Resolution Patterns**: Approaches consistently achieving high-quality outcomes
+- [ ] **Process Improvement Identification**: Framework enhancements for v3.3.2 development
+- [ ] **Evidence Standard Evolution**: Completeness threshold effectiveness assessment
+- [ ] **Aviation Safety Integration**: Landing protocol impact on organizational quality
+
+---
+
+## Template Evolution History
+- **v3.3.1-enhanced (2025-09-06)**: Added aviation safety integration, evidence chain validation, final closure authority
+- **v3.2.x (archived)**: Quality assessment framework with organizational integration
+- **v3.1.x (archived)**: Basic review role execution framework
+
+## Usage Notes
+- **Current Status**: Active guardrails for all Process v3.3.1-Enhanced REVIEWER role execution
+- **Resolution Focus**: Evidence-based verification vs quality assessment orientation
+- **Decision Authority**: Clear approval/rejection criteria with systematic rationale
+- **Aviation Safety**: Landing protocol execution integrated throughout
+
+---
+*Template Version: v3.3.1-enhanced*  
+*Last Updated: 2025-09-06*  
+*Framework Compatibility: Process v3.3.1-Enhanced (Aviation Safety Integration)*  
+*Integration: Works with DEVELOPER-GUARDRAILS.md and TESTER-GUARDRAILS.md for systematic quality assurance*
+
+**Framework Integration**: This guardrails file integrates with DEVELOPER-GUARDRAILS.md and TESTER-GUARDRAILS.md to provide systematic resolution verification throughout Process v3.3.1-enhanced execution with aviation safety landing protocol.
+
+**Historical Context**: Resolution verification requirements derived from D-001 through D-014 domain analysis, enhanced with D-009 interface hygiene systematic verification patterns, ensure evidence-based problem resolution vs completion theater with final closure authority.
+
+**Process Authority**: REVIEWER role maintains resolution verification autonomy while following systematic framework for evidence assessment, decision making, process analysis, and organizational hygiene with aviation safety integration.

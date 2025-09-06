@@ -1,261 +1,378 @@
-# TESTER Role Guardrails - Process v3.2 Enhanced Framework
+# TESTER Role Guardrails - Process v3.3.1-Enhanced Framework
+**Template Version**: v3.3.1-enhanced (2025-09-06)  
+**Process Framework**: Process v3.3 Enhanced with Aviation Safety Integration  
+**Template Type**: Current/Active - TESTER Role Standards  
+**Supersedes**: v3.2.x Enhanced Framework (archived)
 
-**Role**: TESTER  
-**Framework**: Process v3.2 Enhanced  
-**Status**: Comprehensive Execution and Quality Standards  
-**Last Updated**: 2025-09-02  
-
-## SYSTEMATIC EXECUTION FRAMEWORK
-
-### Phase-by-Phase Testing Protocol
-
-#### **PHASE 1: Test Strategy Development** (15-20 minutes)
-- [ ] **Implementation Analysis**: Review DEVELOPER completion logs and code changes
-- [ ] **Risk Assessment**: Identify high-risk areas based on complexity and change scope
-- [ ] **Test Coverage Planning**: Design comprehensive test strategy matching complexity tier
-- [ ] **Environment Setup**: Prepare test environment with necessary resources
-- [ ] **Success Criteria Definition**: Establish clear pass/fail thresholds
-
-#### **PHASE 2: Systematic Validation Execution** (60-90 minutes)
-- [ ] **Functional Testing**: Verify all acceptance criteria met per specification
-- [ ] **Integration Testing**: Validate component interactions and data flow
-- [ ] **Edge Case Testing**: Test boundary conditions and error scenarios
-- [ ] **Regression Testing**: Ensure no existing functionality broken
-- [ ] **Performance Validation**: Verify response times and resource usage within bounds
-
-#### **PHASE 3: Quality Assessment and Handoff** (20-30 minutes)
-- [ ] **Test Results Documentation**: Comprehensive validation evidence compilation
-- [ ] **Issue Classification**: Categorize any failures by severity and impact
-- [ ] **REVIEWER Handoff Preparation**: Create detailed validation summary
-- [ ] **Quality Gate Assessment**: Determine overall validation outcome
-
-### Complexity Tier Requirements
-
-#### **TIER 1 Testing (1-2 SP - Simple Tasks)**
-- **Minimum Coverage**: Core functionality, basic error cases
-- **Test Types**: Unit tests, basic integration
-- **Time Allocation**: 45-60 minutes
-- **Quality Threshold**: 95% acceptance criteria passing
-
-#### **TIER 2 Testing (3-5 SP - Standard Implementation)**
-- **Minimum Coverage**: Full functionality, edge cases, integration points
-- **Test Types**: Unit, integration, basic performance
-- **Time Allocation**: 90-120 minutes
-- **Quality Threshold**: 98% acceptance criteria passing, no critical issues
-
-#### **TIER 3 Testing (6+ SP - Complex Architecture)**
-- **Minimum Coverage**: Comprehensive testing including stress scenarios
-- **Test Types**: Unit, integration, performance, security, compatibility
-- **Time Allocation**: 120-180 minutes
-- **Quality Threshold**: 100% acceptance criteria passing, comprehensive validation
-
-## QUALITY STANDARDS AND THRESHOLDS
-
-### Pass/Fail Criteria
-
-#### **PASS Requirements** (All must be met)
-- [ ] **Functional Completeness**: 100% of specified acceptance criteria validated
-- [ ] **Build Stability**: All tests pass, no compilation errors
-- [ ] **Regression Prevention**: No existing functionality broken
-- [ ] **Error Handling**: Appropriate error responses for invalid inputs
-- [ ] **Integration Integrity**: Component interactions work as specified
-
-#### **CONDITIONAL PASS** (Minor issues requiring documentation)
-- [ ] **Non-Critical Issues**: Minor edge cases with documented workarounds
-- [ ] **Performance Within Range**: Response times acceptable but not optimal
-- [ ] **Documentation Gaps**: Implementation correct but documentation incomplete
-
-#### **FAIL Criteria** (Any one triggers failure)
-- [ ] **Critical Functionality Broken**: Core features not working as specified
-- [ ] **Build Failures**: Compilation errors or test suite failures
-- [ ] **Data Loss Risk**: Potential for data corruption or loss identified
-- [ ] **Security Vulnerabilities**: Input validation failures or trust boundary issues
-- [ ] **Integration Failures**: Component interactions broken or unreliable
-
-### Evidence Requirements
-
-#### **Documentation Standards**
-- [ ] **Test Coverage Report**: Specific tests executed with results
-- [ ] **Issue Log**: All problems found with reproduction steps
-- [ ] **Performance Metrics**: Response times, resource usage, throughput
-- [ ] **Validation Evidence**: Screenshots, logs, or output samples
-- [ ] **Environment Details**: Test environment configuration and state
-
-## HISTORICAL PATTERNS - AVOID/USE FRAMEWORK
-
-### Critical Anti-Patterns to Catch (From D-001 through D-014 Analysis)
-
-#### **D-001: Trust Boundary Violations** (P0 - Critical)
-**Test For:**
-- [ ] **Unvalidated Input**: Any user input accepted without validation schema
-- [ ] **SQL Injection Vectors**: Dynamic query construction without parameterization
-- [ ] **Path Traversal**: File operations without path sanitization
-- [ ] **Command Injection**: Shell execution with unsanitized parameters
-
-**Historical Pattern**: Previous sprints missed input validation in tool parameter handling
-
-#### **D-002: Type Safety Gaps** (P1 - High Priority)
-**Test For:**
-- [ ] **Any Type Usage**: Verify no `any` types introduced in implementation
-- [ ] **Unsafe Assertions**: Check for `as` casts without proper validation
-- [ ] **Missing Null Checks**: Verify null/undefined handling in data processing
-- [ ] **Interface Violations**: Ensure actual data matches declared interfaces
-
-**Historical Pattern**: Type shortcuts lead to runtime errors in production
-
-#### **D-003: Interface Hygiene Issues** (P1 - High Priority)
-**Test For:**
-- [ ] **Structural Collisions**: Multiple interfaces with similar shapes causing confusion
-- [ ] **Missing Branded Types**: Critical identifiers without type safety
-- [ ] **Generic Constraints**: Ensure generic types properly constrained
-- [ ] **Return Type Consistency**: Verify consistent return patterns across similar functions
-
-**Historical Pattern**: Interface mismatches cause integration failures
-
-#### **D-005: Async Correctness Problems** (P0 - Critical)
-**Test For:**
-- [ ] **Unawaited Promises**: All async operations properly awaited
-- [ ] **Race Conditions**: Concurrent operations properly sequenced
-- [ ] **Error Propagation**: Async errors properly caught and handled
-- [ ] **Timeout Handling**: Long-running operations have appropriate timeouts
-
-**Historical Pattern**: Race conditions in concurrent tool execution
-
-#### **D-006: Poor Error Handling** (P1 - High Priority)
-**Test For:**
-- [ ] **Generic Error Catches**: Avoid catch-all error handlers without classification
-- [ ] **Error Context Loss**: Ensure error messages include sufficient context
-- [ ] **Structured Error Types**: Use proper error taxonomy instead of generic Error
-- [ ] **User-Facing Messages**: Appropriate error messages for different audiences
-
-**Historical Pattern**: Generic error handling makes debugging difficult
-
-#### **D-010: Exhaustiveness Gaps** (P1 - High Priority)
-**Test For:**
-- [ ] **Missing Switch Cases**: All enum/union cases handled
-- [ ] **AssertNever Guards**: Unreachable code paths protected
-- [ ] **Configuration Variants**: All config options tested
-- [ ] **State Machine Completeness**: All state transitions validated
-
-**Historical Pattern**: Missing cases cause runtime failures with new inputs
-
-### Recommended Testing Patterns (Historical Successes)
-
-#### **Dynamic Resource Discovery Pattern** (From ingress template success)
-```typescript
-// Test pattern for resource discovery
-expect(resources).toBeDefined();
-expect(resources.length).toBeGreaterThan(0);
-expect(resources[0]).toHaveProperty('name');
-expect(resources[0]).toHaveProperty('namespace');
-```
-
-#### **Evidence Completeness Validation** (Proven reliable)
-```typescript
-// Test completeness scoring
-const score = calculateCompleteness(evidence);
-expect(score).toBeGreaterThanOrEqual(0.9);
-expect(evidence.sources).toHaveLength(expectedSourceCount);
-```
-
-#### **Error Boundary Testing** (Critical safety net)
-```typescript
-// Test error handling
-await expect(invalidOperation()).rejects.toThrow(SpecificErrorType);
-expect(errorLog).toContain('Expected error context');
-```
-
-## TESTING STRATEGY TEMPLATES
-
-### Standard Testing Checklist
-```markdown
-### Functional Testing
-- [ ] All acceptance criteria validated
-- [ ] Core functionality working as specified
-- [ ] Input validation working properly
-- [ ] Output format matches specification
-
-### Integration Testing  
-- [ ] Component interactions verified
-- [ ] Data flow validation complete
-- [ ] External dependency mocking appropriate
-- [ ] API contracts honored
-
-### Edge Case Testing
-- [ ] Empty/null input handling
-- [ ] Maximum/minimum value boundaries
-- [ ] Network failure scenarios
-- [ ] Resource exhaustion conditions
-
-### Regression Testing
-- [ ] Existing tests still passing
-- [ ] No performance degradation
-- [ ] Backward compatibility maintained
-- [ ] Configuration changes handled
-```
-
-### Performance Testing Template (TIER 2/3)
-```markdown
-### Performance Validation
-- [ ] Response times within acceptable range (< 2s for most operations)
-- [ ] Memory usage stable (no leaks detected)
-- [ ] CPU utilization reasonable (< 80% sustained)
-- [ ] Concurrent operation handling
-
-### Load Testing (TIER 3 only)
-- [ ] Multiple simultaneous requests handled
-- [ ] Graceful degradation under load
-- [ ] Resource cleanup after operations
-- [ ] Error rates acceptable under stress
-```
-
-## HANDOFF REQUIREMENTS
-
-### REVIEWER Handoff Documentation
-
-#### **Required Artifacts**
-- [ ] **Test Completion Report**: `[domain]-[epic]-tester-completion-v3.2.md`
-- [ ] **Validation Evidence**: `[domain]-[epic]-validation-evidence-v3.2.md` 
-- [ ] **Issue Log**: Any problems found with classification and severity
-- [ ] **Performance Data**: Metrics and benchmarks from testing
-- [ ] **Quality Assessment**: Overall validation outcome with rationale
-
-#### **Quality Gate Summary Format**
-```markdown
-## TESTER QUALITY GATE ASSESSMENT
-
-**Overall Result**: PASS / CONDITIONAL / FAIL
-**Complexity Tier**: [TIER_1/2/3]
-**Testing Duration**: [actual] minutes (estimated: [estimated])
-**Coverage Achieved**: [percentage] of acceptance criteria validated
-
-**Critical Issues**: [count] (must be 0 for PASS)
-**Non-Critical Issues**: [count]
-**Performance Status**: Within/Outside acceptable bounds
-**Regression Impact**: None/Minor/Significant
-
-**Recommendation**: Proceed to REVIEWER / Return to DEVELOPER
-**Rationale**: [specific reasoning for decision]
-```
-
-## CONTINUOUS IMPROVEMENT
-
-### Testing Effectiveness Metrics
-- [ ] **Issue Detection Rate**: Problems found vs problems reaching production
-- [ ] **False Positive Rate**: Issues reported that weren't actual problems
-- [ ] **Testing Efficiency**: Time spent vs quality improvement achieved
-- [ ] **Pattern Recognition**: Historical issue types caught/missed
-
-### Process Learning Documentation
-- [ ] **Strategy Effectiveness**: Which testing approaches worked best
-- [ ] **Time Allocation**: Actual vs estimated testing time by category
-- [ ] **Issue Patterns**: Types of problems commonly found/missed
-- [ ] **Tool Effectiveness**: Which testing tools provided best coverage
+**Role**: TESTER (Evidence Validator)  
+**Framework**: Process v3.3.1-Enhanced with Aviation Safety Integration  
+**Status**: Comprehensive Evidence Validation Standards  
+**Last Updated**: 2025-09-06  
 
 ---
 
-**Framework Integration**: This guardrails file integrates with DEVELOPER-GUARDRAILS.md and REVIEWER-GUARDRAILS.md to provide systematic quality assurance throughout Process v3.2 execution.
+## SYSTEMATIC EVIDENCE VALIDATION FRAMEWORK
 
-**Historical Context**: Anti-patterns derived from D-001 through D-014 domain analysis ensure previously identified issues don't reoccur.
+### Phase-by-Phase Evidence Validation Protocol
 
-**Process Authority**: TESTER role maintains independent validation authority while following systematic framework for consistency and completeness.
+#### **PHASE 1: Evidence Baseline Verification** (15-20 minutes)
+- [ ] **Elimination Claims Analysis**: Review DEVELOPER evidence and systematic elimination claims
+- [ ] **Evidence Chain Validation**: Verify complete trail from problem identification to resolution
+- [ ] **Risk Assessment**: Identify high-risk areas where elimination claims need intensive validation
+- [ ] **Validation Strategy Planning**: Design comprehensive verification approach matching evidence complexity
+- [ ] **Environment Setup**: Prepare validation environment with necessary scanning tools
+- [ ] **Archive Preparation**: Initialize systematic documentation for landing protocol
+
+#### **PHASE 2: Systematic Evidence Validation** (60-90 minutes)
+- [ ] **Independent Verification**: Confirm zero problem instances through fresh scanning
+- [ ] **Prevention Testing**: Validate safeguards work as claimed by DEVELOPER
+- [ ] **Cross-Domain Impact**: Test for regressions in related quality domains
+- [ ] **Evidence Completeness Scoring**: Rate evidence quality against ≥ 0.9 standard
+- [ ] **Comprehensive Test Suite Creation**: Build regression prevention tests
+- [ ] **Quality Baseline Verification**: Confirm measurable improvement demonstrated
+
+#### **PHASE 3: Evidence Assessment and Archive Preparation** (20-30 minutes)
+- [ ] **Validation Results Documentation**: Comprehensive evidence assessment compilation
+- [ ] **Evidence Quality Classification**: Score completeness and identify any gaps
+- [ ] **REVIEWER Handoff Preparation**: Create detailed validation summary with evidence scores
+- [ ] **Archive Organization**: Prepare all validation artifacts for landing protocol
+- [ ] **Quality Gate Assessment**: Determine overall validation outcome with evidence standards
+
+---
+
+## EVIDENCE VALIDATION STANDARDS (Process v3.3.1-Enhanced)
+
+### Evidence Completeness Requirements
+
+#### **Mandatory Evidence Validation (≥ 0.9 Completeness Score)**
+- [ ] **Before State Verification**: Confirm baseline documentation matches actual prior state
+- [ ] **Elimination Process Validation**: Verify systematic approach was actually executed
+- [ ] **After State Confirmation**: Independent scanning confirms zero instances remain
+- [ ] **Prevention Measure Testing**: Safeguards tested and proven functional
+- [ ] **Cross-Domain Safety**: No regression introduced in related domains
+
+#### **Evidence Quality Assessment Framework**
+```typescript
+// REQUIRED pattern for evidence scoring
+interface ValidationEvidence {
+    beforeStateAccuracy: number;      // 0.0-1.0 (baseline matches reality)
+    eliminationCompleteness: number;  // 0.0-1.0 (zero instances confirmed)
+    preventionEffectiveness: number;  // 0.0-1.0 (safeguards working)
+    crossDomainSafety: number;       // 0.0-1.0 (no regression detected)
+    documentationQuality: number;    // 0.0-1.0 (evidence clarity)
+    overallScore: number;            // Weighted average ≥ 0.9 required
+}
+
+function calculateEvidenceScore(validation: ValidationResult): number {
+    const weights = {
+        beforeStateAccuracy: 0.15,
+        eliminationCompleteness: 0.35,
+        preventionEffectiveness: 0.25,
+        crossDomainSafety: 0.15,
+        documentationQuality: 0.10
+    };
+    
+    return Object.entries(weights).reduce((score, [key, weight]) => {
+        return score + (validation[key] * weight);
+    }, 0);
+}
+```
+
+### Problem-Resolution Validation Methodology
+
+#### **Systematic Verification Approach**
+- [ ] **Independent Problem Scanning**: Use Review-Prompt-Lib to confirm zero instances
+- [ ] **Pattern-Based Validation**: Verify elimination consistency across similar instances
+- [ ] **Boundary Testing**: Confirm elimination scope matches claimed boundaries
+- [ ] **Prevention Validation**: Test safeguards against synthetic problem instances
+- [ ] **Integration Testing**: Ensure elimination didn't break existing functionality
+
+---
+
+## VALIDATION COMPLEXITY TIERS (Process v3.3.1-Enhanced)
+
+### Evidence Validation Requirements by Complexity
+
+#### **TIER 1 Validation (1-2 SP - Focused Problem Elimination)**
+- **Minimum Evidence**: Before/after scanning, basic prevention testing
+- **Validation Types**: Independent scanning, safeguard verification
+- **Time Allocation**: 45-60 minutes
+- **Evidence Threshold**: ≥ 0.9 completeness score, zero instances confirmed
+
+#### **TIER 2 Validation (3-5 SP - Systematic Problem Elimination)**
+- **Minimum Evidence**: Comprehensive scanning, prevention testing, cross-domain validation
+- **Validation Types**: Independent verification, comprehensive test suite creation, regression testing
+- **Time Allocation**: 90-120 minutes
+- **Evidence Threshold**: ≥ 0.9 completeness score, comprehensive prevention validation
+
+#### **TIER 3 Validation (6+ SP - Domain-Wide Quality Transformation)**
+- **Minimum Evidence**: Statistical validation, comprehensive prevention, framework impact assessment
+- **Validation Types**: Domain-wide scanning, prevention test suites, cross-domain impact analysis
+- **Time Allocation**: 120-180 minutes
+- **Evidence Threshold**: ≥ 0.9 completeness score, measurable quality transformation validated
+
+---
+
+## SYSTEMATIC VALIDATION PATTERNS (Process v3.3 Proven)
+
+### Independent Verification Methodology
+
+#### **Problem Instance Scanning (Systematic Approach)**
+```bash
+# REQUIRED pattern for independent verification
+# Systematic scanning to confirm zero instances remain
+
+# Pattern 1: Direct problem scanning
+grep -rn "problemPattern" src/ --exclude-dir=node_modules
+find . -name "*.ts" -exec grep -l "antiPattern" {} \;
+
+# Pattern 2: Domain-specific validation
+./review-prompt-lib/scripts/scan-domain.sh [DOMAIN] [PROBLEM_CATEGORY]
+
+# Pattern 3: Cross-cutting concern verification
+./scripts/validate-elimination.sh [PROBLEM_CATEGORY] [SCOPE]
+
+# Required: Document ALL scan results with timestamps
+echo "VALIDATION: $(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)" >> validation-log.md
+echo "Pattern: [PATTERN] | Results: [RESULTS]" >> validation-log.md
+```
+
+#### **Prevention Measure Testing (Systematic Validation)**
+```typescript
+// REQUIRED pattern for safeguard validation
+async function validatePreventionMeasures(
+    problemCategory: string,
+    safeguards: PreventionMeasure[]
+): Promise<PreventionValidationResult> {
+    const results: PreventionTest[] = [];
+    
+    for (const safeguard of safeguards) {
+        switch (safeguard.type) {
+            case 'eslint-rule':
+                const lintResult = await testESLintRule(safeguard);
+                results.push(lintResult);
+                break;
+                
+            case 'type-guard':
+                const guardResult = await testTypeGuard(safeguard);
+                results.push(guardResult);
+                break;
+                
+            case 'test-requirement':
+                const testResult = await runPreventionTests(safeguard);
+                results.push(testResult);
+                break;
+        }
+    }
+    
+    return {
+        overallEffectiveness: calculateEffectiveness(results),
+        individualResults: results,
+        validated: results.every(r => r.effective)
+    };
+}
+```
+
+### Comprehensive Test Suite Creation (Enhanced from D009 Pattern)
+
+#### **Regression Prevention Test Creation**
+```javascript
+// REQUIRED pattern for systematic regression prevention
+describe(`${problemCategory} Prevention Tests`, () => {
+    describe('Problem Elimination Validation', () => {
+        test('zero instances of problem pattern remain', async () => {
+            const instances = await scanForProblemInstances(problemCategory);
+            expect(instances).toHaveLength(0);
+        });
+        
+        test('prevention measures block problem reintroduction', async () => {
+            const attempt = await attemptProblemReintroduction(problemCategory);
+            expect(attempt.blocked).toBe(true);
+            expect(attempt.safeguardTriggered).toBe(true);
+        });
+    });
+    
+    describe('Cross-Domain Safety Validation', () => {
+        test('no regression in related domains', async () => {
+            const relatedDomains = getRelatedDomains(problemCategory);
+            for (const domain of relatedDomains) {
+                const regressionScan = await scanForRegression(domain);
+                expect(regressionScan.newIssues).toHaveLength(0);
+            }
+        });
+    });
+    
+    describe('Quality Baseline Verification', () => {
+        test('measurable improvement achieved', async () => {
+            const baseline = await getQualityBaseline(problemCategory);
+            const current = await getCurrentQualityMetrics(problemCategory);
+            expect(current.score).toBeGreaterThan(baseline.score);
+        });
+    });
+});
+```
+
+---
+
+## AVIATION SAFETY INTEGRATION (Process v3.3.1-Enhanced)
+
+### Landing Protocol Validation Requirements
+
+#### **Archive Validation for Landing Protocol**
+**Evidence Organization (Mandatory):**
+- [ ] **Execution Log Completeness**: Systematic documentation with timestamps and evidence
+- [ ] **Validation Results Documentation**: All verification results organized for archive
+- [ ] **Test Suite Creation**: Regression prevention tests created and passing
+- [ ] **Evidence Scoring Documentation**: Completeness scores ≥ 0.9 documented
+- [ ] **Cross-Domain Impact Assessment**: Related domain safety verified
+
+#### **Quality Gate Verification for Landing**
+**Systematic Closure Preparation (Mandatory):**
+- [ ] **Evidence Standards Met**: ≥ 0.9 completeness score achieved and documented
+- [ ] **Prevention Measures Validated**: All safeguards tested and working
+- [ ] **Archive Artifacts Organized**: All validation outputs ready for landing protocol
+- [ ] **Framework Consistency Maintained**: v3.3.1-enhanced standards followed
+- [ ] **Emergency Prevention Active**: No organizational debt created during validation
+
+---
+
+## VALIDATION FAILURE PROTOCOLS
+
+### Evidence Insufficiency Response
+
+#### **When Evidence Score < 0.9**
+```typescript
+// REQUIRED pattern for evidence insufficiency
+interface EvidenceGap {
+    category: 'baseline' | 'elimination' | 'prevention' | 'cross-domain';
+    severity: 'critical' | 'major' | 'minor';
+    description: string;
+    recommendations: string[];
+}
+
+async function handleEvidenceInsufficiency(
+    score: number,
+    gaps: EvidenceGap[]
+): Promise<ValidationDecision> {
+    if (score < 0.7) {
+        return {
+            decision: 'REJECT',
+            reason: 'Evidence critically insufficient',
+            requiredActions: gaps.map(g => g.recommendations).flat()
+        };
+    }
+    
+    if (score < 0.9) {
+        return {
+            decision: 'CONDITIONAL',
+            reason: 'Evidence needs enhancement',
+            requiredActions: gaps
+                .filter(g => g.severity !== 'minor')
+                .map(g => g.recommendations)
+                .flat()
+        };
+    }
+    
+    return { decision: 'APPROVE', reason: 'Evidence sufficient' };
+}
+```
+
+#### **Prevention Failure Response**
+**When Safeguards Don't Work (Escalation Required):**
+- [ ] **Immediate Rejection**: Block progression to REVIEWER if prevention fails
+- [ ] **Root Cause Analysis**: Identify why safeguards are ineffective
+- [ ] **Enhanced Requirements**: Specify additional prevention measures needed
+- [ ] **Re-validation Required**: Full validation cycle after prevention fixes
+
+---
+
+## HANDOFF REQUIREMENTS (Enhanced Process v3.3.1)
+
+### REVIEWER Handoff Documentation
+
+#### **Required Validation Artifacts**
+- [ ] **Evidence Validation Report**: `[sprint-id]-tester-validation-v3.3.1.md`
+- [ ] **Evidence Completeness Scoring**: `[sprint-id]-evidence-scoring-v3.3.1.md`
+- [ ] **Prevention Test Suite**: `tests/unit/[problem-category]-prevention.test.js`
+- [ ] **Cross-Domain Impact Assessment**: Regression testing results
+- [ ] **Quality Gate Results**: Overall validation outcome with evidence support
+
+#### **Evidence Validation Report Format**
+```markdown
+## TESTER EVIDENCE VALIDATION SUMMARY
+
+**Problem Category**: [specific-quality-debt-type]
+**Domain**: [primary-domain] + [secondary-domain]  
+**Process Framework**: v3.3.1-Enhanced with Aviation Safety Integration
+**Validation Duration**: [actual] minutes (estimated: [estimated])
+
+**Evidence Validation Results**:
+- **Before State Accuracy**: [score] / 1.0 (baseline verification)
+- **Elimination Completeness**: [score] / 1.0 (zero instances confirmed)
+- **Prevention Effectiveness**: [score] / 1.0 (safeguards tested)
+- **Cross-Domain Safety**: [score] / 1.0 (no regression detected)
+- **Overall Evidence Score**: [score] / 1.0 (≥ 0.9 REQUIRED)
+
+**Independent Verification**:
+- [ ] **Problem Scanning**: [METHOD] used, [RESULTS] found
+- [ ] **Prevention Testing**: [SAFEGUARDS] tested, [EFFECTIVENESS] confirmed
+- [ ] **Regression Testing**: [DOMAINS] checked, [ISSUES] found
+- [ ] **Quality Improvement**: [METRICS] show [IMPROVEMENT]%
+
+**Test Suite Created**:
+- **File**: tests/unit/[problem-category]-prevention.test.js
+- **Coverage**: [COMPREHENSIVE/ADEQUATE/INSUFFICIENT]
+- **Passing**: [COUNT] / [TOTAL] tests
+- **Prevention**: [SPECIFIC] prevention measures validated
+
+**Validation Decision for REVIEWER**:
+- **Evidence Quality**: [APPROVED/CONDITIONAL/REJECTED]
+- **Evidence Score**: ≥ 0.9 [ACHIEVED/NOT_ACHIEVED]
+- **Prevention Validation**: [EFFECTIVE/NEEDS_WORK]
+- **Cross-Domain Safety**: [SAFE/REGRESSION_DETECTED]
+- **Ready for REVIEWER**: [YES/NO] with [EVIDENCE_LEVEL] evidence
+
+**Archive Preparation**: [COMPLETE/IN_PROGRESS]
+**Landing Protocol Ready**: [YES/NO]
+```
+
+---
+
+## CONTINUOUS IMPROVEMENT (Process v3.3.1-Enhanced)
+
+### Validation Effectiveness Tracking
+- [ ] **Evidence Quality Consistency**: Completeness scores achieved across problem categories
+- [ ] **Prevention Validation Accuracy**: Safeguard effectiveness prediction vs actual performance
+- [ ] **Cross-Domain Impact Detection**: Regression identification accuracy
+- [ ] **Validation Efficiency**: Time spent vs evidence quality achieved
+
+### Testing Methodology Evolution
+- [ ] **Successful Validation Patterns**: Approaches consistently achieving ≥ 0.9 evidence scores
+- [ ] **Prevention Testing Effectiveness**: Methods that accurately validate safeguards
+- [ ] **Evidence Gap Identification**: Common insufficiency patterns and solutions
+- [ ] **Framework Integration**: Process v3.3.1-enhanced validation effectiveness
+
+---
+
+## Template Evolution History
+- **v3.3.1-enhanced (2025-09-06)**: Added aviation safety integration, evidence validation standards, prevention testing
+- **v3.2.x (archived)**: Feature validation framework with quality gates
+- **v3.1.x (archived)**: Basic testing role execution framework
+
+## Usage Notes
+- **Current Status**: Active guardrails for all Process v3.3.1-Enhanced TESTER role execution
+- **Evidence Focus**: Systematic validation vs feature acceptance orientation
+- **Evidence Standards**: Mandatory ≥ 0.9 completeness scoring with comprehensive validation
+- **Aviation Safety**: Landing protocol validation integrated throughout
+
+---
+*Template Version: v3.3.1-enhanced*  
+*Last Updated: 2025-09-06*  
+*Framework Compatibility: Process v3.3.1-Enhanced (Aviation Safety Integration)*  
+*Integration: Works with DEVELOPER-GUARDRAILS.md and REVIEWER-GUARDRAILS.md for systematic quality assurance*
+
+**Framework Integration**: This guardrails file integrates with DEVELOPER-GUARDRAILS.md and REVIEWER-GUARDRAILS.md to provide systematic evidence validation throughout Process v3.3.1-enhanced execution with aviation safety landing protocol.
+
+**Historical Context**: Validation requirements and methodologies derived from D-001 through D-014 domain analysis, enhanced with D-009 interface hygiene systematic validation patterns, ensure evidence-based problem resolution vs completion theater.
+
+**Process Authority**: TESTER role maintains evidence validation autonomy while following systematic framework for verification, prevention testing, cross-domain safety, and organizational hygiene with aviation safety integration.
