@@ -1,0 +1,174 @@
+{
+  "scan_metadata": {
+    "domain": "date-time-safety",
+    "date": "2025-09-06",
+    "timestamp": "2025-09-06T12:20:56.000Z",
+    "llm": "codex",
+    "chunked": false,
+    "chunk_size": 0,
+    "files_scanned": 55,
+    "prompt_version": "v1.0"
+  },
+  "findings": [
+    {
+      "fingerprint": "date-time-safety:src/tools/state-mgmt/index.ts:209:inconsistent-serialization",
+      "severity": "P1",
+      "category": "inconsistent-serialization",
+      "file": "src/tools/state-mgmt/index.ts",
+      "line": 209,
+      "description": "Mixed timestamp serialization: numeric Date.now for storage and ISO string for responses within the same module",
+      "evidence": "await this.memoryManager.storeOperational({\n  incidentId: args.incidentId,\n  domain: 'operations',\n  timestamp: Date.now(),\n  symptoms: args.symptoms || [],\n  rootCause: args.rootCause || '',\n  resolution: args.resolution || '',\n});\n...\nreturn JSON.stringify({\n  operation: 'store_incident',\n  incidentId: args.incidentId,\n  memoryId: `${args.incidentId}_${Date.now()}`,\n  status: 'success',\n  timestamp: new Date().toISOString()\n}, null, 2);",
+      "recommendation": "Standardize on ISO-8601 (UTC) for all serialized timestamps: use timestamp: new Date().toISOString() and normalize consumers to parse ISO consistently.",
+      "date_safety_impact": "Inconsistent timestamp formats (number vs string) cause parsing ambiguity, logging inconsistencies, and downstream bugs in clients expecting a single format."
+    },
+    {
+      "fingerprint": "date-time-safety:src/tools/state-mgmt/index.ts:224:inconsistent-serialization",
+      "severity": "P1",
+      "category": "inconsistent-serialization",
+      "file": "src/tools/state-mgmt/index.ts",
+      "line": 224,
+      "description": "Stores conversation timestamp as numeric Date.now while other responses use ISO string",
+      "evidence": "await this.memoryManager.storeConversation({\n  sessionId: args.sessionId,\n  domain: 'operations',\n  timestamp: Date.now(),\n  userMessage: `Store incident: ${args.incidentId}`,\n  assistantResponse: 'Incident stored successfully',\n});\n...\nreturn {\n  ...,\n  timestamp: new Date().toISOString()\n};",
+      "recommendation": "Emit ISO-8601 (UTC) everywhere for serialized timestamps; if internal storage requires epoch, convert at the boundaries for API responses.",
+      "date_safety_impact": "Mixed formats can break sorting, comparisons, and indexing when timestamps are aggregated across tools."
+    },
+    {
+      "fingerprint": "date-time-safety:src/tools/diagnostics/index.ts:233:inconsistent-serialization",
+      "severity": "P1",
+      "category": "inconsistent-serialization",
+      "file": "src/tools/diagnostics/index.ts",
+      "line": 233,
+      "description": "Operational error stored with Date.now while cluster health summaries use ISO strings",
+      "evidence": "await this.memoryManager.storeOperational({\n  incidentId: `diagnostic-error-${sessionId}-${Date.now()}`,\n  domain: 'cluster',\n  timestamp: Date.now(),\n  symptoms: [`Diagnostic tool error: ${toolName}`],\n});\n...\nconst healthSummary = {\n  cluster: { ...,\n    timestamp: new Date().toISOString()\n  },\n  duration: `${Date.now() - startTime}ms`\n};",
+      "recommendation": "Use a single serialization format for timestamps across diagnostics (prefer ISO-8601 UTC). Convert to display format only in UI layers.",
+      "date_safety_impact": "Inconsistent timestamp types increase the risk of serialization/deserialization errors and inconsistent logging across environments."
+    },
+    {
+      "fingerprint": "date-time-safety:src/tools/read-ops/index.ts:364:inconsistent-serialization",
+      "severity": "P1",
+      "category": "inconsistent-serialization",
+      "file": "src/tools/read-ops/index.ts",
+      "line": 364,
+      "description": "Search results fallback to Date.now() numeric while surrounding outputs use ISO string",
+      "evidence": "results: results.map((r: any) => ({\n  ...,\n  timestamp: r.metadata?.timestamp || Date.now()\n})),\n...\nreturn {\n  ...,\n  timestamp: new Date().toISOString()\n};",
+      "recommendation": "Normalize search result timestamps to ISO-8601: ensure r.metadata.timestamp is stored/emitted as ISO and avoid mixing numeric epoch with string ISO.",
+      "date_safety_impact": "Mixing epoch numbers with ISO strings leads to heterogeneous data types that complicate clients and can cause runtime type errors."
+    },
+    {
+      "fingerprint": "date-time-safety:src/tools/write-ops/index.ts:163:inconsistent-serialization",
+      "severity": "P1",
+      "category": "inconsistent-serialization",
+      "file": "src/tools/write-ops/index.ts",
+      "line": 163,
+      "description": "Error record uses Date.now while API responses use ISO strings in the same module",
+      "evidence": "await this.memoryManager.storeOperational({\n  incidentId: `write-op-failure-${sessionId}-${Date.now()}`,\n  domain: 'cluster',\n  timestamp: Date.now(),\n  symptoms: [`Write operation ${toolName} failed: ...`]\n});\n...\nreturn {\n  operation: 'apply',\n  ...,\n  timestamp: new Date().toISOString()\n};",
+      "recommendation": "Adopt ISO-8601 UTC for all serialized timestamps (including error records) to maintain consistency across systems.",
+      "date_safety_impact": "Inconsistent timestamp formats hinder correlation across logs and memory records, especially across timezones."
+    },
+    {
+      "fingerprint": "date-time-safety:src/tools/write-ops/index.ts:206:inconsistent-serialization",
+      "severity": "P1",
+      "category": "inconsistent-serialization",
+      "file": "src/tools/write-ops/index.ts",
+      "line": 206,
+      "description": "Successful config apply stored with Date.now while responses use ISO timestamps",
+      "evidence": "await this.memoryManager.storeOperational({\n  incidentId: `config-apply-${sessionId}`,\n  domain: 'cluster',\n  timestamp: Date.now(),\n  symptoms: ['Configuration applied successfully'],\n});\n...\nconst response = { ...,\n  timestamp: new Date().toISOString()\n};",
+      "recommendation": "Store and return timestamps in a single format (ISO-8601 UTC) to avoid downstream parsing inconsistency.",
+      "date_safety_impact": "Inconsistent timestamp serialization complicates analytics and increases the risk of timezone-related confusion."
+    },
+    {
+      "fingerprint": "date-time-safety:src/tools/write-ops/index.ts:237:inconsistent-serialization",
+      "severity": "P1",
+      "category": "inconsistent-serialization",
+      "file": "src/tools/write-ops/index.ts",
+      "line": 237,
+      "description": "Scaling operation record uses Date.now for timestamp while outward responses use ISO",
+      "evidence": "await this.memoryManager.storeOperational({\n  incidentId: `scale-deployment-${sessionId}`,\n  domain: 'cluster',\n  timestamp: Date.now(),\n  symptoms: [`Deployment ${deploymentName} required scaling`],\n});\n...\nreturn {\n  operation: 'scale',\n  ...,\n  timestamp: new Date().toISOString()\n};",
+      "recommendation": "Unify on ISO-8601 UTC for serialization; if epoch is needed internally, convert at storage boundaries and keep API outputs consistent.",
+      "date_safety_impact": "Different timestamp formats in the same workflow increase integration fragility and timezone misinterpretation risks."
+    },
+    {
+      "fingerprint": "date-time-safety:src/tools/write-ops/index.ts:269:inconsistent-serialization",
+      "severity": "P1",
+      "category": "inconsistent-serialization",
+      "file": "src/tools/write-ops/index.ts",
+      "line": 269,
+      "description": "Restart operation record uses Date.now while response uses ISO string",
+      "evidence": "await this.memoryManager.storeOperational({\n  incidentId: `restart-deployment-${sessionId}`,\n  domain: 'cluster',\n  timestamp: Date.now(),\n  resolution: `Successfully restarted ${deploymentName}`,\n});\n...\nreturn {\n  operation: 'restart',\n  ...,\n  timestamp: new Date().toISOString()\n};",
+      "recommendation": "Emit ISO-8601 UTC consistently across all write operation records and responses.",
+      "date_safety_impact": "Inconsistent serialization undermines reliable correlation of actions across services and timezones."
+    },
+    {
+      "fingerprint": "date-time-safety:src/v2/tools/infrastructure-correlation/enhanced-memory-integration.ts:98:inconsistent-serialization",
+      "severity": "P1",
+      "category": "inconsistent-serialization",
+      "file": "src/v2/tools/infrastructure-correlation/enhanced-memory-integration.ts",
+      "line": 98,
+      "description": "Infrastructure incident stored with numeric Date.now timestamp while other modules emit ISO strings",
+      "evidence": "const operationalMemory: OperationalMemory = {\n  incidentId: `infra_${Date.now()}_${sessionId}`,\n  domain: 'openshift',\n  timestamp: Date.now(),\n  symptoms: incident.symptoms,\n  ...\n};",
+      "recommendation": "Align timestamp serialization across modules; prefer ISO-8601 UTC for portability and consistent parsing.",
+      "date_safety_impact": "Cross-module inconsistency leads to heterogeneous data types, increasing parsing errors and timezone confusion in aggregations."
+    },
+    {
+      "fingerprint": "date-time-safety:src/v2/tools/check-namespace-health/enhanced-index.ts:487:date-validation-missing",
+      "severity": "P1",
+      "category": "date-validation-missing",
+      "file": "src/v2/tools/check-namespace-health/enhanced-index.ts",
+      "line": 487,
+      "description": "Parses event timestamps without validating for Invalid Date",
+      "evidence": "const cutoffTime = Date.now() - (10 * 60 * 1000);\n...\nconst eventTime = new Date(event.lastTimestamp || event.eventTime).getTime();\nif (eventTime > cutoffTime) { ... }",
+      "recommendation": "Validate parsed dates: const d = new Date(event.lastTimestamp || event.eventTime); if (isNaN(d.getTime())) { skip/log } else use d.getTime().",
+      "date_safety_impact": "Unvalidated inputs can produce NaN and break comparisons, causing missed or false positive event detections."
+    },
+    {
+      "fingerprint": "date-time-safety:src/v2/tools/check-namespace-health/enhanced-index.ts:537:date-validation-missing",
+      "severity": "P1",
+      "category": "date-validation-missing",
+      "file": "src/v2/tools/check-namespace-health/enhanced-index.ts",
+      "line": 537,
+      "description": "Uses resourceVersion as a date without validation; resourceVersion is not a timestamp",
+      "evidence": "const lastUpdateTime = new Date(deployment.metadata.resourceVersion || 0).getTime();\nconst recentThreshold = Date.now() - (2 * 60 * 60 * 1000);\nif (lastUpdateTime > recentThreshold && desiredReplicas !== availableReplicas) { ... }",
+      "recommendation": "Use proper timestamp fields (e.g., deployment.status.conditions[].lastUpdateTime or metadata.creationTimestamp) and validate with isNaN checks.",
+      "date_safety_impact": "Parsing non-date fields as dates yields Invalid Date/NaN, causing unreliable scale-down detection and misclassification."
+    },
+    {
+      "fingerprint": "date-time-safety:src/v2/tools/check-namespace-health/enhanced-index.ts:548:date-validation-missing",
+      "severity": "P1",
+      "category": "date-validation-missing",
+      "file": "src/v2/tools/check-namespace-health/enhanced-index.ts",
+      "line": 548,
+      "description": "Parses event timestamps without guarding against invalid inputs",
+      "evidence": "const recentEvents = events.filter((event: any) => {\n  const eventTime = new Date(event.lastTimestamp || event.eventTime).getTime();\n  const cutoff = Date.now() - (60 * 60 * 1000);\n  return eventTime > cutoff;\n});",
+      "recommendation": "Validate eventTime by checking isNaN and skip or default; prefer strictly defined fields (event.eventTime || lastTimestamp) with fallbacks only if valid.",
+      "date_safety_impact": "Invalid event timestamps corrupt filtering logic, potentially hiding critical events or including stale ones."
+    },
+    {
+      "fingerprint": "date-time-safety:src/v2/tools/check-namespace-health/index.ts:120:date-validation-missing",
+      "severity": "P1",
+      "category": "date-validation-missing",
+      "file": "src/v2/tools/check-namespace-health/index.ts",
+      "line": 120,
+      "description": "Uses resourceVersion as a date; missing validation and incorrect field selection",
+      "evidence": "const lastUpdateTime = new Date(deployment.metadata.resourceVersion || 0).getTime();\nconst recentThreshold = Date.now() - (2 * 60 * 60 * 1000);\nif (lastUpdateTime > recentThreshold && desiredReplicas !== availableReplicas) { ... }",
+      "recommendation": "Use deployment.status.conditions[].lastUpdateTime or lastTransitionTime; validate parsed dates with isNaN checks before comparison.",
+      "date_safety_impact": "Treating non-date metadata as a date leads to NaN comparisons and incorrect recent-change detection."
+    },
+    {
+      "fingerprint": "date-time-safety:src/v2/tools/check-namespace-health/index.ts:131:date-validation-missing",
+      "severity": "P1",
+      "category": "date-validation-missing",
+      "file": "src/v2/tools/check-namespace-health/index.ts",
+      "line": 131,
+      "description": "Event timestamp parsing lacks Invalid Date handling",
+      "evidence": "const recentEvents = events.filter((event: any) => {\n  const eventTime = new Date(event.lastTimestamp || event.eventTime).getTime();\n  const cutoff = Date.now() - (60 * 60 * 1000);\n  return eventTime > cutoff;\n});",
+      "recommendation": "Check for isNaN(eventTime) and skip/report invalid events; prefer strict schema and guard against missing fields.",
+      "date_safety_impact": "Invalid parsed dates can break filters, impacting alerting and health assessments."
+    }
+  ],
+  "timezone_strategy_insights": {
+    "storage_format": "UTC ISO-8601 everywhere for serialized timestamps",
+    "cet_display": "Convert from UTC to CET at display using date-fns-tz",
+    "comparisons": "Normalize all inputs to UTC epoch (validated) before comparisons",
+    "logging": "Standardize logs to ISO-8601 UTC with timezone metadata"
+  }
+}
