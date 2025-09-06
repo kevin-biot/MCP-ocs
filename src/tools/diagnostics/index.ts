@@ -238,7 +238,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
       await this.memoryManager.storeOperational({
         incidentId: `diagnostic-error-${sessionId}-${Date.now()}`,
         domain: 'cluster',
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         symptoms: [`Diagnostic tool error: ${toolName}`],
         rootCause: error instanceof Error ? error.message : 'Unknown error',
         affectedResources: [],
@@ -390,7 +390,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
             await this.memoryManager.storeOperational({
               incidentId: `plan-strategy-${sessionId}`,
               domain: 'cluster',
-              timestamp: Date.now(),
+              timestamp: new Date().toISOString(),
               symptoms: ['plan_strategy', sessionId, 'mini_plan'],
               affectedResources: steps.map((s: any) => s.tool),
               diagnosticSteps: steps.map((s: any) => `Planned ${s.tool}`),
@@ -601,7 +601,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
       await this.memoryManager.storeOperational({
         incidentId: `namespace-health-${sessionId}`,
         domain: 'cluster',
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         symptoms: healthResult.suspicions.length > 0 ? healthResult.suspicions : ['namespace_healthy'],
         affectedResources: [`namespace/${namespace}`],
         diagnosticSteps: ['Enhanced namespace health check completed'],
@@ -671,7 +671,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
       await this.memoryManager.storeOperational({
         incidentId: `pod-health-${sessionId}`,
         domain: 'cluster',
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         symptoms: podAnalysis.issues.length > 0 ? podAnalysis.issues : ['pod_healthy'],
         affectedResources: [`pod/${podName}`, `namespace/${namespace}`],
         diagnosticSteps: ['Enhanced pod health check completed'],
@@ -1047,7 +1047,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
       await this.memoryManager.storeOperational({
         incidentId: `rca-checklist-${sessionId}`,
         domain: 'cluster',
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         symptoms: checklistResult.evidence.symptoms,
         affectedResources: checklistResult.evidence.affectedResources,
         diagnosticSteps: checklistResult.evidence.diagnosticSteps,

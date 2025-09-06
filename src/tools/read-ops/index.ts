@@ -277,7 +277,7 @@ export class ReadOpsTools implements ToolSuite {
     await this.memoryManager.storeConversation({
       sessionId: sessionId || 'unknown',
       domain: 'cluster',
-      timestamp: Date.now(),
+      timestamp: new Date().toISOString(),
       userMessage: `Get pods ${namespace || 'default'} ${selector || ''}`.trim(),
       assistantResponse: `Found ${result.totalPods} pods (running=${result.summary.running})`,
       context: [namespace || 'default', selector || 'none'],
@@ -349,7 +349,7 @@ export class ReadOpsTools implements ToolSuite {
     await this.memoryManager.storeConversation({
       sessionId: sessionId || 'unknown',
       domain: 'cluster',
-      timestamp: Date.now(),
+      timestamp: new Date().toISOString(),
       userMessage: `Read logs ${podName}`,
       assistantResponse: `Returned ${result.logLines} line segments`,
       context: [namespace || 'default', container || 'default'],
@@ -389,7 +389,7 @@ export class ReadOpsTools implements ToolSuite {
         incidentId: r.memory?.incidentId || r.metadata?.incidentId || '',
         symptoms: r.memory?.symptoms || [],
         resolution: r.memory?.resolution || '',
-        timestamp: r.memory?.timestamp || r.metadata?.timestamp || Date.now()
+        timestamp: r.memory?.timestamp || r.metadata?.timestamp || new Date().toISOString()
       })),
       timestamp: new Date().toISOString()
     };
@@ -398,7 +398,7 @@ export class ReadOpsTools implements ToolSuite {
     await this.memoryManager.storeConversation({
       sessionId: sessionId || 'unknown',
       domain: 'knowledge',
-      timestamp: Date.now(),
+      timestamp: new Date().toISOString(),
       userMessage: `Search memory for: ${query}`,
       assistantResponse: `Found ${results.length} relevant incidents in operational memory`,
       context: ['memory_search', query],

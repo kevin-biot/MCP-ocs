@@ -116,11 +116,19 @@ export class NamespaceHealthChecker {
         analysis.evidence.push(`Deployment ${name} intentionally scaled to 0 replicas`);
       }
       
-      // Check for recent scaling activity
-      const lastUpdateTime = new Date(deployment.metadata.resourceVersion || 0).getTime();
+      // Check for recent scaling activity (validate date fields; resourceVersion is not a timestamp)
+      const candidateTimestamp =
+        deployment.metadata?.creationTimestamp ||
+        (deployment.status?.conditions || []).find((c: any) => c?.lastUpdateTime)?.lastUpdateTime ||
+        (deployment.status?.conditions || []).find((c: any) => c?.lastTransitionTime)?.lastTransitionTime;
+      let lastUpdateTime = NaN;
+      if (candidateTimestamp) {
+        const d = new Date(candidateTimestamp);
+        lastUpdateTime = d.getTime();
+      }
       const recentThreshold = Date.now() - (2 * 60 * 60 * 1000); // Last 2 hours
       
-      if (lastUpdateTime > recentThreshold && desiredReplicas !== availableReplicas) {
+      if (!isNaN(lastUpdateTime) && lastUpdateTime > recentThreshold && desiredReplicas !== availableReplicas) {
         analysis.deploymentStatus.recentlyScaled.push(name);
         analysis.evidence.push(`Deployment ${name} recently modified (desired: ${desiredReplicas}, available: ${availableReplicas})`);
       }
@@ -128,8 +136,11 @@ export class NamespaceHealthChecker {
 
     // Analyze events for scale-down indicators
     const recentEvents = events.filter((event: any) => {
-      const eventTime = new Date(event.lastTimestamp || event.eventTime).getTime();
+      const raw = event.lastTimestamp || event.eventTime;
+      const d = new Date(raw);
+      const eventTime = d.getTime();
       const cutoff = Date.now() - (60 * 60 * 1000); // Last hour
+      if (isNaN(eventTime)) return false;
       return eventTime > cutoff;
     });
 

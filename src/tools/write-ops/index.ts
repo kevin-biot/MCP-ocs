@@ -160,7 +160,7 @@ export class WriteOpsTools {
       await this.memoryManager.storeOperational({
         incidentId: `write-op-failure-${sessionId}-${Date.now()}`,
         domain: 'cluster',
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         symptoms: [`Write operation ${toolName} failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
         affectedResources: [],
         diagnosticSteps: [`Attempted ${toolName} with args: ${JSON.stringify(args, null, 2)}`],
@@ -203,7 +203,7 @@ export class WriteOpsTools {
     await this.memoryManager.storeOperational({
       incidentId: `config-apply-${sessionId}`,
       domain: 'cluster',
-      timestamp: Date.now(),
+      timestamp: new Date().toISOString(),
       symptoms: ['Configuration applied successfully'],
       resolution: `Applied configuration to ${namespace || 'default'} namespace`,
       affectedResources: [],
@@ -234,7 +234,7 @@ export class WriteOpsTools {
     await this.memoryManager.storeOperational({
       incidentId: `scale-deployment-${sessionId}`,
       domain: 'cluster',
-      timestamp: Date.now(),
+      timestamp: new Date().toISOString(),
       symptoms: [`Deployment ${deploymentName} required scaling`],
       resolution: `Scaled ${deploymentName} to ${replicas} replicas`,
       diagnosticSteps: ['Identified scaling requirement', `Executed oc scale for ${deploymentName}`],
@@ -266,7 +266,7 @@ export class WriteOpsTools {
     await this.memoryManager.storeOperational({
       incidentId: `restart-deployment-${sessionId}`,
       domain: 'cluster',
-      timestamp: Date.now(),
+      timestamp: new Date().toISOString(),
       symptoms: [`Deployment ${deploymentName} required restart`],
       resolution: `Successfully restarted ${deploymentName}`,
       diagnosticSteps: ['Identified restart requirement', `Executed rollout restart for ${deploymentName}`],

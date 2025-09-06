@@ -95,7 +95,7 @@ export class EnhancedInfrastructureMemory {
       const operationalMemory: OperationalMemory = {
         incidentId: `infra_${Date.now()}_${sessionId}`,
         domain: 'openshift',
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         symptoms: incident.symptoms,
         environment: 'prod', // Could be parameterized
         affectedResources: [

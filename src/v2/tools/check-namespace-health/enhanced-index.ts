@@ -486,8 +486,12 @@ export class EnhancedNamespaceHealthChecker {
 
     for (const event of events) {
       if (event.type !== 'Normal') {
-        const eventTime = new Date(event.lastTimestamp || event.eventTime).getTime();
-        
+        const raw = event.lastTimestamp || event.eventTime;
+        const parsed = new Date(raw);
+        const eventTime = parsed.getTime();
+        if (isNaN(eventTime)) {
+          continue; // skip invalid dates
+        }
         if (eventTime > cutoffTime) {
           const reason = event.reason;
           const message = event.message;
@@ -536,10 +540,19 @@ export class EnhancedNamespaceHealthChecker {
         analysis.evidence.push(`Deployment ${name} intentionally scaled to 0 replicas`);
       }
       
-      const lastUpdateTime = new Date(deployment.metadata.resourceVersion || 0).getTime();
+      // resourceVersion is not a timestamp; prefer valid timestamps when available
+      const candidateTimestamp =
+        deployment.metadata?.creationTimestamp ||
+        (deployment.status?.conditions || []).find((c: any) => c?.lastUpdateTime)?.lastUpdateTime ||
+        (deployment.status?.conditions || []).find((c: any) => c?.lastTransitionTime)?.lastTransitionTime;
+      let lastUpdateTime = NaN;
+      if (candidateTimestamp) {
+        const d = new Date(candidateTimestamp);
+        lastUpdateTime = d.getTime();
+      }
       const recentThreshold = Date.now() - (2 * 60 * 60 * 1000);
       
-      if (lastUpdateTime > recentThreshold && desiredReplicas !== availableReplicas) {
+      if (!isNaN(lastUpdateTime) && lastUpdateTime > recentThreshold && desiredReplicas !== availableReplicas) {
         analysis.deploymentStatus.recentlyScaled.push(name);
         analysis.evidence.push(`Deployment ${name} recently modified (desired: ${desiredReplicas}, available: ${availableReplicas})`);
       }
@@ -547,8 +560,11 @@ export class EnhancedNamespaceHealthChecker {
 
     // Analyze events for scale-down indicators
     const recentEvents = events.filter((event: any) => {
-      const eventTime = new Date(event.lastTimestamp || event.eventTime).getTime();
+      const raw = event.lastTimestamp || event.eventTime;
+      const d = new Date(raw);
+      const eventTime = d.getTime();
       const cutoff = Date.now() - (60 * 60 * 1000);
+      if (isNaN(eventTime)) return false;
       return eventTime > cutoff;
     });
 

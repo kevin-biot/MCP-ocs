@@ -206,7 +206,7 @@ export class StateMgmtTools implements ToolSuite {
     await this.memoryManager.storeOperational({
       incidentId: args.incidentId,
       domain: 'operations',
-      timestamp: Date.now(),
+      timestamp: new Date().toISOString(),
       symptoms: args.symptoms || [],
       rootCause: args.rootCause || '',
       resolution: args.resolution || '',
@@ -221,7 +221,7 @@ export class StateMgmtTools implements ToolSuite {
       await this.memoryManager.storeConversation({
         sessionId: args.sessionId,
         domain: 'operations',
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         userMessage: `Store incident: ${args.incidentId}`,
         assistantResponse: 'Incident stored successfully',
         context: ['incident_storage'],
@@ -344,7 +344,7 @@ export class StateMgmtTools implements ToolSuite {
       await this.memoryManager.storeConversation({
         sessionId,
         domain: 'knowledge',
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         userMessage: `Search conversations for: ${query}`,
         assistantResponse: `Found ${results.length} relevant conversations`,
         context: ['conversation_search', query],
@@ -387,7 +387,7 @@ export class StateMgmtTools implements ToolSuite {
       await this.memoryManager.storeOperational({
         incidentId: `state-mgmt-error-${sessionId}-${Date.now()}`,
         domain: 'system',
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         symptoms: [`State management tool error: ${toolName}`],
         rootCause: error instanceof Error ? error.message : 'Unknown error',
         affectedResources: [],
