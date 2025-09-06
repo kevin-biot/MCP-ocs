@@ -59,7 +59,7 @@ afterEach(() => {
       return {
         sessionId: 'test-session',
         domain: 'test',
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         userMessage: 'Test user message',
         assistantResponse: 'Test assistant response',
         context: ['test', 'context'],
@@ -70,7 +70,7 @@ afterEach(() => {
       return {
         incidentId: 'test-incident',
         domain: 'cluster',
-        timestamp: Date.now(),
+        timestamp: new Date().toISOString(),
         symptoms: ['Test symptom'],
         rootCause: 'Test root cause',
         resolution: 'Test resolution',

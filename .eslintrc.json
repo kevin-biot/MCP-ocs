@@ -1,0 +1,29 @@
+{
+  "root": true,
+  "env": {
+    "es2021": true,
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "project": [
+      "./tsconfig.json"
+    ]
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "overrides": [
+    {
+      "files": ["src/**/*.ts", "tests/**/*.ts"],
+      "rules": {
+        "no-restricted-properties": [
+          "warn",
+          { "object": "Date", "property": "now", "message": "Use new Date().toISOString() for timestamps (D-009 Date-Time Safety)." }
+        ]
+      }
+    }
+  ]
+}
