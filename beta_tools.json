@@ -1,0 +1,48 @@
+{
+  "count": 8,
+  "byMaturity": {
+    "production": 8
+  },
+  "tools": [
+    {
+      "name": "memory_get_stats",
+      "maturity": "production",
+      "lastValidated": "2024-08-14"
+    },
+    {
+      "name": "memory_search_operational",
+      "maturity": "production",
+      "lastValidated": "2024-08-14"
+    },
+    {
+      "name": "memory_store_operational",
+      "maturity": "production",
+      "lastValidated": "2024-08-14"
+    },
+    {
+      "name": "oc_diagnostic_cluster_health",
+      "maturity": "production",
+      "lastValidated": "2024-08-14"
+    },
+    {
+      "name": "oc_diagnostic_rca_checklist",
+      "maturity": "production",
+      "lastValidated": "2024-08-14"
+    },
+    {
+      "name": "oc_read_describe",
+      "maturity": "production",
+      "lastValidated": "2024-08-14"
+    },
+    {
+      "name": "oc_read_get_pods",
+      "maturity": "production",
+      "lastValidated": "2024-08-14"
+    },
+    {
+      "name": "oc_read_logs",
+      "maturity": "production",
+      "lastValidated": "2024-08-14"
+    }
+  ]
+}

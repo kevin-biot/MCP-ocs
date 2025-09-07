@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist/beta",
+    "rootDir": ".",
+    "module": "ES2022",
+    "target": "ES2022",
+    "moduleResolution": "node",
+    "lib": ["ES2023"],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "types": ["node"],
+    "strict": false
+  },
+  "files": [
+    "src/index.beta.ts"
+  ]
+}
