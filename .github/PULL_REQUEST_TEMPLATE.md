@@ -16,3 +16,4 @@ References:
 - Process guide: `sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.1.md`
 - Example: `sprint-management/archive/d-009-date-time-safety-2025-09-06/`
 
+Note: For sprint closure PRs, please add the `sprint-closure` label. This will enforce complete artifact checks in CI.

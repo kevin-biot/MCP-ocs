@@ -6,14 +6,17 @@ on:
 
 jobs:
   advisory-check:
-    name: Verify sprint closure artifacts (non-blocking)
+    name: Verify sprint closure artifacts (advisory or enforcing via label)
     runs-on: ubuntu-latest
-    continue-on-error: true
+    continue-on-error: false
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Install jq (for label parsing)
+        run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Determine changed files
         id: diff
@@ -25,8 +28,18 @@ jobs:
           echo "changed=$(cat changed.txt | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
 
       - name: Advisory validation
+        env:
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
         run: |
           echo "Changed files:"; cat changed.txt || true
+          # Detect if PR is labeled as sprint-closure
+          IS_CLOSURE=$(jq -r '.pull_request.labels[]?.name' "$GITHUB_EVENT_PATH" | grep -c '^sprint-closure$' || true)
+          if [ "$IS_CLOSURE" -gt 0 ]; then
+            echo "Detected sprint-closure label: enforcing mode"
+          else
+            echo "No sprint-closure label: advisory mode"
+          fi
+
           if grep -q '^sprint-management/archive/' changed.txt; then
             archive_dir=$(grep '^sprint-management/archive/' changed.txt | cut -d/ -f1-3 | sort -u | head -n1)
             echo "Detected archive folder: $archive_dir"
@@ -41,12 +54,22 @@ jobs:
               "sprint-retrospective.md"; do
               if [ -f "$archive_dir/$f" ]; then present=$((present+1)); fi
             done
-            if [ "$present" -lt 5 ]; then
-              echo "::warning::Closure artifacts appear incomplete in $archive_dir ($present/7 detected). See Process v3.3.1 guide."
+            if [ "$IS_CLOSURE" -gt 0 ]; then
+              # Enforcing mode: require all 7 artifacts
+              if [ "$present" -lt 7 ]; then
+                echo "::error::Closure artifacts incomplete in $archive_dir ($present/7 detected). Add missing files per Process v3.3.1 guide."
+                exit 1
+              else
+                echo "Closure artifacts complete ($present/7)."
+              fi
             else
-              echo "Artifacts presence looks reasonable ($present/7)."
+              # Advisory mode: warn if <5 artifacts
+              if [ "$present" -lt 5 ]; then
+                echo "::warning::Closure artifacts appear incomplete in $archive_dir ($present/7 detected). See Process v3.3.1 guide."
+              else
+                echo "Artifacts presence looks reasonable ($present/7)."
+              fi
             fi
           else
-            echo "No archive changes detected; advisory check skipped."
+            echo "No archive changes detected; quick pass."
           fi
-
