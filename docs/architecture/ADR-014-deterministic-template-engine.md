@@ -224,3 +224,11 @@ This architectural decision enables MCP-ocs to function reliably during 4AM outa
 ---
 
 **Implementation Status:** Complete - Production Ready
+## Process v3.3.1 Alignment
+
+The Deterministic Template Engine participates in the Process v3.3.1 closure workflow by producing structured evidence that maps to the 11‑artifact framework. When triage/diagnostics complete, curators should file the required artifacts.
+
+- Process guide: `sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.1.md`
+- Example closure set: `sprint-management/archive/d-009-date-time-safety-2025-09-06/`
+
+This mapping keeps diagnostic outputs reproducible and traceable within the organizational process.

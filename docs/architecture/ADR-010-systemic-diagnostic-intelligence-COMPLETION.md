@@ -190,3 +190,11 @@ Root Cause: Persistent Volume storage exhaustion
 **Last Updated:** August 13, 2025  
 **Next Review:** Phase 1 Implementation Completion (Month 1)  
 **Approved By:** Kevin Brown, Technical Architecture Team
+## Process v3.3.1: Mandatory Artifacts (D-009 Gold Standard)
+
+Completion verification is now tied to the 11‑artifact template framework (Process v3.3.1). Closure packages must include the standardized artifacts for quality, ADR impact, decisions, metrics, and retrospective.
+
+- Template usage guide: `sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.1.md`
+- Example artifact set: `sprint-management/archive/d-009-date-time-safety-2025-09-06/`
+
+This ensures consistent, auditable completion across sprints and aligns diagnostic outcomes with process governance.

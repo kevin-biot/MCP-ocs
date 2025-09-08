@@ -341,3 +341,11 @@ By implementing this architecture, MCP-ocs evolves from a template-driven diagno
 **Implementation Status:** Designed - Ready for Development  
 **Dependencies:** None (extends existing architecture)  
 **Risk Level:** Low (backward compatible enhancement)
+## Process v3.3.1 Integration
+
+The NL input normalization pipeline should expect and produce summaries that tie back to the 11‑artifact template framework (Process v3.3.1), ensuring prompts, decisions, and outcomes are consistently documented.
+
+- Usage guide: `sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.1.md`
+- Example artifact set: `sprint-management/archive/d-009-date-time-safety-2025-09-06/`
+
+This allows human/AI workflows to remain aligned with the organizational closure process.

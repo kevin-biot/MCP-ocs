@@ -295,3 +295,11 @@ This approach balances security rigor with development flexibility based on actu
 - **Trust Boundary Analysis**: 50+ unvalidated entry points requiring systematic remediation
 - **Development Process Analysis**: Root cause assessment of security anti-patterns
 - **Standup Process v3**: Security-integrated daily development workflow
+## Process v3.3.1 Governance Hook
+
+Sprint closure is governed by the 11‑artifact template framework (Process v3.3.1). These artifacts formalize review evidence, security considerations, and decision logs, strengthening risk governance.
+
+- Process reference: `sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.1.md`
+- Closure example: `sprint-management/archive/d-009-date-time-safety-2025-09-06/`
+
+Adhering to these artifacts is a mandatory control that supports auditability and continuous improvement.
