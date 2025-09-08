@@ -387,3 +387,16 @@ Closure artifacts (Process v3.3.1, 11‑artifact framework) should map to entiti
 - Reference archive: `sprint-management/archive/d-009-date-time-safety-2025-09-06/`
 
 The mapping enables uniform analysis across sprints and durable knowledge capture.
+
+### Evidence Mapping Details (v3.3.1)
+
+Suggested mapping from the closure artifacts to fact model entities:
+- Quality Assessment Report → EvidenceItem[] (type: quality), Findings[], Severity.
+- ADR Impact Analysis → Decision[], DecisionTrace (links to EvidenceItem IDs), AffectedComponents.
+- Memory Extract Report → KnowledgeSnippet[], SourceRefs (back-link to evidence).
+- Key Decisions Log → Decision[], Rationale, Alternatives, RiskAcceptance.
+- Technical Metrics Data (JSON) → Metric[], Before/After snapshots, Thresholds.
+- Outstanding Work Analysis → Risk[], Owner, DueDate, Mitigation.
+- Sprint Retrospective → Outcome[], Lesson[], ProcessAdjustment.
+
+These entities should retain stable IDs to support longitudinal analysis.
