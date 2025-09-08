@@ -379,3 +379,11 @@ The NFM system positions the platform for future expansion into medical, financi
 **Implementation Status:** Designed - Ready for Phased Development  
 **Dependencies:** ADR-021 (Natural Language Input Normalization Architecture)  
 **Risk Level:** Medium (optional enhancement, can be implemented incrementally)
+## Process v3.3.1 Evidence Mapping
+
+Closure artifacts (Process v3.3.1, 11‑artifact framework) should map to entities in the normalized fact model (e.g., decisions, evidence, metrics, outcomes). This maintains strong linkage from raw data to conclusions.
+
+- Process template usage: `sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.1.md`
+- Reference archive: `sprint-management/archive/d-009-date-time-safety-2025-09-06/`
+
+The mapping enables uniform analysis across sprints and durable knowledge capture.

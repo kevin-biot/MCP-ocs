@@ -793,3 +793,11 @@ This architecture provides:
 - **Reliability**: Hierarchical error handling and recovery strategies
 
 The combination of interface-driven design, dependency injection, and systematic patterns creates a robust foundation for OpenShift operational intelligence tooling that can evolve with changing requirements while maintaining stability and performance.
+## Process & Governance Update (v3.3.1)
+
+The organization adopts the Process v3.3.1 11‑artifact template framework for sprint closure. All teams must produce the standardized artifacts to ensure consistent evidence, decisions, and retrospectives.
+
+- Process guide: `sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.1.md`
+- Example closure set: `sprint-management/archive/d-009-date-time-safety-2025-09-06/`
+
+Architecture components (diagnostics, normalization, fact model) should reference these artifacts where applicable.
