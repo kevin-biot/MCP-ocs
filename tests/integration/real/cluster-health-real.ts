@@ -52,7 +52,13 @@ async function main() {
   });
 
   const res = JSON.parse(json);
-  // Print concise summary for ops
+  // If running via capture script, emit full JSON for triage
+  if (process.env.CAPTURE_MODE) {
+    console.log(JSON.stringify(res, null, 2));
+    return;
+  }
+
+  // Otherwise, print concise summary for ops
   const top = (res.namespacePrioritization || []).slice(0, 5);
   console.log(JSON.stringify({
     scope,

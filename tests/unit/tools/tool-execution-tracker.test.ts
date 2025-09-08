@@ -38,9 +38,10 @@ describe('ToolExecutionTracker', () => {
 
     const recent = tracker.getRecentExecutions(1);
     expect(recent).toHaveLength(1);
-    expect(recent[0].status).toBe('completed');
-    expect(recent[0].memoryId).toBe('mem-1');
-    expect(recent[0].duration).toBeGreaterThanOrEqual(0);
+    const first = recent[0]!;
+    expect(first.status).toBe('completed');
+    expect(first.memoryId).toBe('mem-1');
+    expect(first.duration!).toBeGreaterThanOrEqual(0);
   });
 
   it('records failure, stores error memory, and rethrows', async () => {
@@ -54,15 +55,16 @@ describe('ToolExecutionTracker', () => {
 
     const recent = tracker.getRecentExecutions(1);
     expect(recent).toHaveLength(1);
-    expect(recent[0].status).toBe('failed');
-    expect(recent[0].memoryId).toBe('mem-1');
+    const first = recent[0]!;
+    expect(first.status).toBe('failed');
+    expect(first.memoryId).toBe('mem-1');
   });
 
   it('retrieves execution by id and fetches its memory', async () => {
     const execFn = jest.fn().mockResolvedValue({ success: true, data: 'ok', timestamp: Date.now() });
     await tracker.executeWithMemory(toolCall, execFn);
     const [exec] = tracker.getRecentExecutions(1);
-    const mem = await tracker.getExecutionMemory(exec.id);
+    const mem = await tracker.getExecutionMemory(exec!.id);
     expect(memoryManager.getMemory).toHaveBeenCalledWith('mem-1');
     expect(mem).toEqual({ id: 'mem-1', data: 'stored' });
   });
@@ -97,4 +99,3 @@ describe('ToolExecutionTracker', () => {
     expect(memoryManager.cleanupOldMemories).toHaveBeenCalledWith(7);
   });
 });
-

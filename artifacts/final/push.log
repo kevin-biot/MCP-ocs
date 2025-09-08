@@ -1,0 +1,17 @@
+Pushing integration/template-engine-beta9...
+remote: 
+remote: Create a pull request for 'integration/template-engine-beta9' on GitHub by visiting:        
+remote:      https://github.com/kevin-biot/MCP-ocs/pull/new/integration/template-engine-beta9        
+remote: 
+To https://github.com/kevin-biot/MCP-ocs.git
+ * [new branch]        integration/template-engine-beta9 -> integration/template-engine-beta9
+Pushing release/v0.9.0-beta...
+remote: 
+remote: Create a pull request for 'release/v0.9.0-beta' on GitHub by visiting:        
+remote:      https://github.com/kevin-biot/MCP-ocs/pull/new/release/v0.9.0-beta        
+remote: 
+To https://github.com/kevin-biot/MCP-ocs.git
+ * [new branch]        release/v0.9.0-beta -> release/v0.9.0-beta
+Pushing tag v0.9.0-beta...
+To https://github.com/kevin-biot/MCP-ocs.git
+ * [new tag]           v0.9.0-beta -> v0.9.0-beta

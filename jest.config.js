@@ -13,7 +13,7 @@ export default {
   },
   moduleNameMapper: {
     // Prefer compiled JS from dist for core modules used in unit tests to avoid TS transform issues
-    '^@/lib/errors/(.*)$': '<rootDir>/dist/src/lib/errors/$1.js',
+    '^@/lib/errors/(.*)\.js$': '<rootDir>/src/lib/errors/$1.ts',
     '^@/utils/(.*)$': '<rootDir>/dist/src/utils/$1.js',
     '^@/lib/tools/(.*)$': '<rootDir>/dist/src/lib/tools/$1.js',
     // Map alias to TS sources, prefer .ts when .js is imported in source
@@ -35,7 +35,17 @@ export default {
     '^\\.\\./\\.\\./v2-integration\\.js$': '<rootDir>/src/v2-integration.ts',
     '^\\./v2/(.*)\\.js$': '<rootDir>/src/v2/$1.ts',
     // Map local ESM-style relative .js imports in TS to .ts for tests
-    '^\\./mcp-files-memory-extension\\.js$': '<rootDir>/src/lib/memory/mcp-files-memory-extension.ts'
+    '^\\./mcp-files-memory-extension\\.js$': '<rootDir>/src/lib/memory/mcp-files-memory-extension.ts',
+    // Relative imports inside library modules
+    '^\.\./errors/(.*)\\.js$': '<rootDir>/src/lib/errors/$1.ts',
+    '^\./expr\\.js$': '<rootDir>/src/lib/rubrics/expr.ts',
+    '^\./rubric-registry\\.js$': '<rootDir>/src/lib/rubrics/rubric-registry.ts',
+    '^\./error-types\.js$': '<rootDir>/src/lib/errors/error-types.ts',
+    // Generic catch-alls to map ESM-style relative .js imports in TS to TS sources
+    '^.*/src/(.*)\\.js$': '<rootDir>/src/$1.ts',
+    '^.*/utils/(.*)\\.js$': '<rootDir>/src/utils/$1.ts',
+    '^.*/lib/errors/(.*)\\.js$': '<rootDir>/src/lib/errors/$1.ts',
+    '^.*/lib/rubrics/(.*)\\.js$': '<rootDir>/src/lib/rubrics/$1.ts'
   },
   extensionsToTreatAsEsm: ['.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
@@ -49,7 +59,3 @@ export default {
   testTimeout: 10000,
   verbose: true
 };
-    // Map additional relative ESM .js imports to TS sources for tests
-    '^\\.\\./lib/errors/(.*)\\.js$': '<rootDir>/src/lib/errors/$1.ts',
-    '^\\.\\./errors/(.*)\\.js$': '<rootDir>/src/lib/errors/$1.ts',
-    '^\\.\\.\\/\\.\\.\\/utils/(.*)\\.js$': '<rootDir>/src/utils/$1.ts',

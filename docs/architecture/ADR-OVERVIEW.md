@@ -9,16 +9,18 @@
 
 ## Executive Summary
 
-This document provides a complete overview of all Architecture Decision Records (ADRs) in the MCP-ocs system, including their current status, dependencies, and implementation progress. The system currently has **22 ADRs** (ADR-001 through ADR-022) covering the complete architectural foundation including advanced input processing and semantic type systems.
+This document provides a complete overview of all Architecture Decision Records (ADRs) in the MCP-ocs system, including their current status, dependencies, and implementation progress. The system currently has **23 ADRs** (ADR-001 through ADR-023) covering the complete architectural foundation including advanced input processing, semantic type systems, and natural user interaction patterns.
 
 **Current Architecture Status:**
-- ✅ **Implemented & Operational**: 5 ADRs (23% - Solid foundation)
-- 🚧 **Partially Implemented**: 4 ADRs (18% - Active completion)
-- 📋 **Designed but Not Implemented**: 13 ADRs (59% - Comprehensive future roadmap)
+- ✅ **Implemented & Operational**: 5 ADRs (22% - Solid foundation)
+- 🚧 **Partially Implemented**: 4 ADRs (17% - Active completion)
+- 📋 **Designed but Not Implemented**: 13 ADRs (57% - Comprehensive future roadmap)
+- 🎯 **Ready for Implementation**: 1 ADR (4% - ADR-023 approved and ready)
 
 **Recent Additions (September 2025):**
 - **ADR-021**: Natural Language Input Normalization Architecture (F-006 Epic)
 - **ADR-022**: Normalized Fact Model Type System Architecture (F-007 Epic)
+- **ADR-023**: oc_triage Entry Tool (CODEX-validated bridge implementation)
 
 ---
 
@@ -91,9 +93,19 @@ This document provides a complete overview of all Architecture Decision Records 
 
 ---
 
+### **User Experience & Natural Interaction (ADR-023)** 🎯
+
+| ADR | Title | Status | Implementation Notes |
+|-----|-------|--------|---------------------|
+| **ADR-023** | oc_triage Entry Tool | 🎯 **Ready for Implementation** | **CODEX-Validated** - Bridge to natural triage interaction, Phase 0 spike ready |
+
+**Natural Interaction Status**: 🎯 **Implementation-ready bridge solution with comprehensive CODEX validation**
+
+---
+
 ## Current Implementation Status
 
-### **✅ Implemented & Operational (5 ADRs - 23%)**
+### **✅ Implemented & Operational (5 ADRs - 22%)**
 
 **Core Foundation:**
 - **ADR-001**: OpenShift API client operational (95% complete)
@@ -110,7 +122,7 @@ This document provides a complete overview of all Architecture Decision Records 
 - **ADR-009**: RBAC emergency management (20% - now has F-003 integration)
 - **ADR-010**: Systemic diagnostic intelligence (40% - needs completion focus)
 
-### **📋 Designed with Feature Coverage (8 ADRs - 36%)**
+### **📋 Designed with Feature Coverage (8 ADRs - 35%)**
 
 **New Feature Epics Created:**
 - **ADR-006**: F-008 Modular Tool Architecture Epic
@@ -121,7 +133,12 @@ This document provides a complete overview of all Architecture Decision Records 
 - **ADR-021**: F-006 Natural Language Input Normalization Epic  
 - **ADR-022**: F-007 NFM Type System Epic
 
-### **📋 Future Consideration (5 ADRs - 23%)**
+### **🎯 Ready for Implementation (1 ADR - 4%)**
+
+**Implementation-Ready with CODEX Validation:**
+- **ADR-023**: oc_triage Entry Tool - Natural interaction bridge with phased implementation plan
+
+### **📋 Future Consideration (5 ADRs - 22%)**
 
 **Lower Priority - Acceptable for Now:**
 - **ADR-015** through **ADR-020**: Future enhancements when business requirements justify
@@ -204,10 +221,15 @@ F-009: [ADR-011] # Fast RCA Framework
 
 ## Next Actions (Dependency-Driven)
 
-### **Phase 1: Foundation & Critical Production (Days 1-60)**
-1. **Complete F-001** (finish partial ADRs 002, 004, 009, 010)
-2. **Implement F-003** (ADR-008 production deployment - CRITICAL)
-3. **Begin F-004** (template quality foundation)
+### **Immediate Priority: Natural Interaction Bridge (Days 1-7)**
+1. **Implement ADR-023 Phase 0** (oc_triage entry tool spike - 1-2 days)
+2. **Validate Performance & Safety** (evidence completeness ≥0.8, <15s completion)
+3. **Enable by Default** (Phase 1 deployment with shadow suggest mode)
+
+### **Phase 1: Foundation & Critical Production (Days 8-67)**
+4. **Complete F-001** (finish partial ADRs 002, 004, 009, 010)
+5. **Implement F-003** (ADR-008 production deployment - CRITICAL)
+6. **Begin F-004** (template quality foundation)
 
 ### **Phase 2: Input Processing & Tool Architecture (Days 61-120)**  
 4. **Implement F-006** (ADR-021 input normalization)
@@ -222,25 +244,33 @@ F-009: [ADR-011] # Fast RCA Framework
 
 ## Conclusion
 
-The MCP-ocs architecture has achieved **comprehensive ADR coverage** with 89% of architectural decisions mapped to specific feature epics. The **systematic gap remediation** completed in September 2025 eliminated critical architecture debt and established clear implementation paths.
+The MCP-ocs architecture has achieved **comprehensive ADR coverage** with 91% of architectural decisions mapped to specific implementation paths. The **systematic gap remediation** completed in September 2025 eliminated critical architecture debt and established clear implementation paths, culminating in ADR-023 which provides immediate natural interaction capabilities.
 
 **Key Achievements:**
-- ✅ **Complete ADR catalog** - 22 ADRs covering full architectural vision
-- ✅ **Critical gap elimination** - All high-priority ADRs have feature coverage  
+- ✅ **Complete ADR catalog** - 23 ADRs covering full architectural vision
+- ✅ **Critical gap elimination** - All high-priority ADRs have feature coverage or implementation plans  
 - ✅ **Dependency-driven roadmap** - Clear implementation sequence established
+- ✅ **CODEX validation** - ADR-023 validated and ready for immediate implementation
 - ✅ **Validation framework** - Automated coverage monitoring prevents future gaps
 
 **Strategic Position:**
 - **Solid Foundation**: 5 ADRs implemented providing operational capability
+- **Immediate Value**: ADR-023 ready for Phase 0 spike (1-2 days) with natural triage interaction
 - **Clear Path Forward**: 13 ADRs with dedicated feature epics and implementation plans
 - **Enterprise Ready**: Production deployment and input processing properly prioritized
 - **Sustainable Architecture**: Validation framework prevents architecture debt accumulation
 
-With systematic execution of the feature epic roadmap, MCP-ocs will evolve from a solid diagnostic platform to a comprehensive enterprise-grade operational intelligence system with advanced natural language processing and semantic type safety capabilities.
+**Immediate Next Actions:**
+1. **ADR-023 Phase 0 Implementation** - oc_triage entry tool spike (1-2 days)
+2. **Template Engine Integration** - Bridge natural language to deterministic templates
+3. **Evidence Collection Validation** - Ensure ≥0.8 completeness threshold
+4. **Performance Validation** - <15s completion with stepBudget≤3
+
+With systematic execution of the feature epic roadmap and immediate ADR-023 implementation, MCP-ocs will evolve from a solid diagnostic platform to a comprehensive enterprise-grade operational intelligence system with natural language interaction, advanced processing capabilities, and semantic type safety.
 
 ---
 
-**Last Updated**: September 02, 2025 (Complete ADR coverage remediation)  
-**Next Review**: October 02, 2025 (Monthly coverage validation)  
+**Last Updated**: September 08, 2025 (ADR-023 addition and CODEX validation)  
+**Next Review**: October 08, 2025 (Monthly coverage validation + ADR-023 Phase 1 assessment)  
 **Document Owner**: Architecture Team  
-**Status**: Living Document - Reflects complete architectural vision with implementation roadmap
+**Status**: Living Document - Reflects complete architectural vision with immediate implementation opportunity

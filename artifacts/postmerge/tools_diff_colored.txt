@@ -1,0 +1,4 @@
+beta8 count: 8
+beta9 count: 8
+[32mNo tools missing from beta9 compared to beta8.[0m
+[33mNo new tools in beta9 compared to beta8.[0m

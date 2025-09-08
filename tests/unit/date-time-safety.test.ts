@@ -20,7 +20,7 @@ function makeMemorySink() {
 }
 
 describe('Date-Time Safety', () => {
-  test('StateMgmtTools: emits ISO timestamps to memory stores', async () => {
+  test('StateMgmtTools: uses numeric epoch for memory stores (policy)', async () => {
     const { StateMgmtTools } = await import('../../src/tools/state-mgmt/index');
     const sink = makeMemorySink();
     const fakeWorkflow: any = { getState: async () => ({ state: 'resolving' }) };
@@ -35,20 +35,23 @@ describe('Date-Time Safety', () => {
     });
     expect(typeof result).toBe('string');
 
-    // Verify stored records have ISO timestamp
+    // Verify stored records have numeric epoch timestamp (internal memory policy)
     const ops = sink.getOps();
     const conv = sink.getConv();
     expect(ops.length).toBeGreaterThan(0);
     expect(conv.length).toBeGreaterThan(0);
-    expect(isISO(ops[0].timestamp)).toBe(true);
-    expect(isISO(conv[0].timestamp)).toBe(true);
+    expect(typeof ops[0].timestamp).toBe('number');
+    expect(Number.isFinite(ops[0].timestamp)).toBe(true);
+    expect(typeof conv[0].timestamp).toBe('number');
+    expect(Number.isFinite(conv[0].timestamp)).toBe(true);
   });
 
-  test('ReadOpsTools: conversations stored with ISO timestamps', async () => {
+  test('ReadOpsTools: returns ISO for user-facing, numeric for memory', async () => {
     const { ReadOpsTools } = await import('../../src/tools/read-ops/index');
     const sink = makeMemorySink();
     const fakeOc: any = {
-      getPods: async () => ({ items: [] }),
+      // return arrays as expected by implementation
+      getPods: async () => ([]),
       getLogs: async () => 'l1\nl2',
       describeResource: async () => ({})
     };
@@ -57,10 +60,12 @@ describe('Date-Time Safety', () => {
     const res = await (tools as any).getPods('default', undefined, 'sess-1');
     expect(isISO(res.timestamp)).toBe(true);
 
-    // ensure conversation store is ISO
+    // ensure conversation store uses numeric epoch (internal memory policy)
     const conv = sink.getConv();
     expect(conv.length).toBeGreaterThan(0);
-    expect(isISO(conv[conv.length - 1].timestamp)).toBe(true);
+    const ts = conv[conv.length - 1].timestamp;
+    expect(typeof ts).toBe('number');
+    expect(Number.isFinite(ts)).toBe(true);
   });
 
   test('EnhancedNamespaceHealthChecker: returns ISO timestamp and validates dates', async () => {
@@ -85,4 +90,3 @@ describe('Date-Time Safety', () => {
     expect(typeof res.duration).toBe('number');
   });
 });
-

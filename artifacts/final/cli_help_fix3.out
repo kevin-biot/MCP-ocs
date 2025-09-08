@@ -1,0 +1,15 @@
+
+MCP-ocs Server (CLI Shim)
+
+Usage:
+  node dist/src/index.js [--help]
+
+Common env flags:
+  ENABLE_TEMPLATE_ENGINE=true
+  ENABLE_RUBRICS=true
+  SHARED_MEMORY_DIR=./memory
+
+Notes:
+  - This shim prints help without initializing the server.
+  - Use `npm run start` or `npm run start:beta` to launch.
+

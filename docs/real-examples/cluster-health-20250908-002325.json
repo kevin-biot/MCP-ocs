@@ -1,0 +1,4307 @@
+{
+  "tool": "oc_diagnostic_cluster_health",
+  "sessionId": "real-1757283806247",
+  "cluster": {
+    "status": "connected",
+    "version": "4.18.1",
+    "currentUser": "kubeadmin",
+    "serverUrl": ".clusters[0].cluster.server",
+    "timestamp": "2025-09-07T22:23:41.090Z"
+  },
+  "nodes": {
+    "total": 1,
+    "ready": 1,
+    "issues": []
+  },
+  "operators": {
+    "total": 25,
+    "degraded": []
+  },
+  "systemNamespaces": [
+    {
+      "namespace": "kube-node-lease",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "kube-public",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "kube-system",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-apiserver",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-apiserver-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-authentication",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-authentication-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-builds",
+      "status": "degraded",
+      "issues": 2
+    },
+    {
+      "namespace": "openshift-cloud-network-config-controller",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-cloud-platform-infra",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-cluster-machine-approver",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-cluster-samples-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-cluster-storage-operator",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-cluster-version",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-config",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-config-managed",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-config-operator",
+      "status": "degraded",
+      "issues": 1
+    },
+    {
+      "namespace": "openshift-console",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-console-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-console-user-settings",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-controller-manager",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-controller-manager-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-dns",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-dns-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-etcd",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-etcd-operator",
+      "status": "degraded",
+      "issues": 1
+    },
+    {
+      "namespace": "openshift-gitops",
+      "status": "degraded",
+      "issues": 1
+    },
+    {
+      "namespace": "openshift-gitops-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-host-network",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-image-registry",
+      "status": "degraded",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-infra",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-ingress",
+      "status": "degraded",
+      "issues": 1
+    },
+    {
+      "namespace": "openshift-ingress-canary",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-ingress-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-kni-infra",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-kube-apiserver",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-kube-apiserver-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-kube-controller-manager",
+      "status": "degraded",
+      "issues": 1
+    },
+    {
+      "namespace": "openshift-kube-controller-manager-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-kube-scheduler",
+      "status": "degraded",
+      "issues": 1
+    },
+    {
+      "namespace": "openshift-kube-scheduler-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-kube-storage-version-migrator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-kube-storage-version-migrator-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-machine-api",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-machine-config-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-marketplace",
+      "status": "degraded",
+      "issues": 2
+    },
+    {
+      "namespace": "openshift-monitoring",
+      "status": "degraded",
+      "issues": 1
+    },
+    {
+      "namespace": "openshift-multus",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-network-console",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-network-diagnostics",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-network-node-identity",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-network-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-node",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-nutanix-infra",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-oauth-apiserver",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-openstack-infra",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-operator-lifecycle-manager",
+      "status": "degraded",
+      "issues": 1
+    },
+    {
+      "namespace": "openshift-operators",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-ovirt-infra",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-ovn-kubernetes",
+      "status": "degraded",
+      "issues": 1
+    },
+    {
+      "namespace": "openshift-pipelines",
+      "status": "degraded",
+      "issues": 3
+    },
+    {
+      "namespace": "openshift-route-controller-manager",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-service-ca",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-service-ca-operator",
+      "status": "healthy",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-user-workload-monitoring",
+      "status": "failing",
+      "issues": 0
+    },
+    {
+      "namespace": "openshift-vsphere-infra",
+      "status": "failing",
+      "issues": 0
+    }
+  ],
+  "userNamespaces": {
+    "scope": "all",
+    "depth": "detailed",
+    "totalNamespaces": 76,
+    "analyzedDetailedCount": 10,
+    "detailed": [
+      {
+        "namespace": "default",
+        "status": "failing",
+        "checks": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": [],
+            "oomKilled": []
+          },
+          "pvcs": {
+            "bound": 0,
+            "pending": 0,
+            "failed": 0,
+            "total": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "events": [
+            "InternalError: TektonInstallerSet/addon-custom-communityresolvertask-7hjh4 - Internal error occurred: failed calling webhook \"webhook.pipeline.tekton.dev\": failed to call webhook: Post \"https://tekton-pipelines-webhook.openshift-pipelines.svc:443/defaulting?timeout=10s\": service \"tekton-pipelines-webhook\" not found",
+            "InternalError: TektonInstallerSet/addon-custom-communityresolvertask-7hjh4 - conversion webhook for tekton.dev/v1beta1, Kind=Task failed: Post \"https://tekton-pipelines-webhook.openshift-pipelines.svc:443/resource-conversion?timeout=30s\": service \"tekton-pipelines-webhook\" not found",
+            "InternalError: TektonInstallerSet/addon-custom-communityresolvertask-7hjh4 - conversion webhook for tekton.dev/v1beta1, Kind=Task failed: Post \"https://tekton-pipelines-webhook.openshift-pipelines.svc:443/resource-conversion?timeout=30s\": no endpoints available for service \"tekton-pipelines-webhook\"",
+            "InternalError: TektonInstallerSet/addon-custom-pipelinestemplate-4xtlk - Internal error occurred: failed calling webhook \"webhook.pipeline.tekton.dev\": failed to call webhook: Post \"https://tekton-pipelines-webhook.openshift-pipelines.svc:443/defaulting?timeout=10s\": write tcp 10.217.0.2:51090->10.217.0.90:8443: write: broken pipe",
+            "InternalError: TektonInstallerSet/addon-custom-pipelinestemplate-4xtlk - conversion webhook for tekton.dev/v1, Kind=Pipeline failed: Post \"https://tekton-pipelines-webhook.openshift-pipelines.svc:443/resource-conversion?timeout=30s\": service \"tekton-pipelines-webhook\" not found",
+            "InternalError: TektonInstallerSet/addon-custom-pipelinestemplate-4xtlk - conversion webhook for tekton.dev/v1, Kind=Pipeline failed: Post \"https://tekton-pipelines-webhook.openshift-pipelines.svc:443/resource-conversion?timeout=30s\": no endpoints available for service \"tekton-pipelines-webhook\"",
+            "InternalError: TektonInstallerSet/addon-custom-resolverstepaction-wb76x - Internal error occurred: failed calling webhook \"webhook.pipeline.tekton.dev\": failed to call webhook: Post \"https://tekton-pipelines-webhook.openshift-pipelines.svc:443/defaulting?timeout=10s\": service \"tekton-pipelines-webhook\" not found",
+            "InternalError: TektonInstallerSet/addon-custom-resolvertask-nplc6 - Internal error occurred: failed calling webhook \"webhook.pipeline.tekton.dev\": failed to call webhook: Post \"https://tekton-pipelines-webhook.openshift-pipelines.svc:443/defaulting?timeout=10s\": service \"tekton-pipelines-webhook\" not found",
+            "InternalError: TektonChain/chain - reconcile again and proceed",
+            "InternalError: TektonChain/chain - tekton-pipelines not ready"
+          ]
+        },
+        "suspicions": [],
+        "human": "Namespace default is failing."
+      },
+      {
+        "namespace": "devops",
+        "status": "failing",
+        "checks": {
+          "pods": {
+            "ready": 0,
+            "total": 7,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": [],
+            "oomKilled": []
+          },
+          "pvcs": {
+            "bound": 0,
+            "pending": 0,
+            "failed": 0,
+            "total": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "events": [
+            "InternalError: TaskRun/code-server-student-image-9r6ng-cfl7d - error upserting record: rpc error: code = DeadlineExceeded desc = GetResult(devops/results/bc49ea3c-40c1-4d46-89a5-1c303b50dcc7): rpc error: code = DeadlineExceeded desc = context deadline exceeded",
+            "InternalError: TaskRun/code-server-student-image-9r6ng-cfl7d - error upserting record: rpc error: code = Unknown desc = GetResult(devops/results/bc49ea3c-40c1-4d46-89a5-1c303b50dcc7): rpc error: code = Unknown desc = failed to connect to `host=tekton-results-postgres-service.openshift-pipelines.svc.cluster.local user=result database=tekton-results`: hostname resolving error (lookup tekton-results-postgres-service.openshift-pipelines.svc.cluster.local on 10.217.4.10:53: no such host)",
+            "InternalError: TaskRun/code-server-student-image-fxmc7-5b8td - error upserting record: rpc error: code = DeadlineExceeded desc = GetResult(devops/results/f02c6278-eed7-4be2-84a8-877e73cfa1f3): rpc error: code = DeadlineExceeded desc = context deadline exceeded",
+            "InternalError: TaskRun/code-server-student-image-fxmc7-5b8td - error upserting record: rpc error: code = Unknown desc = GetResult(devops/results/f02c6278-eed7-4be2-84a8-877e73cfa1f3): rpc error: code = Unknown desc = failed to connect to `host=tekton-results-postgres-service.openshift-pipelines.svc.cluster.local user=result database=tekton-results`: hostname resolving error (lookup tekton-results-postgres-service.openshift-pipelines.svc.cluster.local on 10.217.4.10:53: no such host)",
+            "InternalError: TaskRun/code-server-student-image-l4vml-6srcv - error upserting record: rpc error: code = Unknown desc = GetResult(devops/results/ed4da6ae-c305-4391-821b-cf937923de2e): rpc error: code = Unknown desc = failed to connect to `host=tekton-results-postgres-service.openshift-pipelines.svc.cluster.local user=result database=tekton-results`: hostname resolving error (lookup tekton-results-postgres-service.openshift-pipelines.svc.cluster.local on 10.217.4.10:53: no such host)",
+            "InternalError: TaskRun/code-server-student-image-pmzlf-w8gq5 - error upserting record: rpc error: code = Unknown desc = GetResult(devops/results/43a91d99-f463-4615-95a8-b6096134c851): rpc error: code = Unknown desc = failed to connect to `host=tekton-results-postgres-service.openshift-pipelines.svc.cluster.local user=result database=tekton-results`: hostname resolving error (lookup tekton-results-postgres-service.openshift-pipelines.svc.cluster.local on 10.217.4.10:53: no such host)",
+            "InternalError: TaskRun/code-server-student-image-qqzvx-zlv9p - error upserting record: rpc error: code = Unknown desc = GetResult(devops/results/b61446d1-b833-4808-8ccb-00757833bae1): rpc error: code = Unknown desc = failed to connect to `host=tekton-results-postgres-service.openshift-pipelines.svc.cluster.local user=result database=tekton-results`: hostname resolving error (lookup tekton-results-postgres-service.openshift-pipelines.svc.cluster.local on 10.217.4.10:53: no such host)"
+          ]
+        },
+        "suspicions": [],
+        "human": "Namespace devops is failing. Pods: 0/7 ready."
+      },
+      {
+        "namespace": "hostpath-provisioner",
+        "status": "degraded",
+        "checks": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [
+              "csi-hostpathplugin-c57w7"
+            ],
+            "pending": [],
+            "imagePullErrors": [],
+            "oomKilled": []
+          },
+          "pvcs": {
+            "bound": 0,
+            "pending": 0,
+            "failed": 0,
+            "total": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "events": []
+        },
+        "suspicions": [
+          "1 pod(s) in CrashLoopBackOff - check logs and resource limits"
+        ],
+        "human": "Namespace hostpath-provisioner is degraded. Pods: 1/1 ready. CrashLoopBackOff: csi-hostpathplugin-c57w7. Key issue: 1 pod(s) in CrashLoopBackOff - check logs and resource limits"
+      },
+      {
+        "namespace": "java-pipeline",
+        "status": "failing",
+        "checks": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": [],
+            "oomKilled": []
+          },
+          "pvcs": {
+            "bound": 0,
+            "pending": 0,
+            "failed": 0,
+            "total": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "events": []
+        },
+        "suspicions": [],
+        "human": "Namespace java-pipeline is failing."
+      },
+      {
+        "namespace": "kevin",
+        "status": "failing",
+        "checks": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": [],
+            "oomKilled": []
+          },
+          "pvcs": {
+            "bound": 0,
+            "pending": 0,
+            "failed": 0,
+            "total": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "events": []
+        },
+        "suspicions": [],
+        "human": "Namespace kevin is failing."
+      },
+      {
+        "namespace": "kube-node-lease",
+        "status": "failing",
+        "checks": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": [],
+            "oomKilled": []
+          },
+          "pvcs": {
+            "bound": 0,
+            "pending": 0,
+            "failed": 0,
+            "total": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "events": []
+        },
+        "suspicions": [],
+        "human": "Namespace kube-node-lease is failing."
+      },
+      {
+        "namespace": "kube-public",
+        "status": "failing",
+        "checks": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": [],
+            "oomKilled": []
+          },
+          "pvcs": {
+            "bound": 0,
+            "pending": 0,
+            "failed": 0,
+            "total": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "events": []
+        },
+        "suspicions": [],
+        "human": "Namespace kube-public is failing."
+      },
+      {
+        "namespace": "kube-system",
+        "status": "failing",
+        "checks": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": [],
+            "oomKilled": []
+          },
+          "pvcs": {
+            "bound": 0,
+            "pending": 0,
+            "failed": 0,
+            "total": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "events": []
+        },
+        "suspicions": [],
+        "human": "Namespace kube-system is failing."
+      },
+      {
+        "namespace": "openshift",
+        "status": "failing",
+        "checks": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": [],
+            "oomKilled": []
+          },
+          "pvcs": {
+            "bound": 0,
+            "pending": 0,
+            "failed": 0,
+            "total": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "events": []
+        },
+        "suspicions": [],
+        "human": "Namespace openshift is failing."
+      },
+      {
+        "namespace": "openshift-cluster-storage-operator",
+        "status": "failing",
+        "checks": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": [],
+            "oomKilled": []
+          },
+          "pvcs": {
+            "bound": 0,
+            "pending": 0,
+            "failed": 0,
+            "total": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "events": []
+        },
+        "suspicions": [],
+        "human": "Namespace openshift-cluster-storage-operator is failing."
+      }
+    ],
+    "summaries": [
+      {
+        "namespace": "openshift-apiserver",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-apiserver-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-authentication",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 1
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-authentication-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-builds",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 7,
+            "total": 8,
+            "crashloops": [
+              "openshift-builds-operator-7574964fdd-gxwxv",
+              "shipwright-build-controller-855f68666b-4xhsf"
+            ],
+            "pending": [
+              "openshift-builds-operator-5b79ffb459-rzmkw",
+              "openshift-builds-operator-5b79ffb459-rzmkw",
+              "openshift-builds-operator-5b79ffb459-rzmkw"
+            ],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 1,
+          "suspicions": 2
+        }
+      },
+      {
+        "namespace": "openshift-cloud-network-config-controller",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-cloud-platform-infra",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-cluster-machine-approver",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-cluster-samples-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-cluster-version",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-config",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-config-managed",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-config-operator",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [
+              "openshift-config-operator-7dc6c77c8d-6r6p6"
+            ],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 1
+        }
+      },
+      {
+        "namespace": "openshift-console",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 2,
+            "total": 2,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 2
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-console-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-console-user-settings",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-controller-manager",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-controller-manager-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-dns",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 2,
+            "total": 2,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-dns-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-etcd",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-etcd-operator",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [
+              "etcd-operator-6f6d654885-kjsr7"
+            ],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 1
+        }
+      },
+      {
+        "namespace": "openshift-gitops",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 7,
+            "total": 15,
+            "crashloops": [],
+            "pending": [
+              "cluster-6548c69447-gbfxh",
+              "gitops-plugin-75f549b6bd-495fz",
+              "openshift-gitops-application-controller-0",
+              "openshift-gitops-applicationset-controller-8d5549bfd-z8sw8",
+              "openshift-gitops-dex-server-96965b45d-wdhmd",
+              "openshift-gitops-redis-7b49f75858-gdwsw",
+              "openshift-gitops-repo-server-6f6959974-2tt99",
+              "openshift-gitops-server-5f7f7bd5d4-jzdmv"
+            ],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 1
+          },
+          "criticalEvents": 0,
+          "suspicions": 1
+        }
+      },
+      {
+        "namespace": "openshift-gitops-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 2,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-host-network",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-image-registry",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 3,
+            "total": 6,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 1,
+            "bound": 1,
+            "errors": []
+          },
+          "routes": {
+            "total": 1
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-infra",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-ingress",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 2,
+            "total": 2,
+            "crashloops": [
+              "router-default-588c4dbc7d-mhwgb"
+            ],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 1
+        }
+      },
+      {
+        "namespace": "openshift-ingress-canary",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 1
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-ingress-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-kni-infra",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-kube-apiserver",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-kube-apiserver-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-kube-controller-manager",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [
+              "kube-controller-manager-crc"
+            ],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 1
+        }
+      },
+      {
+        "namespace": "openshift-kube-controller-manager-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-kube-scheduler",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [
+              "openshift-kube-scheduler-crc"
+            ],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 1
+        }
+      },
+      {
+        "namespace": "openshift-kube-scheduler-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-kube-storage-version-migrator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-kube-storage-version-migrator-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-machine-api",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 2,
+            "total": 2,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-machine-config-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 5,
+            "total": 5,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-marketplace",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 5,
+            "total": 13,
+            "crashloops": [
+              "marketplace-operator-6dcdd5d447-h22nt"
+            ],
+            "pending": [
+              "certified-operators-hzj5j"
+            ],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 2
+        }
+      },
+      {
+        "namespace": "openshift-monitoring",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 12,
+            "total": 12,
+            "crashloops": [
+              "metrics-server-6d87c4697d-5mtb9",
+              "prometheus-operator-admission-webhook-66d64f97f-8pgn4"
+            ],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 4
+          },
+          "criticalEvents": 0,
+          "suspicions": 1
+        }
+      },
+      {
+        "namespace": "openshift-multus",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 4,
+            "total": 4,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-network-console",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-network-diagnostics",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 2,
+            "total": 2,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-network-node-identity",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-network-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 2,
+            "total": 2,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-node",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-nutanix-infra",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-oauth-apiserver",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-openstack-infra",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-operator-lifecycle-manager",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 4,
+            "total": 7,
+            "crashloops": [
+              "catalog-operator-55d47869f-x22mm",
+              "olm-operator-6776458cd8-sz28t",
+              "packageserver-7c9b897854-bdpcw"
+            ],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 1
+        }
+      },
+      {
+        "namespace": "openshift-operators",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-ovirt-infra",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-ovn-kubernetes",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 2,
+            "total": 2,
+            "crashloops": [
+              "ovnkube-node-lpg7r"
+            ],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 1
+        }
+      },
+      {
+        "namespace": "openshift-pipelines",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 9,
+            "total": 12,
+            "crashloops": [
+              "tekton-results-api-bcb4579f-pwh9t"
+            ],
+            "pending": [
+              "tekton-pipelines-remote-resolvers-5dc9fb985b-fx6gb",
+              "tekton-pipelines-remote-resolvers-5dc9fb985b-fx6gb",
+              "tkn-cli-serve-8597668fbf-2jbcb",
+              "tkn-cli-serve-8597668fbf-2jbcb"
+            ],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 1,
+            "bound": 1,
+            "errors": []
+          },
+          "routes": {
+            "total": 1
+          },
+          "criticalEvents": 10,
+          "suspicions": 3
+        }
+      },
+      {
+        "namespace": "openshift-route-controller-manager",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-service-ca",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-service-ca-operator",
+        "status": "healthy",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-user-workload-monitoring",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "openshift-vsphere-infra",
+        "status": "failing",
+        "summary": {
+          "pods": {
+            "ready": 0,
+            "total": 0,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 0,
+            "bound": 0,
+            "errors": []
+          },
+          "routes": {
+            "total": 0
+          },
+          "criticalEvents": 0,
+          "suspicions": 0
+        }
+      },
+      {
+        "namespace": "student01",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 2,
+            "bound": 1,
+            "errors": [
+              "pvc/shared-pvc pending (no storageclass or provisioner unavailable)"
+            ]
+          },
+          "routes": {
+            "total": 1
+          },
+          "criticalEvents": 0,
+          "suspicions": 1
+        }
+      },
+      {
+        "namespace": "student02",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 1,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 2,
+            "bound": 1,
+            "errors": [
+              "pvc/shared-pvc pending (no storageclass or provisioner unavailable)"
+            ]
+          },
+          "routes": {
+            "total": 1
+          },
+          "criticalEvents": 0,
+          "suspicions": 1
+        }
+      },
+      {
+        "namespace": "student03",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 1,
+            "total": 3,
+            "crashloops": [],
+            "pending": [
+              "java-webapp-95898458c-b6rv7",
+              "java-webapp-95898458c-rsd4s"
+            ],
+            "imagePullErrors": [
+              "java-webapp-95898458c-b6rv7",
+              "java-webapp-95898458c-rsd4s"
+            ]
+          },
+          "pvcs": {
+            "total": 2,
+            "bound": 1,
+            "errors": [
+              "pvc/shared-pvc pending (no storageclass or provisioner unavailable)"
+            ]
+          },
+          "routes": {
+            "total": 2
+          },
+          "criticalEvents": 0,
+          "suspicions": 3
+        }
+      },
+      {
+        "namespace": "student04",
+        "status": "degraded",
+        "summary": {
+          "pods": {
+            "ready": 5,
+            "total": 10,
+            "crashloops": [],
+            "pending": [],
+            "imagePullErrors": []
+          },
+          "pvcs": {
+            "total": 2,
+            "bound": 2,
+            "errors": []
+          },
+          "routes": {
+            "total": 3
+          },
+          "criticalEvents": 7,
+          "suspicions": 0
+        }
+      }
+    ]
+  },
+  "namespacePrioritization": [
+    {
+      "namespace": "default",
+      "status": "failing",
+      "score": 13,
+      "reasons": [
+        "events:10",
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 10,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "devops",
+      "status": "failing",
+      "score": 10,
+      "reasons": [
+        "events:7",
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 7,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 7,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "hostpath-provisioner",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "status:degraded",
+        "suspicions:1"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [
+            "csi-hostpathplugin-c57w7"
+          ],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 1
+      }
+    },
+    {
+      "namespace": "java-pipeline",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "kevin",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "kube-node-lease",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "kube-public",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "kube-system",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-cluster-storage-operator",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-config",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-console-user-settings",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-apiserver",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-apiserver-operator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-authentication",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 1
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-authentication-operator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-builds",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "events:1",
+        "status:degraded",
+        "suspicions:2"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 7,
+          "total": 8,
+          "crashloops": [
+            "openshift-builds-operator-7574964fdd-gxwxv",
+            "shipwright-build-controller-855f68666b-4xhsf"
+          ],
+          "pending": [
+            "openshift-builds-operator-5b79ffb459-rzmkw",
+            "openshift-builds-operator-5b79ffb459-rzmkw",
+            "openshift-builds-operator-5b79ffb459-rzmkw"
+          ],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 1,
+        "suspicions": 2
+      }
+    },
+    {
+      "namespace": "openshift-cloud-network-config-controller",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-cloud-platform-infra",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-config-managed",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-host-network",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-image-registry",
+      "status": "degraded",
+      "score": 3,
+      "reasons": [
+        "status:degraded"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 3,
+          "total": 6,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 1,
+          "bound": 1,
+          "errors": []
+        },
+        "routes": {
+          "total": 1
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-infra",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-gitops-operator",
+      "status": "healthy",
+      "score": 2,
+      "reasons": [
+        "events:2"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 2,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-cluster-machine-approver",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-cluster-samples-operator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-cluster-version",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-config-operator",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "status:degraded",
+        "suspicions:1"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [
+            "openshift-config-operator-7dc6c77c8d-6r6p6"
+          ],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 1
+      }
+    },
+    {
+      "namespace": "openshift-console",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 2,
+          "total": 2,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 2
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-console-operator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-controller-manager",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-controller-manager-operator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-dns",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 2,
+          "total": 2,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-dns-operator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-etcd",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-etcd-operator",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "status:degraded",
+        "suspicions:1"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [
+            "etcd-operator-6f6d654885-kjsr7"
+          ],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 1
+      }
+    },
+    {
+      "namespace": "openshift-gitops",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "status:degraded",
+        "suspicions:1"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 7,
+          "total": 15,
+          "crashloops": [],
+          "pending": [
+            "cluster-6548c69447-gbfxh",
+            "gitops-plugin-75f549b6bd-495fz",
+            "openshift-gitops-application-controller-0",
+            "openshift-gitops-applicationset-controller-8d5549bfd-z8sw8",
+            "openshift-gitops-dex-server-96965b45d-wdhmd",
+            "openshift-gitops-redis-7b49f75858-gdwsw",
+            "openshift-gitops-repo-server-6f6959974-2tt99",
+            "openshift-gitops-server-5f7f7bd5d4-jzdmv"
+          ],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 1
+        },
+        "criticalEvents": 0,
+        "suspicions": 1
+      }
+    },
+    {
+      "namespace": "openshift-ingress",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "status:degraded",
+        "suspicions:1"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 2,
+          "total": 2,
+          "crashloops": [
+            "router-default-588c4dbc7d-mhwgb"
+          ],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 1
+      }
+    },
+    {
+      "namespace": "student04",
+      "status": "degraded",
+      "score": 10,
+      "reasons": [
+        "events:7",
+        "status:degraded"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 5,
+          "total": 10,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 2,
+          "bound": 2,
+          "errors": []
+        },
+        "routes": {
+          "total": 3
+        },
+        "criticalEvents": 7,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-kni-infra",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-operators",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-ingress-canary",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 1
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-ingress-operator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-kube-apiserver",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-kube-apiserver-operator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-kube-controller-manager",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "status:degraded",
+        "suspicions:1"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [
+            "kube-controller-manager-crc"
+          ],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 1
+      }
+    },
+    {
+      "namespace": "openshift-kube-controller-manager-operator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-kube-scheduler",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "status:degraded",
+        "suspicions:1"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [
+            "openshift-kube-scheduler-crc"
+          ],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 1
+      }
+    },
+    {
+      "namespace": "openshift-node",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-nutanix-infra",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-openstack-infra",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-ovirt-infra",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-user-workload-monitoring",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-vsphere-infra",
+      "status": "failing",
+      "score": 3,
+      "reasons": [
+        "status:failing"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 0,
+          "total": 0,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-kube-scheduler-operator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-kube-storage-version-migrator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-kube-storage-version-migrator-operator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-machine-api",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 2,
+          "total": 2,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-machine-config-operator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 5,
+          "total": 5,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-marketplace",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "status:degraded",
+        "suspicions:2"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 5,
+          "total": 13,
+          "crashloops": [
+            "marketplace-operator-6dcdd5d447-h22nt"
+          ],
+          "pending": [
+            "certified-operators-hzj5j"
+          ],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 2
+      }
+    },
+    {
+      "namespace": "openshift-monitoring",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "status:degraded",
+        "suspicions:1"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 12,
+          "total": 12,
+          "crashloops": [
+            "metrics-server-6d87c4697d-5mtb9",
+            "prometheus-operator-admission-webhook-66d64f97f-8pgn4"
+          ],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 4
+        },
+        "criticalEvents": 0,
+        "suspicions": 1
+      }
+    },
+    {
+      "namespace": "openshift-multus",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 4,
+          "total": 4,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-network-console",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-network-diagnostics",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 2,
+          "total": 2,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-network-node-identity",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-network-operator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 2,
+          "total": 2,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-oauth-apiserver",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-operator-lifecycle-manager",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "status:degraded",
+        "suspicions:1"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 4,
+          "total": 7,
+          "crashloops": [
+            "catalog-operator-55d47869f-x22mm",
+            "olm-operator-6776458cd8-sz28t",
+            "packageserver-7c9b897854-bdpcw"
+          ],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 1
+      }
+    },
+    {
+      "namespace": "openshift-ovn-kubernetes",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "status:degraded",
+        "suspicions:1"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 2,
+          "total": 2,
+          "crashloops": [
+            "ovnkube-node-lpg7r"
+          ],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 1
+      }
+    },
+    {
+      "namespace": "openshift-pipelines",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "events:10",
+        "status:degraded",
+        "suspicions:3"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 9,
+          "total": 12,
+          "crashloops": [
+            "tekton-results-api-bcb4579f-pwh9t"
+          ],
+          "pending": [
+            "tekton-pipelines-remote-resolvers-5dc9fb985b-fx6gb",
+            "tekton-pipelines-remote-resolvers-5dc9fb985b-fx6gb",
+            "tkn-cli-serve-8597668fbf-2jbcb",
+            "tkn-cli-serve-8597668fbf-2jbcb"
+          ],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 1,
+          "bound": 1,
+          "errors": []
+        },
+        "routes": {
+          "total": 1
+        },
+        "criticalEvents": 10,
+        "suspicions": 3
+      }
+    },
+    {
+      "namespace": "openshift-route-controller-manager",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-service-ca",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "openshift-service-ca-operator",
+      "status": "healthy",
+      "score": 0,
+      "reasons": [],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 0,
+          "bound": 0,
+          "errors": []
+        },
+        "routes": {
+          "total": 0
+        },
+        "criticalEvents": 0,
+        "suspicions": 0
+      }
+    },
+    {
+      "namespace": "student01",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "status:degraded",
+        "suspicions:1"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 2,
+          "bound": 1,
+          "errors": [
+            "pvc/shared-pvc pending (no storageclass or provisioner unavailable)"
+          ]
+        },
+        "routes": {
+          "total": 1
+        },
+        "criticalEvents": 0,
+        "suspicions": 1
+      }
+    },
+    {
+      "namespace": "student02",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "status:degraded",
+        "suspicions:1"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 1,
+          "crashloops": [],
+          "pending": [],
+          "imagePullErrors": []
+        },
+        "pvcs": {
+          "total": 2,
+          "bound": 1,
+          "errors": [
+            "pvc/shared-pvc pending (no storageclass or provisioner unavailable)"
+          ]
+        },
+        "routes": {
+          "total": 1
+        },
+        "criticalEvents": 0,
+        "suspicions": 1
+      }
+    },
+    {
+      "namespace": "student03",
+      "status": "degraded",
+      "score": null,
+      "reasons": [
+        "status:degraded",
+        "suspicions:3"
+      ],
+      "summary": {
+        "pods": {
+          "ready": 1,
+          "total": 3,
+          "crashloops": [],
+          "pending": [
+            "java-webapp-95898458c-b6rv7",
+            "java-webapp-95898458c-rsd4s"
+          ],
+          "imagePullErrors": [
+            "java-webapp-95898458c-b6rv7",
+            "java-webapp-95898458c-rsd4s"
+          ]
+        },
+        "pvcs": {
+          "total": 2,
+          "bound": 1,
+          "errors": [
+            "pvc/shared-pvc pending (no storageclass or provisioner unavailable)"
+          ]
+        },
+        "routes": {
+          "total": 2
+        },
+        "criticalEvents": 0,
+        "suspicions": 3
+      }
+    }
+  ],
+  "overallHealth": "degraded",
+  "duration": "14842ms",
+  "recommendations": [
+    "Check system namespace: oc get pods -n kube-node-lease"
+  ],
+  "mode": "comprehensive",
+  "human": "Cluster is degraded. Nodes: 1/1 ready. Operators: 0 degraded."
+}

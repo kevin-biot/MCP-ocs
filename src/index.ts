@@ -42,6 +42,15 @@ import { MEMORY_STORE_SAFETY_V1 } from './lib/rubrics/intelligence/memory-store-
 import { MEMORY_STATS_SAFETY_V1 } from './lib/rubrics/intelligence/memory-stats-safety.v1.js';
 import { MEMORY_CONVERSATIONS_CONFIDENCE_V1 } from './lib/rubrics/intelligence/memory-conversations-confidence.v1.js';
 
+// Lightweight offline-friendly help handling before initializing anything heavy
+const argv = process.argv.slice(2);
+if (argv.includes('--help') || argv.includes('-h')) {
+  const msg = `\nMCP-ocs Server (full entry)\n\nUsage:\n  node dist/src/index.js [--help] [env flags]\n\nCommon env flags:\n  ENABLE_TEMPLATE_ENGINE=true    Enable deterministic template engine\n  ENABLE_RUBRICS=true            Enable rubric-based evaluation\n  SHARED_MEMORY_DIR=./memory     Location for JSON fallback memory\n  CHROMA_HOST=127.0.0.1          Chroma v2 host (optional)\n  CHROMA_PORT=8000               Chroma v2 port (optional)\n\nCommands:\n  --help, -h                     Show this help and exit (no side effects)\n\nNotes:\n  - Help does not attempt cluster connections.\n  - See start:beta for beta-only tool entry.\n`;
+  console.log(msg);
+  // Ensure clean success exit for offline usage
+  process.exit(0);
+}
+
 console.error('🚀 Starting MCP-ocs server...');
 
 // Initialize core components

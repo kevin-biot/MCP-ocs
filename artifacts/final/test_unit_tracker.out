@@ -1,0 +1,14 @@
+PASS tests/unit/tools/tool-execution-tracker.test.ts
+  ToolExecutionTracker
+    ✓ executes successfully, stores memory, and records history (2 ms)
+    ✓ records failure, stores error memory, and rethrows (4 ms)
+    ✓ retrieves execution by id and fetches its memory
+    ✓ returns null memory when execution or memoryId is missing
+    ✓ queries relevant memories via memory manager
+    ✓ cleans up old executions and aggregates memory cleanup count (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       6 passed, 6 total
+Snapshots:   0 total
+Time:        0.696 s, estimated 1 s
+Ran all test suites matching /tests\/unit\/tools\/tool-execution-tracker.test.ts/i.
