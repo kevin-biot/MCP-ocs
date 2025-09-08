@@ -29,17 +29,17 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
   fi
 fi
 
-# 3) Determine target branches
-DEFAULT_BRANCHES=(main beta-9)
+# 3) Determine target branches (default: main + release/v0.9.0-beta)
+DEFAULT_BRANCHES=(main release/v0.9.0-beta)
 if [[ -n "${CODEX_SYNC_BRANCHES:-}" ]]; then
   # Space-separated list from env
   read -r -a BRANCHES <<< "${CODEX_SYNC_BRANCHES}"
 else
-  # Auto-adapt: if beta-9 missing but release/v0.9.0-beta exists, use that
-  if git show-ref --verify --quiet refs/heads/beta-9; then
-    BRANCHES=("main" "beta-9")
-  elif git show-ref --verify --quiet refs/heads/release/v0.9.0-beta; then
+  # Auto-adapt: prefer release/v0.9.0-beta; fallback to beta-9; else defaults
+  if git show-ref --verify --quiet refs/heads/release/v0.9.0-beta; then
     BRANCHES=("main" "release/v0.9.0-beta")
+  elif git show-ref --verify --quiet refs/heads/beta-9; then
+    BRANCHES=("main" "beta-9")
   else
     BRANCHES=("${DEFAULT_BRANCHES[@]}")
   fi
@@ -184,7 +184,7 @@ codex-sync-docs() {
   local commit_msg="docs: CODEX automated sync [${timestamp}]"
   echo "🚀 CODEX: Dual-branch doc sync starting..."
   git checkout main && git add docs/ sprint-management/ && git commit -m "${commit_msg}" && git push origin main && echo "✅ main updated" || echo "❌ main failed"
-  git checkout beta-9 && git add docs/ sprint-management/ && git commit -m "${commit_msg}" && git push origin beta-9 && echo "✅ beta-9 updated" || echo "❌ beta-9 failed"
+  git checkout release/v0.9.0-beta && git add docs/ sprint-management/ && git commit -m "${commit_msg}" && git push origin release/v0.9.0-beta && echo "✅ release/v0.9.0-beta updated" || echo "❌ release/v0.9.0-beta failed"
   git checkout "${original_branch}"
   echo "🎉 CODEX: Dual-branch sync completed"
 }

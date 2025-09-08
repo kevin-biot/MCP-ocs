@@ -7,6 +7,8 @@ This script safely commits and pushes `docs/` and `sprint-management/` to both `
 
 ## Script
 - Path: `scripts/codex-dual-branch-sync.sh`
+- Default branches: `main` and `release/v0.9.0-beta`
+- Override branches: `CODEX_SYNC_BRANCHES="main release/v0.9.0-beta" ./scripts/codex-dual-branch-sync.sh`
 - Phases:
   - `validate`: pre-flight checks only
   - `sync`: commit changes to both branches (no push)
