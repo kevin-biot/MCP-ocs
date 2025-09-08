@@ -1,0 +1,67 @@
+=== D-002 BASELINE ASSESSMENT ===
+Date: Mon Sep  1 15:15:42 CEST 2025
+Branch: feature/deterministic-template-engine
+CURRENT TSCONFIG:
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "resolveJsonModule": true,
+    "types": ["node", "jest"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@tests/*": ["tests/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tests",
+    "MCP-files/**",
+    "src/tools/**",
+    "src/index.ts",
+    "src/lib/tools/**",
+    "src/lib/memory/chromadb-client-fixed.ts",
+    "src/build-test.ts",
+    "src/v2/tools/infrastructure-correlation/enhanced-infrastructure-tools.ts.backup"
+  ]
+}
+BASELINE BUILD RESULT:
+
+> mcp-ocs@0.8.0-beta build
+> tsc && mkdir -p dist
+
+TARGET FILES STATUS:
+-rw-r--r--  1 501  staff  864 Sep  1 14:45 tsconfig.json
+-rw-r--r--@ 1 501  staff  9149 Aug 14 20:40 src/lib/tools/tool-registry.ts
+total 320
+drwxr-xr-x@ 16 501  staff    512 Sep  1 14:45 .
+drwxr-xr-x@ 15 501  staff    480 Sep  1 14:45 ..
+-rw-r--r--   1 501  staff    384 Aug 14 13:43 adapter-entry.ts
+-rw-r--r--   1 501  staff    341 Aug 14 14:22 auto-memory-system.ts
+-rw-r--r--@  1 501  staff   5438 Aug 14 11:19 chromadb-client-fixed.ts
+-rw-r--r--@  1 501  staff    347 Aug 14 13:42 index.ts
+-rw-r--r--   1 501  staff    509 Aug 14 14:22 knowledge-seeding-system.ts
+-rw-r--r--   1 501  staff   9415 Sep  1 14:45 mcp-files-adapter.ts
+-rw-r--r--@  1 501  staff   4861 Aug 14 13:14 mcp-files-adapter.ts.backup
+-rw-r--r--   1 501  staff  31093 Sep  1 14:45 mcp-files-memory-extension.ts
+-rw-r--r--   1 501  staff    457 Aug 14 13:21 mcp-files-shim.d.ts
+-rw-r--r--   1 501  staff   6391 Aug 14 14:06 mcp-ocs-memory-adapter.ts
+-rw-r--r--   1 501  staff  29248 Sep  1 14:45 shared-memory.ts
+-rw-r--r--@  1 501  staff  29006 Aug 14 13:14 shared-memory.ts.backup
+-rw-r--r--   1 501  staff    525 Aug 14 14:23 vector-memory-manager.ts
+-rw-r--r--   1 501  staff    113 Aug 14 14:23 vector-store.ts
