@@ -76,7 +76,7 @@ describe('Date-Time Safety', () => {
       getPods: async () => ({ items: [] }),
       getEvents: async () => ({ items: [
         { type: 'Warning', lastTimestamp: 'not-a-date', reason: 'X', message: 'bad date', involvedObject: { kind: 'Pod', name: 'p' } },
-        { type: 'Warning', lastTimestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString(), reason: 'Y', message: 'ok', involvedObject: { kind: 'Pod', name: 'q' } }
+        { type: 'Warning', lastTimestamp: new Date(nowEpoch() - 5 * 60 * 1000).toISOString(), reason: 'Y', message: 'ok', involvedObject: { kind: 'Pod', name: 'q' } }
       ] }),
       getPVCs: async () => ({ items: [] }),
       getRoutes: async () => ({ items: [] }),
@@ -90,3 +90,4 @@ describe('Date-Time Safety', () => {
     expect(typeof res.duration).toBe('number');
   });
 });
+import { nowEpoch } from '../../src/utils/time.js';

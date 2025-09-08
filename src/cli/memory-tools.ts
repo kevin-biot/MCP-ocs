@@ -1,6 +1,7 @@
 #!/usr/bin/env tsx
 
 import { ChromaMemoryManager } from '../lib/memory/mcp-files-memory-extension.js';
+import { nowEpoch } from '../utils/time.js';
 import { MCPFilesChromaAdapter } from '../lib/memory/mcp-files-adapter.js';
 
 function usage(): never {
@@ -115,7 +116,7 @@ async function main() {
 
   if (cmd === 'test-consistency') {
     // Validate embedding consistency across store/search and vector quality on exact match
-    const unique = `consistency-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+    const unique = `consistency-${nowEpoch()}-${Math.random().toString(36).slice(2,8)}`;
     const phrase = `Exact consistency test ${unique}`;
     const memDir = defaultDir;
 
@@ -125,7 +126,7 @@ async function main() {
     const infoStore = await writer.getEmbeddingInfo();
     await writer.storeConversation({
       sessionId: unique,
-      timestamp: Date.now(),
+      timestamp: nowEpoch(),
       userMessage: phrase,
       assistantResponse: `Response for ${phrase}`,
       context: ['consistency'],

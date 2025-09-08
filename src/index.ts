@@ -29,6 +29,7 @@ import { BoundaryEnforcer } from './lib/enforcement/boundary-enforcer.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { evaluateRubrics } from './lib/rubrics/rubric-evaluator.js';
+import { nowEpoch } from './utils/time.js';
 import { TRIAGE_PRIORITY_V1 } from './lib/rubrics/core/triage-priority.v1.js';
 import { EVIDENCE_CONFIDENCE_V1 } from './lib/rubrics/core/evidence-confidence.v1.js';
 import { REMEDIATION_SAFETY_V1 } from './lib/rubrics/core/remediation-safety.v1.js';
@@ -141,7 +142,7 @@ toolRegistry.registerTool({
     const rec = (v: unknown): Record<string, unknown> => (v && typeof v === 'object') ? (v as Record<string, unknown>) : {};
     const raw = rec(args);
     const userInput = String((raw.thought ?? raw.userInput) ?? '');
-    const session = String((raw.sessionId ?? `session-${Date.now()}`));
+    const session = String((raw.sessionId ?? `session-${nowEpoch()}`));
     const coerceBool = (v: unknown) => typeof v === 'string' ? ['true','1','yes','on','false','0','no','off'].includes(v.toLowerCase()) ? ['true','1','yes','on'].includes(v.toLowerCase()) : Boolean(v) : Boolean(v);
     const coerceNum = (v: unknown, d?: number) => typeof v === 'string' ? (Number(v) || d || 0) : (typeof v === 'number' ? v : (d || 0));
     const bounded = coerceBool(raw.bounded);
@@ -204,7 +205,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 // Register tools/call handler with auto-memory integration
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
-  const startTime = Date.now();
+  const startTime = nowEpoch();
   
   console.error(`🔧 Executing tool: ${name}`);
   
@@ -215,10 +216,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const sel = templateRegistry.selectByTarget(triageTarget);
     if (!sel) { console.error('❌ No template for target', triageTarget); }
     else {
-      const tStart = Date.now();
+      const tStart = nowEpoch();
       const stepBudget = Number(targs.stepBudget || 2);
       const bounded = !!targs.bounded;
-      const sessionId = String(targs.sessionId || `session-${Date.now()}`);
+      const sessionId = String(targs.sessionId || `session-${nowEpoch()}`);
       const plan = templateEngine.buildPlan(sel.template, { sessionId, bounded, stepBudget, vars: (args as any)?.vars || {} });
       const enforcer = new BoundaryEnforcer({ maxSteps: plan.boundaries.maxSteps, timeoutMs: plan.boundaries.timeoutMs, toolWhitelist: undefined, allowedNamespaces: targs.allowedNamespaces });
       const steps = enforcer.filterSteps(plan.steps);
@@ -271,9 +272,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
           }
         } catch {}
-        const sStart = Date.now();
+        const sStart = nowEpoch();
         const r = await toolRegistry.executeTool(s.tool, params);
-        const sDur = Date.now() - sStart;
+        const sDur = nowEpoch() - sStart;
         exec.push({ step: { ...s, params }, result: r, durationMs: sDur });
         // Dynamic discovery: capture pending router pod after get_pods in openshift-ingress
         try {
@@ -360,7 +361,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           } catch {}
         } catch {}
       }
-      const out = { planId: plan.planId, target: triageTarget, executed: exec.length, steps: exec, evidence, rubrics, summary, diagnosis_status, executionTimeMs: Date.now() - tStart };
+      const out = { planId: plan.planId, target: triageTarget, executed: exec.length, steps: exec, evidence, rubrics, summary, diagnosis_status, executionTimeMs: nowEpoch() - tStart };
       const content: any = { content: [{ type: 'text', text: JSON.stringify(out, null, 2) }] };
       return content;
     }
@@ -391,8 +392,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     
   } finally {
     // Auto-capture this tool execution for future reference
-    const duration = Date.now() - startTime;
-    const sessionId = (args as any)?.sessionId || `auto-session-${Date.now()}`;
+    const duration = nowEpoch() - startTime;
+    const sessionId = (args as any)?.sessionId || `auto-session-${nowEpoch()}`;
     
     await autoMemory.captureToolExecution({
       toolName: name,
@@ -489,7 +490,7 @@ function persistSummary(planId: string, target: string, summary: any) {
   try {
     const dir = path.join('logs', 'runs');
     fs.mkdirSync(dir, { recursive: true });
-    const file = path.join(dir, `${Date.now()}-${planId}-${target}.summary.json`);
+    const file = path.join(dir, `${nowEpoch()}-${planId}-${target}.summary.json`);
     const payload = { planId, target, summary };
     fs.writeFileSync(file, JSON.stringify(payload, null, 2));
     // Drift tracking append
@@ -498,7 +499,7 @@ function persistSummary(planId: string, target: string, summary: any) {
       fs.mkdirSync(driftDir, { recursive: true });
       const driftFile = path.join(driftDir, `${String(summary?.templateId || target)}.ndjson`);
       const line = {
-        ts: Date.now(),
+        ts: nowEpoch(),
         priorityScore: Number(summary?.priority?.score ?? 0),
         label: String(summary?.priority?.label || ''),
         completeness: Number(summary?.evidence?.completeness ?? 0),
@@ -641,8 +642,8 @@ function computeDiagnosticRubricsIfAny(toolName: string, resultText: string): { 
       // freshness in days if ts provided (epoch ms or ISO)
       let days = undefined as any;
       const ts = top.ts || top.timestamp;
-      if (typeof ts === 'number') days = Math.abs(Date.now() - ts) / (1000*60*60*24);
-      else if (typeof ts === 'string') { const d = Date.parse(ts); if (!isNaN(d)) days = Math.abs(Date.now() - d)/(1000*60*60*24); }
+      if (typeof ts === 'number') days = Math.abs(nowEpoch() - ts) / (1000*60*60*24);
+      else if (typeof ts === 'string') { const d = Date.parse(ts); if (!isNaN(d)) days = Math.abs(nowEpoch() - d)/(1000*60*60*24); }
       inputs.recallTop1 = score;
       inputs.freshnessDaysTop1 = days;
       const agree = hits.length > 1 ? (hits.filter(h=>Number(h.score ?? h.confidence ?? 0) >= 0.7).length / hits.length) : undefined;
@@ -691,7 +692,7 @@ function persistShadowDiff(planId: string, target: string, data: any) {
   try {
     const dir = path.join('logs', 'runs');
     fs.mkdirSync(dir, { recursive: true });
-    const file = path.join(dir, `${Date.now()}-${planId}-${target}.shadow.json`);
+    const file = path.join(dir, `${nowEpoch()}-${planId}-${target}.shadow.json`);
     fs.writeFileSync(file, JSON.stringify(data, null, 2));
   } catch {}
 }

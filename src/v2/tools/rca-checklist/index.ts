@@ -14,6 +14,7 @@
  */
 
 import { OcWrapperV2 } from '../../lib/oc-wrapper-v2.js';
+import { nowEpoch } from '../../../utils/time.js';
 import { NamespaceHealthChecker } from '../check-namespace-health/index.js';
 import { ToolMemoryGateway } from '../../../lib/tools/tool-memory-gateway.js';
 
@@ -90,8 +91,8 @@ export class RCAChecklistEngine {
    * Execute the complete RCA checklist
    */
   async executeRCAChecklist(input: RCAChecklistInput): Promise<RCAChecklistResult> {
-    const startTime = Date.now();
-    const reportId = `rca-${Date.now()}`;
+    const startTime = nowEpoch();
+    const reportId = `rca-${nowEpoch()}`;
     const { namespace, outputFormat = 'json', includeDeepAnalysis = false, maxCheckTime = 60000 } = input;
 
     const result: RCAChecklistResult = {
@@ -126,7 +127,7 @@ export class RCAChecklistEngine {
         result.markdown = this.generateMarkdownReport(result);
       }
 
-      result.duration = Date.now() - startTime;
+      result.duration = nowEpoch() - startTime;
       // Persist RCA result via modern memory gateway
       try {
         await this.memoryGateway.storeToolExecution(
@@ -145,7 +146,7 @@ export class RCAChecklistEngine {
       return result;
 
     } catch (error) {
-      result.duration = Date.now() - startTime;
+      result.duration = nowEpoch() - startTime;
       result.overallStatus = 'failing';
       result.criticalIssues.push(`RCA checklist failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       result.human = `RCA checklist failed after ${result.duration}ms: ${error instanceof Error ? error.message : 'Unknown error'}`;
@@ -202,7 +203,7 @@ export class RCAChecklistEngine {
    */
   private async checkClusterHealth(result: RCAChecklistResult): Promise<void> {
     const checkName = 'Cluster Health Overview';
-    const startTime = Date.now();
+    const startTime = nowEpoch();
     
     try {
       // Quick cluster connectivity and version check
@@ -221,7 +222,7 @@ export class RCAChecklistEngine {
           `API server reachable`
         ],
         recommendations: [],
-        duration: Date.now() - startTime,
+        duration: nowEpoch() - startTime,
         severity: 'low'
       };
       
@@ -234,7 +235,7 @@ export class RCAChecklistEngine {
         status: 'fail',
         findings: [`Cluster connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
         recommendations: ['Check cluster connectivity and authentication', 'Verify KUBECONFIG settings'],
-        duration: Date.now() - startTime,
+        duration: nowEpoch() - startTime,
         severity: 'critical'
       };
       
@@ -248,7 +249,7 @@ export class RCAChecklistEngine {
    */
   private async checkNodeHealth(result: RCAChecklistResult): Promise<void> {
     const checkName = 'Node Health and Capacity';
-    const startTime = Date.now();
+    const startTime = nowEpoch();
     
     try {
       const nodesResult = await this.ocWrapper.executeOc(['get', 'nodes', '-o', 'json'], { timeout: 10000 });
@@ -267,7 +268,7 @@ export class RCAChecklistEngine {
           'Check node conditions: oc describe node <node-name>',
           'Verify node resource availability'
         ] : [],
-        duration: Date.now() - startTime,
+        duration: nowEpoch() - startTime,
         severity: nodeAnalysis.issues.length > 0 ? 'high' : 'low'
       };
       
@@ -284,7 +285,7 @@ export class RCAChecklistEngine {
         status: 'fail',
         findings: [`Node health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
         recommendations: ['Verify cluster access permissions for node information'],
-        duration: Date.now() - startTime,
+        duration: nowEpoch() - startTime,
         severity: 'high'
       };
       
@@ -297,7 +298,7 @@ export class RCAChecklistEngine {
    */
   private async checkNamespaceSpecific(result: RCAChecklistResult, namespace: string, deepAnalysis: boolean): Promise<void> {
     const checkName = `Namespace Health: ${namespace}`;
-    const startTime = Date.now();
+    const startTime = nowEpoch();
     
     try {
       // Use our comprehensive namespace health checker
@@ -323,7 +324,7 @@ export class RCAChecklistEngine {
           'Check pod logs for crashloop pods',
           'Verify PVC and storage configuration'
         ] : [],
-        duration: Date.now() - startTime,
+        duration: nowEpoch() - startTime,
         severity: healthResult.status === 'failing' ? 'critical' : 
                  healthResult.status === 'degraded' ? 'medium' : 'low'
       };
@@ -344,7 +345,7 @@ export class RCAChecklistEngine {
         status: 'fail',
         findings: [`Namespace analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
         recommendations: ['Verify namespace exists and is accessible'],
-        duration: Date.now() - startTime,
+        duration: nowEpoch() - startTime,
         severity: 'high'
       };
       
@@ -357,7 +358,7 @@ export class RCAChecklistEngine {
    */
   private async checkStorageHealth(result: RCAChecklistResult, namespace?: string): Promise<void> {
     const checkName = 'Storage and PVC Health';
-    const startTime = Date.now();
+    const startTime = nowEpoch();
     
     try {
       // Check storage classes
@@ -393,7 +394,7 @@ export class RCAChecklistEngine {
           'Verify storage class configuration: oc get sc',
           'Check storage provisioner status'
         ] : [],
-        duration: Date.now() - startTime,
+        duration: nowEpoch() - startTime,
         severity: pvcAnalysis.pendingPVCs > 0 ? 'medium' : 'low'
       };
       
@@ -409,7 +410,7 @@ export class RCAChecklistEngine {
         status: 'fail',
         findings: [`Storage health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
         recommendations: ['Check RBAC permissions for storage resources'],
-        duration: Date.now() - startTime,
+        duration: nowEpoch() - startTime,
         severity: 'medium'
       };
       
@@ -422,7 +423,7 @@ export class RCAChecklistEngine {
    */
   private async checkNetworkHealth(result: RCAChecklistResult, namespace?: string): Promise<void> {
     const checkName = 'Network and Service Health';
-    const startTime = Date.now();
+    const startTime = nowEpoch();
     
     try {
       // Check services and endpoints
@@ -469,7 +470,7 @@ export class RCAChecklistEngine {
           'Verify pod readiness and labels',
           'Test route connectivity if applicable'
         ] : [],
-        duration: Date.now() - startTime,
+        duration: nowEpoch() - startTime,
         severity: networkAnalysis.servicesWithoutEndpoints > 0 ? 'medium' : 'low'
       };
       
@@ -485,7 +486,7 @@ export class RCAChecklistEngine {
         status: 'fail',
         findings: [`Network health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
         recommendations: ['Check network access and RBAC permissions'],
-        duration: Date.now() - startTime,
+        duration: nowEpoch() - startTime,
         severity: 'medium'
       };
       
@@ -498,7 +499,7 @@ export class RCAChecklistEngine {
    */
   private async checkRecentEvents(result: RCAChecklistResult, namespace?: string): Promise<void> {
     const checkName = 'Recent Events Analysis';
-    const startTime = Date.now();
+    const startTime = nowEpoch();
     
     try {
       // Get recent warning/error events
@@ -525,7 +526,7 @@ export class RCAChecklistEngine {
           'Check involved objects for event clusters',
           'Correlate events with pod/deployment changes'
         ] : [],
-        duration: Date.now() - startTime,
+        duration: nowEpoch() - startTime,
         severity: eventAnalysis.criticalEvents > 5 ? 'high' : 
                  eventAnalysis.criticalEvents > 0 ? 'medium' : 'low'
       };
@@ -542,7 +543,7 @@ export class RCAChecklistEngine {
         status: 'fail',
         findings: [`Events analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
         recommendations: ['Check event access permissions'],
-        duration: Date.now() - startTime,
+        duration: nowEpoch() - startTime,
         severity: 'low'
       };
       
@@ -590,7 +591,7 @@ export class RCAChecklistEngine {
    */
   private async checkResourceConstraints(result: RCAChecklistResult, namespace?: string): Promise<void> {
     const checkName = 'Resource Constraints and Quotas';
-    const startTime = Date.now();
+    const startTime = nowEpoch();
     
     try {
       // Check resource quotas
@@ -625,7 +626,7 @@ export class RCAChecklistEngine {
           'Check pod resource requests and limits',
           'Consider adjusting resource quotas if needed'
         ] : [],
-        duration: Date.now() - startTime,
+        duration: nowEpoch() - startTime,
         severity: resourceAnalysis.constraintsViolated > 0 ? 'medium' : 'low'
       };
       
@@ -641,7 +642,7 @@ export class RCAChecklistEngine {
         status: 'fail',
         findings: [`Resource constraints check failed: ${error instanceof Error ? error.message : 'Unknown error'}`],
         recommendations: ['Check RBAC permissions for quota and limit resources'],
-        duration: Date.now() - startTime,
+        duration: nowEpoch() - startTime,
         severity: 'low'
       };
       

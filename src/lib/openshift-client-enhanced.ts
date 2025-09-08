@@ -8,6 +8,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs/promises';
 import { logger } from './logging/structured-logger';
+import { nowEpoch } from '../utils/time.js';
 
 const execAsync = promisify(exec);
 
@@ -64,7 +65,7 @@ class CircuitBreaker {
   
   async execute<T>(operation: () => Promise<T>): Promise<T> {
     if (this.state === 'open') {
-      if (Date.now() - this.lastFailureTime < this.resetTimeout) {
+      if (nowEpoch() - this.lastFailureTime < this.resetTimeout) {
         throw new Error(`Circuit breaker ${this.name} is open`);
       }
       this.state = 'half-open';
@@ -87,7 +88,7 @@ class CircuitBreaker {
   
   private onFailure(): void {
     this.failures++;
-    this.lastFailureTime = Date.now();
+    this.lastFailureTime = nowEpoch();
     
     if (this.failures >= this.errorThreshold) {
       this.state = 'open';
@@ -241,7 +242,7 @@ export class OpenShiftClient {
     const sanitizedArgs = args.map(arg => this.sanitizeArgument(arg));
     
     const command = `${this.ocPath} ${sanitizedArgs.join(' ')}`;
-    const startTime = Date.now();
+    const startTime = nowEpoch();
     
     logger.debug('Executing OpenShift command', {
       operation: sanitizedArgs[0],
@@ -256,7 +257,7 @@ export class OpenShiftClient {
         env: this.buildEnvironment()
       });
       
-      const duration = Date.now() - startTime;
+      const duration = nowEpoch() - startTime;
       logger.info('OpenShift command completed', {
         operation: sanitizedArgs[0],
         duration,
@@ -266,7 +267,7 @@ export class OpenShiftClient {
       
       return result.stdout.trim();
     } catch (error: unknown) {
-      const duration = Date.now() - startTime;
+      const duration = nowEpoch() - startTime;
       logger.error('OpenShift command failed', error instanceof Error ? error : new Error(String(error)), {
         operation: sanitizedArgs[0],
         duration,
@@ -317,13 +318,13 @@ export class OpenShiftClient {
   async getClusterInfo(): Promise<ClusterInfo> {
     // Check cache first
     if (this.clusterInfoCache && 
-        Date.now() - this.clusterInfoCache.timestamp < this.CACHE_TTL) {
+        nowEpoch() - this.clusterInfoCache.timestamp < this.CACHE_TTL) {
       logger.debug('Using cached cluster info');
       return this.clusterInfoCache.data;
     }
     
     logger.info('Fetching fresh cluster info');
-    const startTime = Date.now();
+    const startTime = nowEpoch();
     
     try {
       // Execute operations concurrently with proper error handling
@@ -348,10 +349,10 @@ export class OpenShiftClient {
       // Cache the result
       this.clusterInfoCache = {
         data: clusterInfo,
-        timestamp: Date.now()
+        timestamp: nowEpoch()
       };
       
-      const duration = Date.now() - startTime;
+      const duration = nowEpoch() - startTime;
       logger.info('Cluster info retrieved', { duration, cached: false });
       
       return clusterInfo;

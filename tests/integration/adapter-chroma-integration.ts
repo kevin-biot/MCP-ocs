@@ -3,6 +3,7 @@
 
 import { MCPOcsMemoryAdapter } from '../../src/lib/memory/mcp-ocs-memory-adapter.ts';
 import { ChromaMemoryManager as InternalCMM } from '../../src/lib/memory/mcp-files-memory-extension.ts';
+import { nowEpoch } from '../../src/utils/time.js';
 
 async function main() {
   const adapter = new MCPOcsMemoryAdapter('./memory');
@@ -12,8 +13,8 @@ async function main() {
   await adapter.initialize();
 
   const mem = {
-    sessionId: `itest-${Date.now()}`,
-    timestamp: Date.now(),
+    sessionId: `itest-${nowEpoch()}`,
+    timestamp: nowEpoch(),
     userMessage: 'Pod entering CrashLoopBackOff after rollout',
     assistantResponse: 'Check logs, events, and resource limits',
     context: ['ns/default', 'deploy/example'],

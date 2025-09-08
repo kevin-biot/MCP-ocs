@@ -28,6 +28,7 @@ import { BoundaryEnforcer } from './lib/enforcement/boundary-enforcer.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { evaluateRubrics } from './lib/rubrics/rubric-evaluator.js';
+import { nowEpoch } from './utils/time.js';
 import { TRIAGE_PRIORITY_V1 } from './lib/rubrics/core/triage-priority.v1.js';
 import { EVIDENCE_CONFIDENCE_V1 } from './lib/rubrics/core/evidence-confidence.v1.js';
 import { REMEDIATION_SAFETY_V1 } from './lib/rubrics/core/remediation-safety.v1.js';
@@ -130,7 +131,7 @@ toolRegistry.registerTool({
   },
   async execute(args: any): Promise<string> {
     const userInput = String(args?.thought ?? args?.userInput ?? '');
-    const session = String(args?.sessionId || `session-${Date.now()}`);
+    const session = String(args?.sessionId || `session-${nowEpoch()}`);
     const coerceBool = (v: any) => typeof v === 'string' ? ['true','1','yes','on','false','0','no','off'].includes(v.toLowerCase()) ? ['true','1','yes','on'].includes(v.toLowerCase()) : Boolean(v) : Boolean(v);
     const coerceNum = (v: any, d?: number) => typeof v === 'string' ? (Number(v) || d || 0) : (typeof v === 'number' ? v : (d || 0));
     const bounded = coerceBool(args?.bounded);
@@ -177,7 +178,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
-  const startTime = Date.now();
+  const startTime = nowEpoch();
   console.error(`🔧 (sequential) Executing: ${name}`);
 
   // Template Engine primary path (behind flag)
@@ -188,10 +189,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (!sel) {
       console.error('❌ No template for target', triageTarget);
     } else {
-      const tStart = Date.now();
+      const tStart = nowEpoch();
       const stepBudget = Number(targs.stepBudget || 2);
       const bounded = !!targs.bounded;
-      const sessionId = String(targs.sessionId || `session-${Date.now()}`);
+      const sessionId = String(targs.sessionId || `session-${nowEpoch()}`);
       const plan = templateEngine.buildPlan(sel.template, { sessionId, bounded, stepBudget, vars: (args as any)?.vars || {} });
       const enforcerConfig = { maxSteps: plan.boundaries.maxSteps, timeoutMs: plan.boundaries.timeoutMs } as { maxSteps: number; timeoutMs: number; allowedNamespaces?: string[] };
       if (targs.allowedNamespaces) enforcerConfig.allowedNamespaces = targs.allowedNamespaces;
@@ -272,9 +273,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             params = { ...params, name: ctxVars.nodeFromEvent };
           }
         } catch {}
-        const sStart = Date.now();
+        const sStart = nowEpoch();
         const r = await toolRegistry.executeTool(s.tool, params);
-        const sDur = Date.now() - sStart;
+        const sDur = nowEpoch() - sStart;
         exec.push({ step: { ...s, params }, result: r, durationMs: sDur });
         try {
           if (s.tool === 'oc_read_get_pods' && String(params?.namespace) === 'openshift-ingress') {
@@ -442,7 +443,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           } catch {}
         } catch {}
       }
-      const out = { planId: plan.planId, target: triageTarget, executed: exec.length, steps: exec, evidence, rubrics, summary, diagnosis_status, executionTimeMs: Date.now() - tStart };
+      const out = { planId: plan.planId, target: triageTarget, executed: exec.length, steps: exec, evidence, rubrics, summary, diagnosis_status, executionTimeMs: nowEpoch() - tStart };
       return { content: [{ type: 'text', text: JSON.stringify(out, null, 2) }] };
     }
   }
@@ -464,12 +465,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     );
 
     if (ENABLE_SEQUENTIAL_THINKING && (args as any)?.userInput) {
-      const thinking = await sequentialThinkingOrchestrator.handleUserRequest((args as any).userInput, (args as any).sessionId || `session-${Date.now()}`);
+      const thinking = await sequentialThinkingOrchestrator.handleUserRequest((args as any).userInput, (args as any).sessionId || `session-${nowEpoch()}`);
       result = JSON.stringify(thinking, null, 2);
       if ((thinking as any).networkResetDetected) console.error('⚠️ Network reset was detected and handled');
     } else if (ENABLE_SEQUENTIAL_THINKING && triageIntent && name !== 'sequential_thinking') {
       // Pre-orchestration shim for bounded triage calls that would otherwise bypass planning
-      const sessionId = (args as any)?.sessionId || `session-${Date.now()}`;
+      const sessionId = (args as any)?.sessionId || `session-${nowEpoch()}`;
       const list = (args as any)?.namespaceList;
       const ns = Array.isArray(list) ? list.join(', ') : (typeof list === 'string' ? list : 'ingress-related namespaces');
       const thought = `Capped triage requested for ${ns}. Use bounded approach with first step only to avoid timeouts. Original tool: ${name}.`;
@@ -477,9 +478,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       // Telemetry: record shim engagement
       try {
         await sharedMemory.storeOperational({
-          incidentId: `shim-engagement-${sessionId}-${Date.now()}`,
+          incidentId: `shim-engagement-${sessionId}-${nowEpoch()}`,
           domain: 'cluster',
-          timestamp: Date.now(),
+          timestamp: nowEpoch(),
           symptoms: ['shim_engagement', 'triage_pre_orchestration'],
           affectedResources: [String(name)],
           diagnosticSteps: ['sequential_thinking(planOnly|firstStepOnly) invoked via shim'],
@@ -491,7 +492,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       } catch {}
       // Also execute the originally requested diagnostic tool to keep logs consistent
       try {
-        const diagStart = Date.now();
+        const diagStart = nowEpoch();
         const diagRes = await toolRegistry.executeTool(name, args || {});
         await autoMemory.captureToolExecution({
           toolName: name,
@@ -499,7 +500,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           result: diagRes,
           sessionId: String(sessionId),
           timestamp: diagStart,
-          duration: Date.now() - diagStart,
+          duration: nowEpoch() - diagStart,
           success: true,
         });
       } catch (e) {
@@ -527,9 +528,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           // Telemetry: shim engagement (early if within first call window)
           try {
             await sharedMemory.storeOperational({
-              incidentId: `shim-engagement-${(args as any)?.sessionId || 'unknown'}-${Date.now()}`,
+              incidentId: `shim-engagement-${(args as any)?.sessionId || 'unknown'}-${nowEpoch()}`,
               domain: 'cluster',
-              timestamp: Date.now(),
+              timestamp: nowEpoch(),
               symptoms: ['shim_engagement', 'ingress_pending'],
               affectedResources: ['oc_diagnostic_cluster_health'],
               diagnosticSteps: ['sequential_thinking(continue) auto-executed for ingress_pending'],
@@ -540,7 +541,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             } as any);
           } catch {}
           // Ensure a plan exists: generate a plan-only if none persisted, then continue
-          const sid = String((args as any)?.sessionId || `session-${Date.now()}`);
+          const sid = String((args as any)?.sessionId || `session-${nowEpoch()}`);
           try {
             // Prime the plan (planOnly) with ingress triage in bounded mode
             await sequentialThinkingOrchestrator.handleUserRequest('Ingress triage plan seed', sid, { bounded: true, mode: 'planOnly', triageTarget: 'ingress' });
@@ -555,8 +556,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     console.error(`❌ Tool execution failed: ${error}`);
     throw new Error(`Tool execution failed: ${error}`);
   } finally {
-    const duration = Date.now() - startTime;
-    const sessionId = (args as any)?.sessionId || `auto-session-${Date.now()}`;
+    const duration = nowEpoch() - startTime;
+    const sessionId = (args as any)?.sessionId || `auto-session-${nowEpoch()}`;
     await autoMemory.captureToolExecution({ toolName: name, arguments: args || {}, result, sessionId, timestamp: startTime, duration, success, error });
   }
 
@@ -677,8 +678,8 @@ async function tryRecallForTarget(targetId: string, summary: any){
     const top1Similarity = Number(top?.similarity ?? top?.score ?? 0);
     let freshnessMin: number | undefined = undefined;
     const ts = top?.timestamp || top?.ts;
-    if (typeof ts === 'number') freshnessMin = Math.floor((Date.now() - ts)/(1000*60));
-    else if (typeof ts === 'string') { const d = Date.parse(ts); if (!isNaN(d)) freshnessMin = Math.floor((Date.now() - d)/(1000*60)); }
+    if (typeof ts === 'number') freshnessMin = Math.floor((nowEpoch() - ts)/(1000*60));
+    else if (typeof ts === 'string') { const d = Date.parse(ts); if (!isNaN(d)) freshnessMin = Math.floor((nowEpoch() - d)/(1000*60)); }
     const topK = hits.slice(0, Math.min(5, hits.length)).map(h=>({ id: h?.incidentId || h?.memory?.incidentId || '', score: Number(h?.similarity ?? h?.score ?? 0) }));
     return { topK, top1Similarity, freshnessMin };
   } catch { return undefined; }
@@ -688,7 +689,7 @@ function persistSummary(planId: string, target: string, summary: any) {
   try {
     const dir = path.join('logs', 'runs');
     fs.mkdirSync(dir, { recursive: true });
-    const file = path.join(dir, `${Date.now()}-${planId}-${target}.summary.json`);
+    const file = path.join(dir, `${nowEpoch()}-${planId}-${target}.summary.json`);
     const payload = { planId, target, summary };
     fs.writeFileSync(file, JSON.stringify(payload, null, 2));
     // Drift tracking append
@@ -697,7 +698,7 @@ function persistSummary(planId: string, target: string, summary: any) {
       fs.mkdirSync(driftDir, { recursive: true });
       const driftFile = path.join(driftDir, `${String(summary?.templateId || target)}.ndjson`);
       const line = {
-        ts: Date.now(),
+        ts: nowEpoch(),
         priorityScore: Number(summary?.priority?.score ?? 0),
         label: String(summary?.priority?.label || ''),
         completeness: Number(summary?.evidence?.completeness ?? 0),
@@ -839,8 +840,8 @@ function computeDiagnosticRubricsIfAny(toolName: string, resultText: string): { 
       const score = Number(top.score ?? top.confidence ?? 0);
       let days = undefined as any;
       const ts = top.ts || top.timestamp;
-      if (typeof ts === 'number') days = Math.abs(Date.now() - ts) / (1000*60*60*24);
-      else if (typeof ts === 'string') { const d = Date.parse(ts); if (!isNaN(d)) days = Math.abs(Date.now() - d)/(1000*60*60*24); }
+      if (typeof ts === 'number') days = Math.abs(nowEpoch() - ts) / (1000*60*60*24);
+      else if (typeof ts === 'string') { const d = Date.parse(ts); if (!isNaN(d)) days = Math.abs(nowEpoch() - d)/(1000*60*60*24); }
       inputs.recallTop1 = score;
       inputs.freshnessDaysTop1 = days;
       const agree = hits.length > 1 ? (hits.filter(h=>Number(h.score ?? h.confidence ?? 0) >= 0.7).length / hits.length) : undefined;
@@ -889,7 +890,7 @@ function persistShadowDiff(planId: string, target: string, data: any) {
   try {
     const dir = path.join('logs', 'runs');
     fs.mkdirSync(dir, { recursive: true });
-    const file = path.join(dir, `${Date.now()}-${planId}-${target}.shadow.json`);
+    const file = path.join(dir, `${nowEpoch()}-${planId}-${target}.shadow.json`);
     fs.writeFileSync(file, JSON.stringify(data, null, 2));
   } catch {}
 }

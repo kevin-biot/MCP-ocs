@@ -9,6 +9,7 @@ import { SharedMemoryManager } from '../memory/shared-memory.js';
 import { WorkflowEngine } from '../workflow/workflow-engine.js';
 import { ConfigValidator } from '../config/schema.js';
 import { logger } from '../logging/structured-logger';
+import { nowEpoch } from '../../utils/time.js';
 
 export type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
 
@@ -54,7 +55,7 @@ export class HealthCheckManager {
    * Perform complete system health check
    */
   async performHealthCheck(): Promise<SystemHealth> {
-    const startTime = Date.now();
+    const startTime = nowEpoch();
     logger.debug('Starting system health check');
     
     const checks = await Promise.allSettled([
@@ -97,12 +98,12 @@ export class HealthCheckManager {
       status: overallStatus,
       timestamp: new Date().toISOString(),
       version: process.env.npm_package_version || '0.1.0',
-      uptime: Date.now() - this.startTime.getTime(),
+      uptime: nowEpoch() - this.startTime.getTime(),
       checks: healthChecks,
       summary
     };
     
-    const duration = Date.now() - startTime;
+    const duration = nowEpoch() - startTime;
     logger.info('System health check completed', {
       status: overallStatus,
       duration,
@@ -161,12 +162,12 @@ export class HealthCheckManager {
    */
 
   private async checkOpenShiftConnectivity(): Promise<HealthCheck> {
-    const start = Date.now();
+    const start = nowEpoch();
     const checkName = 'openshift_connectivity';
     
     try {
       const clusterInfo = await this.openshiftClient.getClusterInfo();
-      const duration = Date.now() - start;
+      const duration = nowEpoch() - start;
       
       if (clusterInfo.status === 'connected') {
         return {
@@ -191,7 +192,7 @@ export class HealthCheckManager {
         };
       }
     } catch (error) {
-      const duration = Date.now() - start;
+      const duration = nowEpoch() - start;
       return {
         name: checkName,
         status: 'unhealthy',
@@ -203,12 +204,12 @@ export class HealthCheckManager {
   }
 
   private async checkMemorySystemHealth(): Promise<HealthCheck> {
-    const start = Date.now();
+    const start = nowEpoch();
     const checkName = 'memory_system';
     
     try {
       const stats = await this.memoryManager.getStats();
-      const duration = Date.now() - start;
+      const duration = nowEpoch() - start;
       
       // Determine status based on memory system state
       let status: HealthStatus = 'healthy';
@@ -234,7 +235,7 @@ export class HealthCheckManager {
         }
       };
     } catch (error) {
-      const duration = Date.now() - start;
+      const duration = nowEpoch() - start;
       return {
         name: checkName,
         status: 'unhealthy',
@@ -246,12 +247,12 @@ export class HealthCheckManager {
   }
 
   private async checkWorkflowEngineHealth(): Promise<HealthCheck> {
-    const start = Date.now();
+    const start = nowEpoch();
     const checkName = 'workflow_engine';
     
     try {
       const activeStates = await this.workflowEngine.getActiveStates();
-      const duration = Date.now() - start;
+      const duration = nowEpoch() - start;
       
       return {
         name: checkName,
@@ -265,7 +266,7 @@ export class HealthCheckManager {
         }
       };
     } catch (error) {
-      const duration = Date.now() - start;
+      const duration = nowEpoch() - start;
       return {
         name: checkName,
         status: 'unhealthy',
@@ -277,13 +278,13 @@ export class HealthCheckManager {
   }
 
   private async checkConfigurationValid(): Promise<HealthCheck> {
-    const start = Date.now();
+    const start = nowEpoch();
     const checkName = 'configuration';
     
     try {
       // Note: This would need access to the current configuration
       // For now, we'll simulate a basic configuration check
-      const duration = Date.now() - start;
+      const duration = nowEpoch() - start;
       
       return {
         name: checkName,
@@ -293,7 +294,7 @@ export class HealthCheckManager {
         duration
       };
     } catch (error) {
-      const duration = Date.now() - start;
+      const duration = nowEpoch() - start;
       return {
         name: checkName,
         status: 'unhealthy',
@@ -305,13 +306,13 @@ export class HealthCheckManager {
   }
 
   private async checkFileSystemAccess(): Promise<HealthCheck> {
-    const start = Date.now();
+    const start = nowEpoch();
     const checkName = 'filesystem_access';
     
     try {
       // Test basic filesystem operations
       const testDir = './logs';
-      const testFile = `${testDir}/.health-check-${Date.now()}`;
+      const testFile = `${testDir}/.health-check-${nowEpoch()}`;
       
       // Import fs/promises dynamically
       const fs = await import('fs/promises');
@@ -328,7 +329,7 @@ export class HealthCheckManager {
       // Cleanup
       await fs.unlink(testFile);
       
-      const duration = Date.now() - start;
+      const duration = nowEpoch() - start;
       
       if (content === 'health-check') {
         return {
@@ -348,7 +349,7 @@ export class HealthCheckManager {
         };
       }
     } catch (error) {
-      const duration = Date.now() - start;
+      const duration = nowEpoch() - start;
       return {
         name: checkName,
         status: 'unhealthy',
@@ -360,12 +361,12 @@ export class HealthCheckManager {
   }
 
   private async checkSystemResources(): Promise<HealthCheck> {
-    const start = Date.now();
+    const start = nowEpoch();
     const checkName = 'system_resources';
     
     try {
       const memoryUsage = process.memoryUsage();
-      const duration = Date.now() - start;
+      const duration = nowEpoch() - start;
       
       // Convert bytes to MB
       const heapUsedMB = Math.round(memoryUsage.heapUsed / 1024 / 1024);
@@ -403,7 +404,7 @@ export class HealthCheckManager {
         }
       };
     } catch (error) {
-      const duration = Date.now() - start;
+      const duration = nowEpoch() - start;
       return {
         name: checkName,
         status: 'unhealthy',
