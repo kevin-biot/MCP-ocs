@@ -349,3 +349,13 @@ The NL input normalization pipeline should expect and produce summaries that tie
 - Example artifact set: `sprint-management/archive/d-009-date-time-safety-2025-09-06/`
 
 This allows human/AI workflows to remain aligned with the organizational closure process.
+
+### Process Integration (v3.3.1)
+
+The normalization layer should:
+- Generate human-readable summaries that reference the 11 artifacts (e.g., quality findings, metrics deltas, decision rationales).
+- Preserve identifiers linking prompts/outputs to artifacts (e.g., decision IDs, evidence IDs) for traceability.
+- Produce a short “process summary” block ready to paste into the closure package.
+- Links:
+  - `sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.1.md`
+  - `sprint-management/archive/d-009-date-time-safety-2025-09-06/`

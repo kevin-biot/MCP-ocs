@@ -303,3 +303,13 @@ Sprint closure is governed by the 11‑artifact template framework (Process v3.3
 - Closure example: `sprint-management/archive/d-009-date-time-safety-2025-09-06/`
 
 Adhering to these artifacts is a mandatory control that supports auditability and continuous improvement.
+
+### Process Integration (v3.3.1)
+
+Risk-based development now explicitly integrates with the Process v3.3.1 closure flow:
+- Reviewer guardrails: reviewers confirm the 11 artifacts exist and are internally consistent (quality report ↔ decisions ↔ metrics).
+- Decision provenance: the Key Decisions Log must cite evidence and risks; ADR impact analysis must reflect final decisions.
+- Gating risks: unresolved “Outstanding Work Analysis” items are tracked forward with owners and risk levels (P0–P3) before closure.
+- Links:
+  - `sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.1.md`
+  - `sprint-management/archive/d-009-date-time-safety-2025-09-06/`
