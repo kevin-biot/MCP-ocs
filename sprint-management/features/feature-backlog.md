@@ -14,14 +14,17 @@
 
 ### **Sprint Implementation Sequence**
 ```
-Phase 1 (Immediate):     F-001 → F-003 → F-004
-Phase 2 (Foundation):    F-006 → F-008 → F-005  
+Phase 0 (Immediate):     F-010 Phase 0 (1-2 days immediate value)
+Phase 1 (Foundation):    F-001 → F-010 Phase 1 → F-003 → F-004
+Phase 2 (Enhanced):      F-006 → F-008 → F-005  
 Phase 3 (Intelligence):  F-009 → F-002
 Phase 4 (Advanced):      F-007 (Optional)
 ```
 
 ### **Why This Order Matters**
-- **F-001 First**: Core platform must be stable before everything else
+- **F-010 Phase 0 First**: Immediate natural interaction value (1-2 days) with existing template engine
+- **F-001 Next**: Core platform must be stable before everything else
+- **F-010 Phase 1**: Full production enablement after F-001 stability
 - **F-003 Critical**: Production deployment capability blocks enterprise adoption
 - **F-006 Before F-009**: Input normalization foundation required for RCA pattern recognition
 - **F-008 Parallel**: Tool architecture can run parallel with other features
@@ -30,6 +33,7 @@ Phase 4 (Advanced):      F-007 (Optional)
 
 ### **Dependencies That Drive Order**
 ```yaml
+F-010: depends_on: [ADR-014, Tool Registry]  # Prerequisites met - ready now
 F-003: depends_on: [F-001]  # Production needs stable core platform
 F-006: depends_on: [F-001]  # Input normalization needs template engine  
 F-008: depends_on: [F-001]  # Tool architecture needs stable tool registry
@@ -38,6 +42,7 @@ F-002: enhanced_by: [F-009] # Operational intelligence enhanced by RCA patterns
 F-007: depends_on: [F-006]  # NFM needs dictionary normalization foundation
 F-004: depends_on: [F-001, F-006] # Quality validation needs templates + normalization
 F-005: parallel_with: [F-008] # Tool maturity complements modular architecture
+F-010: enhanced_by: [F-006] # Future dictionary routing replaces static intent mapping
 ```
 
 **Sprint Planning Rule**: Always check dependency graph, not feature numbers, when sequencing work.
@@ -57,6 +62,7 @@ F-005: parallel_with: [F-008] # Tool maturity complements modular architecture
 | **F-007** | **Normalized Fact Model Type System** | **ADR-022** | 📋 **PLANNED** | **P3 - MEDIUM** | NFM schema + constraint validation | 50-60 days |
 | **F-008** | **Modular Tool Architecture** | **ADR-006** | 📋 **PLANNED** | **P2 - MEDIUM** | Plugin system + module organization | 15-20 days |
 | **F-009** | **Fast RCA Framework** | **ADR-011** | 📋 **PLANNED** | **P2 - HIGH** | Pattern recognition + automated diagnostics | 20-30 days |
+| **F-010** | **oc_triage Entry Tool** | **ADR-023** | 🎯 **READY FOR IMPLEMENTATION** | **P1 - HIGH** | Natural interaction bridge (4 phases) | 8-12 days |
 
 ---
 
@@ -67,6 +73,7 @@ F-005: parallel_with: [F-008] # Tool maturity complements modular architecture
 - **F-002: Operational Intelligence** - Core value proposition for OpenShift operations  
 - **F-003: Production Platform** - **PRIORITY ELEVATED** - Critical for enterprise deployment
 - **F-004: Template Quality** - Production reliability and consistency
+- **F-010: oc_triage Entry Tool** - **NEW** - Natural interaction bridge (CODEX-validated, immediate value)
 
 ### P2 - High to Medium Priority (Next Phase)
 - **F-005: Tool Maturity & Classification** - Production-ready tool filtering and validation
@@ -167,9 +174,18 @@ F-005: parallel_with: [F-008] # Tool maturity complements modular architecture
 
 **⚠️ IMPORTANT**: This roadmap follows **dependency order**, not feature numbers
 
-### Phase 1: Core Foundation & Critical Production (Days 1-60)
-**Sequence**: F-001 → F-003 → F-004 (Dependency-driven order)
+### Phase 0: Immediate Natural Interaction (Days 1-2)
+**Sequence**: F-010 Phase 0 (Immediate value with existing infrastructure)
+- **F-010 Phase 0**: oc_triage spike implementation (1-2 days)
+  - 3 intent mappings (pvc-binding, scheduling-failures, ingress-pending)
+  - TriageEnvelope schema and template engine integration
+  - BoundaryEnforcer integration and E2E testing
+  - **Value**: Natural "triage PVC binding in student03" interaction immediately
+
+### Phase 1: Core Foundation & Natural Interaction Production (Days 3-63)
+**Sequence**: F-001 → F-010 Phase 1 → F-003 → F-004 (Dependency-driven order)
 - **F-001**: Complete Core Platform Foundation (finish partial ADRs 002, 004, 009, 010)
+- **F-010 Phase 1**: Production enablement with shadow suggest mode (after F-001 stability)
 - **F-003**: Production Platform (ELEVATED PRIORITY - enterprise deployment capability)
 - **F-004**: Begin Template Quality & Validation (foundation for all other features)
 
@@ -313,12 +329,12 @@ Quality Enhancement:
 
 ---
 
-**Total Features**: 9 epics with complete ADR coverage addressing critical architecture gaps  
-**Total Estimated Effort**: 294-389 development days (reflects comprehensive architecture implementation)  
-**Critical Path**: F-001 → F-003 → F-006 → F-008 → F-009 → F-002 → F-004 → F-005 → [F-007 optional]  
+**Total Features**: 10 epics with complete ADR coverage addressing critical architecture gaps  
+**Total Estimated Effort**: 302-401 development days (includes immediate natural interaction capability)  
+**Critical Path**: F-010 Phase 0 → F-001 → F-010 Phase 1 → F-003 → F-006 → F-008 → F-009 → F-002 → F-004 → F-005 → [F-007 optional]  
 
-**Key Strategic Achievement**: Feature backlog now provides **89% ADR coverage** with appropriate priority alignment, addressing critical gaps in production deployment, tool architecture, and operational intelligence capabilities.
+**Key Strategic Achievement**: Feature backlog now provides **91% ADR coverage** with immediate implementation opportunity (F-010 Phase 0) delivering natural interaction capabilities in 1-2 days while maintaining comprehensive architecture implementation roadmap.
 
-**Last Updated**: 2025-09-02 - Complete ADR coverage validation and gap remediation  
-**Next Review**: Weekly during active development, monthly for coverage validation  
-**Integration**: Comprehensive feature backlog balancing quality and architectural implementation
+**Last Updated**: 2025-09-08 - ADR-023 integration and F-010 oc_triage Entry Tool addition  
+**Next Review**: After F-010 Phase 0 completion, then weekly during active development  
+**Integration**: Comprehensive feature backlog with immediate natural interaction capability

@@ -78,7 +78,15 @@ describe('UnifiedToolRegistry', () => {
     const parsed = JSON.parse(res);
     expect(parsed.success).toBe(false);
     expect(parsed.tool).toBe('non_string');
-    expect(typeof parsed.error).toBe('string');
+    // Error taxonomy returns structured error objects per D-005/D-006
+    expect(typeof parsed.error).toBe('object');
+    expect(parsed.error).toEqual(
+      expect.objectContaining({
+        type: expect.any(String),
+        message: expect.any(String),
+        statusCode: expect.any(Number)
+      })
+    );
   });
 
   it('throws an error when tool is not found', async () => {
@@ -118,4 +126,3 @@ describe('Global tool registry singleton', () => {
     expect(c).not.toBe(a);
   });
 });
-

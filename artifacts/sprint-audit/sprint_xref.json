@@ -1,0 +1,1575 @@
+[
+  {
+    "sprintId": "D-001",
+    "commitResults": [],
+    "grepCount": 1,
+    "fixResults": [
+      {
+        "description": "**D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/sprint-management/backlog/domains/d-005-async-correctness/README.md`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Context Preservation**: Include sufficient debugging context",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Context Preservation**: Error messages include sufficient debugging context",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Will errors provide sufficient debugging information?",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] Includes appropriate logging for debugging",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Documentation Gaps**: Implementation correct but documentation incomplete",
+        "category": "process",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**P0 Tasks (Hard Gates)**: Trust boundaries, async correctness - Mandatory security validation",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Prioritize P0 domains first: D-001 (Trust Boundaries), D-005 (Async Correctness)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] Branch protection confirmed: working on correct branch for new work",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/orphaned-artifacts/next-sprint-ready-outdated-planning.md",
+      "sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md",
+      "sprint-management/archive/process-evolution/DEVELOPER-GUARDRAILS.md",
+      "sprint-management/archive/process-evolution/INTEGRATION_UPDATE_PATCH.md",
+      "sprint-management/archive/process-evolution/REVIEWER-GUARDRAILS.md",
+      "sprint-management/archive/process-evolution/TESTER-GUARDRAILS.md",
+      "sprint-management/archive/v3.1/STANDUP-PROCESS-V3-MEMORY.md",
+      "sprint-management/archive/v3.1/templates/DAILY_STANDUP_CHECKLIST.md"
+    ]
+  },
+  {
+    "sprintId": "D-002",
+    "commitResults": [],
+    "grepCount": 10,
+    "fixResults": [
+      {
+        "description": "`/src/lib/tools/tool-registry.ts` - Fix array access",
+        "category": "code",
+        "paths": [
+          "src/lib/tools/tool-registry.ts"
+        ],
+        "present": true,
+        "confidence": "medium"
+      },
+      {
+        "description": "`/src/lib/memory/shared-memory.ts` - Fix object property access",
+        "category": "code",
+        "paths": [
+          "src/lib/memory/shared-memory.ts"
+        ],
+        "present": true,
+        "confidence": "medium"
+      },
+      {
+        "description": "`/src/tools/` - Fix diagnostic tool array operations",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/src/lib/types/common.ts` - Fix interface definitions",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Fix build errors systematically",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Independent investigation: No bugs found, architecture sound",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Alleged bug investigation: No bug exists (false positive)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "✅ Bug claim verification (false positive confirmed)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Code Quality**: Clean codebase confirmed (no bugs found)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "No critical bugs blocking development progression",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`.include(` (incorrect method)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`.includes(` (correct method)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Functions correctly according to design specifications",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Same reviewer hallucinated specific bug claim (`.include` vs `.includes`) that does not exist in code",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Specific false positive eliminated (zero unnecessary bug fixes)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "No bug fixes required (zero code changes)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Qwen Position**: Identified specific bug in shared-memory.ts generateTags method",
+        "category": "code",
+        "paths": [
+          "src/lib/memory/shared-memory.ts"
+        ],
+        "present": true,
+        "confidence": "medium"
+      },
+      {
+        "description": "**Codex Position**: Systematic analysis found no bugs, claimed clean codebase",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Evidence Standard**: Definitive proof required for bug confirmation",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "No bug exists in shared-memory.ts",
+        "category": "code",
+        "paths": [
+          "src/lib/memory/shared-memory.ts"
+        ],
+        "present": true,
+        "confidence": "medium"
+      },
+      {
+        "description": "Qwen's specific bug claim appears to be hallucinated detail",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Specific Bug Claims**: Discarded based on evidence",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**No Development Work**: Bug fix unnecessary, no code changes required",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Time Efficiency**: Quick resolution prevented extended debug efforts",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Sprint**: D-005 (Async Correctness) + D-006 (Error Taxonomy) Quality Foundation Sprint",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Tasks: [CODEX UPDATES PROGRESS - async pattern corrections, Promise handling fixes]",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] D-005: Async correctness implementation: [STATUS]",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "☐ **Pattern**: Concurrent access pattern fixes with proper synchronization",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "☐ **Pattern**: Promise.all vs Promise.allSettled corrections based on failure handling requirements",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "☐ **Validation**: Standardized error response format with debugging information",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "TASK-005-A: Fixed unawaited promises in tool execution handlers",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "TASK-005-D: Corrected Promise.all vs Promise.allSettled patterns",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Rename with descriptive suffix indicating original context",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/sprint-management/backlog/domains/d-005-async-correctness/README.md`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Context Preservation**: Include sufficient debugging context",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Context Preservation**: Error messages include sufficient debugging context",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Will errors provide sufficient debugging information?",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] Includes appropriate logging for debugging",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Documentation Gaps**: Implementation correct but documentation incomplete",
+        "category": "process",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/completed-sprints/d-002-epic-003-typescript-hardening/README.md",
+      "sprint-management/archive/completed-sprints/d-002-epic-003-typescript-hardening/sprint-definition.md",
+      "sprint-management/archive/completed-sprints/d-002-epic-003-typescript-hardening/sprint-retrospective.md",
+      "sprint-management/archive/d-002-epic-004/final-sprint-status.md",
+      "sprint-management/archive/d-002-epic-004/investigation-evidence.md",
+      "sprint-management/archive/d-002-epic-004/original-task-definition.md",
+      "sprint-management/archive/d-002-epic-004/process-lessons-learned.md",
+      "sprint-management/archive/d-002-epic-004/sprint-performance-analysis-report.md",
+      "sprint-management/archive/d-002-epic-004/technical-reviewer-conflict.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/generated-prompt-with-calibration-analysis.md",
+      "sprint-management/archive/orphaned-artifacts/README.md",
+      "sprint-management/archive/orphaned-artifacts/next-sprint-ready-outdated-planning.md",
+      "sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md",
+      "sprint-management/archive/process-evolution/DEVELOPER-GUARDRAILS.md",
+      "sprint-management/archive/process-evolution/REVIEWER-GUARDRAILS.md",
+      "sprint-management/archive/process-evolution/TESTER-GUARDRAILS.md"
+    ]
+  },
+  {
+    "sprintId": "D-003",
+    "commitResults": [],
+    "grepCount": 0,
+    "fixResults": [
+      {
+        "description": "**D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/sprint-management/backlog/domains/d-005-async-correctness/README.md`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Context Preservation**: Include sufficient debugging context",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Documentation Gaps**: Implementation correct but documentation incomplete",
+        "category": "process",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md",
+      "sprint-management/archive/process-evolution/DEVELOPER-GUARDRAILS.md",
+      "sprint-management/archive/process-evolution/TESTER-GUARDRAILS.md"
+    ]
+  },
+  {
+    "sprintId": "D-004",
+    "commitResults": [],
+    "grepCount": 1,
+    "fixResults": [
+      {
+        "description": "**D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/sprint-management/backlog/domains/d-005-async-correctness/README.md`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md"
+    ]
+  },
+  {
+    "sprintId": "D-005",
+    "commitResults": [],
+    "grepCount": 7,
+    "fixResults": [
+      {
+        "description": "Core async correctness and error taxonomy implementations",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Tasks: [CODEX UPDATES PROGRESS - async pattern corrections, Promise handling fixes]",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] D-005: Async correctness implementation: [STATUS]",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Quality foundation: Establishes robust async correctness and standardized error handling.",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Sprint: D-005 (Async Correctness) + D-006 (Error Taxonomy)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Sprint**: D-005 (Async Correctness) + D-006 (Error Taxonomy) Quality Foundation Sprint",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "☐ **Pattern**: Concurrent access pattern fixes with proper synchronization",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "☐ **Pattern**: Promise.all vs Promise.allSettled corrections based on failure handling requirements",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "☐ **Validation**: Standardized error response format with debugging information",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "TASK-005-A: Fixed unawaited promises in tool execution handlers",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "TASK-005-D: Corrected Promise.all vs Promise.allSettled patterns",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Async correctness foundations (timeouts, mutex) in place.",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/sprint-management/backlog/domains/d-005-async-correctness/README.md`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Context Preservation**: Include sufficient debugging context",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Time Loss Prevention**: Validated effective - prevented Jest/ESM debugging loops through strategic approach selection",
+        "category": "tests",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Full debugging time justified",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **30-Minute Debug Loop**: EVALUATE - Alternative approach assessment",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Time Management**: Core objectives protected from enhancement debugging",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Configuration Archaeology**: Multiple framework compatibility debugging",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Alternative-first methodology for complex debugging",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Context Preservation**: Error messages include sufficient debugging context",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Will errors provide sufficient debugging information?",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] Includes appropriate logging for debugging",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Documentation Gaps**: Implementation correct but documentation incomplete",
+        "category": "process",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**P0 Tasks (Hard Gates)**: Trust boundaries, async correctness - Mandatory security validation",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Prioritize P0 domains first: D-001 (Trust Boundaries), D-005 (Async Correctness)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/d-005-d-006-quality-foundation/README.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/codex-execution-log-2025-09-03.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-developer-completion-v3.2.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-process-calibration-v3.2.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-reviewer-completion-v3.2.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-tester-completion-v3.2.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-validation-evidence-v3.2.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/final-sprint-status.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/generated-prompt-with-calibration-analysis.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/reviewer-assessment.md",
+      "sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md",
+      "sprint-management/archive/process-evolution/DEVELOPER-GUARDRAILS.md",
+      "sprint-management/archive/process-evolution/PROCESS-V3.2-ENHANCED.md",
+      "sprint-management/archive/process-evolution/PROCESS-V3.2-UPDATE-SUMMARY.md",
+      "sprint-management/archive/process-evolution/REVIEWER-GUARDRAILS.md",
+      "sprint-management/archive/process-evolution/TESTER-GUARDRAILS.md",
+      "sprint-management/archive/v3.1/STANDUP-PROCESS-V3-MEMORY.md"
+    ]
+  },
+  {
+    "sprintId": "D-006",
+    "commitResults": [],
+    "grepCount": 6,
+    "fixResults": [
+      {
+        "description": "Core async correctness and error taxonomy implementations",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Tasks: [CODEX UPDATES PROGRESS - async pattern corrections, Promise handling fixes]",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] D-005: Async correctness implementation: [STATUS]",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Quality foundation: Establishes robust async correctness and standardized error handling.",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Sprint: D-005 (Async Correctness) + D-006 (Error Taxonomy)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Sprint**: D-005 (Async Correctness) + D-006 (Error Taxonomy) Quality Foundation Sprint",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "☐ **Pattern**: Concurrent access pattern fixes with proper synchronization",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "☐ **Pattern**: Promise.all vs Promise.allSettled corrections based on failure handling requirements",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "☐ **Validation**: Standardized error response format with debugging information",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "TASK-005-A: Fixed unawaited promises in tool execution handlers",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "TASK-005-D: Corrected Promise.all vs Promise.allSettled patterns",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Async correctness foundations (timeouts, mutex) in place.",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/sprint-management/backlog/domains/d-005-async-correctness/README.md`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Context Preservation**: Include sufficient debugging context",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Time Loss Prevention**: Validated effective - prevented Jest/ESM debugging loops through strategic approach selection",
+        "category": "tests",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Full debugging time justified",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **30-Minute Debug Loop**: EVALUATE - Alternative approach assessment",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Time Management**: Core objectives protected from enhancement debugging",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Configuration Archaeology**: Multiple framework compatibility debugging",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Alternative-first methodology for complex debugging",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Context Preservation**: Error messages include sufficient debugging context",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Will errors provide sufficient debugging information?",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] Includes appropriate logging for debugging",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Documentation Gaps**: Implementation correct but documentation incomplete",
+        "category": "process",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/d-005-d-006-quality-foundation/README.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/codex-execution-log-2025-09-03.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-developer-completion-v3.2.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-process-calibration-v3.2.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-reviewer-completion-v3.2.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-tester-completion-v3.2.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-validation-evidence-v3.2.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/final-sprint-status.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/generated-prompt-with-calibration-analysis.md",
+      "sprint-management/archive/d-005-d-006-quality-foundation/reviewer-assessment.md",
+      "sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md",
+      "sprint-management/archive/process-evolution/DEVELOPER-GUARDRAILS.md",
+      "sprint-management/archive/process-evolution/PROCESS-V3.2-ENHANCED.md",
+      "sprint-management/archive/process-evolution/PROCESS-V3.2-UPDATE-SUMMARY.md",
+      "sprint-management/archive/process-evolution/REVIEWER-GUARDRAILS.md",
+      "sprint-management/archive/process-evolution/TESTER-GUARDRAILS.md"
+    ]
+  },
+  {
+    "sprintId": "D-007",
+    "commitResults": [],
+    "grepCount": 0,
+    "fixResults": [
+      {
+        "description": "**D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/sprint-management/backlog/domains/d-005-async-correctness/README.md`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md"
+    ]
+  },
+  {
+    "sprintId": "D-008",
+    "commitResults": [],
+    "grepCount": 0,
+    "fixResults": [
+      {
+        "description": "**D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/sprint-management/backlog/domains/d-005-async-correctness/README.md`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md"
+    ]
+  },
+  {
+    "sprintId": "D-009",
+    "commitResults": [],
+    "grepCount": 7,
+    "fixResults": [
+      {
+        "description": "[ ] Verify systematic pattern elimination (not just individual fixes)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Developer Phase: Execution log and handoff package present with systematic fixes.",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Tester Phase: Tester log and verification report present; last live instance fixed; tests added.",
+        "category": "tests",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Multi-Role Validation: DEVELOPER → TESTER → REVIEWER flow identified and resolved a missed instance.",
+        "category": "tests",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Evidence-Based: Systematic greps and code review guided precise fixes.",
+        "category": "process",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Pattern 1 (Serialization): COMPLETE (numeric timestamps standardized to ISO in targeted modules; infra-correlation index fixed)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Additional Issues: [Related problems discovered and fixed]",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Pattern 2: Added Invalid Date checks and fixed resourceVersion misuse",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Pattern 1: COMPLETE after infra-correlation fix",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Evidence-based closure: NEEDS_WORK (resolve remaining live instance and consider cleaning backups)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Request a quick follow-up patch to standardize timestamp in src/v2/tools/infrastructure-correlation/index.ts:552",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Systematic pattern elimination** (not just individual fixes)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **STATE-MGMT-001**: Fix storage timestamp inconsistency (line 209)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **STATE-MGMT-002**: Fix conversation timestamp inconsistency (line 224)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **DIAGNOSTICS-001**: Fix error record timestamp inconsistency (line 233)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **READ-OPS-001**: Fix search result timestamp inconsistency (line 364)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **WRITE-OPS-001**: Fix error record timestamp inconsistency (line 163)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **WRITE-OPS-002**: Fix config apply timestamp inconsistency (line 206)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **WRITE-OPS-003**: Fix scaling operation timestamp inconsistency (line 237)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **WRITE-OPS-004**: Fix restart operation timestamp inconsistency (line 269)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **INFRA-CORR-001**: Fix infrastructure incident timestamp inconsistency (line 98)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **HEALTH-ENH-002**: Fix resourceVersion field misuse + validation (line 537)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **HEALTH-STD-001**: Fix resourceVersion field misuse + validation (line 120)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Related Issue Discovery**: Document additional issues found and fixed",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Fixed resourceVersion field misuse (not a timestamp field)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Pattern-based elimination (not individual fixes)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Systematic Approach**: Pattern-based vs individual fix approach",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Recommendation: Fix remaining issue before REVIEWER phase",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Framework Resilience**: Note how missing artifacts were resolved",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "All 14 original systematic findings are resolved with code evidence",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Multi-Role Validation**: How DEVELOPER → TESTER → REVIEWER caught and fixed issues",
+        "category": "tests",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "ESM import nuances: Ensuring `.js` suffix imports when referencing TypeScript modules from ESM contexts.",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Pattern-first repair: Addressed root causes (serialization/validation) rather than one-off fixes; produced consistent behavior across modules.",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/sprint-management/backlog/domains/d-005-async-correctness/README.md`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/completion-developer-handoff.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/completion-final-closure.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/completion-tester-verification.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/execution-log-developer.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/execution-log-reviewer.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/execution-log-tester.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/execution-tester-verification-backup.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/formal-closure-index.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/original-execution-prompt.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/prompt-archive.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/reviewer-role-closure-prompt.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/scrum-master-assessment.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/session-report-codex.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/tester-role-enhanced-prompt.md",
+      "sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md"
+    ]
+  },
+  {
+    "sprintId": "D-010",
+    "commitResults": [],
+    "grepCount": 0,
+    "fixResults": [
+      {
+        "description": "**D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/sprint-management/backlog/domains/d-005-async-correctness/README.md`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Documentation Gaps**: Implementation correct but documentation incomplete",
+        "category": "process",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md",
+      "sprint-management/archive/process-evolution/TESTER-GUARDRAILS.md"
+    ]
+  },
+  {
+    "sprintId": "D-011",
+    "commitResults": [],
+    "grepCount": 0,
+    "fixResults": [
+      {
+        "description": "**D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/sprint-management/backlog/domains/d-005-async-correctness/README.md`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md"
+    ]
+  },
+  {
+    "sprintId": "D-012",
+    "commitResults": [],
+    "grepCount": 0,
+    "fixResults": [
+      {
+        "description": "**D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/sprint-management/backlog/domains/d-005-async-correctness/README.md`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md"
+    ]
+  },
+  {
+    "sprintId": "D-013",
+    "commitResults": [],
+    "grepCount": 0,
+    "fixResults": [
+      {
+        "description": "**D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/sprint-management/backlog/domains/d-005-async-correctness/README.md`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md"
+    ]
+  },
+  {
+    "sprintId": "D-014",
+    "commitResults": [],
+    "grepCount": 0,
+    "fixResults": [
+      {
+        "description": "**D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`/sprint-management/backlog/domains/d-005-async-correctness/README.md`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Context Preservation**: Include sufficient debugging context",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Context Preservation**: Error messages include sufficient debugging context",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Will errors provide sufficient debugging information?",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] Includes appropriate logging for debugging",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Documentation Gaps**: Implementation correct but documentation incomplete",
+        "category": "process",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**P0 Tasks (Hard Gates)**: Trust boundaries, async correctness - Mandatory security validation",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Prioritize P0 domains first: D-001 (Trust Boundaries), D-005 (Async Correctness)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md",
+      "sprint-management/archive/process-evolution/DEVELOPER-GUARDRAILS.md",
+      "sprint-management/archive/process-evolution/REVIEWER-GUARDRAILS.md",
+      "sprint-management/archive/process-evolution/TESTER-GUARDRAILS.md",
+      "sprint-management/archive/v3.1/STANDUP-PROCESS-V3-MEMORY.md"
+    ]
+  },
+  {
+    "sprintId": "D-015",
+    "commitResults": [],
+    "grepCount": 1,
+    "fixResults": [
+      {
+        "description": "[ ] Branch protection confirmed: working on correct branch for new work",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/orphaned-artifacts/next-sprint-ready-outdated-planning.md",
+      "sprint-management/archive/process-evolution/INTEGRATION_UPDATE_PATCH.md",
+      "sprint-management/archive/v3.1/templates/DAILY_STANDUP_CHECKLIST.md"
+    ]
+  },
+  {
+    "sprintId": "D-022",
+    "commitResults": [],
+    "grepCount": 0,
+    "fixResults": [
+      {
+        "description": "ESM import nuances: Ensuring `.js` suffix imports when referencing TypeScript modules from ESM contexts.",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Pattern-first repair: Addressed root causes (serialization/validation) rather than one-off fixes; produced consistent behavior across modules.",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/formal-closure-index.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/scrum-master-assessment.md",
+      "sprint-management/archive/d-009-date-time-safety-2025-09-06/session-report-codex.md"
+    ]
+  },
+  {
+    "sprintId": "UNSPECIFIED",
+    "commitResults": [],
+    "grepCount": 0,
+    "fixResults": [
+      {
+        "description": "Async correctness",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Throw paths produce structured errors with correct `type` and `statusCode`",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Special focus areas (bugs, performance, testing)",
+        "category": "tests",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Secondary**: Debug TASK-002 test failures (estimated 1 hour)",
+        "category": "tests",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "\"Bug fixes\" if issues were found yesterday",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Primary**: Fix the issues first",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Focus**: \"Debugging and stabilization\"",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**Secondary**: Only attempt if fixes are solid",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**⚠️ CONDITIONAL**: Good quality, minor fixes needed",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "[ ] **Recommendations**: Clear guidance for fixes",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Both JSON and text outputs handled correctly",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Clear error messages for debugging",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "`cluster-health-v1` (meta-template dispatcher)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "d-015-014: Fix TypeScript import issues for CI (1 day)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "✅ **Triage accuracy** ≥95% correct P1/P2/P3 classification",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**8 Technical Debt Items Systematically Resolved**",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "**DEVELOPER**: All fixes implemented comprehensively",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Production-ready technical debt fixes validated",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      },
+      {
+        "description": "Rerun cycles for systematic correction (max 2 per role)",
+        "category": "code",
+        "paths": [],
+        "present": false,
+        "confidence": "low"
+      }
+    ],
+    "files": [
+      "sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-testing-requirements-v3.2.md",
+      "sprint-management/archive/legacy-v3.1/daily-standup-ai-assisted-legacy.md",
+      "sprint-management/archive/legacy-v3.1/daily-standup-manual-legacy.md",
+      "sprint-management/archive/obsolete-templates/v3.2-era/role-context-reviewer-template.md",
+      "sprint-management/archive/obsolete-templates/v3.2-era/role-context-tester-template.md",
+      "sprint-management/archive/orphaned-artifacts/tasks-current-legacy-2025-08-28-to-30.md",
+      "sprint-management/archive/process-evolution/INTEGRATION_SUMMARY.md",
+      "sprint-management/archive/sprint-2025-08-31/SPRINT_SUMMARY.md",
+      "sprint-management/archive/v3.1/PROCESS-V3.1-READY.md"
+    ]
+  }
+]

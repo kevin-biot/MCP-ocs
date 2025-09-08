@@ -1,0 +1,20 @@
+node_modules/@types/request/index.d.ts(389,84): error TS2724: '"/Users/kevinbrown/MCP-ocs/node_modules/tough-cookie/dist/cookie/index"' has no exported member named 'CookieJar'. Did you mean 'Cookie'?
+src/index.ts(29,8): error TS1192: Module '"node:fs"' has no default export.
+src/index.ts(30,8): error TS1259: Module '"node:path"' can only be default-imported using the 'allowSyntheticDefaultImports' flag
+src/index.ts(159,164): error TS2322: Type 'string' is not assignable to type '"planOnly" | "firstStepOnly" | "boundedMultiStep" | "unbounded"'.
+src/index.ts(354,61): error TS2304: Cannot find name 'ENABLE_SEQUENTIAL_THINKING'.
+src/index.ts(620,20): error TS2588: Cannot assign to 'summary' because it is a constant.
+src/index.ts(633,35): error TS2353: Object literal may only specify known properties, and 'mapping' does not exist in type 'TemplateRubrics'.
+src/lib/memory/mcp-files-memory-extension.ts(2,8): error TS1259: Module '"path"' can only be default-imported using the 'allowSyntheticDefaultImports' flag
+src/lib/memory/mcp-files-shim.d.ts(2,16): error TS2436: Ambient module declaration cannot specify relative module name.
+src/lib/memory/shared-memory.ts(8,8): error TS1192: Module '"fs/promises"' has no default export.
+src/lib/memory/shared-memory.ts(9,8): error TS1259: Module '"path"' can only be default-imported using the 'allowSyntheticDefaultImports' flag
+src/lib/memory/shared-memory.ts(11,39): error TS2307: Cannot find module '@/lib/memory/mcp-files-adapter' or its corresponding type declarations.
+src/lib/memory/shared-memory.ts(12,29): error TS2307: Cannot find module '@/lib/errors/index.js' or its corresponding type declarations.
+src/lib/openshift-client.ts(10,8): error TS1259: Module '"path"' can only be default-imported using the 'allowSyntheticDefaultImports' flag
+src/lib/templates/template-registry.ts(1,8): error TS1192: Module '"fs/promises"' has no default export.
+src/lib/templates/template-registry.ts(2,8): error TS1259: Module '"path"' can only be default-imported using the 'allowSyntheticDefaultImports' flag
+src/tools/state-mgmt/index.ts(204,44): error TS2307: Cannot find module '@/lib/types/tool-inputs' or its corresponding type declarations.
+src/tools/state-mgmt/index.ts(242,102): error TS2307: Cannot find module '@/lib/types/tool-inputs' or its corresponding type declarations.
+src/tools/state-mgmt/index.ts(298,68): error TS2307: Cannot find module '@/lib/types/tool-inputs' or its corresponding type declarations.
+src/tools/state-mgmt/index.ts(303,26): error TS2307: Cannot find module '@/lib/types/tool-inputs' or its corresponding type declarations.

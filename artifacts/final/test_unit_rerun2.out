@@ -1,0 +1,1643 @@
+PASS tests/unit/memory/mcp-ocs-memory-adapter.spec.ts
+  MCPOcsMemoryAdapter
+    ✓ initializes underlying memory manager (3 ms)
+    ✓ stores incident memory with domain/environment/severity/resource tags (1 ms)
+    ✓ filters search results by domain when provided
+    ✓ generates structured incident response with related incidents and severity (1 ms)
+    ✓ aggregates severity to critical when any incident is critical
+    ✓ reports memory availability
+    ✓ uses resource:unknown when resourceType not provided
+    ✓ passes limit into search and returns unfiltered when domainFilter missing (1 ms)
+    ✓ passes sessionId to structured response search and handles empty results
+    ✓ reports memory availability false when underlying returns false
+
+PASS tests/unit/tools/namespace-manager.test.ts
+  ToolNamespaceManager + ToolRegistry
+    ✓ enables expected namespaces in single mode with cluster active (2 ms)
+    ✓ rejects tool with wrong fullName prefix for namespace (27 ms)
+    ✓ flags conflicts via warning when conflicting tool already registered (2 ms)
+    ✓ filters tools by enabled namespaces and context requirements (1 ms)
+    ✓ sorts tools by relevance (domain boosts, prefix boosts, and priority) and penalizes writes in diagnostic phase
+
+PASS tests/unit/basic.test.ts
+  Basic Test Setup
+    ✓ should have working Jest environment (6 ms)
+    ✓ should have test utilities available (3 ms)
+    ✓ should create test configuration (1 ms)
+    ✓ should mock OpenShift responses
+
+PASS tests/unit/logging/structured-logger.test.ts
+  StructuredLogger
+    Basic Logging
+      ✓ should log debug messages when level allows (17 ms)
+      ✓ should log info messages (1 ms)
+      ✓ should log warning messages
+      ✓ should log error messages
+    Context Handling
+      ✓ should include basic context in log output
+    Error Handling
+      ✓ should handle Error objects properly (19 ms)
+    Specialized Logging Methods
+      ✓ should log tool execution with correct method (1 ms)
+      ✓ should log memory operations with correct method (1 ms)
+  withTiming utility
+    ✓ should time operations
+
+PASS tests/unit/health/health-check-manager.test.ts
+  HealthCheckManager
+    ✓ performs health check with all healthy checks (37 ms)
+    ✓ reports degraded when memory chroma is unavailable (1 ms)
+    ✓ readinessProbe true when critical checks ok; false when memory check rejects
+    ✓ livenessProbe returns alive true
+
+PASS tests/unit/openshift/openshift-client.test.ts
+  OpenShiftClient
+    ✓ should initialize correctly (5 ms)
+    ✓ should get cluster info (1 ms)
+    ✓ should get pods (6 ms)
+    ✓ should clear cache (1 ms)
+    ✓ should get health status
+
+  console.error
+    💾 Storing incident: t-1
+
+      203 |
+      204 |   private async storeIncident(args: import('@/lib/types/tool-inputs').StoreIncidentArgs): Promise<string> {
+    > 205 |     console.error(`💾 Storing incident: ${args.incidentId}`);
+          |             ^
+      206 |     
+      207 |     await this.memoryManager.storeOperational({
+      208 |       incidentId: args.incidentId,
+
+      at StateMgmtTools.storeIncident (src/tools/state-mgmt/index.ts:205:13)
+      at Object.<anonymous> (tests/unit/date-time-safety.test.ts:30:41)
+
+  console.error
+    📄 Getting logs from pod: p1, container: c1, lines: 3
+
+      345 |
+      346 |   private async getLogs(podName: string, namespace?: string, container?: string, lines?: number, since?: string, sessionId?: string): Promise<any> {
+    > 347 |     console.error(`📄 Getting logs from pod: ${podName}, container: ${container}, lines: ${lines}`);
+          |             ^
+      348 |     
+      349 |     const logOpts: { lines: number; container?: string; since?: string } = { lines: lines || 100 };
+      350 |     if (typeof container === 'string') logOpts.container = container;
+
+      at ReadOpsTools.getLogs (src/tools/read-ops/index.ts:347:13)
+      at ReadOpsTools.executeTool (src/tools/read-ops/index.ts:222:31)
+      at Object.<anonymous> (tests/unit/tools/read-ops-logs.spec.ts:28:30)
+
+PASS tests/unit/tools/read-ops-logs.spec.ts
+  oc_read_logs via gateway
+    ✓ returns logs payload and persists via gateway (42 ms)
+
+PASS tests/unit/config/schema.test.ts
+  Configuration Schema
+    Environment Validation
+      ✓ should validate environment values correctly
+      ✓ should reject clearly invalid environment values
+    Log Level Validation
+      ✓ should validate log levels
+      ✓ should reject invalid log levels
+    Tool Mode Validation
+      ✓ should validate tool modes correctly (21 ms)
+      ✓ should reject invalid tool modes
+    Schema Constants
+      ✓ should have defined schema constants
+
+  console.log
+    Demo structured response: Based on 1 similar incidents
+
+      at runAdapterDemo (tests/unit/memory/adapter-usage-example.ts:22:11)
+
+PASS tests/unit/memory/adapter-usage-example.spec.ts
+  Adapter Usage Example (mocked)
+    ✓ runs demo without errors and triggers expected calls (22 ms)
+
+  console.error
+    📋 Getting pods - namespace: default, selector: undefined
+
+      273 |
+      274 |   private async getPods(namespace?: string, selector?: string, sessionId?: string): Promise<any> {
+    > 275 |     console.error(`📋 Getting pods - namespace: ${namespace}, selector: ${selector}`);
+          |             ^
+      276 |     
+      277 |     const pods = await this.openshiftClient.getPods(namespace, selector);
+      278 |     
+
+      at ReadOpsTools.getPods (src/tools/read-ops/index.ts:275:13)
+      at Object.<anonymous> (tests/unit/date-time-safety.test.ts:57:38)
+
+PASS tests/unit/tools/pvc-binding-rca.test.ts
+  PVCBindingRCAEngine
+    ✓ should detect WaitForFirstConsumer issues with high confidence (3 ms)
+    ✓ should generate correct resolution commands for student03 scenario (1 ms)
+    ✓ should analyze evidence and weight correctly (1 ms)
+    ✓ should integrate through StorageIntelligenceTools execute() (1 ms)
+
+PASS tests/unit/tools/namespace-storage-analysis.test.ts
+  NamespaceStorageAnalyticsEngine
+    ✓ should analyze single namespace storage metrics (3 ms)
+    ✓ should perform cluster-wide analysis (1 ms)
+    ✓ should generate cost optimization recommendations
+
+PASS tests/unit/memory/adapter-entry.spec.ts
+  createOcsAdapter helper
+    ✓ initializes and returns a working adapter (1 ms)
+
+PASS tests/unit/tools/read-ops-tools.test.ts
+  ReadOpsTools
+    ✓ oc_read_get_pods returns pod summary JSON (5 ms)
+    ✓ oc_read_describe returns description JSON (1 ms)
+    ✓ oc_read_describe error JSON when method absent (1 ms)
+    ✓ oc_read_logs returns log metadata JSON (1 ms)
+    ✓ memory_search_incidents returns results JSON (1 ms)
+
+PASS tests/unit/workflow/workflow-engine.test.ts
+  WorkflowEngine minimal
+    ✓ blocks panic-prone write operation in early state (1 ms)
+    ✓ blocks tool not allowed in current state when enforcement is blocking
+
+PASS tests/unit/tools/state-mgmt-tools.test.ts
+  StateMgmtTools
+    ✓ memory_store_operational stores incident and returns success JSON (2 ms)
+    ✓ memory_search_operational returns results JSON (37 ms)
+    ✓ core_workflow_state returns a stub state JSON
+    ✓ memory_get_stats returns stats JSON with optional details (7 ms)
+    ✓ memory_search_conversations returns results JSON (1 ms)
+
+  console.error
+    🔍 Describing pod/p1 in namespace: ns1
+
+      317 |
+      318 |   private async describeResource(resourceType: string, name: string, namespace?: string, sessionId?: string): Promise<any> {
+    > 319 |     console.error(`🔍 Describing ${resourceType}/${name} in namespace: ${namespace}`);
+          |             ^
+      320 |     
+      321 |     const description = await this.openshiftClient.describeResource(resourceType, name, namespace);
+      322 |     
+
+      at ReadOpsTools.describeResource (src/tools/read-ops/index.ts:319:13)
+      at ReadOpsTools.executeTool (src/tools/read-ops/index.ts:213:31)
+      at Object.<anonymous> (tests/unit/tools/read-ops-describe.spec.ts:28:30)
+
+PASS tests/unit/tools/read-ops-describe.spec.ts
+  oc_read_describe via gateway
+    ✓ returns description payload and persists via gateway (29 ms)
+
+  console.error
+    🧠 Searching operational memory for: crashloop
+
+      394 |     domainFilter?: 'openshift' | 'kubernetes' | 'devops' | 'production'
+      395 |   ): Promise<any> {
+    > 396 |     console.error(`🧠 Searching operational memory for: ${query}`);
+          |             ^
+      397 |     // Prefer direct memory manager so unit tests can mock searchOperational
+      398 |     let results: any[] = [];
+      399 |     try {
+
+      at ReadOpsTools.searchMemory (src/tools/read-ops/index.ts:396:13)
+      at ReadOpsTools.executeTool (src/tools/read-ops/index.ts:233:31)
+      at Object.<anonymous> (tests/unit/tools/memory-search-incidents.spec.ts:37:30)
+
+  console.error
+    🧠 Searching operational memory for: crashloop
+
+      394 |     domainFilter?: 'openshift' | 'kubernetes' | 'devops' | 'production'
+      395 |   ): Promise<any> {
+    > 396 |     console.error(`🧠 Searching operational memory for: ${query}`);
+          |             ^
+      397 |     // Prefer direct memory manager so unit tests can mock searchOperational
+      398 |     let results: any[] = [];
+      399 |     try {
+
+      at ReadOpsTools.searchMemory (src/tools/read-ops/index.ts:396:13)
+      at ReadOpsTools.executeTool (src/tools/read-ops/index.ts:233:31)
+      at Object.<anonymous> (tests/unit/tools/memory-search-incidents.spec.ts:47:30)
+
+PASS tests/unit/tools/memory-search-incidents.spec.ts
+  memory_search_incidents tool via gateway
+    ✓ returns results with limit and computed relevance (27 ms)
+    ✓ applies domainFilter by passing it to gateway (1 ms)
+
+FAIL tests/unit/date-time-safety.test.ts
+  Date-Time Safety
+    ✕ StateMgmtTools: emits ISO timestamps to memory stores (127 ms)
+    ✕ ReadOpsTools: conversations stored with ISO timestamps (46 ms)
+    ✕ EnhancedNamespaceHealthChecker: returns ISO timestamp and validates dates (127 ms)
+
+  ● Date-Time Safety › StateMgmtTools: emits ISO timestamps to memory stores
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      41 |     expect(ops.length).toBeGreaterThan(0);
+      42 |     expect(conv.length).toBeGreaterThan(0);
+    > 43 |     expect(isISO(ops[0].timestamp)).toBe(true);
+         |                                     ^
+      44 |     expect(isISO(conv[0].timestamp)).toBe(true);
+      45 |   });
+      46 |
+
+      at Object.<anonymous> (tests/unit/date-time-safety.test.ts:43:37)
+
+  ● Date-Time Safety › ReadOpsTools: conversations stored with ISO timestamps
+
+    TypeError: pods.filter is not a function
+
+      283 |       pods: pods,
+      284 |       summary: {
+    > 285 |         running: pods.filter(p => p.status === 'Running').length,
+          |                       ^
+      286 |         pending: pods.filter(p => p.status === 'Pending').length,
+      287 |         failed: pods.filter(p => p.status === 'Failed').length,
+      288 |         unknown: pods.filter(p => !['Running', 'Pending', 'Failed'].includes(p.status)).length
+
+      at ReadOpsTools.getPods (src/tools/read-ops/index.ts:285:23)
+      at Object.<anonymous> (tests/unit/date-time-safety.test.ts:57:17)
+
+  ● Date-Time Safety › EnhancedNamespaceHealthChecker: returns ISO timestamp and validates dates
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/enhanced-index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/enhanced-index.ts
+      tests/unit/date-time-safety.test.ts
+
+       7 |
+       8 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    >  9 | import { nowIso, nowEpoch } from '../../../utils/time.js';
+         | ^
+      10 | import { SharedMemoryManager } from '../../../lib/memory/shared-memory';
+      11 | import { InfrastructureCorrelationChecker, InfrastructureCorrelationResult } from '../infrastructure-correlation';
+      12 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/enhanced-index.ts:9:1)
+      at tests/unit/date-time-safety.test.ts:67:48
+      at Object.<anonymous> (tests/unit/date-time-safety.test.ts:67:48)
+
+  console.error
+    📋 Getting pods - namespace: ns1, selector: app=x
+
+      273 |
+      274 |   private async getPods(namespace?: string, selector?: string, sessionId?: string): Promise<any> {
+    > 275 |     console.error(`📋 Getting pods - namespace: ${namespace}, selector: ${selector}`);
+          |             ^
+      276 |     
+      277 |     const pods = await this.openshiftClient.getPods(namespace, selector);
+      278 |     
+
+      at ReadOpsTools.getPods (src/tools/read-ops/index.ts:275:13)
+      at ReadOpsTools.executeTool (src/tools/read-ops/index.ts:205:31)
+      at Object.<anonymous> (tests/unit/tools/read-ops-get-pods.spec.ts:32:30)
+
+PASS tests/unit/tools/read-ops-get-pods.spec.ts
+  oc_read_get_pods via gateway
+    ✓ returns pod summary and persists via gateway (26 ms)
+
+FAIL tests/unit/rubrics/intelligence/memory-recall-confidence.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../../src/lib/rubrics/rubric-evaluator.js' from 'tests/unit/rubrics/intelligence/memory-recall-confidence.spec.ts'
+
+    > 1 | import { evaluateRubrics } from '../../../../src/lib/rubrics/rubric-evaluator.js';
+        | ^
+      2 | import { MEMORY_RECALL_CONFIDENCE_V1 } from '../../../../src/lib/rubrics/intelligence/memory-recall-confidence.v1.js';
+      3 |
+      4 | describe('MEMORY_RECALL_CONFIDENCE_V1', () => {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (tests/unit/rubrics/intelligence/memory-recall-confidence.spec.ts:1:1)
+
+PASS tests/unit/environment.test.ts
+  Environment Check
+    ✓ should have Node.js environment
+    ✓ should be able to create basic objects
+    ✓ should handle async operations
+
+FAIL tests/unit/tools/storage-intelligence-types.test.ts
+  ● Test suite failed to run
+
+    [96mtests/unit/tools/storage-intelligence-types.test.ts[0m:[93m19[0m:[93m15[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'reason' does not exist in type '{ phase: string; capacity?: string | undefined; accessModes?: string[] | undefined; name?: string | undefined; } | { items: Record<string, unknown>[]; warningCount?: number | undefined; } | ... 5 more ... | { ...; }'.
+
+    [7m19[0m       data: { reason: 'WaitForFirstConsumer' },
+    [7m  [0m [91m              ~~~~~~[0m
+
+      [96msrc/tools/storage-intelligence/types.ts[0m:[93m31[0m:[93m3[0m
+        [7m31[0m   data: {
+        [7m  [0m [96m  ~~~~[0m
+        The expected type comes from property 'data' which is declared here on type 'Evidence'
+    [96mtests/unit/tools/storage-intelligence-types.test.ts[0m:[93m52[0m:[93m11[0m - [91merror[0m[90m TS2322: [0mType '{ type: "events"; data: {}; reasoning: string; weight: number; }' is not assignable to type 'Evidence'.
+      Types of property 'data' are incompatible.
+        Property 'items' is missing in type '{}' but required in type '{ items: Record<string, unknown>[]; warningCount?: number | undefined; }'.
+
+    [7m52[0m           { type: 'events', data: {}, reasoning: 'WFFC detected', weight: 0.9 }
+    [7m  [0m [91m          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+      [96msrc/tools/storage-intelligence/types.ts[0m:[93m44[0m:[93m5[0m
+        [7m44[0m     items: Array<Record<string, unknown>>;
+        [7m  [0m [96m    ~~~~~[0m
+        'items' is declared here.
+
+PASS tests/unit/tools/diagnostic-cluster-health.spec.ts
+  oc_diagnostic_cluster_health via gateway
+    ✓ runs and stores via gateway (11 ms)
+
+PASS tests/unit/tools/diagnostic-namespace-health.spec.ts
+  oc_diagnostic_namespace_health via gateway
+    ✓ runs v2 handler and persists via gateway (3 ms)
+
+FAIL tests/unit/tools/sequential-thinking.spec.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/tools/sequential-thinking-with-memory.js mapped as:
+    /Users/kevinbrown/MCP-ocs/dist/src/lib/tools/$1.js.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/lib\/tools\/(.*)$/": "/Users/kevinbrown/MCP-ocs/dist/src/lib/tools/$1.js"
+      },
+      "resolver": undefined
+    }
+
+    > 1 | import { EnhancedSequentialThinkingOrchestrator } from '@/lib/tools/sequential-thinking-with-memory.js';
+        | ^
+      2 | import { UnifiedToolRegistry } from '@/lib/tools/tool-registry.js';
+      3 |
+      4 | describe('EnhancedSequentialThinkingOrchestrator - basic', () => {
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/resolver.js:759:17)
+      at Object.<anonymous> (tests/unit/tools/sequential-thinking.spec.ts:1:1)
+
+FAIL tests/unit/tools/tool-registry.test.ts
+  ● Test suite failed to run
+
+    Cannot find module './error-types.js' from 'src/lib/errors/index.ts'
+
+    Require stack:
+      src/lib/errors/index.ts
+      src/lib/tools/tool-registry.ts
+      tests/unit/tools/tool-registry.test.ts
+
+    > 1 | export * from './error-types.js';
+        | ^
+      2 |
+      3 |
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/lib/errors/index.ts:1:1)
+      at Object.<anonymous> (src/lib/tools/tool-registry.ts:10:1)
+      at Object.<anonymous> (tests/unit/tools/tool-registry.test.ts:5:1)
+
+PASS tests/unit/tools/tool-execution-tracker.test.ts
+  ToolExecutionTracker
+    ✓ executes successfully, stores memory, and records history (2 ms)
+    ✓ records failure, stores error memory, and rethrows (5 ms)
+    ✓ retrieves execution by id and fetches its memory (1 ms)
+    ✓ returns null memory when execution or memoryId is missing
+    ✓ queries relevant memories via memory manager
+    ✓ cleans up old executions and aggregates memory cleanup count (1 ms)
+
+FAIL tests/unit/rubrics/rubric-evaluator.spec.ts
+  ● Test suite failed to run
+
+    [96mtests/unit/rubrics/rubric-evaluator.spec.ts[0m:[93m1[0m:[93m84[0m - [91merror[0m[90m TS5097: [0mAn import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+
+    [7m1[0m import { evaluateWeighted, evaluateGuards, evaluateMapping, evaluateRubrics } from '../../../src/lib/rubrics/rubric-evaluator.ts';
+    [7m [0m [91m                                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    [96mtests/unit/rubrics/rubric-evaluator.spec.ts[0m:[93m69[0m:[93m12[0m - [91merror[0m[90m TS18048: [0m'out.triage' is possibly 'undefined'.
+
+    [7m69[0m     expect(out.triage.label).toBe('P1');
+    [7m  [0m [91m           ~~~~~~~~~~[0m
+    [96mtests/unit/rubrics/rubric-evaluator.spec.ts[0m:[93m70[0m:[93m12[0m - [91merror[0m[90m TS18048: [0m'out.safety' is possibly 'undefined'.
+
+    [7m70[0m     expect(out.safety.allowAuto).toBe(false); // 0.9 >= 1 fails
+    [7m  [0m [91m           ~~~~~~~~~~[0m
+    [96mtests/unit/rubrics/rubric-evaluator.spec.ts[0m:[93m71[0m:[93m12[0m - [91merror[0m[90m TS18048: [0m'out.confidence' is possibly 'undefined'.
+
+    [7m71[0m     expect(out.confidence.label).toBe('High');
+    [7m  [0m [91m           ~~~~~~~~~~~~~~[0m
+
+PASS tests/unit/tools/knowledge-seeding-tools.test.ts
+  KnowledgeSeedingTool
+    ✓ quick_seed works
+    ✓ seed works (1 ms)
+    ✓ search works
+    ✓ stats works
+    ✓ suite exposes tool and executes via wrapper
+
+FAIL tests/unit/tools/diagnostic-tools.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/tools/diagnostics/index.ts
+      tests/unit/tools/diagnostic-tools.test.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/tools/diagnostics/index.ts:18:1)
+      at Object.<anonymous> (tests/unit/tools/diagnostic-tools.test.ts:4:1)
+
+FAIL tests/unit/v2/infrastructure-correlation.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/infrastructure-correlation/index.ts'
+
+    Require stack:
+      src/v2/tools/infrastructure-correlation/index.ts
+      tests/unit/v2/infrastructure-correlation.test.ts
+
+      10 |
+      11 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 12 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      13 | import { SharedMemoryManager, MemorySearchResult } from '../../../lib/memory/shared-memory';
+      14 |
+      15 | // Core Types for Infrastructure Correlation
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/infrastructure-correlation/index.ts:12:1)
+      at Object.<anonymous> (tests/unit/v2/infrastructure-correlation.test.ts:5:1)
+
+FAIL tests/unit/schemas/cluster-health-schema.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/tools/diagnostics/index.ts
+      tests/unit/schemas/cluster-health-schema.test.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/tools/diagnostics/index.ts:18:1)
+      at Object.<anonymous> (tests/unit/schemas/cluster-health-schema.test.ts:5:1)
+
+FAIL tests/unit/schemas/tool-output-schemas.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/tools/diagnostics/index.ts
+      tests/unit/schemas/tool-output-schemas.test.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/tools/diagnostics/index.ts:18:1)
+      at Object.<anonymous> (tests/unit/schemas/tool-output-schemas.test.ts:5:1)
+
+FAIL tests/unit/diagnostics/rca_parsing_limits.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_parsing_limits.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_parsing_limits.spec.ts:1:1)
+
+PASS tests/unit/health/graceful-shutdown.test.ts
+  createShutdownHandler
+    ✓ applies defaults and overrides (1 ms)
+  TrackOperation decorator
+    ✓ wraps method to delegate to OperationTracker with composed name (1 ms)
+  GracefulShutdown flow
+    ✓ executes shutdown handlers in reverse order (1 ms)
+    ✓ OperationTracker rejects new operations when shutting down (9 ms)
+
+FAIL tests/unit/diagnostics/rca_parsing.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_parsing.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_parsing.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_tls_more.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_tls_more.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_tls_more.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_tls.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_tls.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_tls.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_rootcause.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_rootcause.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_rootcause.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_scenarios_fixtures.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_scenarios_fixtures.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_scenarios_fixtures.spec.ts:3:1)
+
+FAIL tests/unit/diagnostics/rca_memory_tags.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_memory_tags.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_memory_tags.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_memory.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_memory.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_memory.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_scenarios_matrix.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_scenarios_matrix.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_scenarios_matrix.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_network.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_network.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_network.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_events.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_events.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_events.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_probe_priority.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_probe_priority.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_probe_priority.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_golden_output.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_golden_output.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_golden_output.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/pod_health.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/tools/diagnostics/index.ts
+      tests/unit/diagnostics/pod_health.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/tools/diagnostics/index.ts:18:1)
+      at Object.<anonymous> (tests/unit/diagnostics/pod_health.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_end_to_end.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_end_to_end.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_end_to_end.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/cluster_health.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/tools/diagnostics/index.ts
+      tests/unit/diagnostics/cluster_health.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/tools/diagnostics/index.ts:18:1)
+      at Object.<anonymous> (tests/unit/diagnostics/cluster_health.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_rootcause_more.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_rootcause_more.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_rootcause_more.spec.ts:1:1)
+
+PASS tests/unit/contract/beta-tools-contract.test.ts
+  Beta tool contract
+    ✓ validated tools set remains stable
+
+FAIL tests/unit/memory/shared-memory-json.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/errors/index.js mapped as:
+    /Users/kevinbrown/MCP-ocs/dist/src/lib/errors/$1.js.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/lib\/errors\/(.*)$/": "/Users/kevinbrown/MCP-ocs/dist/src/lib/errors/$1.js"
+      },
+      "resolver": undefined
+    }
+
+      10 | import { createHash } from 'crypto';
+      11 | import { MCPFilesChromaAdapter } from '@/lib/memory/mcp-files-adapter';
+    > 12 | import { MemoryError } from '@/lib/errors/index.js';
+         | ^
+      13 |
+      14 | // Types
+      15 | export interface ConversationMemory {
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/resolver.js:759:17)
+      at Object.<anonymous> (src/lib/memory/shared-memory.ts:12:1)
+      at Object.<anonymous> (tests/unit/memory/shared-memory-json.test.ts:5:1)
+
+PASS tests/unit/diagnostics/ocwrapper_retry.spec.ts (6.453 s)
+  OcWrapperV2 retry behavior
+    ✓ retries transient failures before succeeding (3009 ms)
+
+PASS tests/unit/v2/oc-wrapper-v2.test.ts (18.554 s)
+  OcWrapperV2
+    ✓ executes and returns OcResult with caching behavior (3 ms)
+    ✓ injects namespace and parses JSON getters (1 ms)
+    ✓ handles JSON parse errors from getters (6 ms)
+    ✓ gracefully falls back for getRoutes/getIngress when not available (6006 ms)
+    ✓ validateNamespaceExists returns false on error (3003 ms)
+    ✓ throws timeout and generic errors from executeOc (6007 ms)
+    ✓ validates args and namespace formatting (3 ms)
+
+Summary of all failing tests
+FAIL tests/unit/date-time-safety.test.ts
+  ● Date-Time Safety › StateMgmtTools: emits ISO timestamps to memory stores
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      41 |     expect(ops.length).toBeGreaterThan(0);
+      42 |     expect(conv.length).toBeGreaterThan(0);
+    > 43 |     expect(isISO(ops[0].timestamp)).toBe(true);
+         |                                     ^
+      44 |     expect(isISO(conv[0].timestamp)).toBe(true);
+      45 |   });
+      46 |
+
+      at Object.<anonymous> (tests/unit/date-time-safety.test.ts:43:37)
+
+  ● Date-Time Safety › ReadOpsTools: conversations stored with ISO timestamps
+
+    TypeError: pods.filter is not a function
+
+      283 |       pods: pods,
+      284 |       summary: {
+    > 285 |         running: pods.filter(p => p.status === 'Running').length,
+          |                       ^
+      286 |         pending: pods.filter(p => p.status === 'Pending').length,
+      287 |         failed: pods.filter(p => p.status === 'Failed').length,
+      288 |         unknown: pods.filter(p => !['Running', 'Pending', 'Failed'].includes(p.status)).length
+
+      at ReadOpsTools.getPods (src/tools/read-ops/index.ts:285:23)
+      at Object.<anonymous> (tests/unit/date-time-safety.test.ts:57:17)
+
+  ● Date-Time Safety › EnhancedNamespaceHealthChecker: returns ISO timestamp and validates dates
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/enhanced-index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/enhanced-index.ts
+      tests/unit/date-time-safety.test.ts
+
+       7 |
+       8 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    >  9 | import { nowIso, nowEpoch } from '../../../utils/time.js';
+         | ^
+      10 | import { SharedMemoryManager } from '../../../lib/memory/shared-memory';
+      11 | import { InfrastructureCorrelationChecker, InfrastructureCorrelationResult } from '../infrastructure-correlation';
+      12 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/enhanced-index.ts:9:1)
+      at tests/unit/date-time-safety.test.ts:67:48
+      at Object.<anonymous> (tests/unit/date-time-safety.test.ts:67:48)
+
+FAIL tests/unit/rubrics/intelligence/memory-recall-confidence.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../../src/lib/rubrics/rubric-evaluator.js' from 'tests/unit/rubrics/intelligence/memory-recall-confidence.spec.ts'
+
+    > 1 | import { evaluateRubrics } from '../../../../src/lib/rubrics/rubric-evaluator.js';
+        | ^
+      2 | import { MEMORY_RECALL_CONFIDENCE_V1 } from '../../../../src/lib/rubrics/intelligence/memory-recall-confidence.v1.js';
+      3 |
+      4 | describe('MEMORY_RECALL_CONFIDENCE_V1', () => {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (tests/unit/rubrics/intelligence/memory-recall-confidence.spec.ts:1:1)
+
+FAIL tests/unit/tools/storage-intelligence-types.test.ts
+  ● Test suite failed to run
+
+    [96mtests/unit/tools/storage-intelligence-types.test.ts[0m:[93m19[0m:[93m15[0m - [91merror[0m[90m TS2353: [0mObject literal may only specify known properties, and 'reason' does not exist in type '{ phase: string; capacity?: string | undefined; accessModes?: string[] | undefined; name?: string | undefined; } | { items: Record<string, unknown>[]; warningCount?: number | undefined; } | ... 5 more ... | { ...; }'.
+
+    [7m19[0m       data: { reason: 'WaitForFirstConsumer' },
+    [7m  [0m [91m              ~~~~~~[0m
+
+      [96msrc/tools/storage-intelligence/types.ts[0m:[93m31[0m:[93m3[0m
+        [7m31[0m   data: {
+        [7m  [0m [96m  ~~~~[0m
+        The expected type comes from property 'data' which is declared here on type 'Evidence'
+    [96mtests/unit/tools/storage-intelligence-types.test.ts[0m:[93m52[0m:[93m11[0m - [91merror[0m[90m TS2322: [0mType '{ type: "events"; data: {}; reasoning: string; weight: number; }' is not assignable to type 'Evidence'.
+      Types of property 'data' are incompatible.
+        Property 'items' is missing in type '{}' but required in type '{ items: Record<string, unknown>[]; warningCount?: number | undefined; }'.
+
+    [7m52[0m           { type: 'events', data: {}, reasoning: 'WFFC detected', weight: 0.9 }
+    [7m  [0m [91m          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+      [96msrc/tools/storage-intelligence/types.ts[0m:[93m44[0m:[93m5[0m
+        [7m44[0m     items: Array<Record<string, unknown>>;
+        [7m  [0m [96m    ~~~~~[0m
+        'items' is declared here.
+
+FAIL tests/unit/tools/sequential-thinking.spec.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/tools/sequential-thinking-with-memory.js mapped as:
+    /Users/kevinbrown/MCP-ocs/dist/src/lib/tools/$1.js.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/lib\/tools\/(.*)$/": "/Users/kevinbrown/MCP-ocs/dist/src/lib/tools/$1.js"
+      },
+      "resolver": undefined
+    }
+
+    > 1 | import { EnhancedSequentialThinkingOrchestrator } from '@/lib/tools/sequential-thinking-with-memory.js';
+        | ^
+      2 | import { UnifiedToolRegistry } from '@/lib/tools/tool-registry.js';
+      3 |
+      4 | describe('EnhancedSequentialThinkingOrchestrator - basic', () => {
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/resolver.js:759:17)
+      at Object.<anonymous> (tests/unit/tools/sequential-thinking.spec.ts:1:1)
+
+FAIL tests/unit/tools/tool-registry.test.ts
+  ● Test suite failed to run
+
+    Cannot find module './error-types.js' from 'src/lib/errors/index.ts'
+
+    Require stack:
+      src/lib/errors/index.ts
+      src/lib/tools/tool-registry.ts
+      tests/unit/tools/tool-registry.test.ts
+
+    > 1 | export * from './error-types.js';
+        | ^
+      2 |
+      3 |
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/lib/errors/index.ts:1:1)
+      at Object.<anonymous> (src/lib/tools/tool-registry.ts:10:1)
+      at Object.<anonymous> (tests/unit/tools/tool-registry.test.ts:5:1)
+
+FAIL tests/unit/rubrics/rubric-evaluator.spec.ts
+  ● Test suite failed to run
+
+    [96mtests/unit/rubrics/rubric-evaluator.spec.ts[0m:[93m1[0m:[93m84[0m - [91merror[0m[90m TS5097: [0mAn import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+
+    [7m1[0m import { evaluateWeighted, evaluateGuards, evaluateMapping, evaluateRubrics } from '../../../src/lib/rubrics/rubric-evaluator.ts';
+    [7m [0m [91m                                                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    [96mtests/unit/rubrics/rubric-evaluator.spec.ts[0m:[93m69[0m:[93m12[0m - [91merror[0m[90m TS18048: [0m'out.triage' is possibly 'undefined'.
+
+    [7m69[0m     expect(out.triage.label).toBe('P1');
+    [7m  [0m [91m           ~~~~~~~~~~[0m
+    [96mtests/unit/rubrics/rubric-evaluator.spec.ts[0m:[93m70[0m:[93m12[0m - [91merror[0m[90m TS18048: [0m'out.safety' is possibly 'undefined'.
+
+    [7m70[0m     expect(out.safety.allowAuto).toBe(false); // 0.9 >= 1 fails
+    [7m  [0m [91m           ~~~~~~~~~~[0m
+    [96mtests/unit/rubrics/rubric-evaluator.spec.ts[0m:[93m71[0m:[93m12[0m - [91merror[0m[90m TS18048: [0m'out.confidence' is possibly 'undefined'.
+
+    [7m71[0m     expect(out.confidence.label).toBe('High');
+    [7m  [0m [91m           ~~~~~~~~~~~~~~[0m
+
+FAIL tests/unit/tools/diagnostic-tools.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/tools/diagnostics/index.ts
+      tests/unit/tools/diagnostic-tools.test.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/tools/diagnostics/index.ts:18:1)
+      at Object.<anonymous> (tests/unit/tools/diagnostic-tools.test.ts:4:1)
+
+FAIL tests/unit/v2/infrastructure-correlation.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/infrastructure-correlation/index.ts'
+
+    Require stack:
+      src/v2/tools/infrastructure-correlation/index.ts
+      tests/unit/v2/infrastructure-correlation.test.ts
+
+      10 |
+      11 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 12 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      13 | import { SharedMemoryManager, MemorySearchResult } from '../../../lib/memory/shared-memory';
+      14 |
+      15 | // Core Types for Infrastructure Correlation
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/infrastructure-correlation/index.ts:12:1)
+      at Object.<anonymous> (tests/unit/v2/infrastructure-correlation.test.ts:5:1)
+
+FAIL tests/unit/schemas/cluster-health-schema.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/tools/diagnostics/index.ts
+      tests/unit/schemas/cluster-health-schema.test.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/tools/diagnostics/index.ts:18:1)
+      at Object.<anonymous> (tests/unit/schemas/cluster-health-schema.test.ts:5:1)
+
+FAIL tests/unit/schemas/tool-output-schemas.test.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/tools/diagnostics/index.ts
+      tests/unit/schemas/tool-output-schemas.test.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/tools/diagnostics/index.ts:18:1)
+      at Object.<anonymous> (tests/unit/schemas/tool-output-schemas.test.ts:5:1)
+
+FAIL tests/unit/diagnostics/rca_parsing_limits.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_parsing_limits.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_parsing_limits.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_parsing.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_parsing.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_parsing.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_tls_more.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_tls_more.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_tls_more.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_tls.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_tls.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_tls.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_rootcause.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_rootcause.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_rootcause.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_scenarios_fixtures.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_scenarios_fixtures.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_scenarios_fixtures.spec.ts:3:1)
+
+FAIL tests/unit/diagnostics/rca_memory_tags.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_memory_tags.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_memory_tags.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_memory.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_memory.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_memory.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_scenarios_matrix.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_scenarios_matrix.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_scenarios_matrix.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_network.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_network.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_network.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_events.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_events.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_events.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_probe_priority.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_probe_priority.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_probe_priority.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_golden_output.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_golden_output.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_golden_output.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/pod_health.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/tools/diagnostics/index.ts
+      tests/unit/diagnostics/pod_health.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/tools/diagnostics/index.ts:18:1)
+      at Object.<anonymous> (tests/unit/diagnostics/pod_health.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_end_to_end.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_end_to_end.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_end_to_end.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/cluster_health.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/tools/diagnostics/index.ts
+      tests/unit/diagnostics/cluster_health.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/tools/diagnostics/index.ts:18:1)
+      at Object.<anonymous> (tests/unit/diagnostics/cluster_health.spec.ts:1:1)
+
+FAIL tests/unit/diagnostics/rca_rootcause_more.spec.ts
+  ● Test suite failed to run
+
+    Cannot find module '../../../utils/time.js' from 'src/v2/tools/check-namespace-health/index.ts'
+
+    Require stack:
+      src/v2/tools/check-namespace-health/index.ts
+      src/v2/tools/rca-checklist/index.ts
+      tests/unit/diagnostics/rca_rootcause_more.spec.ts
+
+      11 |
+      12 | import { OcWrapperV2 } from '../../lib/oc-wrapper-v2';
+    > 13 | import { nowEpoch } from '../../../utils/time.js';
+         | ^
+      14 | import type { PodHealthSummary, PVCHealthSummary, RouteHealthSummary } from './types';
+      15 |
+      16 | export interface NamespaceHealthInput {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/resolver.js:427:11)
+      at Object.<anonymous> (src/v2/tools/check-namespace-health/index.ts:13:1)
+      at Object.<anonymous> (src/v2/tools/rca-checklist/index.ts:17:1)
+      at Object.<anonymous> (tests/unit/diagnostics/rca_rootcause_more.spec.ts:1:1)
+
+FAIL tests/unit/memory/shared-memory-json.test.ts
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module @/lib/errors/index.js mapped as:
+    /Users/kevinbrown/MCP-ocs/dist/src/lib/errors/$1.js.
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/^@\/lib\/errors\/(.*)$/": "/Users/kevinbrown/MCP-ocs/dist/src/lib/errors/$1.js"
+      },
+      "resolver": undefined
+    }
+
+      10 | import { createHash } from 'crypto';
+      11 | import { MCPFilesChromaAdapter } from '@/lib/memory/mcp-files-adapter';
+    > 12 | import { MemoryError } from '@/lib/errors/index.js';
+         | ^
+      13 |
+      14 | // Types
+      15 | export interface ConversationMemory {
+
+      at createNoMappedModuleFoundError (node_modules/jest-resolve/build/resolver.js:759:17)
+      at Object.<anonymous> (src/lib/memory/shared-memory.ts:12:1)
+      at Object.<anonymous> (tests/unit/memory/shared-memory-json.test.ts:5:1)
+
+
+Test Suites: 28 failed, 1 skipped, 27 passed, 55 of 56 total
+Tests:       3 failed, 3 skipped, 99 passed, 105 total
+Snapshots:   0 total
+Time:        18.984 s, estimated 19 s
+Ran all test suites matching /tests\/unit/i.

@@ -1,0 +1,10 @@
+{
+  "namespace": "student03",
+  "status": "degraded",
+  "duration": "360ms",
+  "pods": "1/3 ready",
+  "pvcs": "1/2 bound",
+  "routes": "2 configured",
+  "criticalEvents": 0,
+  "suspicionsCount": 3
+}

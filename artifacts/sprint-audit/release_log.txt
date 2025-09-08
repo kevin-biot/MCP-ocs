@@ -1,0 +1,175 @@
+03639e4c docs: add Sequential Thinking integration analysis and Qwen validation
+25023252 docs: add vector storage optimization analysis task for tomorrow
+1adf61ea fix(merge): resolve .gitignore and package.json conflicts; keep capture scripts and real harness scripts
+57ebcdb8 chore: ignore test tmp outputs
+bf420361 test(pod): add unit tests for pod health discovery and specific-pod mode\n\n- Discovery: prioritization order and max detailed cap\n- Specific pod: events/health fields and basic recommendations plumbing
+5cda535e perf(oc): reduce event volume and raise buffers for beta
+407a0852 feat(diagnostics): complete pod health with discovery and prioritization\n\n- oc_diagnostic_pod_health now supports two modes: specific pod or discovery\n- Added params: namespaceScope, focusNamespace, focusPod, focusStrategy, depth, maxPodsToAnalyze, includeLogs, logLines\n- Cluster-wide pod prioritization by crashloops, image pull errors, pending, OOM, restarts\n- Detailed analysis for top-K (bounded) with optional logs/events and resource insights\n- Memory integration for discovery summaries
+9a8b33ad feat(diagnostics): add namespace prioritization and focus params to cluster health
+625bd53b feat(types,safety): eliminate interface hygiene debt across tools
+f56580e0 sync: Complete sprint-management framework from main
+876edb66 feat: Complete D-009 sprint closure with ESLint enforcement
+b67a3d8e feat(time): add nowEpoch() and migrate health checkers to use it; escalate ESLint rule to error in tools paths
+a29a8161 feat(util): add nowIso() time utility and migrate targeted modules to use it
+4157b626 chore(lint): add ESLint guard against Date.now() for timestamps (D-009)
+a426c6f2 test(tester): D-009 Enhanced validation
+5836235b feat: Complete workflow integration for systematic framework sync
+83e5154a backport: Add systematic evidence files from main
+07cf5a50 backport: Add Process v3.3 and review-prompt-lib structure
+dbcbf79c save: D-009 execution log updates from Codex sprint
+7c2f798d feat: D-009 Date-Time Safety - SYSTEMATIC PROBLEM RESOLUTION (Process v3.3)
+6be586de chore: close D-005 + D-006 sprint (final status archived)
+5b577e72 test(node): add Node.js native tests for D-005/D-006 (errors, timeouts, registry) and script test:unit:node
+63161f5c test(dist): switch JS unit tests to CommonJS require + dynamic import of ESM dist modules to satisfy Jest CJS runner
+cebea9b1 test(dist): add jest.dist.config.cjs and script test:unit:dist to run JS unit tests against compiled dist without ts-jest
+5e221c00 chore(scripts): add test:unit:esm to build then run Jest with ESM support
+c688265a test: convert new unit tests to JS and import compiled dist outputs to avoid TS/ESM parsing issues locally
+a29f36c8 test: point unit tests to compiled dist JS to avoid TS/ESM parsing issues under Jest
+c73d1170 test(jest): map alias @/lib/errors, @/utils, @/lib/tools to dist JS to avoid TS parsing under ESM; keep fallback TS mappings
+dc66ec74 test(jest): add mappers for ../../utils/*.js and ../errors/*.js to TS sources to fix ESM TS imports in tests
+458b6c17 fix(tests): resolve TS exactOptionalPropertyTypes in error serialization; improve withTimeout to enforce deadlines; add Jest mappers for relative .js imports to TS sources
+1ec9b16a test: add unit tests for error serialization, withTimeout, and registry timeouts\n\n- tests/unit/errors/error-serialization.spec.ts\n- tests/unit/utils/with-timeout.spec.ts\n- tests/unit/tools/registry-timeout.spec.ts\n- scripts/smoke/smoke-registry-timeout.ts + npm script smoke:tool-timeout
+5e715e4c review: Complete D-005 + D-006 REVIEWER final assessment with strategic evaluation
+9dccbc39 test: Complete D-005 + D-006 TESTER validation with comprehensive evidence
+1c5128c2 feat: D-005 + D-006 - DEVELOPER phase complete (Process v3.2)
+606a6089 feat: D-005 async correctness + D-006 error taxonomy foundations
+46791db3 chore: process v3.2 init + Phase 1 baseline logs\n\n- Created canonical error classes (foundation)\n- Added async timeout helpers with AbortSignal support\n- Hardened tool-registry with timeouts + structured errors\n- Improved OpenShift client robustness (allSettled, error typing)\n- Added timeouts to ChromaDB HTTP calls\n- Introduced simple mutex in shared memory writes\n- Replaced silent catches with contextual logs (partial)
+c45ba709  feat: Complete ADR-to-feature coverage gap remediation + Phase 1 architecture docs
+d1009fe1 feat: Complete ADR-to-feature coverage gap analysis and remediation
+1cd965b0 feat(sprint-mgmt): backlog clarification + process v3.2 refinement BACKLOG STATUS CLARIFIED: - Separate Analysis vs Implementation status columns - D-001 to D-004 confirmed as IMPLEMENTED (23/108 tasks) - D-005 to D-015 corrected to PLANNED (85 tasks ready) - Added daily maintenance process documentation
+62a3c2d4 feat(sprint): Complete D-002 EPIC-004 architecture validation with Process v3.2
+cdb233e2 hotfix: Validate Qwen-reported ContextExtractor.generateTags typo — not present
+1af22aac review: D-002 EPIC-004 - REVIEWER phase complete (Process v3.2)
+f48f1283 test: D-002 EPIC-004 - TESTER phase complete (Process v3.2)
+bcd2f918 feat: D-002 EPIC-004 - DEVELOPER phase complete (Process v3.2)
+e9ffb0e4 feat: Process v3.2 Enhanced Framework - Ferrari Performance Tuning Complete
+8e7f592f review: D-002 EPIC-003 REVIEWER assessment complete
+595c01b2 test: D-002 EPIC-003 TESTER validation complete (APPROVE)
+2121df46 test: D-002 EPIC-003 TESTER validation complete
+31d48e1c feat: D-002 EPIC-003 TypeScript hardening - DEVELOPER phase complete
+dbdcd828 merge: integrate sprint-management from main
+831364f5 chore: ignore memory runtime files
+efd4ec7d feat: add sprint-management process infrastructure
+8327c387 feat: deterministic template engine + docs reorganization + sprint-management
+24dbdbb7 feat(cluster-health): add operator/ingress/monitoring degradations + SLO High mapping\n\n- Template: describe IngressController; add selectors for CO Degraded=True, IC replicas short, monitoring rollout failures\n- Vocab/Mapping: add operator_degraded + monitoring_stack_degraded\n- Engine: include new strong signals; set clusterHealthDegraded input for SLO\n- Rubric: extend SLO mapping to include clusterHealthDegraded -> HIGH\n- Goldens: add cluster-health-{ingress-degraded,monitoring-degraded,clean}.json\n- Comparator: include new targets + fabricated exec + SLO inputs\n- Parity suite: add .env/CLI overrides for real namespaces/pods
+c40895ba feat(infra+rubrics+templates): add schemaVersion and fields to infra tools; add capacity-triage.v1, storage-affinity.v1, scale-instability.v1; new scale-instability template; enhance pvc-binding selectors; extend coverage/goldens; badges + recall in formatter and summary
+e5347fcb test(e2e): add zone-conflict e2e harness; npm script e2e:te-zone
+ce5ed2c7 test(e2e): add scheduling-failures e2e harness; npm script e2e:te-scheduling
+9792b168 test(smoke): add SMOKE_PRESET + EXPECTED_LABEL to infra smokes; label-only assertions for CI matrices (non-gating)
+905fcdce feat(infra): add smoke for oc_read_nodes/machinesets; scheduling-failures bounded path: derive nodeFromEvent and apply for node describe; add npm script
+42501383 chore(ci+formatter): add INFRA_LIVE_READS placeholder to coverage/goldens; show infra rubric badges in formatter summary (visual only)
+00e6be41 feat(templates+infra): zone-conflict template, tighten scheduling-failures; scaffold infra rubrics/tools; extend coverage+goldens; docs+ledger
+1c300bfa fix(memory): initialize SharedMemoryManager on server start to create conversations/operational dirs (fix ENOENT when SHARED_MEMORY_DIR points to non-existent path)
+5b5cca01 fix(e2e): add line-buffering across chunks to parse JSON-RPC responses split across writes
+852bf119 fix(e2e): correct newline escaping and splitting for MCP stdio JSON frames
+4b5d06e8 fix(e2e): rewrite e2e script send() to write JSON+newline in one call; remove stray newline literal
+24c667db test(e2e): add e2e script to exercise Template Engine via MCP stdio (ingress-pending) and npm script e2e:te-ingress
+c847c64f test(templates): add smokes for scheduling-failures, crashloopbackoff, pvc-binding, route-5xx and npm scripts to run them
+bdd673f2 feat(templates): deepen evidence evaluation (JSONPath/YQ/regex subset) and use executed results; expand block mappings; add smoke for template engine ingress-pending
+464802eb test(templates): add smoke for template engine (ingress-pending) and npm script retest:smoke:te-ingress
+e2b6a65f feat(templates): add block mapping in TemplateEngine and pass context vars; evaluate evidence completeness; wire to sequential + standard entries
+a2671387 feat(sequential): wire Template Engine to sequential server behind ENABLE_TEMPLATE_ENGINE; update status for blocks/boundaries
+6aa7be9e feat(template-engine): wire Template Engine behind ENABLE_TEMPLATE_ENGINE flag in src/index.ts (template_diagnostic path via triageTarget)
+7d97b9f9 feat(templates): add blocks (infra/workload), block registry, and boundary enforcer stub
+68f3a350 feat(templates): scaffold deterministic Template Registry, Engine, Evidence Validator, and initial JSON templates (scheduling-failures, ingress-pending, crashloop-analysis, pvc-binding, route-5xx); update status
+051f79c8 docs: Add ADR-013 and deterministic template engine implementation plan
+aae57e3f fix(sequential): ensure plan seed (planOnly, triageTarget=ingress) before auto-continue; strengthen pending detection and add explicit console trace
+0ff35f7b feat(sequential): auto-execute mini-plan (continuePlan stepBudget=3) after bounded cluster_health detects ingress pending; add console trace and shim telemetry
+ed284dac feat(shim+triage): strengthen pre-orchestration shim (ingress defaults, original tool chaining, telemetry) and persist ingress-pending mini-plan from cluster health (bounded)
+f9b774b9 feat(sequential): red-flag mini-plan persistence for taints/anti-affinity; reorder ingress template; aggressive default boundedMultiStep for triageTarget=ingress; add telemetry metadata
+16f3574b feat(sequential): add modes (planOnly/firstStepOnly/boundedMultiStep/unbounded), continuePlan with pointer, and ingress triage template; update tool schema to accept mode flags
+85c9d2cd fix(sequential): remove duplicate sequential_thinking registration to avoid tool name conflict
+47fccb0e feat(diagnostics): add bounded triage to oc_diagnostic_cluster_health with namespaceList, bounded, and maxRuntimeMs; skip system sweeps when bounded
+6a8cb17b fix(retest): point smoke paths to scripts/smoke instead of tmp in retest script
+e89a4445 chore(smoke): move smoke tests to scripts/smoke and update npm scripts to avoid clean deleting tmp
+6c270da6 docs: add RCA policy, bounded RCA defaults, and intent examples to sequential section
+f3a5d3b0 feat(sequential): RCA intent detection, bounded RCA gating, escalation signals; smoke tests and docs prep
+bb817b0c feat(sequential): ingress routing + bounded defaults + plan persistence; README usage section
+90162217 feat(sequential_thinking schema): accept boolean/number as strings and coerce; reduces LLM friction
+b901a8f8 feat(orchestrator): add bounded mode, session-aware context, suggestions, smart step skipping, and first-step-only option; expose flags via sequential_thinking tool
+30d16141 docs(real): add latest capture session examples
+953cfd75 docs(real): add real cluster examples (cluster, namespace, RCA); ignore capture logs/raw\n\nchore(ignore): add memory/** and tmp/startup.* to .gitignore\n\nbuild(dist): sync dist outputs with CAPTURE_MODE and normalization fixes
+c9ec0441 fix(ts): add typed instance logger on ChromaMemoryManager and remove prototype patch to satisfy TS
+e0f599b5 fix(capture): avoid stdout logs in capture mode (CAPTURE_MODE); route logs to stderr; make capture script robust to non-JSON and write .raw + .log
+2af7d32a chore(capture): add real-output capture helpers and docs; timestamped JSONs under docs/real-examples/
+82827f97 test(quiet): fix TS cast syntax for console stubs
+43af22f2 fix(diagnostics): normalize namespace/pod health outputs for schema compliance (stable timestamp, summary types, dependencies/resources shapes)
+3962f28b ci: add schema+contract workflow with mock harness smoke (USE_MOCK_OC)
+076b9075 test(quiet): stub console in schema tests for quiet output under mocks
+111c1e8d test(mocks): add pod fetch + namespace validation to MockOcWrapperV2; create conversations dir for state tests
+edc27892 test: remove duplicate fs/path imports in schema tests
+98e1cb59 test(mocks): ensure NamespaceHealthChecker uses mock oc; precreate memory directories for state ops
+2a427647 test(config): map ./v2/*.js imports to TS for v2-integration in Jest
+78ccbb4d test(config): map ESM .js -> .ts for src in Jest; use @ alias; ignore local build/startup logs
+21d7190b test: import from built dist for ESM resolution stability in CI
+3cb3842a test: fix module paths for ts-jest ESM mapping; remove Ajv strict flag
+a48ca9ef build: compile dist with ESM fixes and new beta/bundle outputs
+17e5b77b test(schemas): add AJV validators, mocks, and fixtures; mock-aware harnesses\n\n- Add JSON Schemas for tool outputs and AJV-based tests\n- Introduce MockOcWrapperV2 and MockOpenShiftClient\n- Add demo fixtures for namespaces, pods, events, etc.\n- Make tmp harness scripts USE_MOCK_OC aware for CI runs\n- Add test:schemas npm script
+3af2a7c5 fix(esm): ensure .js import extensions and correct entry points
+3be6f83d docs: add comprehensive documentation suite for v0.8.0-beta-2
+49267de8 docs: add comprehensive documentation suite for v0.8.0-beta-2
+8d34262b test(rca): add scenario fixture loader and more precedence cases; TLS corner cases; probe prioritization; golden JSON test
+18fbde96 test(rca): add TLS corner cases, probe prioritization, golden JSON test; docs: scenario matrix how-to
+6f280da2 test(rca): add TLS route failure detection; retry behavior test; scenario matrix; real RCA harness script
+71ced3a1 test(rca): expand unit coverage for root causes (resource pressure, app instability, NP+PVC), quota parsing, and memory tags
+9fc4cbc3 test(rca): end-to-end mocked test ensures JSON-only output, rootCause, and memory tags\n\n- Mocks oc responses across RCA stages\n- Verifies rootCause=service_no_backends and no markdown by default\n- Ensures memory storage includes root_cause:<type> tag
+31f252a9 feat(rca): include root cause in markdown + tests\n\n- Markdown report prints root cause type/summary/confidence and top evidence\n- Add tests for quota/probe cases and markdown section
+795d7f38 feat(rca): expand root cause heuristics (network policy, DNS, quota, probe)\n\n- Detect NetworkPolicy blocks (general and storage-specific)\n- Recognize DNS resolution failures (no such host/NXDOMAIN/SERVFAIL)\n- Flag resource quota exceeded as root cause\n- Identify liveness/readiness probe failures\n- Unit tests for NP block and DNS failure
+f272e69e feat(rca-phase2+): intelligent root cause derivation\n\n- Add rootCause field to RCA result with type/summary/confidence/evidence\n- Derive root cause from checklist findings (storage, endpoints, image pull, crashloops/oom, scheduling, nodes)\n- Tag memory records with root_cause:<type>\n- Unit tests for root cause scenarios
+e8116c53 feat(rca-phase2): modern memory integration, enhanced events, and retry defaults\n\n- Use ToolMemoryGateway to persist RCA results (consistent with other diagnostics)\n- Enhanced event pattern recognition (CrashLoopBackOff, ImagePullBackOff, OOMKilled, FailedScheduling, Evicted, etc.)\n- Default retries in OcWrapperV2 increased to 3 with exponential backoff\n- Unit tests: events recognition, memory persistence path
+6d5b5647 docs(changelog): log RCA reliability fixes for pending v0.8.0-beta-2
+82bfb80a fix(rca): robust resource parsing and endpoint validation\n\n- parseResourceValue: correct CPU millicores and comprehensive memory units (Ki/Mi/Gi/Ti/Pi/Ei, decimal K/M/G/T/P/E)\n- Network check: fetch endpoints and flag services without active endpoints\n- Unit tests: parsing and network endpoint coverage
+d1bbc6e3 docs: add MCP client configuration examples and AI integration guide
+bcb8ab96 docs: replace outdated README with comprehensive v0.8.0-beta-1 documentation
+d6fc7e51 chore(harness): add real namespace diagnostics runner and npm script\n\n- tests/integration/real/namespace-health-real.ts: runs enhanced ns health via local oc (read-only)\n- package.json: add itest:real:ns script for quick ns checks
+75233f13 docs: add comprehensive README for v0.8.0-beta-1 release
+9002d4f7 perf(oc): reduce event volume and raise buffers\n\n- OcWrapperV2.getEvents: add --field-selector type!=Normal to shrink event payloads\n- OcWrapperV2.exec: increase maxBuffer to 16MB to avoid stdout limit\n- OpenShiftClient.execSync buffer raised to 64MB for large outputs\n- Real harness: normalize invalid scope and warn, default to 'all'
+a41bf47d test(harness): add real oc integration harness and sanity script\n\n- tests/integration/real/cluster-health-real.ts: runs enhanced cluster_health via local oc (read-only)\n- scripts/real-oc-sanity.sh: quick oc sanity checks (version, namespaces, degraded operators)\n- package.json: add real:sanity and itest:real:cluster-health scripts
+e181f996 feat(diagnostics): add namespace prioritization and focus params to cluster health
+693d3762 fix(diagnostics): broaden namespace discovery to include all system namespaces
+78624258 feat: implement v0.8.0-beta with automated release workflow
+8389fd15 feat: implement memory-focused MCP-ocs with Chroma v2 integration
+e9791162 test(tools): add unit coverage for diagnostics/read-ops/state-mgmt/knowledge\n\nAdd JSON-mode SharedMemoryManager tests and minimal WorkflowEngine guidance/blocked behavior tests.\nSilence logs in tests; fix ESM imports earlier to keep ts-jest happy.
+a41fb7b4 feat(roadmap): Complete implementation task roadmap with comprehensive CHANGELOG
+6175cc93 feat(improvement): Comprehensive Tool Improvement Phase Plan
+8bcebcfc feat(architecture): Complete Fast RCA Framework ADR trilogy
+b94b330a test(health-check): add tests for performHealthCheck, readiness, liveness; fix logger import for Jest resolution
+368cf027 test(graceful-shutdown): add tests for handler order, decorator, and tracker rejection; fix import path for logger
+297d03c5 test(v2-oc-wrapper): minimal tests for executeOc, caching, fallbacks, and validations
+f1b3fcd4 test(v2-infra-correlation): add helper and wrapper tests for zone extraction, PV conflict detection, and tool envelopes
+3f2c0fb2 test(tool-execution-tracker): cover success/error paths, history, memory retrieval, query, and cleanup
+df58195b test(namespace-manager): add unit tests for context config, filtering, ordering, and namespace validation
+be5628d7 test(tool-registry): add unit tests for registration, execution, errors, stats, and singleton
+a7294822 test(openshift): silence console and mock util.promisify to resolve cleanly
+f900d70f test(logging): fix StructuredLogger error arg order and withTiming usage
+f5c3eec9 docs: Update README to reflect active development status, add milestone report
+3cd19406 feat(testing): MAJOR MILESTONE - 4/5 test suites passing, Jest errors eliminated
+0b5e6c4b feat(testing): Major testing infrastructure improvements and documentation
+0f45e723 feat(testing): Major testing infrastructure improvements and documentation
+abf59b73 feat: Complete architectural foundation with systemic diagnostic intelligence
+a2eb1626 docs: Complete documentation reorganization and cleanup
+f5d03826 feat: Enhanced diagnostic tools with infrastructure awareness
+dcc49f5d CRITICAL FIX: Implement missing describeResource() - prevents LLM failures
+f26ec9e1 feat: Enhanced scale-down detection in namespace health checker
+c4252c0a 📚 MCP Tool Development Guide - The Force of Proper Tool Calls
+d9429fc5 🧠 Knowledge Seeding Framework v0.3.1 - Revolutionary Conversational Intelligence
+59b6eb9d feat: Knowledge Seeding Framework v0.3.1 - Complete Implementation
+7f8125f5 docs: Add comprehensive comparison of auto-memory vs separate RAG/search systems
+5c85dfa1 feat: Auto-Memory Integration v0.3.0
+be490a79 feat: Implement comprehensive vector memory system for MCP-ocs diagnostics
+613c1686 feat: Add ResourceDependencyAnalyzer for complex troubleshooting
+c7097e84 feat: Implement v2 enhanced diagnostic tools with modular architecture plan
+53deca57 feat: Add MCP-OCS v2.0 requirements and testing framework
+9c0157cc docs: Add complete enterprise architecture documentation
+71c8ea56 docs: Add comprehensive architecture documentation
+77a529c9 PRODUCTION-READY: Complete MCP-ocs Enterprise Platform
+8293bf45 feat: Production-ready v0.2.0 + Enhanced OpenShift Client
+4d322a0e feat: Production-ready release v0.2.0 with enterprise infrastructure
+b96047d8 feat: Complete MCP-ocs skeleton with memory integration
+6b605f72 feat: Complete structured development framework implementation
+62cd8bbf feat: Add comprehensive Development Process Framework
+b49eeaba feat: Add ADR-004 Tool Namespace Management
+d8405193 feat: Add complete Architecture Decision Records (ADRs)
+b0002bbd feat: Add complete directory structure and fix README links
+ac08862f feat: Add directory structure with .gitkeep files
+18eaa0eb Initial MCP-ocs project structure

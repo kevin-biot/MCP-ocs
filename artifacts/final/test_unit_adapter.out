@@ -1,0 +1,18 @@
+PASS tests/unit/memory/mcp-ocs-memory-adapter.spec.ts
+  MCPOcsMemoryAdapter
+    ✓ initializes underlying memory manager (1 ms)
+    ✓ stores incident memory with domain/environment/severity/resource tags
+    ✓ filters search results by domain when provided (1 ms)
+    ✓ generates structured incident response with related incidents and severity
+    ✓ aggregates severity to critical when any incident is critical (1 ms)
+    ✓ reports memory availability
+    ✓ uses resource:unknown when resourceType not provided
+    ✓ passes limit into search and returns unfiltered when domainFilter missing
+    ✓ passes sessionId to structured response search and handles empty results (1 ms)
+    ✓ reports memory availability false when underlying returns false
+
+Test Suites: 1 passed, 1 total
+Tests:       10 passed, 10 total
+Snapshots:   0 total
+Time:        1.21 s
+Ran all test suites matching /tests\/unit\/memory\/mcp-ocs-memory-adapter.spec.ts/i.
