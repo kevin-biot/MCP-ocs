@@ -29,15 +29,29 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
   fi
 fi
 
-# 3) Verify branches exist locally
-if ! git show-ref --verify --quiet refs/heads/main; then
-  echo "❌ ERROR: main branch not found"
-  exit 1
+# 3) Determine target branches
+DEFAULT_BRANCHES=(main beta-9)
+if [[ -n "${CODEX_SYNC_BRANCHES:-}" ]]; then
+  # Space-separated list from env
+  read -r -a BRANCHES <<< "${CODEX_SYNC_BRANCHES}"
+else
+  # Auto-adapt: if beta-9 missing but release/v0.9.0-beta exists, use that
+  if git show-ref --verify --quiet refs/heads/beta-9; then
+    BRANCHES=("main" "beta-9")
+  elif git show-ref --verify --quiet refs/heads/release/v0.9.0-beta; then
+    BRANCHES=("main" "release/v0.9.0-beta")
+  else
+    BRANCHES=("${DEFAULT_BRANCHES[@]}")
+  fi
 fi
-if ! git show-ref --verify --quiet refs/heads/beta-9; then
-  echo "❌ ERROR: beta-9 branch not found"
-  exit 1
-fi
+
+# Verify all target branches exist locally
+for b in "${BRANCHES[@]}"; do
+  if ! git show-ref --verify --quiet "refs/heads/${b}"; then
+    echo "❌ ERROR: branch not found: ${b}"
+    exit 1
+  fi
+done
 
 # 4) Remote reachability (non-fatal warning if detached/offline)
 if ! git ls-remote origin >/dev/null 2>&1; then
@@ -98,7 +112,6 @@ push_branch_safely() {
   echo "✅ Successfully pushed ${target_branch}"
 }
 
-BRANCHES=("main" "beta-9")
 SYNC_SUCCESS=true
 
 for branch in "${BRANCHES[@]}"; do
@@ -189,4 +202,3 @@ resolve_push_conflict() {
 }
 
 EOF
-
