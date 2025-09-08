@@ -3,6 +3,9 @@ name: Process Artifacts Advisory Check
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+      - 'sprint-management/**'
+      - '.github/**'
 
 jobs:
   advisory-check:
@@ -43,31 +46,60 @@ jobs:
           if grep -q '^sprint-management/archive/' changed.txt; then
             archive_dir=$(grep '^sprint-management/archive/' changed.txt | cut -d/ -f1-3 | sort -u | head -n1)
             echo "Detected archive folder: $archive_dir"
-            present=0
-            for f in \
-              "04-quality-assessment-report.md" \
-              "05-adr-impact-analysis.md" \
-              "06-memory-extract-report.md" \
-              "07-key-decisions-log.md" \
-              "08-technical-metrics-data.json" \
-              "09-outstanding-work-analysis.md" \
-              "sprint-retrospective.md"; do
-              if [ -f "$archive_dir/$f" ]; then present=$((present+1)); fi
-            done
-            if [ "$IS_CLOSURE" -gt 0 ]; then
-              # Enforcing mode: require all 7 artifacts
-              if [ "$present" -lt 7 ]; then
-                echo "::error::Closure artifacts incomplete in $archive_dir ($present/7 detected). Add missing files per Process v3.3.1 guide."
-                exit 1
+            # If a manifest exists, validate exact required files
+            if [ -f "$archive_dir/MANIFEST.yml" ]; then
+              echo "Found MANIFEST.yml; validating required entries"
+              missing=0
+              echo "Required files from manifest:"
+              # naive YAML list parser for lines under 'required:' starting with '- '
+              awk 'f{if($0~/^\s*-/){sub(/^\s*-\s*/,"",$0);print $0}else if($0~/^[^[:space:]]/){exit}} /^(required:|required\s*:\s*)/{f=1}' "$archive_dir/MANIFEST.yml" | while read -r req; do
+                [ -z "$req" ] && continue
+                echo " - $req"
+                if [ ! -f "$archive_dir/$req" ]; then
+                  echo "::warning::Missing per MANIFEST.yml: $req"
+                  missing=$((missing+1))
+                fi
+              done
+              if [ "$IS_CLOSURE" -gt 0 ]; then
+                if [ "$missing" -gt 0 ]; then
+                  echo "::error::MANIFEST.yml validation failed: $missing missing file(s) in $archive_dir"
+                  exit 1
+                else
+                  echo "MANIFEST.yml validation passed (all required present)"
+                fi
               else
-                echo "Closure artifacts complete ($present/7)."
+                if [ "$missing" -gt 0 ]; then
+                  echo "::warning::MANIFEST.yml indicates missing files ($missing). Advisory only."
+                else
+                  echo "MANIFEST.yml advisory check passed"
+                fi
               fi
             else
-              # Advisory mode: warn if <5 artifacts
-              if [ "$present" -lt 5 ]; then
-                echo "::warning::Closure artifacts appear incomplete in $archive_dir ($present/7 detected). See Process v3.3.1 guide."
+              # Fallback to heuristic 7-file counting
+              present=0
+              for f in \
+                "04-quality-assessment-report.md" \
+                "05-adr-impact-analysis.md" \
+                "06-memory-extract-report.md" \
+                "07-key-decisions-log.md" \
+                "08-technical-metrics-data.json" \
+                "09-outstanding-work-analysis.md" \
+                "sprint-retrospective.md"; do
+                if [ -f "$archive_dir/$f" ]; then present=$((present+1)); fi
+              done
+              if [ "$IS_CLOSURE" -gt 0 ]; then
+                if [ "$present" -lt 7 ]; then
+                  echo "::error::Closure artifacts incomplete in $archive_dir ($present/7 detected). Add missing files per Process v3.3.1 guide."
+                  exit 1
+                else
+                  echo "Closure artifacts complete ($present/7)."
+                fi
               else
-                echo "Artifacts presence looks reasonable ($present/7)."
+                if [ "$present" -lt 5 ]; then
+                  echo "::warning::Closure artifacts appear incomplete in $archive_dir ($present/7 detected). See Process v3.3.1 guide."
+                else
+                  echo "Artifacts presence looks reasonable ($present/7)."
+                fi
               fi
             fi
           else
