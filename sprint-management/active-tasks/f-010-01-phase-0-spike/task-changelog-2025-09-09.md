@@ -99,3 +99,56 @@
 ### Rationale:
 - Avoid 200+ sequential namespace analyses; speed up by batching
 
+
+## [2025-09-09T11:07:20.3NZ] - PERF WAVE 2: Pod Health Optimization
+### Files Modified:
+- src/tools/diagnostics/index.ts - Concurrent pod listing across namespaces with bounded workers and timeouts; detailed batching for per-pod analysis
+- tests/integration/bench/run-pod-health-fair-comparison.ts - Fair comparison (sequential vs batched)
+- tests/integration/bench/run-pod-health-density-investigation.ts - High-density namespace timing probe
+- sprint-management/.../benchmark-pod-health-optimization-2025-09-09.md - Report
+
+### Results:
+- Traditional 1089–1107ms vs Batched 1ms (20 namespaces)
+- Ops parity: API=20, analyses=20
+- Average pods per namespace: ~1.1; openshift-pipelines density: 18 pods, API ≈240ms
+
+### Decisions:
+- Defaults: OC_DIAG_POD_CONCURRENCY=8, OC_DIAG_POD_TIMEOUT_MS=5000 (env-overridable)
+
+
+## [2025-09-09T11:23:09.3NZ] - READ-OPS: get_pods Batching
+### Files Modified:
+- src/tools/read-ops/index.ts - Added multi-namespace batched enumeration (comma list or namespaceList), bounded concurrency/timeout
+- tests/integration/bench/run-get-pods-fair-comparison.ts - Fair comparison with per-namespace timings and counts
+- sprint-management/.../benchmark-get-pods-optimization-2025-09-09.md - Report
+
+### Results:
+- Traditional 1530–1672ms vs Batched 1077–1131ms (+30–32%), ops parity 20/20
+- Sequential per-namespace timings captured (e.g., devops 109ms, openshift-builds 126ms)
+
+### Decisions:
+- Defaults: OC_READ_PODS_CONCURRENCY=8, OC_READ_PODS_TIMEOUT_MS=5000
+
+
+## [2025-09-09T11:41:48.3NZ] - Cluster Health: Env-Configurable Batching
+### Files Modified:
+- src/tools/diagnostics/index.ts - Batch defaults now from env (OC_DIAG_NS_CONCURRENCY, OC_DIAG_NS_TIMEOUT_MS); batchAnalyzeNamespaceHealth reports per-namespace elapsedMs
+- tests/integration/bench/run-cluster-health-fair-comparison.ts - Fair comparison (sequential vs batched)
+- sprint-management/.../benchmark-cluster-health-optimization-2025-09-09.md - Report
+
+### Results:
+- 20 namespaces: Sequential 2314ms vs Batched 218ms (+91%), checks parity 20/20
+
+
+## [2025-09-09T11:49:28.3NZ] - RCA Checklist: Phased Concurrency
+### Files Modified:
+- src/v2/tools/rca-checklist/index.ts - Introduced phased bounded concurrency (OC_RCA_CONCURRENCY) for independent checks
+- tests/integration/bench/run-rca-fair-comparison.ts - Fair comparison via env toggle (1 vs 8 workers)
+- sprint-management/.../benchmark-rca-checklist-optimization-2025-09-09.md - Report
+
+### Results:
+- Checks=6: Sequential 1079ms vs Batched 468ms (+57%)
+
+### Decisions:
+- Default OC_RCA_CONCURRENCY=8; consider per-check timeouts in noisy clusters
+
