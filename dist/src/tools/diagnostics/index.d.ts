@@ -50,6 +50,28 @@ export declare class DiagnosticToolsV2 implements ToolSuite {
     private scoreNamespace;
     private listNamespacesByScope;
     private batchAnalyzeNamespaceHealth;
+    private analyzePodsHealth;
+    private profileNamespaceOperation;
+    private benchmarkNamespaceBottlenecks;
+    private testScaleEffectiveness;
+    private analyzeClusterOptimizationStrategy;
+    private generateOptimizationRecommendations;
+    investigatePerformanceBottlenecks(): Promise<{
+        bottlenecks: any;
+        scaleAnalysis: any;
+        strategy: any;
+        totalInvestigationTime: number;
+        timestamp: string;
+        recommendations: string[];
+    }>;
+    runFairPerformanceComparison(): Promise<{
+        namespaceCount: number;
+        traditionalTime: number;
+        bulkTime: number;
+        wallClockImprovement: number;
+        perNamespaceImprovement: number;
+        timestamp: string;
+    }>;
     /**
      * Enhanced namespace health using v2 implementation
      */

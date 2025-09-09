@@ -730,7 +730,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
     options: { maxConcurrent?: number; timeoutPerNamespace?: number; includeIngressTest?: boolean } = {}
   ): Promise<{ analyzed: Array<{ namespace: string; status: string; summary: { pods: number; ready: number; issues: number } }>; totalAnalyzed: number; errors: Array<{ namespace: string; error: string }>; performance: { averageTimePerNamespace: string; concurrency: number } }>
   {
-    const { maxConcurrent = 5, timeoutPerNamespace = 10000, includeIngressTest = false } = options;
+    const { maxConcurrent = 8, timeoutPerNamespace = 5000, includeIngressTest = false } = options;
     const results: Array<{ namespace: string; status: string; summary: { pods: number; ready: number; issues: number } }> = [];
     const errors: Array<{ namespace: string; error: string }> = [];
     const started = nowEpoch();
@@ -755,6 +755,181 @@ export class DiagnosticToolsV2 implements ToolSuite {
     const elapsed = nowEpoch() - started;
     const avg = results.length > 0 ? Math.round(elapsed / results.length) : 0;
     return { analyzed: results, totalAnalyzed: results.length, errors, performance: { averageTimePerNamespace: `${avg}ms`, concurrency: maxConcurrent } };
+  }
+
+  // Lightweight pod health summarizer for profiling
+  private analyzePodsHealth(items: any[]): { total: number; ready: number; pending: number; crashloops: number; imagePullErrors: number } {
+    let total = 0, ready = 0, pending = 0, crash = 0, img = 0;
+    for (const pod of (Array.isArray(items) ? items : [])) {
+      total += 1;
+      const phase = pod?.status?.phase;
+      if (phase === 'Running') ready += 1;
+      if (phase === 'Pending') pending += 1;
+      const cs = pod?.status?.containerStatuses || [];
+      for (const c of cs) {
+        const wait = c?.state?.waiting;
+        if (wait?.reason === 'CrashLoopBackOff') crash += 1;
+        if (wait?.reason === 'ImagePullBackOff' || wait?.reason === 'ErrImagePull') img += 1;
+      }
+    }
+    return { total, ready, pending, crashloops: crash, imagePullErrors: img };
+  }
+
+  private async profileNamespaceOperation(namespace: string): Promise<{ namespace: string; phases: Record<string, number>; totalTime: number; apiCalls: number }>{
+    const profile: { namespace: string; phases: Record<string, number>; totalTime: number; apiCalls: number } = {
+      namespace,
+      phases: {},
+      totalTime: 0,
+      apiCalls: 0
+    };
+
+    const startTotal = nowEpoch();
+    const startApi = nowEpoch();
+    try {
+      const podsResult = await this.ocWrapperV2.executeOc(['get', 'pods', '-o', 'json'], { namespace });
+      profile.phases.apiLatency = nowEpoch() - startApi;
+      profile.apiCalls++;
+
+      const startParse = nowEpoch();
+      const pods = JSON.parse(podsResult.stdout || '{}');
+      profile.phases.jsonParsing = nowEpoch() - startParse;
+
+      const startAnalysis = nowEpoch();
+      const _summary = this.analyzePodsHealth(pods.items || []);
+      profile.phases.healthAnalysis = nowEpoch() - startAnalysis;
+
+      const startAdditional = nowEpoch();
+      const _eventsResult = await this.ocWrapperV2.executeOc(['get', 'events', '-o', 'json'], { namespace });
+      void _eventsResult;
+      profile.apiCalls++;
+      profile.phases.additionalChecks = nowEpoch() - startAdditional;
+    } catch {
+      profile.phases.errorHandling = nowEpoch() - startApi;
+    }
+
+    profile.totalTime = nowEpoch() - startTotal;
+    return profile;
+  }
+
+  private async benchmarkNamespaceBottlenecks(sampleNamespaces: string[]): Promise<{ profiles: Array<{ namespace: string; phases: Record<string, number>; totalTime: number; apiCalls: number }>; avgProfile: any }>{
+    console.log(`[${nowIso()}] === BOTTLENECK ANALYSIS START ===`);
+    const profiles: Array<{ namespace: string; phases: Record<string, number>; totalTime: number; apiCalls: number }> = [];
+    for (const ns of sampleNamespaces.slice(0, 5)) {
+      console.log(`[${nowIso()}] Profiling namespace: ${ns}`);
+      const p = await this.profileNamespaceOperation(ns);
+      profiles.push(p);
+      console.log(`  ${ns}: ${p.totalTime}ms total`);
+      console.log(`    - API latency: ${Math.round(p.phases.apiLatency || 0)}ms`);
+      console.log(`    - JSON parsing: ${Math.round(p.phases.jsonParsing || 0)}ms`);
+      console.log(`    - Health analysis: ${Math.round(p.phases.healthAnalysis || 0)}ms`);
+      console.log(`    - Additional checks: ${Math.round(p.phases.additionalChecks || 0)}ms`);
+      console.log(`    - API calls made: ${p.apiCalls}`);
+    }
+    const avg = (k: string) => profiles.reduce((s, p) => s + (p.phases[k] || 0), 0) / (profiles.length || 1);
+    const avgProfile = {
+      totalTime: profiles.reduce((s, p) => s + p.totalTime, 0) / (profiles.length || 1),
+      apiLatency: avg('apiLatency'),
+      jsonParsing: avg('jsonParsing'),
+      healthAnalysis: avg('healthAnalysis'),
+      additionalChecks: avg('additionalChecks'),
+      avgApiCallsPerNamespace: profiles.reduce((s, p) => s + p.apiCalls, 0) / (profiles.length || 1)
+    };
+    console.log(`[${nowIso()}] === BOTTLENECK ANALYSIS SUMMARY ===`);
+    const tot = avgProfile.totalTime || 1;
+    const pc = (n: number) => Math.round(((n || 0) / tot) * 100);
+    console.log(`Average per namespace: ${Math.round(avgProfile.totalTime)}ms`);
+    console.log(`  - API latency: ${Math.round(avgProfile.apiLatency)}ms (${pc(avgProfile.apiLatency)}%)`);
+    console.log(`  - JSON parsing: ${Math.round(avgProfile.jsonParsing)}ms (${pc(avgProfile.jsonParsing)}%)`);
+    console.log(`  - Health analysis: ${Math.round(avgProfile.healthAnalysis)}ms (${pc(avgProfile.healthAnalysis)}%)`);
+    console.log(`  - Additional checks: ${Math.round(avgProfile.additionalChecks)}ms (${pc(avgProfile.additionalChecks)}%)`);
+    console.log(`  - Average API calls per namespace: ${avgProfile.avgApiCallsPerNamespace}`);
+    return { profiles, avgProfile };
+  }
+
+  private async testScaleEffectiveness(): Promise<{ results: Array<{ namespaceCount: number; sequentialTime: number; bulkTime: number; improvementPercent: number; crossoverPoint: boolean; timestamp: string }>; crossoverPoint: number | string }>{
+    const counts = [5, 10, 20, 50];
+    const results: Array<{ namespaceCount: number; sequentialTime: number; bulkTime: number; improvementPercent: number; crossoverPoint: boolean; timestamp: string }> = [];
+    for (const count of counts) {
+      console.log(`\n[${nowIso()}] === TESTING ${count} NAMESPACES ===`);
+      const startSeq = nowEpoch();
+      for (let i = 0; i < count; i++) {
+        await new Promise(r => setTimeout(r, 100));
+      }
+      const sequentialTime = nowEpoch() - startSeq;
+
+      const startBulk = nowEpoch();
+      const batches = Math.ceil(count / 5);
+      for (let b = 0; b < batches; b++) {
+        await new Promise(r => setTimeout(r, 100));
+      }
+      const bulkTime = nowEpoch() - startBulk;
+      const improvement = Math.round(((sequentialTime - bulkTime) / sequentialTime) * 100);
+      console.log(`  Sequential simulation: ${sequentialTime}ms`);
+      console.log(`  Bulk simulation: ${bulkTime}ms`);
+      console.log(`  Improvement: ${improvement}%`);
+      results.push({ namespaceCount: count, sequentialTime, bulkTime, improvementPercent: improvement, crossoverPoint: improvement > 0, timestamp: nowIso() });
+    }
+    const crossoverPoint = results.find(r => r.crossoverPoint)?.namespaceCount || 'unknown';
+    console.log(`\n[${nowIso()}] === CROSSOVER ANALYSIS ===`);
+    console.log(`Bulk optimization becomes beneficial at: ${String(crossoverPoint)} namespaces`);
+    return { results, crossoverPoint };
+  }
+
+  private async analyzeClusterOptimizationStrategy(): Promise<{ approach: string; reasoning: string; recommendedConcurrency: number; recommendedTimeout: number }>{
+    const names = await this.listNamespacesByScope('all');
+    const total = names.length;
+    console.log(`\n[${nowIso()}] === CLUSTER OPTIMIZATION STRATEGY ===`);
+    console.log(`Total namespaces: ${total}`);
+    if (total <= 20) return { approach: 'sequential', reasoning: 'Small cluster - batching overhead exceeds benefit', recommendedConcurrency: 1, recommendedTimeout: 5000 };
+    if (total <= 100) return { approach: 'moderate_batch', reasoning: 'Medium cluster - moderate batching with higher concurrency', recommendedConcurrency: 8, recommendedTimeout: 5000 };
+    return { approach: 'aggressive_batch', reasoning: 'Large cluster - aggressive batching essential for performance', recommendedConcurrency: 15, recommendedTimeout: 3000 };
+  }
+
+  private generateOptimizationRecommendations(bottlenecks: any, scale: any, strategy: any): string[] {
+    const recs: string[] = [];
+    if (bottlenecks?.avgProfile?.apiLatency > (bottlenecks?.avgProfile?.totalTime || 1) * 0.5) recs.push('API latency dominant - increase caching/connection pooling, consider reducing per-namespace checks');
+    if (bottlenecks?.avgProfile?.healthAnalysis > (bottlenecks?.avgProfile?.totalTime || 1) * 0.3) recs.push('Health analysis heavy - optimize algorithms and reduce per-namespace detail');
+    if (strategy?.approach === 'sequential') recs.push('Favor sequential for small clusters'); else recs.push(`Use ${strategy?.recommendedConcurrency} concurrent workers and timeout ${strategy?.recommendedTimeout}ms`);
+    return recs;
+  }
+
+  async investigatePerformanceBottlenecks(): Promise<{ bottlenecks: any; scaleAnalysis: any; strategy: any; totalInvestigationTime: number; timestamp: string; recommendations: string[] }>{
+    console.log(`[${nowIso()}] Starting comprehensive performance bottleneck investigation...`);
+    const start = nowEpoch();
+    const names = await this.listNamespacesByScope('user');
+    const sample = names.slice(0, 5);
+    const bottlenecks = await this.benchmarkNamespaceBottlenecks(sample);
+    const scaleAnalysis = await this.testScaleEffectiveness();
+    const strategy = await this.analyzeClusterOptimizationStrategy();
+    const totalInvestigationTime = nowEpoch() - start;
+    console.log(`[${nowIso()}] Investigation completed in ${totalInvestigationTime}ms`);
+    return { bottlenecks, scaleAnalysis, strategy, totalInvestigationTime, timestamp: nowIso(), recommendations: this.generateOptimizationRecommendations(bottlenecks, scaleAnalysis, strategy) };
+  }
+
+  // Apples-to-apples performance comparison for N namespaces
+  async runFairPerformanceComparison(): Promise<{ namespaceCount: number; traditionalTime: number; bulkTime: number; wallClockImprovement: number; perNamespaceImprovement: number; timestamp: string }>{
+    console.log(`[${nowIso()}] === FAIR PERFORMANCE COMPARISON ===`);
+    const N = 20;
+    console.log(`Testing traditional path: ${N} namespaces`);
+    const tStart = nowEpoch();
+    const tJson = await (this as any).enhancedClusterHealth({ sessionId: 'perf-traditional', includeNamespaceAnalysis: true, focusNamespace: 'default', maxNamespacesToAnalyze: N, namespaceScope: 'all' });
+    const traditionalTime = nowEpoch() - tStart;
+    void tJson;
+    console.log(`Testing bulk optimized path: ${N} namespaces`);
+    const bStart = nowEpoch();
+    const bJson = await (this as any).enhancedClusterHealth({ sessionId: 'perf-bulk-tuned', includeNamespaceAnalysis: true, maxNamespacesToAnalyze: N, namespaceScope: 'all' });
+    const bulkTime = nowEpoch() - bStart;
+    void bJson;
+    const imp = Math.round(((traditionalTime - bulkTime) / traditionalTime) * 100);
+    const perNsTrad = Math.round(traditionalTime / N);
+    const perNsBulk = Math.round(bulkTime / N);
+    const perImp = Math.round(((perNsTrad - perNsBulk) / perNsTrad) * 100);
+    console.log(`[${nowIso()}] === COMPARISON RESULTS ===`);
+    console.log(`Traditional: ${traditionalTime}ms (${perNsTrad}ms per namespace)`);
+    console.log(`Bulk optimized: ${bulkTime}ms (${perNsBulk}ms per namespace)`);
+    console.log(`Wall-clock improvement: ${imp}%`);
+    console.log(`Per-namespace improvement: ${perImp}%`);
+    return { namespaceCount: N, traditionalTime, bulkTime, wallClockImprovement: imp, perNamespaceImprovement: perImp, timestamp: nowIso() };
   }
 
   /**
