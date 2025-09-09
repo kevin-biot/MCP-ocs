@@ -27,3 +27,7 @@
 2025-09-09T10:50:02.3NZ: PHASE PERF_TUNING - COMPLETE - Duration: 12 minutes (defaults set: concurrency=8, timeout=5000ms)
 2025-09-09T10:50:02.3NZ: PHASE FAIR_COMPARISON - COMPLETE - Duration: 2 minutes (20 ns: traditional 8048ms, bulk 4255ms, +47%)
 2025-09-09T10:50:02.3NZ: PHASE DEVELOPER_FINALIZE - COMPLETE - Duration: 1 minute (logs + commit)
+2025-09-09T10:59:05.3NZ: PHASE VALIDATION_UNIT - COMPLETE - Duration: 1s (oc-triage unit tests passed)
+2025-09-09T10:59:05.3NZ: PHASE VALIDATION_INVESTIGATION - COMPLETE - Duration: 10915ms (avg API latency 51%, checks 49%, rec: concurrency=8, timeout=5000ms)
+2025-09-09T10:59:05.3NZ: PHASE VALIDATION_FAIR_COMPARISON - COMPLETE - Duration: traditional 7894ms vs bulk 4207ms (+47%)
+2025-09-09T10:59:05.3NZ: PHASE VALIDATION_CRC - COMPLETE - pvc=1ms, scheduling=59ms, ingress=106ms; all OK (stepBudget=3)
