@@ -59,3 +59,5 @@
 2025-09-09T15:05:13.3NZ: PHASE DAILY_ISSUES_INTAKE - START - Sourcing PVC remediation items for GitHub issues
 2025-09-09T15:05:13.3NZ: ISSUES_PROPOSED - oc_read_describe wildcard handling; oc_read_get_pvcs enumeration (links shared in chat)
 2025-09-09T15:17:31.3NZ: DAILY_ISSUES_INTAKE - CREATED: https://github.com/kevin-biot/MCP-ocs/issues/4 ; https://github.com/kevin-biot/MCP-ocs/issues/5
+2025-09-09T15:22:54.3NZ: DAILY_ISSUES_INTAKE - CREATED MORE (1/3): https://github.com/kevin-biot/MCP-ocs/issues/12 ; https://github.com/kevin-biot/MCP-ocs/issues/13 ; https://github.com/kevin-biot/MCP-ocs/issues/14 ; https://github.com/kevin-biot/MCP-ocs/issues/15
+2025-09-09T15:23:49.3NZ: DAILY_ISSUES_INTAKE - CREATED MORE (partial): https://github.com/kevin-biot/MCP-ocs/issues/19 ; https://github.com/kevin-biot/MCP-ocs/issues/20
