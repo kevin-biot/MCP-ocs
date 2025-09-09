@@ -49,6 +49,7 @@ export declare class DiagnosticToolsV2 implements ToolSuite {
     private makeNsSummary;
     private scoreNamespace;
     private listNamespacesByScope;
+    private batchAnalyzeNamespaceHealth;
     /**
      * Enhanced namespace health using v2 implementation
      */

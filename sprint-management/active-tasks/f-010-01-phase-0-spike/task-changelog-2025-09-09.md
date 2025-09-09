@@ -89,3 +89,13 @@
 - D-009: nowEpoch() used for session and incident IDs
 - Logging: cluster-agnostic in integration script
 
+
+## [2025-09-09T10:03:09.3NZ] - PERFORMANCE OPTIMIZATION
+### Changes:
+- enhancedClusterHealth: internal bulk enumeration + concurrent batch analysis when analyzing >3 namespaces without focus
+- listNamespacesByScope: add soft caching options to avoid repeated API calls
+- Removed public bulk tool from registry (internal only for now)
+
+### Rationale:
+- Avoid 200+ sequential namespace analyses; speed up by batching
+

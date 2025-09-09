@@ -342,19 +342,37 @@ export class DiagnosticToolsV2 implements ToolSuite {
       let namespaceAnalysis: any = null;
       let prioritization: any = null;
       if (includeNamespaceAnalysis && !bounded) {
-        // Namespace-level summary (integration-like expectation): use discovered namespaces directly
-        const names = await this.listNamespacesByScope(namespaceScope);
-        const total = names.length;
-        const analyzed = Math.min(maxNamespacesToAnalyze, total);
-        prioritization = names.map(n => ({ namespace: n, score: 0, reasons: [] }));
-        namespaceAnalysis = {
-          scope: namespaceScope,
-          depth,
-          totalNamespaces: total,
-          analyzedDetailedCount: analyzed,
-          detailed: [],
-          summaries: []
-        };
+        const shouldUseBulkOptimization = (!focusNamespace) && (maxNamespacesToAnalyze > 3);
+        if (shouldUseBulkOptimization) {
+          const bulk = await this.listNamespacesByScope(namespaceScope);
+          const names = bulk;
+          const total = names.length;
+          const toAnalyze = names.slice(0, maxNamespacesToAnalyze);
+          const batch = await this.batchAnalyzeNamespaceHealth(toAnalyze, { maxConcurrent: 5, timeoutPerNamespace: 10000, includeIngressTest: false });
+          prioritization = names.map(n => ({ namespace: n, score: 0, reasons: [] }));
+          namespaceAnalysis = {
+            scope: namespaceScope,
+            depth,
+            totalNamespaces: total,
+            analyzedDetailedCount: batch.totalAnalyzed,
+            detailed: [],
+            summaries: batch.analyzed
+          };
+        } else {
+          // Namespace-level summary (integration-like expectation)
+          const names = await this.listNamespacesByScope(namespaceScope);
+          const total = names.length;
+          const analyzed = Math.min(maxNamespacesToAnalyze, total);
+          prioritization = names.map(n => ({ namespace: n, score: 0, reasons: [] }));
+          namespaceAnalysis = {
+            scope: namespaceScope,
+            depth,
+            totalNamespaces: total,
+            analyzedDetailedCount: analyzed,
+            detailed: [],
+            summaries: []
+          };
+        }
       } else if (bounded) {
         // Bounded triage: prefer explicit namespaceList, else infer small set from scope/strategy
         const targets: string[] = namespaceList.length > 0
@@ -696,12 +714,47 @@ export class DiagnosticToolsV2 implements ToolSuite {
   }
 
   private async listNamespacesByScope(scope: 'all' | 'system' | 'user'): Promise<string[]> {
-    const namespacesData = await this.ocWrapperV2.executeOc(['get', 'namespaces', '-o', 'json']);
+    const namespacesData = await this.ocWrapperV2.executeOc(
+      ['get', 'namespaces', '-o', 'json'],
+      { cacheKey: 'bulk-namespaces', cacheTTL: 30000 }
+    );
     const namespaces = JSON.parse(namespacesData.stdout);
     const names = (namespaces.items || []).map((ns: any) => ns.metadata?.name).filter((n: any) => !!n);
     if (scope === 'system') return names.filter((n: string) => n.startsWith('kube-') || n.startsWith('openshift-'));
     if (scope === 'user') return names.filter((n: string) => !n.startsWith('kube-') && !n.startsWith('openshift-'));
     return names;
+  }
+
+  private async batchAnalyzeNamespaceHealth(
+    namespaces: string[],
+    options: { maxConcurrent?: number; timeoutPerNamespace?: number; includeIngressTest?: boolean } = {}
+  ): Promise<{ analyzed: Array<{ namespace: string; status: string; summary: { pods: number; ready: number; issues: number } }>; totalAnalyzed: number; errors: Array<{ namespace: string; error: string }>; performance: { averageTimePerNamespace: string; concurrency: number } }>
+  {
+    const { maxConcurrent = 5, timeoutPerNamespace = 10000, includeIngressTest = false } = options;
+    const results: Array<{ namespace: string; status: string; summary: { pods: number; ready: number; issues: number } }> = [];
+    const errors: Array<{ namespace: string; error: string }> = [];
+    const started = nowEpoch();
+
+    for (let i = 0; i < namespaces.length; i += maxConcurrent) {
+      const batch = namespaces.slice(i, i + maxConcurrent);
+      const batchPromises = batch.map(async (ns) => {
+        try {
+          const health: any = await withTimeout(async () => {
+            return await this.namespaceHealthChecker.checkHealth({ namespace: ns, includeIngressTest, maxLogLinesPerPod: 0 });
+          }, timeoutPerNamespace, `ns-health:${ns}`);
+          return { namespace: ns, status: String(health.status), summary: { pods: Number(health.checks?.pods?.total || 0), ready: Number(health.checks?.pods?.ready || 0), issues: Number((health.suspicions || []).length) } };
+        } catch (e) {
+          errors.push({ namespace: ns, error: e instanceof Error ? e.message : String(e) });
+          return null;
+        }
+      });
+      const settled = await Promise.allSettled(batchPromises);
+      for (const s of settled) { if (s.status === 'fulfilled' && s.value) results.push(s.value); }
+    }
+
+    const elapsed = nowEpoch() - started;
+    const avg = results.length > 0 ? Math.round(elapsed / results.length) : 0;
+    return { analyzed: results, totalAnalyzed: results.length, errors, performance: { averageTimePerNamespace: `${avg}ms`, concurrency: maxConcurrent } };
   }
 
   /**
