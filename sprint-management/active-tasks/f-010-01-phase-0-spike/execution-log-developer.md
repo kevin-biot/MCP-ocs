@@ -48,3 +48,6 @@
 2025-09-09T11:49:28.3NZ: PHASE RCA_CHECKLIST_FAIR_COMPARISON - COMPLETE - checks=6; sequential 1079ms vs batched 468ms (+57%)
 2025-09-09T11:49:28.3NZ: PHASE RCA_CHECKLIST_REPORT - COMPLETE - Markdown report added
 2025-09-09T11:52:50.3NZ: PHASE PERF_SUMMARY - COMPLETE - namespace_health +47%, pod_health ~100%, get_pods +30%, cluster_health +91%, rca_checklist +57%
+2025-09-09T11:58:30.3NZ: PHASE READ_DESCRIBE_OPTIMIZATION - UPDATE - Batched describe added (env: OC_READ_DESCRIBE_CONCURRENCY/ TIMEOUT_MS)
+2025-09-09T11:58:30.3NZ: PHASE READ_DESCRIBE_FAIR_COMPARISON - COMPLETE - 10 clusteroperators: sequential 1113ms vs batched 609ms (+45%), ops parity 10/10
+2025-09-09T11:58:30.3NZ: PHASE READ_DESCRIBE_REPORT - COMPLETE - Markdown report added
