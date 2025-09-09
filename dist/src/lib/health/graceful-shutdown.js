@@ -4,6 +4,7 @@
  * Proper process lifecycle management for production deployments
  */
 import { logger } from '../logging/structured-logger';
+import { nowEpoch } from '../../utils/time.js';
 /**
  * Manages graceful shutdown of the MCP server
  */
@@ -62,20 +63,20 @@ export class GracefulShutdown {
             inflightOperations: this.inflightOperations.size,
             registeredHandlers: this.shutdownHandlers.length
         });
-        const shutdownStart = Date.now();
+        const shutdownStart = nowEpoch();
         try {
             // Phase 1: Wait for in-flight operations to complete
             await this.waitForInflightOperations();
             // Phase 2: Execute shutdown handlers in reverse order
             await this.executeShutdownHandlers();
-            const shutdownDuration = Date.now() - shutdownStart;
+            const shutdownDuration = nowEpoch() - shutdownStart;
             logger.info('Graceful shutdown completed successfully', {
                 signal,
                 duration: shutdownDuration
             });
         }
         catch (error) {
-            const shutdownDuration = Date.now() - shutdownStart;
+            const shutdownDuration = nowEpoch() - shutdownStart;
             logger.error('Graceful shutdown encountered errors', error instanceof Error ? error : new Error(String(error)), {
                 signal,
                 duration: shutdownDuration
@@ -127,9 +128,9 @@ export class GracefulShutdown {
         });
         const maxWait = 15000; // 15 seconds max wait
         const checkInterval = 500; // Check every 500ms
-        const startTime = Date.now();
+        const startTime = nowEpoch();
         while (this.inflightOperations.size > 0) {
-            const elapsed = Date.now() - startTime;
+            const elapsed = nowEpoch() - startTime;
             if (elapsed >= maxWait) {
                 logger.warn('Timeout waiting for in-flight operations', {
                     remainingOperations: Array.from(this.inflightOperations),
@@ -141,7 +142,7 @@ export class GracefulShutdown {
         }
         logger.info('In-flight operations completed', {
             finalCount: this.inflightOperations.size,
-            waitTime: Date.now() - startTime
+            waitTime: nowEpoch() - startTime
         });
     }
     /**
@@ -156,7 +157,7 @@ export class GracefulShutdown {
         // Execute handlers in reverse order (LIFO)
         const handlersToExecute = [...this.shutdownHandlers].reverse();
         for (const handler of handlersToExecute) {
-            const handlerStart = Date.now();
+            const handlerStart = nowEpoch();
             try {
                 logger.debug(`Executing shutdown handler: ${handler.name}`);
                 // Execute with timeout
@@ -165,11 +166,11 @@ export class GracefulShutdown {
                     handler.handler(),
                     new Promise((_, reject) => setTimeout(() => reject(new Error('Handler timeout')), timeout))
                 ]);
-                const duration = Date.now() - handlerStart;
+                const duration = nowEpoch() - handlerStart;
                 logger.debug(`Shutdown handler completed: ${handler.name}`, { duration });
             }
             catch (error) {
-                const duration = Date.now() - handlerStart;
+                const duration = nowEpoch() - handlerStart;
                 if (handler.critical) {
                     logger.error(`Critical shutdown handler failed: ${handler.name}`, error instanceof Error ? error : new Error(String(error)), { duration });
                     throw error; // Fail the entire shutdown process
@@ -208,7 +209,7 @@ export class OperationTracker {
         if (this.gracefulShutdown.isShuttingDown()) {
             throw new Error('Server is shutting down, rejecting new operations');
         }
-        const operationId = `${operationName}-${++this.operationCounter}-${Date.now()}`;
+        const operationId = `${operationName}-${++this.operationCounter}-${nowEpoch()}`;
         try {
             this.gracefulShutdown.trackOperation(operationId);
             logger.debug('Starting tracked operation', { operationId, operationName });

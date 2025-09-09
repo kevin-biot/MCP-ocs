@@ -33,6 +33,14 @@ export declare class DiagnosticToolsV2 implements ToolSuite {
      */
     private enhancedClusterHealth;
     /**
+     * Phase 0: oc_triage entrypoint (registration and minimal validation)
+     * Loads the mapped template JSON to validate presence; execution is added in Phase B.
+     */
+    private executeOcTriage;
+    private mapIntentToTemplate;
+    private ensureTemplateExists;
+    private stripVersionlessFilename;
+    /**
      * Prioritize namespaces for analysis and build focused output
      */
     private prioritizeNamespaces;

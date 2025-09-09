@@ -1,5 +1,6 @@
 #!/usr/bin/env tsx
 import { ChromaMemoryManager } from '../lib/memory/mcp-files-memory-extension.js';
+import { nowEpoch } from '../utils/time.js';
 function rndWord() {
     const a = 'abcdefghijklmnopqrstuvwxyz';
     const len = 5 + Math.floor(Math.random() * 6);
@@ -29,23 +30,23 @@ async function bench(opts, csvPath) {
         throw new Error('Benchmark cannot use production collection! Use dedicated test collection.');
     }
     mgr.setCollectionName(BENCHMARK_COLLECTION);
-    const testRunId = `bench-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const testRunId = `bench-${nowEpoch()}-${Math.random().toString(36).slice(2, 8)}`;
     const labels = [];
     const insertLat = [];
-    const insertStartAll = Date.now();
+    const insertStartAll = nowEpoch();
     for (let i = 0; i < docs; i++) {
         const label = `${testRunId}-topic-${i}`;
         labels.push(label);
-        const start = Date.now();
+        const start = nowEpoch();
         await mgr.storeConversation({
             sessionId: `${testRunId}-${i}`,
-            timestamp: Date.now(),
+            timestamp: nowEpoch(),
             userMessage: `${label} ${genPayload(payloadWords)}`,
             assistantResponse: `Response for ${label}: ${genPayload(payloadWords)}`,
             context: ['bench', testRunId],
             tags: ['bench', 'vector']
         });
-        insertLat.push(Date.now() - start);
+        insertLat.push(nowEpoch() - start);
         // Yield occasionally to avoid tight loop blockage
         if (i % 100 === 0)
             await sleep(5);
@@ -63,16 +64,16 @@ async function bench(opts, csvPath) {
         }
         return out;
     };
-    const insertElapsedAll = Date.now() - insertStartAll;
+    const insertElapsedAll = nowEpoch() - insertStartAll;
     const sample = pick(queries);
     const queryLat = [];
     let top1Hits = 0;
     const top1Dist = [];
     for (const label of sample) {
         const q = label; // exact phrase should be strong signal
-        const start = Date.now();
+        const start = nowEpoch();
         const results = await mgr.searchRelevantMemories(q, undefined, topk);
-        const dur = Date.now() - start;
+        const dur = nowEpoch() - start;
         queryLat.push(dur);
         if (results.length > 0) {
             const top = results[0];

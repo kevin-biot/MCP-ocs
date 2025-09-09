@@ -7,6 +7,7 @@
 
 import { StandardTool, ToolSuite } from '../../lib/tools/tool-registry.js';
 import { checkNamespaceHealthV2Tool } from '../../v2-integration.js';
+import { nowEpoch } from '../../utils/time.js';
 
 /**
  * Diagnostic Tools V2 Suite
@@ -35,7 +36,7 @@ export class DiagnosticToolsV2Suite implements ToolSuite {
         execute: async (args) => {
           // V2 tools expect specific format - ensure sessionId and namespace
           const v2Args = {
-            sessionId: args.sessionId || `v2-session-${Date.now()}`,
+            sessionId: args.sessionId || `v2-session-${nowEpoch()}`,
             namespace: args.namespace,
             includeIngressTest: args.includeIngressTest || false,
             maxLogLinesPerPod: args.maxLogLinesPerPod || 0,

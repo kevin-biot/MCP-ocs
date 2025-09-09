@@ -55,6 +55,14 @@ export class ToolExecutionError extends AppError {
   }
 }
 
+// Specialized wrapper for triage execution failures that preserves ToolExecutionError semantics
+export class TriageExecutionError extends ToolExecutionError {
+  constructor(message: string, options: ErrorOptions = {}) {
+    super(message, options);
+    this.name = 'TriageExecutionError';
+  }
+}
+
 export class MemoryError extends AppError {
   constructor(message: string, options: ErrorOptions = {}) {
     super('MemoryError', message, { ...options, statusCode: options.statusCode ?? 500 });

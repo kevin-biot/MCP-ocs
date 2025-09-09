@@ -13,6 +13,9 @@ import { OcWrapperV2 } from '../../v2/lib/oc-wrapper-v2.js';
 import { NamespaceHealthChecker } from '../../v2/tools/check-namespace-health/index.js';
 import { RCAChecklistEngine } from '../../v2/tools/rca-checklist/index.js';
 import { checkNamespaceHealthV2Tool } from '../../v2-integration.js';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { ValidationError, TriageExecutionError } from '../../lib/errors/error-types.js';
 export class DiagnosticToolsV2 {
     openshiftClient;
     memoryManager;
@@ -97,6 +100,28 @@ export class DiagnosticToolsV2 {
                         maxRuntimeMs: { anyOf: [{ type: 'number' }, { type: 'string' }], description: 'Hard cap on execution time; triage loops stop when exceeded' }
                     },
                     required: ['sessionId']
+                }
+            },
+            {
+                name: 'oc_triage',
+                namespace: 'mcp-openshift',
+                fullName: 'oc_diagnostic_triage',
+                domain: 'cluster',
+                priority: 95,
+                capabilities: [
+                    { type: 'diagnostic', level: 'basic', riskLevel: 'safe' }
+                ],
+                dependencies: [],
+                contextRequirements: [],
+                description: 'Bounded triage entry point with natural intent routing',
+                inputSchema: {
+                    type: 'object',
+                    properties: {
+                        sessionId: { type: 'string' },
+                        intent: { type: 'string', enum: ['pvc-binding', 'scheduling-failures', 'ingress-pending'] },
+                        namespace: { type: 'string' }
+                    },
+                    required: ['intent', 'namespace']
                 }
             },
             {
@@ -212,6 +237,8 @@ export class DiagnosticToolsV2 {
                     return await this.enhancedPodHealth(raw);
                 case 'oc_diagnostic_rca_checklist':
                     return await this.executeRCAChecklist(raw);
+                case 'oc_diagnostic_triage':
+                    return await this.executeOcTriage(raw);
                 default:
                     throw new Error(`Unknown diagnostic tool: ${toolName}`);
             }
@@ -362,6 +389,59 @@ export class DiagnosticToolsV2 {
         catch (error) {
             return this.formatErrorResponse('cluster health check', error, sessionId);
         }
+    }
+    /**
+     * Phase 0: oc_triage entrypoint (registration and minimal validation)
+     * Loads the mapped template JSON to validate presence; execution is added in Phase B.
+     */
+    async executeOcTriage(args) {
+        const rec = (v) => (v && typeof v === 'object') ? v : {};
+        const raw = rec(args);
+        const intent = String(raw.intent || '');
+        const namespace = String(raw.namespace || '');
+        const sessionId = typeof raw.sessionId === 'string' ? raw.sessionId : `session-${Date.now()}`;
+        if (!intent || !['pvc-binding', 'scheduling-failures', 'ingress-pending'].includes(intent)) {
+            throw new ValidationError(`Unsupported or missing intent: ${intent || '<empty>'}`, { details: { intent } });
+        }
+        if (!namespace) {
+            throw new ValidationError('namespace is required for oc_triage Phase 0');
+        }
+        const templateId = this.mapIntentToTemplate(intent);
+        try {
+            await this.ensureTemplateExists(templateId);
+        }
+        catch (e) {
+            throw new TriageExecutionError(`Template not available: ${templateId}`, { cause: e, details: { templateId } });
+        }
+        const envelope = {
+            routing: { intent: intent, templateId, bounded: true, stepBudget: 3, triggerMode: 'replace' },
+            rubrics: { safety: 'ALLOW', priority: 'P2', confidence: 'Low' },
+            summary: 'Triage initialized (Phase 0 registration). Execution implemented in Phase B.',
+            evidence: { completeness: 0, missing: [], present: [] },
+            promptSuggestions: [],
+        };
+        return JSON.stringify(envelope, null, 2);
+    }
+    mapIntentToTemplate(intent) {
+        const mapping = {
+            'pvc-binding': 'pvc-binding-v1',
+            'scheduling-failures': 'scheduling-failures-v1',
+            'ingress-pending': 'ingress-pending-v1'
+        };
+        return mapping[intent] || intent;
+    }
+    async ensureTemplateExists(templateId) {
+        const file = path.join(process.cwd(), 'src', 'lib', 'templates', 'templates', `${this.stripVersionlessFilename(templateId)}.json`);
+        const alt = path.join(process.cwd(), 'src', 'lib', 'templates', 'templates', `${templateId.replace(/-v\d+$/, '')}.json`);
+        const raw = await fs.readFile(file).catch(async () => fs.readFile(alt));
+        const obj = JSON.parse(raw.toString());
+        if (obj?.id !== templateId) {
+            throw new Error(`Template id mismatch: expected ${templateId}, found ${obj?.id}`);
+        }
+    }
+    stripVersionlessFilename(templateId) {
+        // Map id like pvc-binding-v1 -> pvc-binding
+        return templateId.replace(/-v\d+$/, '');
     }
     /**
      * Prioritize namespaces for analysis and build focused output

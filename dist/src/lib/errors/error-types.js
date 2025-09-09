@@ -33,6 +33,13 @@ export class ToolExecutionError extends AppError {
         super('ToolExecutionError', message, { ...options, statusCode: options.statusCode ?? 500 });
     }
 }
+// Specialized wrapper for triage execution failures that preserves ToolExecutionError semantics
+export class TriageExecutionError extends ToolExecutionError {
+    constructor(message, options = {}) {
+        super(message, options);
+        this.name = 'TriageExecutionError';
+    }
+}
 export class MemoryError extends AppError {
     constructor(message, options = {}) {
         super('MemoryError', message, { ...options, statusCode: options.statusCode ?? 500 });

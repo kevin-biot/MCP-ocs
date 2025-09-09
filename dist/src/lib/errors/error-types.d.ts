@@ -22,6 +22,9 @@ export declare class TimeoutError extends AppError {
 export declare class ToolExecutionError extends AppError {
     constructor(message: string, options?: ErrorOptions);
 }
+export declare class TriageExecutionError extends ToolExecutionError {
+    constructor(message: string, options?: ErrorOptions);
+}
 export declare class MemoryError extends AppError {
     constructor(message: string, options?: ErrorOptions);
 }

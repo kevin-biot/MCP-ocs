@@ -28,6 +28,7 @@ export default {
     
     '^\\.\\./\\.\\./v2/(.*)\\.js$': '<rootDir>/src/v2/$1.ts',
     '^\\.\\./\\.\\./lib/tools/(.*)\\.js$': '<rootDir>/src/lib/tools/$1.ts',
+    '^\\.\\./\\.\\./lib/templates/(.*)\\.js$': '<rootDir>/src/lib/templates/$1.ts',
     '^\\.\\./\\.\\./tools/(.*)\\.js$': '<rootDir>/src/tools/$1.ts',
     '^\\.\\./check-namespace-health/(.*)\\.js$': '<rootDir>/src/v2/tools/check-namespace-health/$1.ts',
     '^\\.\\./\\.\\./\\.\\./src/tools/(.*)\\.js$': '<rootDir>/src/tools/$1.ts',
@@ -36,8 +37,12 @@ export default {
     '^\\./v2/(.*)\\.js$': '<rootDir>/src/v2/$1.ts',
     // Map local ESM-style relative .js imports in TS to .ts for tests
     '^\\./mcp-files-memory-extension\\.js$': '<rootDir>/src/lib/memory/mcp-files-memory-extension.ts',
+    '^\\./blocks/(.*)\\.js$': '<rootDir>/src/lib/templates/blocks/$1.ts',
+    '^\\./infrastructure-blocks\\.js$': '<rootDir>/src/lib/templates/blocks/infrastructure-blocks.ts',
+    '^\\./workload-blocks\\.js$': '<rootDir>/src/lib/templates/blocks/workload-blocks.ts',
     // Relative imports inside library modules
     '^\.\./errors/(.*)\\.js$': '<rootDir>/src/lib/errors/$1.ts',
+    '^\./errors/(.*)\\.js$': '<rootDir>/src/lib/errors/$1.ts',
     '^\./expr\\.js$': '<rootDir>/src/lib/rubrics/expr.ts',
     '^\./rubric-registry\\.js$': '<rootDir>/src/lib/rubrics/rubric-registry.ts',
     '^\./error-types\.js$': '<rootDir>/src/lib/errors/error-types.ts',
@@ -45,7 +50,8 @@ export default {
     '^.*/src/(.*)\\.js$': '<rootDir>/src/$1.ts',
     '^.*/utils/(.*)\\.js$': '<rootDir>/src/utils/$1.ts',
     '^.*/lib/errors/(.*)\\.js$': '<rootDir>/src/lib/errors/$1.ts',
-    '^.*/lib/rubrics/(.*)\\.js$': '<rootDir>/src/lib/rubrics/$1.ts'
+    '^.*/lib/rubrics/(.*)\\.js$': '<rootDir>/src/lib/rubrics/$1.ts',
+    '^.*/lib/templates/(.*)\\.js$': '<rootDir>/src/lib/templates/$1.ts'
   },
   extensionsToTreatAsEsm: ['.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
