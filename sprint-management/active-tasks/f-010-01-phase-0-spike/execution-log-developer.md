@@ -41,3 +41,6 @@
 2025-09-09T11:23:09.3NZ: PHASE GET_PODS_OPTIMIZATION - START - Implement concurrent batching with env defaults (OC_READ_PODS_CONCURRENCY/ TIMEOUT_MS)
 2025-09-09T11:23:09.3NZ: PHASE GET_PODS_FAIR_COMPARISON - COMPLETE - 20 ns: traditional 1672ms vs batched 1131ms (+32%), ops parity 20/20
 2025-09-09T11:31:07.3NZ: PHASE GET_PODS_REPORT - COMPLETE - Markdown report with per-namespace timings and ops parity
+2025-09-09T11:41:48.3NZ: PHASE CLUSTER_HEALTH_OPTIMIZATION - UPDATE - Env-configurable batching applied (NS concurrency/timeout)
+2025-09-09T11:41:48.3NZ: PHASE CLUSTER_HEALTH_FAIR_COMPARISON - COMPLETE - 20 ns: sequential 2314ms vs batched 218ms (+91%); checks parity 20/20
+2025-09-09T11:41:48.3NZ: PHASE CLUSTER_HEALTH_REPORT - COMPLETE - Markdown report added with methodology and results

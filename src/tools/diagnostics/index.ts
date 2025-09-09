@@ -348,7 +348,9 @@ export class DiagnosticToolsV2 implements ToolSuite {
           const names = bulk;
           const total = names.length;
           const toAnalyze = names.slice(0, maxNamespacesToAnalyze);
-          const batch = await this.batchAnalyzeNamespaceHealth(toAnalyze, { maxConcurrent: 5, timeoutPerNamespace: 10000, includeIngressTest: false });
+          const envConc = Number(process.env.OC_DIAG_NS_CONCURRENCY || process.env.OC_DIAG_CONCURRENCY || 8);
+          const envTimeout = Number(process.env.OC_DIAG_NS_TIMEOUT_MS || process.env.OC_DIAG_TIMEOUT_MS || 5000);
+          const batch = await this.batchAnalyzeNamespaceHealth(toAnalyze, { maxConcurrent: Math.max(1, envConc), timeoutPerNamespace: Math.max(1000, envTimeout), includeIngressTest: false });
           prioritization = names.map(n => ({ namespace: n, score: 0, reasons: [] }));
           namespaceAnalysis = {
             scope: namespaceScope,
@@ -728,10 +730,10 @@ export class DiagnosticToolsV2 implements ToolSuite {
   private async batchAnalyzeNamespaceHealth(
     namespaces: string[],
     options: { maxConcurrent?: number; timeoutPerNamespace?: number; includeIngressTest?: boolean } = {}
-  ): Promise<{ analyzed: Array<{ namespace: string; status: string; summary: { pods: number; ready: number; issues: number } }>; totalAnalyzed: number; errors: Array<{ namespace: string; error: string }>; performance: { averageTimePerNamespace: string; concurrency: number } }>
+  ): Promise<{ analyzed: Array<{ namespace: string; status: string; summary: { pods: number; ready: number; issues: number }; elapsedMs: number }>; totalAnalyzed: number; errors: Array<{ namespace: string; error: string }>; performance: { averageTimePerNamespace: string; concurrency: number; totalMs: number } }>
   {
     const { maxConcurrent = 8, timeoutPerNamespace = 5000, includeIngressTest = false } = options;
-    const results: Array<{ namespace: string; status: string; summary: { pods: number; ready: number; issues: number } }> = [];
+    const results: Array<{ namespace: string; status: string; summary: { pods: number; ready: number; issues: number }; elapsedMs: number }> = [];
     const errors: Array<{ namespace: string; error: string }> = [];
     const started = nowEpoch();
 
@@ -739,10 +741,12 @@ export class DiagnosticToolsV2 implements ToolSuite {
       const batch = namespaces.slice(i, i + maxConcurrent);
       const batchPromises = batch.map(async (ns) => {
         try {
+          const nsStart = nowEpoch();
           const health: any = await withTimeout(async () => {
             return await this.namespaceHealthChecker.checkHealth({ namespace: ns, includeIngressTest, maxLogLinesPerPod: 0 });
           }, timeoutPerNamespace, `ns-health:${ns}`);
-          return { namespace: ns, status: String(health.status), summary: { pods: Number(health.checks?.pods?.total || 0), ready: Number(health.checks?.pods?.ready || 0), issues: Number((health.suspicions || []).length) } };
+          const nsElapsed = nowEpoch() - nsStart;
+          return { namespace: ns, status: String(health.status), summary: { pods: Number(health.checks?.pods?.total || 0), ready: Number(health.checks?.pods?.ready || 0), issues: Number((health.suspicions || []).length) }, elapsedMs: nsElapsed };
         } catch (e) {
           errors.push({ namespace: ns, error: e instanceof Error ? e.message : String(e) });
           return null;
@@ -754,7 +758,50 @@ export class DiagnosticToolsV2 implements ToolSuite {
 
     const elapsed = nowEpoch() - started;
     const avg = results.length > 0 ? Math.round(elapsed / results.length) : 0;
-    return { analyzed: results, totalAnalyzed: results.length, errors, performance: { averageTimePerNamespace: `${avg}ms`, concurrency: maxConcurrent } };
+    return { analyzed: results, totalAnalyzed: results.length, errors, performance: { averageTimePerNamespace: `${avg}ms`, concurrency: maxConcurrent, totalMs: elapsed } };
+  }
+
+  // Cluster health fair comparison with work equivalence: sequential vs batched analysis
+  async runClusterHealthFairComparison(): Promise<{ namespaceCount: number; sequentialTime: number; batchedTime: number; wallClockImprovement: number; perNsSequential: number; perNsBatched: number; ops: { sequentialChecks: number; batchedChecks: number }; perNamespace: Array<{ namespace: string; elapsedMs: number; status: string }>; timestamp: string }>{
+    const N = 20;
+    const names = await this.listNamespacesByScope('all');
+    const targets = names.slice(0, Math.min(N, names.length));
+    const concEnv = Math.max(1, Number(process.env.OC_DIAG_NS_CONCURRENCY || process.env.OC_DIAG_CONCURRENCY || 8));
+    const timeoutEnv = Math.max(1000, Number(process.env.OC_DIAG_NS_TIMEOUT_MS || process.env.OC_DIAG_TIMEOUT_MS || 5000));
+
+    console.log(`[${nowIso()}] === CLUSTER HEALTH FAIR COMPARISON ===`);
+    console.log(`Namespaces: ${targets.length}`);
+    console.log(`Sequential (concurrency=1) vs Batched (concurrency=${concEnv})`);
+
+    const sStart = nowEpoch();
+    const seq = await this.batchAnalyzeNamespaceHealth(targets, { maxConcurrent: 1, timeoutPerNamespace: timeoutEnv, includeIngressTest: false });
+    const sequentialTime = nowEpoch() - sStart;
+
+    const bStart = nowEpoch();
+    const bat = await this.batchAnalyzeNamespaceHealth(targets, { maxConcurrent: concEnv, timeoutPerNamespace: timeoutEnv, includeIngressTest: false });
+    const batchedTime = nowEpoch() - bStart;
+
+    const perNsSequential = Math.round(sequentialTime / Math.max(1, seq.totalAnalyzed));
+    const perNsBatched = Math.round(batchedTime / Math.max(1, bat.totalAnalyzed));
+    const imp = Math.round(((sequentialTime - batchedTime) / Math.max(1, sequentialTime)) * 100);
+
+    console.log(`[${nowIso()}] === RESULTS ===`);
+    console.log(`Sequential: ${sequentialTime}ms (${perNsSequential}ms/ns), checks: ${seq.totalAnalyzed}`);
+    console.log(`Batched: ${batchedTime}ms (${perNsBatched}ms/ns), checks: ${bat.totalAnalyzed}`);
+    console.log(`Improvement: ${imp}%`);
+
+    const perNamespace = seq.analyzed.map(a => ({ namespace: a.namespace, elapsedMs: a.elapsedMs, status: a.status }));
+    return {
+      namespaceCount: targets.length,
+      sequentialTime,
+      batchedTime,
+      wallClockImprovement: imp,
+      perNsSequential,
+      perNsBatched,
+      ops: { sequentialChecks: seq.totalAnalyzed, batchedChecks: bat.totalAnalyzed },
+      perNamespace,
+      timestamp: nowIso()
+    };
   }
 
   // Lightweight pod health summarizer for profiling
