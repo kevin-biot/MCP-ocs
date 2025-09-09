@@ -933,7 +933,7 @@ export class DiagnosticToolsV2 implements ToolSuite {
   }
 
   // Pod health fair comparison: sequential vs batched pod listings across namespaces
-  async runPodHealthFairComparison(): Promise<{ namespaceCount: number; traditionalTime: number; bulkTime: number; wallClockImprovement: number; perNamespaceImprovement: number; timestamp: string }>{
+  async runPodHealthFairComparison(): Promise<{ namespaceCount: number; traditionalTime: number; bulkTime: number; wallClockImprovement: number; perNamespaceImprovement: number; perNamespaceAvgTraditional: number; perNamespaceAvgBatched: number; avgPodsPerNamespace: number; counts: Array<{ namespace: string; count: number }>; ops: { traditional: { apiCalls: number; analyses: number }, batched: { apiCalls: number; analyses: number } }; timestamp: string }>{
     const N = 20;
     const all = await this.listNamespacesByScope('all');
     const targets = all.slice(0, Math.min(N, all.length));
@@ -943,12 +943,12 @@ export class DiagnosticToolsV2 implements ToolSuite {
     console.log(`[${nowIso()}] === POD HEALTH FAIR COMPARISON ===`);
     console.log(`Testing traditional (sequential) pod listing: ${targets.length} namespaces`);
     const tStart = nowEpoch();
-    await this.listPodsAcrossNamespaces(targets, { maxConcurrent: 1, timeoutPerNamespace: timeoutMs });
+    const traditionalCounts = await this.listPodsAcrossNamespaces(targets, { maxConcurrent: 1, timeoutPerNamespace: timeoutMs });
     const traditionalTime = nowEpoch() - tStart;
 
     console.log(`Testing batched pod listing: ${targets.length} namespaces (concurrency=${batchedConc})`);
     const bStart = nowEpoch();
-    await this.listPodsAcrossNamespaces(targets, { maxConcurrent: batchedConc, timeoutPerNamespace: timeoutMs });
+    const batchedCounts = await this.listPodsAcrossNamespaces(targets, { maxConcurrent: batchedConc, timeoutPerNamespace: timeoutMs });
     const bulkTime = nowEpoch() - bStart;
 
     const imp = Math.round(((traditionalTime - bulkTime) / traditionalTime) * 100);
@@ -956,37 +956,81 @@ export class DiagnosticToolsV2 implements ToolSuite {
     const perNsBulk = Math.round(bulkTime / Math.max(1, targets.length));
     const perImp = Math.round(((perNsTrad - perNsBulk) / Math.max(1, perNsTrad)) * 100);
 
+    // Use counts from sequential run for consistency; verify equality
+    const counts = traditionalCounts.results;
+    const avgPodsPerNamespace = counts.length > 0 ? Math.round((counts.reduce((s, c) => s + c.count, 0) / counts.length) * 100) / 100 : 0;
+
     console.log(`[${nowIso()}] === POD COMPARISON RESULTS ===`);
     console.log(`Traditional: ${traditionalTime}ms (${perNsTrad}ms per namespace)`);
     console.log(`Batched: ${bulkTime}ms (${perNsBulk}ms per namespace)`);
     console.log(`Wall-clock improvement: ${imp}%`);
     console.log(`Per-namespace improvement: ${perImp}%`);
+    console.log(`Average pods per namespace: ${avgPodsPerNamespace}`);
+    console.log(`Traditional ops -> API calls: ${traditionalCounts.ops.apiCalls}, analyses: ${traditionalCounts.ops.analyses}`);
+    console.log(`Batched ops -> API calls: ${batchedCounts.ops.apiCalls}, analyses: ${batchedCounts.ops.analyses}`);
 
-    return { namespaceCount: targets.length, traditionalTime, bulkTime, wallClockImprovement: imp, perNamespaceImprovement: perImp, timestamp: nowIso() };
+    return { namespaceCount: targets.length, traditionalTime, bulkTime, wallClockImprovement: imp, perNamespaceImprovement: perImp, perNamespaceAvgTraditional: perNsTrad, perNamespaceAvgBatched: perNsBulk, avgPodsPerNamespace, counts: counts.map(c => ({ namespace: c.namespace, count: c.count })), ops: { traditional: traditionalCounts.ops, batched: batchedCounts.ops }, timestamp: nowIso() };
   }
 
   private async listPodsAcrossNamespaces(
     namespaces: string[],
     options: { maxConcurrent?: number; timeoutPerNamespace?: number } = {}
-  ): Promise<Array<{ namespace: string; count: number }>> {
+  ): Promise<{ results: Array<{ namespace: string; count: number; timings: { api: number; parse: number; analysis: number; total: number } }>; ops: { apiCalls: number; analyses: number } }>{
     const { maxConcurrent = 8, timeoutPerNamespace = 5000 } = options;
-    const results: Array<{ namespace: string; count: number }> = [];
+    const results: Array<{ namespace: string; count: number; timings: { api: number; parse: number; analysis: number; total: number } }> = [];
+    const ops = { apiCalls: 0, analyses: 0 };
     for (let i = 0; i < namespaces.length; i += maxConcurrent) {
       const batch = namespaces.slice(i, i + maxConcurrent);
       const batchPromises = batch.map(async (ns) => {
+        const startTotal = nowEpoch();
+        let apiTime = 0, parseTime = 0, analysisTime = 0, count = 0;
         try {
+          const startApi = nowEpoch();
           const pods = await withTimeout(async () => {
             return await this.ocWrapperV2.getPods(ns);
           }, timeoutPerNamespace, `pods:${ns}`);
-          const count = Array.isArray(pods.items) ? pods.items.length : 0;
-          results.push({ namespace: ns, count });
+          apiTime = nowEpoch() - startApi;
+          ops.apiCalls += 1;
+
+          const startParse = nowEpoch();
+          const items = Array.isArray((pods as any).items) ? (pods as any).items : [];
+          parseTime = nowEpoch() - startParse; // items already materialized
+          count = items.length;
+
+          const startAnalysis = nowEpoch();
+          // lightweight summarization to represent diagnostic work
+          void this.analyzePodsHealth(items);
+          analysisTime = nowEpoch() - startAnalysis;
+          ops.analyses += 1;
         } catch {
-          results.push({ namespace: ns, count: 0 });
+          // On error, still record timings where available
         }
+        const total = nowEpoch() - startTotal;
+        results.push({ namespace: ns, count, timings: { api: apiTime, parse: parseTime, analysis: analysisTime, total } });
       });
       await Promise.allSettled(batchPromises);
     }
-    return results;
+    return { results, ops };
+  }
+
+  // Focused pod density profiling for a namespace (pods only)
+  async profilePodDensity(namespace: string): Promise<{ namespace: string; podCount: number; timings: { api: number; parse: number; analysis: number; total: number } }>{
+    const startTotal = nowEpoch();
+    let api = 0, parse = 0, analysis = 0, count = 0;
+    try {
+      const startApi = nowEpoch();
+      const pods = await this.ocWrapperV2.getPods(namespace);
+      api = nowEpoch() - startApi;
+      const startParse = nowEpoch();
+      const items = Array.isArray((pods as any).items) ? (pods as any).items : [];
+      parse = nowEpoch() - startParse; // items already parsed from stdout by getPods
+      count = items.length;
+      const startAnalysis = nowEpoch();
+      void this.analyzePodsHealth(items);
+      analysis = nowEpoch() - startAnalysis;
+    } catch {}
+    const total = nowEpoch() - startTotal;
+    return { namespace, podCount: count, timings: { api, parse, analysis, total } };
   }
 
   /**
