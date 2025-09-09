@@ -58,3 +58,4 @@
 2025-09-09T12:19:16.3NZ: PHASE REVIEWER_MODE - COMPLETE - Review report generated; deliverables validated; ready for sprint closure
 2025-09-09T15:05:13.3NZ: PHASE DAILY_ISSUES_INTAKE - START - Sourcing PVC remediation items for GitHub issues
 2025-09-09T15:05:13.3NZ: ISSUES_PROPOSED - oc_read_describe wildcard handling; oc_read_get_pvcs enumeration (links shared in chat)
+2025-09-09T15:17:31.3NZ: DAILY_ISSUES_INTAKE - CREATED: https://github.com/kevin-biot/MCP-ocs/issues/4 ; https://github.com/kevin-biot/MCP-ocs/issues/5
