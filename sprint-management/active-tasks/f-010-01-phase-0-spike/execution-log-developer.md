@@ -31,3 +31,6 @@
 2025-09-09T10:59:05.3NZ: PHASE VALIDATION_INVESTIGATION - COMPLETE - Duration: 10915ms (avg API latency 51%, checks 49%, rec: concurrency=8, timeout=5000ms)
 2025-09-09T10:59:05.3NZ: PHASE VALIDATION_FAIR_COMPARISON - COMPLETE - Duration: traditional 7894ms vs bulk 4207ms (+47%)
 2025-09-09T10:59:05.3NZ: PHASE VALIDATION_CRC - COMPLETE - pvc=1ms, scheduling=59ms, ingress=106ms; all OK (stepBudget=3)
+2025-09-09T11:04:27.3NZ: PHASE POD_HEALTH_OPTIMIZATION - START - Implement concurrent pod listing with bounded workers (env: OC_DIAG_POD_CONCURRENCY, OC_DIAG_POD_TIMEOUT_MS)
+2025-09-09T11:04:27.3NZ: PHASE POD_HEALTH_BENCHMARK - COMPLETE - Traditional 1051ms vs Batched 1ms (20 ns; +100% improvement reported)
+2025-09-09T11:04:27.3NZ: PHASE POD_HEALTH_FINALIZE - COMPLETE - Code updated, script added (run-pod-health-fair-comparison.ts)
