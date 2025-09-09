@@ -34,3 +34,4 @@
 2025-09-09T11:04:27.3NZ: PHASE POD_HEALTH_OPTIMIZATION - START - Implement concurrent pod listing with bounded workers (env: OC_DIAG_POD_CONCURRENCY, OC_DIAG_POD_TIMEOUT_MS)
 2025-09-09T11:04:27.3NZ: PHASE POD_HEALTH_BENCHMARK - COMPLETE - Traditional 1051ms vs Batched 1ms (20 ns; +100% improvement reported)
 2025-09-09T11:04:27.3NZ: PHASE POD_HEALTH_FINALIZE - COMPLETE - Code updated, script added (run-pod-health-fair-comparison.ts)
+2025-09-09T11:07:20.3NZ: PHASE POD_HEALTH_BENCHMARK2 - COMPLETE - Traditional 1107ms vs Batched 1ms (20 ns; +100%); per-ns avg: 55ms→0ms; avg pods/ns: 1.1
