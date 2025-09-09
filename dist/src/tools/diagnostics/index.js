@@ -16,6 +16,8 @@ import { checkNamespaceHealthV2Tool } from '../../v2-integration.js';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { ValidationError, TriageExecutionError } from '../../lib/errors/error-types.js';
+import { TemplateEngine } from '../../lib/templates/template-engine.js';
+import { withTimeout } from '../../utils/async-timeout.js';
 export class DiagnosticToolsV2 {
     openshiftClient;
     memoryManager;
@@ -226,7 +228,7 @@ export class DiagnosticToolsV2 {
     async executeTool(toolName, args) {
         const rec = (v) => (v && typeof v === 'object') ? v : {};
         const raw = rec(args);
-        const sessionId = typeof raw.sessionId === 'string' ? raw.sessionId : `session-${Date.now()}`;
+        const sessionId = typeof raw.sessionId === 'string' ? raw.sessionId : `session-${nowEpoch()}`;
         try {
             switch (toolName) {
                 case 'oc_diagnostic_cluster_health':
@@ -246,7 +248,7 @@ export class DiagnosticToolsV2 {
         catch (error) {
             // Store diagnostic error for analysis
             await this.memoryManager.storeOperational({
-                incidentId: `diagnostic-error-${sessionId}-${Date.now()}`,
+                incidentId: `diagnostic-error-${sessionId}-${nowEpoch()}`,
                 domain: 'cluster',
                 timestamp: nowEpoch(),
                 symptoms: [`Diagnostic tool error: ${toolName}`],
@@ -263,11 +265,11 @@ export class DiagnosticToolsV2 {
      * Enhanced cluster health check with v2 capabilities
      */
     async enhancedClusterHealth(args) {
-        const startTime = Date.now();
+        const startTime = nowEpoch();
         const coerceBool = (v) => typeof v === 'string' ? ['true', '1', 'yes', 'on'].includes(v.toLowerCase()) : Boolean(v);
         const coerceNum = (v, d) => typeof v === 'string' ? (Number(v) || d || 0) : (typeof v === 'number' ? v : (d || 0));
         const toList = (v) => Array.isArray(v) ? v : (typeof v === 'string' ? v.split(',').map(s => s.trim()).filter(Boolean) : []);
-        const sessionId = String(args?.sessionId || `session-${Date.now()}`);
+        const sessionId = String(args?.sessionId || `session-${nowEpoch()}`);
         const includeNamespaceAnalysis = coerceBool(args?.includeNamespaceAnalysis);
         const maxNamespacesToAnalyze = coerceNum(args?.maxNamespacesToAnalyze, 10);
         const namespaceScope = args.namespaceScope || 'all';
@@ -315,7 +317,7 @@ export class DiagnosticToolsV2 {
                 // Run quick checks on targets with time cap
                 const detailed = [];
                 for (const ns of targets) {
-                    if (maxRuntimeMs && Date.now() - startTime > maxRuntimeMs)
+                    if (maxRuntimeMs && nowEpoch() - startTime > maxRuntimeMs)
                         break;
                     try {
                         const health = await this.namespaceHealthChecker.checkHealth({ namespace: ns, includeIngressTest: false, maxLogLinesPerPod: 0 });
@@ -341,7 +343,7 @@ export class DiagnosticToolsV2 {
                     version: clusterInfo.version,
                     currentUser: clusterInfo.currentUser,
                     serverUrl: clusterInfo.serverUrl,
-                    timestamp: new Date().toISOString()
+                    timestamp: nowIso()
                 },
                 nodes: nodeHealth,
                 operators: operatorHealth,
@@ -349,7 +351,7 @@ export class DiagnosticToolsV2 {
                 userNamespaces: namespaceAnalysis,
                 namespacePrioritization: prioritization,
                 overallHealth: this.calculateOverallHealth(nodeHealth, operatorHealth, systemNamespaceHealth),
-                duration: `${Date.now() - startTime}ms`,
+                duration: `${nowEpoch() - startTime}ms`,
                 recommendations: this.generateClusterRecommendations(nodeHealth, operatorHealth, systemNamespaceHealth),
                 mode: bounded ? 'bounded' : 'comprehensive',
                 bounded: bounded ? { namespaceList: namespaceList, maxNamespacesToAnalyze, maxRuntimeMs } : undefined
@@ -391,34 +393,47 @@ export class DiagnosticToolsV2 {
         }
     }
     /**
-     * Phase 0: oc_triage entrypoint (registration and minimal validation)
-     * Loads the mapped template JSON to validate presence; execution is added in Phase B.
+     * Phase B: oc_triage execution with bounded plan (≤3 steps)
      */
     async executeOcTriage(args) {
-        const rec = (v) => (v && typeof v === 'object') ? v : {};
-        const raw = rec(args);
-        const intent = String(raw.intent || '');
-        const namespace = String(raw.namespace || '');
-        const sessionId = typeof raw.sessionId === 'string' ? raw.sessionId : `session-${Date.now()}`;
-        if (!intent || !['pvc-binding', 'scheduling-failures', 'ingress-pending'].includes(intent)) {
-            throw new ValidationError(`Unsupported or missing intent: ${intent || '<empty>'}`, { details: { intent } });
-        }
-        if (!namespace) {
-            throw new ValidationError('namespace is required for oc_triage Phase 0');
-        }
+        const { intent, namespace, sessionId } = this.validateTriageInput(args);
         const templateId = this.mapIntentToTemplate(intent);
+        // Load template JSON and verify ID
+        const template = await this.loadTemplate(templateId);
+        // Build bounded plan (≤3 steps) with basic vars
+        const engine = new TemplateEngine();
+        const vars = { ns: namespace, namespace, sessionId };
+        const plan = engine.buildPlan(template, { sessionId, bounded: true, stepBudget: 3, vars });
+        const timeoutMs = Number(template?.boundaries?.timeoutMs || 20000);
+        const executed = [];
         try {
-            await this.ensureTemplateExists(templateId);
+            await withTimeout(async () => {
+                for (const step of plan.steps) {
+                    const hasUnresolved = Object.values(step.params || {}).some(v => typeof v === 'string' && /^<.*>$/.test(v));
+                    if (hasUnresolved) {
+                        executed.push({ step: { tool: step.tool, params: step.params, rationale: step.rationale }, result: { skipped: 'unresolved_vars', params: step.params } });
+                        continue;
+                    }
+                    const res = await this.executePlannedStep(step.tool, step.params, sessionId);
+                    executed.push({ step: { tool: step.tool, params: step.params, rationale: step.rationale }, result: res });
+                }
+            }, timeoutMs, 'oc_triage');
         }
         catch (e) {
-            throw new TriageExecutionError(`Template not available: ${templateId}`, { cause: e, details: { templateId } });
+            throw new TriageExecutionError('Triage step failed', { cause: e });
         }
+        // Evidence completeness using template evidenceContract
+        const ev = engine.evaluateEvidence(template, executed);
+        const completeness = typeof ev?.completeness === 'number' ? ev.completeness : 0;
+        const priority = completeness >= (Number(template?.evidenceContract?.completenessThreshold || 0.8)) ? 'P2' : 'P3';
+        const confidence = completeness >= 0.9 ? 'High' : (completeness >= 0.6 ? 'Medium' : 'Low');
         const envelope = {
-            routing: { intent: intent, templateId, bounded: true, stepBudget: 3, triggerMode: 'replace' },
-            rubrics: { safety: 'ALLOW', priority: 'P2', confidence: 'Low' },
-            summary: 'Triage initialized (Phase 0 registration). Execution implemented in Phase B.',
-            evidence: { completeness: 0, missing: [], present: [] },
-            promptSuggestions: [],
+            routing: { intent: intent, templateId, bounded: true, stepBudget: plan.boundaries.maxSteps, triggerMode: 'replace' },
+            rubrics: { safety: 'ALLOW', priority: priority, confidence: confidence },
+            summary: `${template.name}: triage complete (steps=${plan.steps.length}, completeness=${completeness.toFixed(2)})`,
+            evidence: { completeness, missing: ev.missing, present: ev.present },
+            followUpTools: executed.map(e => ({ tool: e.step.tool, parameters: e.step.params })),
+            promptSuggestions: []
         };
         return JSON.stringify(envelope, null, 2);
     }
@@ -442,6 +457,62 @@ export class DiagnosticToolsV2 {
     stripVersionlessFilename(templateId) {
         // Map id like pvc-binding-v1 -> pvc-binding
         return templateId.replace(/-v\d+$/, '');
+    }
+    async loadTemplate(templateId) {
+        const file = path.join(process.cwd(), 'src', 'lib', 'templates', 'templates', `${this.stripVersionlessFilename(templateId)}.json`);
+        const alt = path.join(process.cwd(), 'src', 'lib', 'templates', 'templates', `${templateId.replace(/-v\d+$/, '')}.json`);
+        const raw = await fs.readFile(file).catch(async () => fs.readFile(alt));
+        const obj = JSON.parse(raw.toString());
+        if (obj?.id !== templateId)
+            throw new Error(`Template id mismatch: expected ${templateId}, found ${obj?.id}`);
+        return obj;
+    }
+    async executePlannedStep(tool, params, sessionId) {
+        switch (tool) {
+            case 'oc_read_get_pods': {
+                const ns = typeof params.namespace === 'string' ? params.namespace : undefined;
+                const sel = typeof params.selector === 'string' ? params.selector : undefined;
+                const pods = await this.openshiftClient.getPods(ns, sel);
+                return pods;
+            }
+            case 'oc_read_describe': {
+                const resType = String(params.resourceType || '');
+                const name = String(params.name || '');
+                const ns = typeof params.namespace === 'string' ? params.namespace : undefined;
+                if (!resType || !name)
+                    return { skipped: 'missing_params', tool, params };
+                const out = await this.openshiftClient.describeResource(resType, name, ns);
+                return out;
+            }
+            case 'oc_read_machinesets': {
+                const ns = String(params?.namespace || 'openshift-machine-api');
+                const raw = await this.openshiftClient.executeRawCommand(['get', 'machinesets', '-n', ns, '-o', 'json']);
+                try {
+                    return JSON.parse(raw);
+                }
+                catch {
+                    return raw;
+                }
+            }
+            default:
+                // Unknown tool in template — record as skipped
+                return { skipped: 'unknown_tool', tool, params };
+        }
+    }
+    validateTriageInput(args) {
+        const rec = (v) => (v && typeof v === 'object') ? v : {};
+        const raw = rec(args);
+        const intent = typeof raw.intent === 'string' ? raw.intent : '';
+        const namespace = typeof raw.namespace === 'string' ? raw.namespace : '';
+        const sessionId = typeof raw.sessionId === 'string' ? raw.sessionId : `session-${nowEpoch()}`;
+        const intents = ['pvc-binding', 'scheduling-failures', 'ingress-pending'];
+        if (!intents.includes(intent)) {
+            throw new ValidationError(`Unsupported or missing intent: ${intent || '<empty>'}`, { details: { intent } });
+        }
+        if (!namespace) {
+            throw new ValidationError('namespace is required for oc_triage Phase 0');
+        }
+        return { intent: intent, namespace, sessionId };
     }
     /**
      * Prioritize namespaces for analysis and build focused output
@@ -667,7 +738,7 @@ export class DiagnosticToolsV2 {
                     sessionId,
                     namespace,
                     podName,
-                    timestamp: new Date().toISOString(),
+                    timestamp: nowIso(),
                     health: podAnalysis,
                     dependencies,
                     resources: resourceAnalysis,
@@ -679,7 +750,7 @@ export class DiagnosticToolsV2 {
                 await this.memoryManager.storeOperational({
                     incidentId: `pod-health-${sessionId}`,
                     domain: 'cluster',
-                    timestamp: Date.now(),
+                    timestamp: nowEpoch(),
                     symptoms: podAnalysis.issues.length > 0 ? podAnalysis.issues : ['pod_healthy'],
                     affectedResources: [`pod/${podName}`, `namespace/${namespace}`],
                     diagnosticSteps: ['Enhanced pod health check completed'],
@@ -712,7 +783,7 @@ export class DiagnosticToolsV2 {
             await this.memoryManager.storeOperational({
                 incidentId: `pod-health-discovery-${sessionId}`,
                 domain: 'cluster',
-                timestamp: Date.now(),
+                timestamp: nowEpoch(),
                 symptoms: ['pod_health_discovery_completed'],
                 affectedResources: [],
                 diagnosticSteps: ['Cluster-wide pod discovery and prioritization completed'],
@@ -822,7 +893,7 @@ export class DiagnosticToolsV2 {
             }
             catch { }
         }
-        return new Date().toISOString();
+        return nowIso();
     }
     normalizeNamespaceHealthOutput(resp) {
         const out = { ...resp };
@@ -1176,7 +1247,7 @@ export class DiagnosticToolsV2 {
             return JSON.stringify({
                 success: true,
                 result: response,
-                timestamp: new Date().toISOString()
+                timestamp: nowIso()
             }, null, 2);
         }
         catch (error) {
@@ -1190,7 +1261,7 @@ export class DiagnosticToolsV2 {
             error: true,
             operation,
             message: error instanceof Error ? error.message : 'Unknown error',
-            timestamp: new Date().toISOString(),
+            timestamp: nowIso(),
             human: `Failed to perform ${operation}: ${error instanceof Error ? error.message : 'Unknown error'}`
         }, null, 2);
     }

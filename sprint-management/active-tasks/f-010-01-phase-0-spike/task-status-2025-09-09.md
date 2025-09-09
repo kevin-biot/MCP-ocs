@@ -4,7 +4,7 @@
 - [ ] TASK-A1: Create oc_triage tool definition - STATUS: COMPLETED
 - [ ] TASK-A2: Register in DiagnosticToolsV2 - STATUS: COMPLETED
 - [ ] TASK-A3: Implement TriageEnvelope schema - STATUS: COMPLETED
-- [ ] TASK-A4: Verify tool registry integration - STATUS: IN_PROGRESS
+- [ ] TASK-A4: Verify tool registry integration - STATUS: COMPLETED
 
 ## PHASE B: Intent Mapping (Target: 45min)
 - [ ] TASK-B1: Create intent-to-template mapping - STATUS: COMPLETED
