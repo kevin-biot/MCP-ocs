@@ -171,7 +171,9 @@
     "test:unit:node": "npm run build && node --test tests/unit/**/*.node.test.js",
     "sprint:status": "node scripts/sprint/generate-feature-status.mjs",
     "sprint:tools": "node scripts/sprint/generate-tool-inventory.mjs",
-    "process:sync-docs": "npm run sprint:status && npm run sprint:tools && npm run archives:index"
+    "process:sync-docs": "npm run sprint:status && npm run sprint:tools && npm run archives:index",
+    "archives:index": "node scripts/archives/generate-archives-link-index.mjs && node scripts/archives/generate-archive-registry.mjs",
+    "sprint:validate-closure": "node scripts/sprint/validate-closure.mjs"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.8",
