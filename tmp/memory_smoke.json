@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "sessionId": "smoke-1757510737129",
+  "query": "smoke-validate",
+  "counts": {
+    "conversations": 1,
+    "operational": 1
+  },
+  "unified": true,
+  "jsonOnly": true
+}
