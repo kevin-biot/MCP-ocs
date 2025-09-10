@@ -66,7 +66,8 @@
     "docker:build": "docker build -t mcp-ocs .",
     "docker:test": "docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit",
     "preversion": "npm run beta:tools:generate && git add config/beta-tools.json",
-    "release:beta": "npm run beta:tools:generate && git add config/beta-tools.json && git commit -m 'chore: sync beta tools JSON' && git tag v0.8.0-beta"
+    "release:beta": "npm run beta:tools:generate && git add config/beta-tools.json && git commit -m 'chore: sync beta tools JSON' && git tag v0.8.0-beta",
+    "archives:index": "node scripts/archives/generate-archives-index.mjs"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.8",
