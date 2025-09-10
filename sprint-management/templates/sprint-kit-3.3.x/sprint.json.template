@@ -1,0 +1,11 @@
+{
+  "sprint_id": "<sprint-id>",
+  "type": "feature|maintenance|fix",
+  "slug": "<short-name>",
+  "owner": "kevin-biot",
+  "target_branch": "release/v0.9.0-beta",
+  "goals": ["<goal-1>", "<goal-2>"] ,
+  "acceptance": ["<criteria-1>", "<criteria-2>"],
+  "start_date": "YYYY-MM-DD",
+  "status": "active|paused|closed"
+}

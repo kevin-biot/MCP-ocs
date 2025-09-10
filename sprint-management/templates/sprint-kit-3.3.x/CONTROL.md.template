@@ -1,0 +1,30 @@
+# CONTROL — <sprint-id>-<slug>
+
+- [ ] Sprint manifest present (sprint.json)
+- [ ] Roles established (Claude = AI Scrum Master, Codex = coder)
+- [ ] Branch discipline confirmed (beta for live, main for archives)
+- [ ] Logs path: `logs/sprint-execution.log`
+
+## Daily Checklist
+- [ ] Kickoff prompts executed (Claude, Codex)
+- [ ] Protocol smoke (sequential/beta, zero stdout)
+- [ ] Memory smoke (JSON-only)
+- [ ] Standup captured (execution logs)
+- [ ] EOD sync (beta→main) done, archives indices/registry refreshed
+
+## Artifacts (20 standard)
+- [ ] Execution Logs (developer/tester/reviewer/AI) — `artifacts/execution-logs/`
+- [ ] Completion Reports (developer/tester/reviewer) — `artifacts/completion-reports/`
+- [ ] Analytical Artifacts (04..09) — `artifacts/analytical-artifacts/`
+- [ ] Master Synthesis (sprint-retrospective.md)
+- [ ] Process Artifacts (process-evolution-notes.md, original-execution-prompt.md)
+- [ ] formal-closure-index.md
+
+## Links
+- Template Guide (v3.3.2): `sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.2.md`
+- Role Guardrails: `sprint-management/templates/sprint-kit-3.3.x/ROLE-GUARDRAILS.md`
+- Features Archives Index: `sprint-management/features/archives/INDEX.md`
+- Maintenance Archives Index: `sprint-management/maintenance/archives/INDEX.md`
+
+## Notes & Decisions
+- 
