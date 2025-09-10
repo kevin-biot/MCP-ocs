@@ -77,3 +77,6 @@
 2025-09-10T17:16:29+02:00: [EVIDENCE] Updated GitHub issue #33 via gh with status and plan
 2025-09-10T17:31:12+02:00: [TASK] Phase 1: Inventory + migration mapping for sprint archives
 2025-09-10T17:31:12+02:00: [EVIDENCE] Generated migration mapping CSV and summary
+2025-09-10T17:46:42+02:00: [TASK] Forensics: branch inventory for F-010 and semantic structure
+2025-09-10T17:49:11+02:00: [TASK] Generate mapping for origin/main and write forensics + branch policy
+2025-09-10T17:49:11+02:00: [EVIDENCE] Wrote mapping for main, forensics summary, and branch policy
