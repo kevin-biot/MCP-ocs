@@ -1,0 +1,39 @@
+name: Template Guard
+on:
+  pull_request:
+    paths:
+      - 'sprint-management/templates/**'
+permissions:
+  contents: read
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Enforce templates layout
+        run: |
+          set -e
+          ALLOWED_PREFIXES=(
+            'sprint-management/templates/current/'
+            'sprint-management/templates/sprint-kit-3.3.x/'
+            'sprint-management/templates/archives/'
+            'sprint-management/templates/TEMPLATE-INFRASTRUCTURE-INDEX.md'
+          )
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }} -- 'sprint-management/templates/**' || true)
+          BAD=0
+          for f in $CHANGED; do
+            ok=0
+            for pre in "${ALLOWED_PREFIXES[@]}"; do
+              if [[ "$f" == "$pre"* ]]; then ok=1; break; fi
+            done
+            if [[ $ok -eq 0 ]]; then
+              echo "Disallowed template path: $f"; BAD=1
+            fi
+          done
+          if [[ $BAD -eq 1 ]]; then
+            echo "❌ Template changes outside allowed locations"; exit 1
+          else
+            echo "✅ Template guard passed"
+          fi
