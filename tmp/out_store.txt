@@ -1,0 +1,7 @@
+{
+  "operation": "store_incident",
+  "incidentId": "demo-rca-1",
+  "memoryId": "demo-rca-1_1757508267875",
+  "status": "success",
+  "timestamp": "2025-09-10T12:44:27.875Z"
+}

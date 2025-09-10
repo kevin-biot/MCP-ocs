@@ -1,0 +1,87 @@
+{
+  "query": "namespace quotas",
+  "limit": 5,
+  "resultsFound": 5,
+  "results": [
+    {
+      "similarity": 0.5,
+      "relevance": 50,
+      "sessionId": "conv-seed-2",
+      "domain": "mcp-ocs",
+      "userMessage": "User: How to increase namespace quotas in OpenShift?",
+      "assistantResponse": "User: How to increase namespace quotas in OpenShift?\nAssistant: Use oc apply with a ResourceQuota object; verify limits and requests.",
+      "timestamp": 1757506426000,
+      "tags": [
+        "howto",
+        "quota",
+        "domain:operations"
+      ]
+    },
+    {
+      "similarity": 0.5,
+      "relevance": 50,
+      "sessionId": "conv-seed-2",
+      "domain": "mcp-ocs",
+      "userMessage": "User: How to increase namespace quotas in OpenShift?",
+      "assistantResponse": "User: How to increase namespace quotas in OpenShift?\nAssistant: Use oc apply with a ResourceQuota object; verify limits and requests.",
+      "timestamp": 1757507095331,
+      "tags": [
+        "howto",
+        "quota",
+        "domain:operations"
+      ]
+    },
+    {
+      "similarity": 0.5,
+      "relevance": 50,
+      "sessionId": "incident-demo-rca-1",
+      "domain": "mcp-ocs",
+      "userMessage": "User: Incident: openshift-monitoring degraded, prometheus-k8s Pending",
+      "assistantResponse": "User: Incident: openshift-monitoring degraded, prometheus-k8s Pending\nAssistant: Root Cause: resource_pressure\nResolution: increased namespace quotas; restarted pods",
+      "timestamp": 1757505935604,
+      "tags": [
+        "incident_storage",
+        "manual_entry",
+        "prod",
+        "domain:operations",
+        "environment:prod",
+        "operational"
+      ]
+    },
+    {
+      "similarity": 0.5,
+      "relevance": 50,
+      "sessionId": "incident-demo-rca-1",
+      "domain": "mcp-ocs",
+      "userMessage": "User: Incident: openshift-monitoring degraded, prometheus-k8s Pending",
+      "assistantResponse": "User: Incident: openshift-monitoring degraded, prometheus-k8s Pending\nAssistant: Root Cause: resource_pressure\nResolution: increased namespace quotas; restarted pods",
+      "timestamp": 1757506248949,
+      "tags": [
+        "incident_storage",
+        "manual_entry",
+        "prod",
+        "domain:operations",
+        "environment:prod",
+        "operational"
+      ]
+    },
+    {
+      "similarity": 0.5,
+      "relevance": 50,
+      "sessionId": "incident-demo-rca-1",
+      "domain": "mcp-ocs",
+      "userMessage": "User: Incident: openshift-monitoring degraded, prometheus-k8s Pending",
+      "assistantResponse": "User: Incident: openshift-monitoring degraded, prometheus-k8s Pending\nAssistant: Root Cause: resource_pressure\nResolution: increased namespace quotas; restarted pods",
+      "timestamp": 1757508267872,
+      "tags": [
+        "incident_storage",
+        "manual_entry",
+        "prod",
+        "domain:operations",
+        "environment:prod",
+        "operational"
+      ]
+    }
+  ],
+  "timestamp": "2025-09-10T12:44:28.241Z"
+}

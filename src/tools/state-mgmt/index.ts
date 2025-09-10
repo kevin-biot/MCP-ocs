@@ -8,6 +8,7 @@
 import { ToolDefinition } from '../../lib/tools/namespace-manager.js';
 import { nowIso, nowEpoch } from '../../utils/time.js';
 import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
+import { isOperationalMemory } from '../../lib/type-guards/index.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
 import { WorkflowEngine } from '../../lib/workflow/workflow-engine.js';
 
@@ -249,7 +250,6 @@ export class StateMgmtTools implements ToolSuite {
       limit: limit || 5,
       resultsFound: results.length,
       results: results.map(r => {
-        const { isOperationalMemory } = require('@/lib/type-guards');
         const mem = (r && typeof r === 'object' && 'memory' in r) ? (r as any).memory : undefined;
         if (isOperationalMemory(mem)) {
           return {

@@ -10,6 +10,8 @@ import type { ConversationMemory, OperationalMemory } from './shared-memory';
 export declare class MCPFilesChromaAdapter {
     private chromaManager;
     private available;
+    private convCollection;
+    private opCollection;
     constructor(host: string, port: number, memoryDir: string);
     initialize(): Promise<void>;
     isChromaAvailable(): boolean;

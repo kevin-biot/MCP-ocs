@@ -1,6 +1,4 @@
-/// <reference path="./mcp-files-shim.d.ts" />
-// @ts-ignore: external module provided by MCP-files repo
-import { ChromaMemoryManager } from '../../../MCP-files/src/memory-extension.ts';
+import { ChromaMemoryManager } from './mcp-files-memory-extension.js';
 
 export interface OCSIncidentMemory {
   sessionId: string;

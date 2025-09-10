@@ -13,10 +13,15 @@ import type { ConversationMemory, OperationalMemory } from './shared-memory';
 export class MCPFilesChromaAdapter {
   private chromaManager: ChromaMemoryManager;
   private available = false;
+  private convCollection: string;
+  private opCollection: string;
   
   constructor(host: string, port: number, memoryDir: string) {
     // Use the working MCP-files implementation directly
     this.chromaManager = new ChromaMemoryManager(memoryDir);
+    const prefix = process.env.CHROMA_COLLECTION_PREFIX || 'mcp-ocs-';
+    this.convCollection = `${prefix}conversations`;
+    this.opCollection = `${prefix}operational`;
   }
   
   async initialize(): Promise<void> {
@@ -49,7 +54,7 @@ export class MCPFilesChromaAdapter {
       tags: [...memory.tags, `domain:${memory.domain}`] // Add domain as tag
     };
     
-    return await this.chromaManager.storeConversation(mcpFilesMemory);
+    return await this.chromaManager.storeConversation(mcpFilesMemory, this.convCollection);
   }
   
   async storeOperational(memory: OperationalMemory): Promise<boolean> {
@@ -63,11 +68,11 @@ export class MCPFilesChromaAdapter {
       tags: [...memory.tags, `domain:${memory.domain}`, `environment:${memory.environment}`, 'operational']
     };
     
-    return await this.chromaManager.storeConversation(operationalAsConversation);
+    return await this.chromaManager.storeConversation(operationalAsConversation, this.opCollection);
   }
   
   async searchConversations(query: string, limit: number = 5): Promise<any[]> {
-    const results = await this.chromaManager.searchRelevantMemories(query, undefined, limit);
+    const results = await this.chromaManager.searchRelevantMemoriesInCollection(this.convCollection, query, undefined, limit);
 
     return results.map((result) => {
       const metaRaw = (result && typeof result === 'object' && 'metadata' in result) ? (result as any).metadata : {};
@@ -101,7 +106,7 @@ export class MCPFilesChromaAdapter {
   
   async searchOperational(query: string, limit: number = 5): Promise<any[]> {
     // Search with operational tag bias
-    let results = await this.chromaManager.searchRelevantMemories(`${query} operational`, undefined, limit);
+    let results = await this.chromaManager.searchRelevantMemoriesInCollection(this.opCollection, `${query}`, undefined, limit);
 
     // Prefer incident-style entries: explicit incidentId, operational tag, or assistantResponse containing 'Root Cause:'
     try {
@@ -196,7 +201,7 @@ export class MCPFilesChromaAdapter {
           assistantResponse,
           context: ctxArr,
           tags: tagsArr
-        });
+        }, this.convCollection);
       } else if (collectionName === 'operational') {
         // Convert to a conversation-like record similar to storeOperational()
         const rootCause = meta.rootCause || 'Unknown';
@@ -208,7 +213,7 @@ export class MCPFilesChromaAdapter {
           assistantResponse,
           context: Array.isArray(meta.affectedResources) ? meta.affectedResources : ctxArr,
           tags: [...tagsArr, 'operational']
-        });
+        }, this.opCollection);
       }
     }
   }

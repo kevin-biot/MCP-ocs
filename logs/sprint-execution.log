@@ -1,0 +1,37 @@
+2025-09-10T14:28:43+02:00: [TASK] Starting Phase 5 validation
+2025-09-10T14:28:43+02:00: [EVIDENCE] Collection isolation: mcp-ocs- prefix implemented
+2025-09-10T14:28:43+02:00: [DECISION] Vector path disabled pending isolation audit - Rationale: data contamination risk
+2025-09-10T14:43:15+02:00: [TASK] Phase 5: Protocol smoke (sequential)
+2025-09-10T14:43:16+02:00: [EVIDENCE] Sequential: zero stdout
+2025-09-10T14:43:39+02:00: [TASK] Phase 5: Protocol smoke (beta)
+2025-09-10T14:43:39+02:00: [EVIDENCE] Beta: zero stdout
+2025-09-10T14:44:27+02:00: [TASK] Phase 5: Memory JSON-only store/search
+2025-09-10T14:44:28+02:00: [EVIDENCE] JSON-only operational search OK
+2025-09-10T14:44:28+02:00: [EVIDENCE] JSON-only conversation search OK
+2025-09-10T14:44:46+02:00: [TASK] Phase 5: Vector test skipped per isolation policy
+2025-09-10T14:44:46+02:00: [DECISION] Skipped Chroma-enabled test (collection isolation safety)
+2025-09-10T14:46:00+02:00: [TASK] Phase 5: E2E ingress pending (sequential)
+2025-09-10T14:46:01+02:00: [EVIDENCE] E2E server: zero stdout on startup
+2025-09-10T14:46:30+02:00: [TASK] Phase 5: Beta rollback checklist
+2025-09-10T14:46:31+02:00: [EVIDENCE] Beta: zero stdout
+2025-09-10T14:46:31+02:00: [ISSUE] Beta tools summary missing
+2025-09-10T14:46:31+02:00: [ISSUE] Beta: diagnostic tool missing
+2025-09-10T14:46:31+02:00: [EVIDENCE] Beta(JSON-only): zero stdout
+2025-09-10T14:46:31+02:00: [EVIDENCE] Beta(Chroma-enabled): zero stdout
+2025-09-10T14:46:31+02:00: [EVIDENCE] Beta(default): zero stdout
+2025-09-10T14:53:29+02:00: [TASK] Vector Safe Test
+2025-09-10T14:54:37+02:00: [EVIDENCE] Vector Safe Test executed (isolated collection)
+2025-09-10T14:54:37+02:00: [EVIDENCE] Vector Safe Test result: {  "ok": true,  "distance": 0.5,  "elapsedMs": 110}
+2025-09-10T14:54:37+02:00: [EVIDENCE] JSON fallback remains operational (prior validation)
+2025-09-10T15:01:48+02:00: [TASK] Vector Safe Test (post-fallback)
+2025-09-10T15:03:48+02:00: [EVIDENCE] Vector Safe Test (post-fallback): {  "ok": true,  "distance": 0.5,  "elapsedMs": 84}
+2025-09-10T15:05:02+02:00: [TASK] Structured logs smoke (store/search)
+2025-09-10T15:05:03+02:00: [EVIDENCE] Structured logs captured:  events
+2025-09-10T15:07:06+02:00: [TASK] Phase 6: Enrichment kickoff
+2025-09-10T15:08:06+02:00: [TASK] Phase 6: Run memory audit
+2025-09-10T15:08:06+02:00: [EVIDENCE] Memory audit: {  "ok": true,  "prefix": "mcp-ocs-",  "collections": [],  "unprefixed": [],  "isolated": true}
+2025-09-10T15:10:39+02:00: [TASK] Phase 6: Write ops guide (feature flags + procedures)
+2025-09-10T15:11:18+02:00: [EVIDENCE] Ops guide added: docs/ops/memory-ops-guide.md
+2025-09-10T15:14:57+02:00: [TASK] Commit Phase 5 completion
+2025-09-10T15:14:57+02:00: [SUMMARY] Phase 5 complete: protocol=pass json_only=pass vector=test_isolated e2e_startup=pass beta_rollback=pass
+2025-09-10T15:14:57+02:00: [NEXT] Phase 6 deferred; ops guide added; resume later

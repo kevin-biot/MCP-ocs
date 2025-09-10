@@ -1,0 +1,8 @@
+💾 Storing incident: demo-rca-1
+{"subsystem":"memory","event":"store_operational","backend":"unified","incidentId":"demo-rca-1","timestamp":1757509502898}
+{"subsystem":"memory","event":"store_conversation","backend":"unified","sessionId":"s1","timestamp":1757509502899}
+🔍 Searching operational memory for: openshift-monitoring degraded
+{"subsystem":"memory","event":"search_operational","backend":"unified","query":"openshift-monitoring degraded","count":3}
+🔍 Searching conversation memory for: namespace quotas
+{"subsystem":"memory","event":"search_conversations","backend":"unified","query":"namespace quotas","count":5}
+{"subsystem":"memory","event":"store_conversation","backend":"unified","sessionId":"s1","timestamp":1757509503256}

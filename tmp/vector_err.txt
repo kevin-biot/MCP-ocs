@@ -1,0 +1,16 @@
+{"subsystem":"memory","event":"vector_safe_test","step":"collection_created","collection":"mcp-ocs-test-vector-validation"}
+ChromaDB storage failed, but JSON backup succeeded: Error: Collection id not found
+    at ChromaMemoryManager.getCollectionId (/Users/kevinbrown/MCP-ocs/src/lib/memory/mcp-files-memory-extension.ts:574:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async ChromaMemoryManager.restAdd (/Users/kevinbrown/MCP-ocs/src/lib/memory/mcp-files-memory-extension.ts:464:16)
+    at async ChromaMemoryManager.storeConversation (/Users/kevinbrown/MCP-ocs/src/lib/memory/mcp-files-memory-extension.ts:161:7)
+    at async main (/Users/kevinbrown/MCP-ocs/tmp/vector-safe-test.ts:33:3)
+{"subsystem":"memory","event":"store_conversation","collection":"mcp-ocs-test-vector-validation","sessionId":"vector-safe-test","ts":1757508809694,"status":"ok"}
+❌ Chroma search failed, falling back to JSON search: Error: Collection id not found
+    at ChromaMemoryManager.getCollectionId (/Users/kevinbrown/MCP-ocs/src/lib/memory/mcp-files-memory-extension.ts:574:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async ChromaMemoryManager.restQuery (/Users/kevinbrown/MCP-ocs/src/lib/memory/mcp-files-memory-extension.ts:518:16)
+    at async ChromaMemoryManager.searchRelevantMemoriesInCollection (/Users/kevinbrown/MCP-ocs/src/lib/memory/mcp-files-memory-extension.ts:228:23)
+    at async main (/Users/kevinbrown/MCP-ocs/tmp/vector-safe-test.ts:37:19)
+{"subsystem":"memory","event":"search_conversations","collection":"mcp-ocs-test-vector-validation","query":"unique-phrase-42","count":1,"distance":0.5}
+{"subsystem":"memory","event":"vector_safe_test","step":"collection_deleted","collection":"mcp-ocs-test-vector-validation","cleaned":false}

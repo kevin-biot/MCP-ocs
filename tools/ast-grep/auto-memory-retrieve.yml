@@ -1,0 +1,7 @@
+id: auto-memory-retrieve-guard
+message: AutoMemory retrieve should be behind flags/timeout; verify callsites.
+severity: info
+language: TypeScript
+rule:
+  pattern: autoMemory.retrieveRelevantContext($$ARGS)
+

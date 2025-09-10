@@ -1,0 +1,27 @@
+# Draft CI workflow (not active) – copy to .github/workflows when ready
+name: protocol-smoke
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install deps (if needed)
+        run: |
+          if [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then npm ci --ignore-scripts --no-audit || true; fi
+      - name: Protocol smoke (stderr-only)
+        run: |
+          set -euo pipefail
+          # Start minimal entry (adjust if a script exists)
+          node -e "console.error('probe: starting'); process.exit(0)" >out.txt 2>err.txt || true
+          echo '--- STDOUT ---'; cat out.txt || true
+          echo '--- STDERR ---'; cat err.txt || true
+          # Assert stdout is empty (example placeholder – replace with real server stub)
+          if [ -s out.txt ]; then echo '❌ stdout not empty'; exit 1; else echo '✅ stdout clean'; fi
+

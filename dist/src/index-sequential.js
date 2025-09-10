@@ -44,7 +44,10 @@ import { INFRASTRUCTURE_SAFETY_V1 } from './lib/rubrics/infrastructure/infrastru
 import { CAPACITY_TRIAGE_V1 } from './lib/rubrics/infrastructure/capacity-triage.v1.js';
 import { STORAGE_AFFINITY_V1 } from './lib/rubrics/infrastructure/storage-affinity.v1.js';
 import { SCALE_INSTABILITY_V1 } from './lib/rubrics/infrastructure/scale-instability.v1.js';
-console.error('🚀 Starting MCP-ocs server (sequential) ...');
+import { FEATURE_FLAGS } from './lib/config/feature-flags.js';
+import { setupStrictStdio } from './utils/strict-stdio.js';
+setupStrictStdio(FEATURE_FLAGS.STRICT_STDIO_LOGS);
+console.error('[MCP-ocs] Starting sequential server ...');
 const ENABLE_SEQUENTIAL_THINKING = process.env.ENABLE_SEQUENTIAL_THINKING === 'true';
 const ENABLE_TEMPLATE_ENGINE = process.env.ENABLE_TEMPLATE_ENGINE === 'true';
 const ENABLE_RUBRICS = process.env.ENABLE_RUBRICS === 'true';

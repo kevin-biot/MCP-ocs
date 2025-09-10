@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { FEATURE_FLAGS } from '../config/feature-flags.js';
 export var KnowledgeSourceClass;
 (function (KnowledgeSourceClass) {
     KnowledgeSourceClass["USER_PROVIDED"] = "user_provided";
@@ -9,7 +10,7 @@ export var KnowledgeSourceClass;
     KnowledgeSourceClass["DOCUMENT_PARSED"] = "document_parsed";
 })(KnowledgeSourceClass || (KnowledgeSourceClass = {}));
 export class ChromaMemoryManager {
-    collectionName = 'llm_conversation_memory';
+    collectionName;
     memoryDir;
     initialized = false;
     host = '127.0.0.1';
@@ -19,22 +20,20 @@ export class ChromaMemoryManager {
     tenant = process.env.CHROMA_TENANT || 'default';
     database = process.env.CHROMA_DATABASE || 'default';
     collectionIdCache = new Map();
-    // Safe logger available on instances; typed for TS
+    // Protocol-safe logger: stderr only when verbose or in capture mode; strips emojis
     log(...args) {
-        if (isCaptureMode()) {
+        if (FEATURE_FLAGS.MCP_LOG_VERBOSE || isCaptureMode()) {
             try {
-                console.error(...args);
+                const sanitized = args.map(String).map(s => s.replace(/[\u2190-\u21FF\u2300-\u23FF\u2460-\u24FF\u2600-\u26FF\u2700-\u27BF\u1F300-\u1F5FF\u1F600-\u1F64F\u1F680-\u1F6FF\u1F900-\u1F9FF\uFE0F]/g, ''));
+                console.error('[Memory]', ...sanitized);
             }
             catch { }
-            return;
         }
-        try {
-            console.log(...args);
-        }
-        catch { }
     }
     constructor(memoryDir) {
         this.memoryDir = memoryDir;
+        const prefix = process.env.CHROMA_COLLECTION_PREFIX || 'mcp-ocs-';
+        this.collectionName = `${prefix}conversations`;
         // Allow overriding host/port via environment
         try {
             if (process.env.CHROMA_HOST)
@@ -72,14 +71,14 @@ export class ChromaMemoryManager {
             });
             if (!res.ok && res.status !== 409) {
                 const txt = await res.text().catch(() => '');
-                this.log(`⚠️ Server-side embedding config not applied: ${res.status} ${txt}`);
+                this.log(`Server-side embedding config not applied: ${res.status} ${txt}`);
             }
             else {
-                this.log('✓ Server-side embedding function ensured for collection');
+                this.log('Server-side embedding function ensured for collection');
             }
         }
         catch (e) {
-            this.log('⚠️ Could not reach Chroma v2 API for embedding config (continuing)');
+            this.log('Could not reach Chroma v2 API for embedding config (continuing)');
         }
     }
     async initialize() {
@@ -88,26 +87,38 @@ export class ChromaMemoryManager {
         try {
             // Ensure memory directory exists
             await fs.mkdir(this.memoryDir, { recursive: true });
+            // Explicit kill switch for vector path
+            try {
+                const v = process.env.MCP_OCS_FORCE_JSON;
+                const forceJson = v && ['1', 'true', 'yes', 'on'].includes(String(v).toLowerCase());
+                if (forceJson) {
+                    this.serverAvailable = false;
+                    this.initialized = true;
+                    this.log('Vector path disabled via MCP_OCS_FORCE_JSON; running in JSON-only mode');
+                    return;
+                }
+            }
+            catch { }
             // Probe Chroma REST v2
             this.serverAvailable = await this.pingChroma();
             if (this.serverAvailable) {
                 await this.ensureCollection(this.collectionName);
                 await this.ensureEmbedder();
-                this.log("✓ Chroma memory manager initialized (REST + local embeddings)");
+                this.log('Chroma memory manager initialized (REST + local embeddings)');
             }
             else {
-                this.log("✓ Memory manager initialized (JSON-only mode)");
+                this.log('Memory manager initialized (JSON-only mode)');
             }
             this.initialized = true;
         }
         catch (error) {
-            console.error("✗ ChromaDB failed, using JSON-only mode:", error);
+            console.error('ChromaDB failed, using JSON-only mode:', error);
             this.serverAvailable = false;
             this.initialized = true; // Still consider it initialized, just without ChromaDB
         }
     }
     async isAvailable() { return this.initialized && this.serverAvailable; }
-    async storeConversation(memory) {
+    async storeConversation(memory, collectionOverride) {
         if (!this.initialized) {
             await this.initialize();
         }
@@ -120,12 +131,13 @@ export class ChromaMemoryManager {
             const id = `${memory.sessionId}_${memory.timestamp}`;
             const document = `User: ${memory.userMessage}\nAssistant: ${memory.assistantResponse}`;
             const embeddings = await this.embedTexts([document]);
-            this.log('💾 Storing to ChromaDB:', {
+            this.log('Storing to ChromaDB:', {
                 id,
                 documentLength: document.length,
                 sessionId: memory.sessionId
             });
-            await this.restAdd(this.collectionName, {
+            const targetCollection = collectionOverride || this.collectionName;
+            await this.restAdd(targetCollection, {
                 ids: [id],
                 documents: [document],
                 metadatas: [{
@@ -139,7 +151,7 @@ export class ChromaMemoryManager {
                     }],
                 embeddings
             });
-            this.log('✅ Successfully stored to ChromaDB');
+            this.log('Successfully stored to ChromaDB');
             return true;
         }
         catch (error) {
@@ -168,7 +180,10 @@ export class ChromaMemoryManager {
         }
     }
     async searchRelevantMemories(query, sessionId, limit = 5) {
-        this.log(`🔍 Searching for: "${query}" (sessionId: ${sessionId || 'all'}, limit: ${limit})`);
+        return this.searchRelevantMemoriesInCollection(this.collectionName, query, sessionId, limit);
+    }
+    async searchRelevantMemoriesInCollection(collection, query, sessionId, limit = 5) {
+        this.log(`Searching for: "${query}" (sessionId: ${sessionId || 'all'}, limit: ${limit})`);
         const normalize = (s) => String(s || '')
             .toLowerCase()
             .replace(/[\-_]/g, ' ')
@@ -178,7 +193,7 @@ export class ChromaMemoryManager {
         const qTokens = qNorm.split(' ').filter(Boolean);
         if (this.serverAvailable) {
             try {
-                this.log('📊 Attempting ChromaDB vector search...');
+                this.log('Attempting ChromaDB vector search...');
                 const embeddings = await this.embedTexts([query]);
                 let emb0 = [];
                 if (embeddings.length > 0) {
@@ -186,7 +201,7 @@ export class ChromaMemoryManager {
                     if (first)
                         emb0 = first;
                 }
-                let results = await this.restQuery(this.collectionName, emb0, limit, sessionId);
+                let results = await this.restQuery(collection, emb0, limit, sessionId);
                 // Re-rank with phrase/session/tags boosts using hyphen/underscore normalization
                 try {
                     const ranked = results.map((r) => {
@@ -340,10 +355,22 @@ export class ChromaMemoryManager {
             });
             if (createRes.ok) {
                 const created = await createRes.json().catch(() => ({}));
-                const id = created?.id || created?.collection?.id;
-                if (id)
+                const id = created?.id || created?.collection?.id || created?.uuid || created?.collection?.uuid;
+                if (id) {
                     this.collectionIdCache.set(name, id);
-                return;
+                    return;
+                }
+                // If no id in response, attempt to resolve via list
+                let postList = await fetch(listUrl, { method: 'GET' });
+                if (postList.ok) {
+                    const pdata = await postList.json().catch(() => ({}));
+                    const found = (pdata.collections || pdata || []).find((c) => c?.name === name);
+                    if (found?.id) {
+                        this.collectionIdCache.set(name, found.id);
+                        return;
+                    }
+                }
+                // fall through to root-level attempt
             }
             // Fallback: try root-level create
             const res = await fetch(`http://${this.host}:${this.port}/api/v2/collections`, {
@@ -391,26 +418,61 @@ export class ChromaMemoryManager {
         await this.ensureCollection(name);
         this.setCollectionName(name);
     }
+    async deleteCollection(name) {
+        try {
+            const id = await this.getCollectionId(name);
+            // Try tenant/database delete first
+            const turl = `http://${this.host}:${this.port}/api/v2/tenants/${this.tenant}/databases/${this.database}/collections/${id}`;
+            let res = await fetch(turl, { method: 'DELETE' });
+            if (res.ok || res.status === 404) {
+                this.collectionIdCache.delete(name);
+                return true;
+            }
+            // Fallback root-level delete
+            const rurl = `http://${this.host}:${this.port}/api/v2/collections/${id}`;
+            res = await fetch(rurl, { method: 'DELETE' });
+            if (res.ok || res.status === 404) {
+                this.collectionIdCache.delete(name);
+                return true;
+            }
+        }
+        catch {
+            // If we cannot resolve id, treat as already deleted (no-op)
+            return true;
+        }
+        return false;
+    }
     async restAdd(collection, payload) {
         const id = await this.getCollectionId(collection);
-        const url = `http://${this.host}:${this.port}/api/v2/tenants/${this.tenant}/databases/${this.database}/collections/${id}/add`;
-        const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        // Try tenant/database endpoint first
+        let url = `http://${this.host}:${this.port}/api/v2/tenants/${this.tenant}/databases/${this.database}/collections/${id}/add`;
+        let res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         if (!res.ok) {
-            const txt = await res.text().catch(() => '');
-            throw new Error(`Chroma add failed: ${res.status} ${txt}`);
+            // Fallback: root-level endpoint
+            const rurl = `http://${this.host}:${this.port}/api/v2/collections/${id}/add`;
+            res = await fetch(rurl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            if (!res.ok) {
+                const txt = await res.text().catch(() => '');
+                throw new Error(`Chroma add failed: ${res.status} ${txt}`);
+            }
         }
     }
     async restDelete(collection, body) {
         const id = await this.getCollectionId(collection);
-        const url = `http://${this.host}:${this.port}/api/v2/tenants/${this.tenant}/databases/${this.database}/collections/${id}/delete`;
-        const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        // Try tenant/database endpoint first
+        let url = `http://${this.host}:${this.port}/api/v2/tenants/${this.tenant}/databases/${this.database}/collections/${id}/delete`;
+        let res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         if (!res.ok) {
-            const txt = await res.text().catch(() => '');
-            throw new Error(`Chroma delete failed: ${res.status} ${txt}`);
+            // Fallback root-level endpoint
+            const rurl = `http://${this.host}:${this.port}/api/v2/collections/${id}/delete`;
+            res = await fetch(rurl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            if (!res.ok) {
+                const txt = await res.text().catch(() => '');
+                throw new Error(`Chroma delete failed: ${res.status} ${txt}`);
+            }
         }
         try {
             const data = await res.json();
-            // Some servers return {deleted: N}
             const deleted = typeof data?.deleted === 'number' ? data.deleted : null;
             return deleted;
         }
@@ -448,12 +510,18 @@ export class ChromaMemoryManager {
     }
     async restQuery(collection, queryEmbedding, limit, sessionId) {
         const id = await this.getCollectionId(collection);
-        const url = `http://${this.host}:${this.port}/api/v2/tenants/${this.tenant}/databases/${this.database}/collections/${id}/query`;
         const where = sessionId ? { sessionId } : undefined;
-        const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query_embeddings: [queryEmbedding], n_results: limit, where }) });
+        // Try tenant/database endpoint first
+        let url = `http://${this.host}:${this.port}/api/v2/tenants/${this.tenant}/databases/${this.database}/collections/${id}/query`;
+        let res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query_embeddings: [queryEmbedding], n_results: limit, where }) });
         if (!res.ok) {
-            const txt = await res.text().catch(() => '');
-            throw new Error(`Chroma query failed: ${res.status} ${txt}`);
+            // Fallback root-level endpoint
+            const rurl = `http://${this.host}:${this.port}/api/v2/collections/${id}/query`;
+            res = await fetch(rurl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query_embeddings: [queryEmbedding], n_results: limit, where }) });
+            if (!res.ok) {
+                const txt = await res.text().catch(() => '');
+                throw new Error(`Chroma query failed: ${res.status} ${txt}`);
+            }
         }
         const data = await res.json().catch(() => ({}));
         const ids = data.ids?.[0] || [];
@@ -488,9 +556,24 @@ export class ChromaMemoryManager {
         // Try ensure again, then read cache
         await this.ensureCollection(name);
         const after = this.collectionIdCache.get(name);
-        if (!after)
-            throw new Error('Collection id not found');
-        return after;
+        if (after)
+            return after;
+        // Root-level list fallback
+        try {
+            const rootList = await fetch(`http://${this.host}:${this.port}/api/v2/collections`, { method: 'GET' });
+            if (rootList.ok) {
+                const rdata = await rootList.json().catch(() => ({}));
+                const arr = Array.isArray(rdata) ? rdata : (rdata.collections || []);
+                const found = arr.find((c) => c?.name === name);
+                const id = found?.id || found?.uuid;
+                if (id) {
+                    this.collectionIdCache.set(name, id);
+                    return id;
+                }
+            }
+        }
+        catch { }
+        throw new Error('Collection id not found');
     }
     // --- Embedding helpers ---
     async ensureEmbedder() {

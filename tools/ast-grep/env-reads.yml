@@ -1,0 +1,7 @@
+id: direct-env-reads
+message: Route env reads via the config loader instead of direct process.env.
+severity: info
+language: TypeScript
+rule:
+  pattern: process.env.$V
+

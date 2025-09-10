@@ -50,6 +50,24 @@ export declare class DiagnosticToolsV2 implements ToolSuite {
     private scoreNamespace;
     private listNamespacesByScope;
     private batchAnalyzeNamespaceHealth;
+    runClusterHealthFairComparison(): Promise<{
+        namespaceCount: number;
+        sequentialTime: number;
+        batchedTime: number;
+        wallClockImprovement: number;
+        perNsSequential: number;
+        perNsBatched: number;
+        ops: {
+            sequentialChecks: number;
+            batchedChecks: number;
+        };
+        perNamespace: Array<{
+            namespace: string;
+            elapsedMs: number;
+            status: string;
+        }>;
+        timestamp: string;
+    }>;
     private analyzePodsHealth;
     private profileNamespaceOperation;
     private benchmarkNamespaceBottlenecks;
@@ -71,6 +89,42 @@ export declare class DiagnosticToolsV2 implements ToolSuite {
         wallClockImprovement: number;
         perNamespaceImprovement: number;
         timestamp: string;
+    }>;
+    runPodHealthFairComparison(): Promise<{
+        namespaceCount: number;
+        traditionalTime: number;
+        bulkTime: number;
+        wallClockImprovement: number;
+        perNamespaceImprovement: number;
+        perNamespaceAvgTraditional: number;
+        perNamespaceAvgBatched: number;
+        avgPodsPerNamespace: number;
+        counts: Array<{
+            namespace: string;
+            count: number;
+        }>;
+        ops: {
+            traditional: {
+                apiCalls: number;
+                analyses: number;
+            };
+            batched: {
+                apiCalls: number;
+                analyses: number;
+            };
+        };
+        timestamp: string;
+    }>;
+    private listPodsAcrossNamespaces;
+    profilePodDensity(namespace: string): Promise<{
+        namespace: string;
+        podCount: number;
+        timings: {
+            api: number;
+            parse: number;
+            analysis: number;
+            total: number;
+        };
     }>;
     /**
      * Enhanced namespace health using v2 implementation

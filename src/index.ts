@@ -51,8 +51,12 @@ if (argv.includes('--help') || argv.includes('-h')) {
   // Ensure clean success exit for offline usage
   process.exit(0);
 }
+// Enforce strict stdio protocol if enabled
+import { FEATURE_FLAGS } from './lib/config/feature-flags.js';
+import { setupStrictStdio } from './utils/strict-stdio.js';
+setupStrictStdio(FEATURE_FLAGS.STRICT_STDIO_LOGS);
 
-console.error('🚀 Starting MCP-ocs server...');
+console.error('[MCP-ocs] Starting server...');
 
 // Initialize core components
 const openshiftClient = new OpenShiftClient({

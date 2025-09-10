@@ -52,6 +52,7 @@
     "memory:clean-bench": "tsx src/cli/memory-tools.ts clean-bench",
     "memory:delete-pattern": "tsx src/cli/memory-tools.ts delete-pattern",
     "memory:collections:list": "tsx src/cli/memory-tools.ts collections:list",
+    "memory:collections:audit": "tsx src/cli/memory-audit.ts",
     "memory:collections:switch": "tsx src/cli/memory-tools.ts collections:switch",
     "memory:embedding-info": "tsx src/cli/memory-tools.ts embedding-info",
     "memory:test-consistency": "tsx src/cli/memory-tools.ts test-consistency",

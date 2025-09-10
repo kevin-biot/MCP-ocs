@@ -70,6 +70,7 @@ export declare class RCAChecklistEngine {
      * Execute the systematic diagnostic checklist
      */
     private runChecklist;
+    private runWithConcurrency;
     /**
      * Check 1: Cluster-level health overview
      */

@@ -15,7 +15,10 @@ import { WorkflowEngine } from './lib/workflow/workflow-engine.js';
 import { AutoMemorySystem } from './lib/memory/auto-memory-system.js';
 import { UnifiedToolRegistry } from './lib/tools/tool-registry.js';
 import { ToolMaturity } from './types/tool-maturity.js';
-console.error('🚀 Starting MCP-ocs server (beta)...');
+import { FEATURE_FLAGS } from './lib/config/feature-flags.js';
+import { setupStrictStdio } from './utils/strict-stdio.js';
+setupStrictStdio(FEATURE_FLAGS.STRICT_STDIO_LOGS);
+console.error('[MCP-ocs] Starting server (beta)...');
 // Initialize core components
 const openshiftClient = new OpenShiftClient({ ocPath: 'oc', timeout: 30000 });
 const sharedMemory = new SharedMemoryManager({

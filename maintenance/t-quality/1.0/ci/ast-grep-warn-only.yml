@@ -1,0 +1,20 @@
+# Draft CI workflow (not active) – copy to .github/workflows when ready
+name: ast-grep-warn-only
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  ast-grep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ast-grep
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/ast-grep/ast-grep/main/install.sh | bash
+          echo "$HOME/.sg/bin" >> $GITHUB_PATH
+      - name: Run ast-grep (warn-only)
+        run: |
+          sg -V
+          sg scan -r tools/ast-grep --format=github || true
+

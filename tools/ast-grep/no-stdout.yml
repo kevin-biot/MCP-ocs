@@ -1,0 +1,10 @@
+id: no-stdout
+message: Avoid stdout logging (console.log/info); use stderr and protocol-safe logging.
+severity: warning
+language: TypeScript
+rule:
+  pattern: console.$C($A)
+  metavars:
+    $C:
+      regex: "^(log|info)$"
+

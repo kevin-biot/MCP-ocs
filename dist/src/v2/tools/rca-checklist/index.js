@@ -86,26 +86,36 @@ export class RCAChecklistEngine {
      * Execute the systematic diagnostic checklist
      */
     async runChecklist(result, namespace, deepAnalysis = false) {
-        // Check 1: Cluster-level health overview
-        await this.checkClusterHealth(result);
-        // Check 2: Node capacity and health
-        await this.checkNodeHealth(result);
-        // Check 3: Namespace-specific checks (if namespace provided)
+        const maxConcurrent = Math.max(1, Number(process.env.OC_RCA_CONCURRENCY || process.env.OC_DIAG_CONCURRENCY || 8));
+        // Phase 1: quick global health checks (can run in parallel)
+        await this.runWithConcurrency([
+            () => this.checkClusterHealth(result),
+            () => this.checkNodeHealth(result)
+        ], maxConcurrent);
+        // Phase 2: namespace-focused checks (choose one path)
         if (namespace) {
             await this.checkNamespaceSpecific(result, namespace, deepAnalysis);
         }
         else {
             await this.checkCriticalNamespaces(result);
         }
-        // Check 4: Storage and PVC health
-        await this.checkStorageHealth(result, namespace);
-        // Check 5: Network connectivity patterns
-        await this.checkNetworkHealth(result, namespace);
-        // Check 6: Recent events and alerts
-        await this.checkRecentEvents(result, namespace);
-        // Check 7: Resource quotas and limits (if deep analysis)
+        // Phase 3: broader subsystem checks (parallelizable)
+        await this.runWithConcurrency([
+            () => this.checkStorageHealth(result, namespace),
+            () => this.checkNetworkHealth(result, namespace),
+            () => this.checkRecentEvents(result, namespace)
+        ], maxConcurrent);
+        // Phase 4: deep analysis (optional)
         if (deepAnalysis) {
             await this.checkResourceConstraints(result, namespace);
+        }
+    }
+    async runWithConcurrency(tasks, maxConcurrent) {
+        for (let i = 0; i < tasks.length; i += maxConcurrent) {
+            const batch = tasks.slice(i, i + maxConcurrent);
+            const settled = await Promise.allSettled(batch.map(fn => fn()));
+            // Non-throwing; individual checks already record failures
+            void settled;
         }
     }
     /**

@@ -1,0 +1,7 @@
+id: path-alias-at
+message: '@/…' imports require resolver or refactor to relative paths.
+severity: warning
+language: TypeScript
+rule:
+  pattern: import $S from "@/$REST"
+

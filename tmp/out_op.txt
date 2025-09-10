@@ -1,0 +1,41 @@
+{
+  "query": "openshift-monitoring degraded",
+  "limit": 5,
+  "resultsFound": 3,
+  "results": [
+    {
+      "similarity": 0.5,
+      "incidentId": "demo-rca-1",
+      "symptoms": [
+        "openshift-monitoring degraded, prometheus-k8s Pending"
+      ],
+      "rootCause": "Unknown",
+      "resolution": "Pending",
+      "environment": "prod",
+      "timestamp": 1757505935604
+    },
+    {
+      "similarity": 0.5,
+      "incidentId": "demo-rca-1",
+      "symptoms": [
+        "openshift-monitoring degraded, prometheus-k8s Pending"
+      ],
+      "rootCause": "Unknown",
+      "resolution": "Pending",
+      "environment": "prod",
+      "timestamp": 1757506248949
+    },
+    {
+      "similarity": 0.5,
+      "incidentId": "demo-rca-1",
+      "symptoms": [
+        "openshift-monitoring degraded, prometheus-k8s Pending"
+      ],
+      "rootCause": "Unknown",
+      "resolution": "Pending",
+      "environment": "prod",
+      "timestamp": 1757508267872
+    }
+  ],
+  "timestamp": "2025-09-10T12:44:28.087Z"
+}

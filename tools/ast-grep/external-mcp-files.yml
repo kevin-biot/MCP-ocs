@@ -1,0 +1,10 @@
+id: external-mcp-files-import
+message: Disallow imports from external MCP-files paths; use in-repo client instead.
+severity: warning
+language: TypeScript
+rule:
+  pattern: import $S from "$P"
+  metavars:
+    $P:
+      regex: "MCP-files/"
+

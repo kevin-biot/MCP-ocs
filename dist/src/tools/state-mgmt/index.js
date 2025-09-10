@@ -5,6 +5,7 @@
  * Tools for managing workflow state and operational memory
  */
 import { nowIso, nowEpoch } from '../../utils/time.js';
+import { isOperationalMemory } from '../../lib/type-guards/index.js';
 export class StateMgmtTools {
     memoryManager;
     workflowEngine;
@@ -235,7 +236,6 @@ export class StateMgmtTools {
             limit: limit || 5,
             resultsFound: results.length,
             results: results.map(r => {
-                const { isOperationalMemory } = require('@/lib/type-guards');
                 const mem = (r && typeof r === 'object' && 'memory' in r) ? r.memory : undefined;
                 if (isOperationalMemory(mem)) {
                     return {

@@ -41,6 +41,13 @@ export class ReadOpsTools {
                             type: 'string',
                             description: 'Target namespace (optional)'
                         },
+                        namespaceList: {
+                            anyOf: [
+                                { type: 'array', items: { type: 'string' } },
+                                { type: 'string' }
+                            ],
+                            description: 'Optional list of namespaces (comma-separated string or array) for batched enumeration'
+                        },
                         selector: {
                             type: 'string',
                             description: 'Label selector (optional)'
@@ -190,7 +197,12 @@ export class ReadOpsTools {
             let result;
             switch (toolName) {
                 case 'oc_read_get_pods':
-                    result = await this.getPods(typeof raw.namespace === 'string' ? raw.namespace : undefined, typeof raw.selector === 'string' ? raw.selector : undefined, sessionId);
+                    {
+                        const nsArg = typeof raw.namespace === 'string' ? raw.namespace
+                            : (Array.isArray(raw.namespaceList) ? raw.namespaceList.join(',')
+                                : (typeof raw.namespaceList === 'string' ? String(raw.namespaceList) : undefined));
+                        result = await this.getPods(nsArg, typeof raw.selector === 'string' ? raw.selector : undefined, sessionId);
+                    }
                     break;
                 case 'oc_read_describe':
                     result = await this.describeResource(String(raw.resourceType ?? ''), String(raw.name ?? ''), typeof raw.namespace === 'string' ? raw.namespace : undefined, sessionId);
@@ -231,33 +243,90 @@ export class ReadOpsTools {
     }
     async getPods(namespace, selector, sessionId) {
         console.error(`📋 Getting pods - namespace: ${namespace}, selector: ${selector}`);
-        const pods = await this.openshiftClient.getPods(namespace, selector);
-        const result = {
-            namespace: namespace || 'default',
+        // Support comma-separated multi-namespace input for batched enumeration
+        const targets = (namespace && namespace.includes(','))
+            ? namespace.split(',').map(s => s.trim()).filter(Boolean)
+            : (namespace ? [namespace] : []);
+        const conc = Number(process.env.OC_READ_PODS_CONCURRENCY || process.env.OC_DIAG_POD_CONCURRENCY || process.env.OC_DIAG_CONCURRENCY || 8);
+        const timeoutMs = Number(process.env.OC_READ_PODS_TIMEOUT_MS || process.env.OC_DIAG_POD_TIMEOUT_MS || process.env.OC_DIAG_TIMEOUT_MS || 5000);
+        if (targets.length <= 1) {
+            const pods = await this.openshiftClient.getPods(namespace, selector);
+            const result = {
+                namespace: namespace || 'default',
+                selector: selector || 'none',
+                totalPods: pods.length,
+                pods: pods,
+                summary: {
+                    running: pods.filter(p => p.status === 'Running').length,
+                    pending: pods.filter(p => p.status === 'Pending').length,
+                    failed: pods.filter(p => p.status === 'Failed').length,
+                    unknown: pods.filter(p => !['Running', 'Pending', 'Failed'].includes(p.status)).length
+                },
+                timestamp: nowIso()
+            };
+            await this.memoryGateway.storeToolExecution('oc_read_get_pods', { namespace: namespace || 'default', selector: selector || 'none' }, result, sessionId || 'unknown', ['read_operation', 'pods', 'cluster_state'], 'openshift', 'prod', 'low');
+            await this.memoryManager.storeConversation({
+                sessionId: sessionId || 'unknown',
+                domain: 'cluster',
+                timestamp: nowEpoch(),
+                userMessage: `Get pods ${namespace || 'default'} ${selector || ''}`.trim(),
+                assistantResponse: `Found ${result.totalPods} pods (running=${result.summary.running})`,
+                context: [namespace || 'default', selector || 'none'],
+                tags: ['read_operation', 'get_pods']
+            });
+            return result;
+        }
+        // Batched multi-namespace enumeration with bounded concurrency and timeout
+        const namespaces = targets;
+        const maxConcurrent = Math.max(1, conc);
+        const timeoutPerNamespace = Math.max(1000, timeoutMs);
+        const results = [];
+        let apiCalls = 0;
+        const started = nowEpoch();
+        for (let i = 0; i < namespaces.length; i += maxConcurrent) {
+            const batch = namespaces.slice(i, i + maxConcurrent);
+            const promises = batch.map(async (ns) => {
+                try {
+                    const pods = await Promise.race([
+                        this.openshiftClient.getPods(ns, selector),
+                        new Promise((_, rej) => setTimeout(() => rej(new Error(`timeout:${ns}`)), timeoutPerNamespace))
+                    ]);
+                    apiCalls += 1;
+                    const summary = {
+                        running: pods.filter(p => p.status === 'Running').length,
+                        pending: pods.filter(p => p.status === 'Pending').length,
+                        failed: pods.filter(p => p.status === 'Failed').length,
+                        unknown: pods.filter(p => !['Running', 'Pending', 'Failed'].includes(p.status)).length
+                    };
+                    results.push({ namespace: ns, totalPods: pods.length, summary });
+                }
+                catch {
+                    results.push({ namespace: ns, totalPods: 0, summary: { running: 0, pending: 0, failed: 0, unknown: 0 } });
+                }
+            });
+            await Promise.allSettled(promises);
+        }
+        const durationMs = nowEpoch() - started;
+        const aggregated = {
+            success: true,
+            mode: 'batched',
             selector: selector || 'none',
-            totalPods: pods.length,
-            pods: pods,
-            summary: {
-                running: pods.filter(p => p.status === 'Running').length,
-                pending: pods.filter(p => p.status === 'Pending').length,
-                failed: pods.filter(p => p.status === 'Failed').length,
-                unknown: pods.filter(p => !['Running', 'Pending', 'Failed'].includes(p.status)).length
-            },
+            namespaces: results,
+            apiCalls,
+            durationMs,
             timestamp: nowIso()
         };
-        // Store via adapter-backed gateway for Chroma v2 integration
-        await this.memoryGateway.storeToolExecution('oc_read_get_pods', { namespace: namespace || 'default', selector: selector || 'none' }, result, sessionId || 'unknown', ['read_operation', 'pods', 'cluster_state'], 'openshift', 'prod', 'low');
-        // Also store a small conversational trace for recall (unit test expectation)
+        await this.memoryGateway.storeToolExecution('oc_read_get_pods', { namespace: namespaces.join(','), selector: selector || 'none', mode: 'batched', concurrency: maxConcurrent }, aggregated, sessionId || 'unknown', ['read_operation', 'pods', 'batched'], 'openshift', 'prod', 'low');
         await this.memoryManager.storeConversation({
             sessionId: sessionId || 'unknown',
             domain: 'cluster',
             timestamp: nowEpoch(),
-            userMessage: `Get pods ${namespace || 'default'} ${selector || ''}`.trim(),
-            assistantResponse: `Found ${result.totalPods} pods (running=${result.summary.running})`,
-            context: [namespace || 'default', selector || 'none'],
-            tags: ['read_operation', 'get_pods']
+            userMessage: `Get pods batched ${namespaces.length} namespaces`,
+            assistantResponse: `API calls ${apiCalls}, duration ${durationMs}ms`,
+            context: [String(namespaces.length), selector || 'none'],
+            tags: ['read_operation', 'get_pods', 'batched']
         });
-        return result;
+        return aggregated;
     }
     async describeResource(resourceType, name, namespace, sessionId) {
         console.error(`🔍 Describing ${resourceType}/${name} in namespace: ${namespace}`);

@@ -37,9 +37,10 @@ export declare class ChromaMemoryManager {
     private ensureServerSideEmbeddings;
     initialize(): Promise<void>;
     isAvailable(): Promise<boolean>;
-    storeConversation(memory: ConversationMemory): Promise<boolean>;
+    storeConversation(memory: ConversationMemory, collectionOverride?: string): Promise<boolean>;
     storeConversationToJson(memory: ConversationMemory): Promise<boolean>;
     searchRelevantMemories(query: string, sessionId?: string, limit?: number): Promise<MemorySearchResult[]>;
+    searchRelevantMemoriesInCollection(collection: string, query: string, sessionId?: string, limit?: number): Promise<MemorySearchResult[]>;
     searchJsonMemories(query: string, sessionId?: string, limit?: number): Promise<MemorySearchResult[]>;
     private pingChroma;
     private ensureCollection;
@@ -49,6 +50,7 @@ export declare class ChromaMemoryManager {
     }[]>;
     createCollection(name: string): Promise<void>;
     switchCollection(name: string): Promise<void>;
+    deleteCollection(name: string): Promise<boolean>;
     private restAdd;
     private restDelete;
     deleteBySessionPattern(pattern: string): Promise<{

@@ -6,8 +6,10 @@
  */
 import fs from 'fs/promises';
 import path from 'path';
-import { MCPFilesChromaAdapter } from '@/lib/memory/mcp-files-adapter';
-import { MemoryError } from '@/lib/errors/index.js';
+import { MCPFilesChromaAdapter } from './mcp-files-adapter.js';
+import { MemoryError } from '../errors/index.js';
+import { FEATURE_FLAGS } from '../config/feature-flags.js';
+import { UnifiedMemoryAdapter } from './unified-memory-adapter.js';
 /**
  * Context Extractor for automatic tag and context generation
  */
@@ -485,20 +487,34 @@ export class SharedMemoryManager {
     contextExtractor;
     jsonStorage;
     chromaClient;
+    unified;
     _mutexQueue = Promise.resolve();
     constructor(config) {
         this.config = config;
         this.contextExtractor = new ContextExtractor();
         this.jsonStorage = new JsonFallbackStorage(config.memoryDir, config.namespace);
         this.chromaClient = new MCPFilesChromaAdapter(config.chromaHost || '127.0.0.1', config.chromaPort || 8000, path.join(config.memoryDir, config.namespace));
+        if (FEATURE_FLAGS.UNIFIED_MEMORY) {
+            const uniCfg = { memoryDir: path.join(config.memoryDir, config.namespace) };
+            if (typeof config.chromaHost === 'string')
+                uniCfg.chromaHost = config.chromaHost;
+            if (typeof config.chromaPort === 'number')
+                uniCfg.chromaPort = config.chromaPort;
+            this.unified = new UnifiedMemoryAdapter(uniCfg);
+        }
     }
     async initialize() {
         console.error('🧠 Initializing shared memory system...');
         // Always initialize JSON storage
         await this.jsonStorage.initialize();
-        // Try to initialize ChromaDB
-        await this.chromaClient.initialize();
-        console.error(`✅ Memory system initialized (ChromaDB: ${this.isChromaAvailable() ? 'available' : 'fallback mode'})`);
+        if (this.unified) {
+            await this.unified.initialize();
+        }
+        else {
+            // Try to initialize ChromaDB via adapter
+            await this.chromaClient.initialize();
+        }
+        console.error(`Memory system initialized (Chroma: ${this.isChromaAvailable() ? 'available' : 'fallback'})`);
     }
     async storeConversation(memory) {
         // Auto-extract context and tags if not provided
@@ -508,8 +524,20 @@ export class SharedMemoryManager {
         if (memory.tags.length === 0) {
             memory.tags = this.contextExtractor.generateTags(memory.userMessage, memory.assistantResponse, memory.domain);
         }
-        // Always store in JSON (primary for fallback, backup for ChromaDB)
+        // Always store in JSON to maintain legacy search compatibility
         const jsonId = await this._runExclusive(async () => this.jsonStorage.storeConversation(memory));
+        if (this.unified) {
+            try {
+                await this.unified.storeConversation(memory);
+                if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                    console.error(JSON.stringify({ subsystem: 'memory', event: 'store_conversation', backend: 'unified', sessionId: memory.sessionId, timestamp: memory.timestamp }));
+            }
+            catch (error) {
+                if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                    console.error(JSON.stringify({ subsystem: 'memory', event: 'store_conversation', backend: 'unified', sessionId: memory.sessionId, timestamp: memory.timestamp, status: 'fail', message: String(error?.message || error) }));
+            }
+            return jsonId;
+        }
         // Store in ChromaDB if available
         if (this.chromaClient.isChromaAvailable()) {
             try {
@@ -524,20 +552,35 @@ export class SharedMemoryManager {
                     }
                 };
                 await this.chromaClient.addDocuments('conversations', [document]);
-                console.error('📝 ACTUALLY stored conversation in ChromaDB and JSON');
+                if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                    console.error(JSON.stringify({ subsystem: 'memory', event: 'store_conversation', backend: 'chroma+json', sessionId: memory.sessionId, timestamp: memory.timestamp }));
             }
             catch (error) {
-                console.error('⚠️ ChromaDB storage failed, JSON backup complete:', error);
+                if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                    console.error(JSON.stringify({ subsystem: 'memory', event: 'store_conversation', backend: 'json', sessionId: memory.sessionId, timestamp: memory.timestamp, status: 'ok', note: 'chroma_failed' }));
             }
         }
         else {
-            console.error('📝 Stored conversation in JSON (ChromaDB unavailable)');
+            if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                console.error(JSON.stringify({ subsystem: 'memory', event: 'store_conversation', backend: 'json', sessionId: memory.sessionId, timestamp: memory.timestamp }));
         }
         return jsonId;
     }
     async storeOperational(memory) {
         // Always store in JSON
         const jsonId = await this._runExclusive(async () => this.jsonStorage.storeOperational(memory));
+        if (this.unified) {
+            try {
+                await this.unified.storeOperational(memory);
+                if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                    console.error(JSON.stringify({ subsystem: 'memory', event: 'store_operational', backend: 'unified', incidentId: memory.incidentId, timestamp: memory.timestamp }));
+            }
+            catch (error) {
+                if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                    console.error(JSON.stringify({ subsystem: 'memory', event: 'store_operational', backend: 'unified', incidentId: memory.incidentId, timestamp: memory.timestamp, status: 'fail', message: String(error?.message || error) }));
+            }
+            return jsonId;
+        }
         // Store in ChromaDB if available
         if (this.chromaClient.isChromaAvailable()) {
             try {
@@ -584,33 +627,82 @@ export class SharedMemoryManager {
         }
     }
     async searchConversations(query, limit = 5) {
+        if (this.unified) {
+            try {
+                const res = await this.unified.searchConversations(query, limit);
+                if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                    console.error(JSON.stringify({ subsystem: 'memory', event: 'search_conversations', backend: 'unified', query, count: res.length }));
+                return res;
+            }
+            catch (error) {
+                if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                    console.error(JSON.stringify({ subsystem: 'memory', event: 'search_conversations', backend: 'unified', query, status: 'fail', message: String(error?.message || error) }));
+            }
+        }
         if (this.chromaClient.isChromaAvailable()) {
             try {
                 // Use ChromaDB vector search
-                return await this.vectorSearchConversations(query, limit);
+                const res = await this.vectorSearchConversations(query, limit);
+                if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                    console.error(JSON.stringify({ subsystem: 'memory', event: 'search_conversations', backend: 'chroma', query, count: res.length }));
+                return res;
             }
             catch (error) {
-                console.error('ChromaDB search failed, falling back to JSON:', error);
+                if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                    console.error(JSON.stringify({ subsystem: 'memory', event: 'search_conversations', backend: 'chroma', query, status: 'fail', message: String(error?.message || error) }));
             }
         }
         // Fallback to JSON text search
-        return await this.jsonStorage.searchConversations(query, limit);
+        const res = await this.jsonStorage.searchConversations(query, limit);
+        if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+            console.error(JSON.stringify({ subsystem: 'memory', event: 'search_conversations', backend: 'json', query, count: res.length }));
+        return res;
     }
     async searchOperational(query, limit = 5) {
+        if (this.unified) {
+            try {
+                const res = await this.unified.searchOperational(query, limit);
+                if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                    console.error(JSON.stringify({ subsystem: 'memory', event: 'search_operational', backend: 'unified', query, count: res.length }));
+                return res;
+            }
+            catch (error) {
+                if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                    console.error(JSON.stringify({ subsystem: 'memory', event: 'search_operational', backend: 'unified', query, status: 'fail', message: String(error?.message || error) }));
+            }
+        }
         if (this.chromaClient.isChromaAvailable()) {
             try {
                 // Use ChromaDB vector search
-                return await this.vectorSearchOperational(query, limit);
+                const res = await this.vectorSearchOperational(query, limit);
+                if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                    console.error(JSON.stringify({ subsystem: 'memory', event: 'search_operational', backend: 'chroma', query, count: res.length }));
+                return res;
             }
             catch (error) {
-                console.error('ChromaDB search failed, falling back to JSON:', error);
+                if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+                    console.error(JSON.stringify({ subsystem: 'memory', event: 'search_operational', backend: 'chroma', query, status: 'fail', message: String(error?.message || error) }));
             }
         }
         // Fallback to JSON text search
-        return await this.jsonStorage.searchOperational(query, limit);
+        const res = await this.jsonStorage.searchOperational(query, limit);
+        if (FEATURE_FLAGS.MEMORY_STRUCTURED_LOGS)
+            console.error(JSON.stringify({ subsystem: 'memory', event: 'search_operational', backend: 'json', query, count: res.length }));
+        return res;
     }
     async getStats() {
         const jsonStats = await this.jsonStorage.getStats();
+        if (this.unified) {
+            const uni = await this.unified.getStats();
+            return {
+                totalConversations: (uni.totalConversations ?? jsonStats.totalConversations) ?? 0,
+                totalOperational: (uni.totalOperational ?? jsonStats.totalOperational) ?? 0,
+                chromaAvailable: uni.chromaAvailable,
+                storageUsed: uni.storageUsed || await this.calculateStorageUsage(),
+                lastCleanup: null,
+                namespace: this.config.namespace
+            };
+        }
         return {
             totalConversations: jsonStats.totalConversations || 0,
             totalOperational: jsonStats.totalOperational || 0,
@@ -621,6 +713,9 @@ export class SharedMemoryManager {
         };
     }
     isChromaAvailable() {
+        if (this.unified) {
+            return this.unified.isAvailable();
+        }
         return this.chromaClient.isChromaAvailable();
     }
     async close() {

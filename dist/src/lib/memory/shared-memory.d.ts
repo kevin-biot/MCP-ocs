@@ -55,6 +55,7 @@ export declare class SharedMemoryManager {
     private contextExtractor;
     private jsonStorage;
     private chromaClient;
+    private unified?;
     private _mutexQueue;
     constructor(config: SharedMemoryConfig);
     initialize(): Promise<void>;

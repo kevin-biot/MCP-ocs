@@ -1,16 +1,23 @@
-import { MCPOcsMemoryAdapter } from '../memory/mcp-ocs-memory-adapter';
+import { MCPOcsMemoryAdapter } from '../memory/mcp-ocs-memory-adapter.js';
+import { UnifiedMemoryAdapter } from '../memory/unified-memory-adapter.js';
+import { FEATURE_FLAGS } from '../config/feature-flags.js';
 
 export class ToolMemoryGateway {
-  private adapter: MCPOcsMemoryAdapter;
+  private adapter: MCPOcsMemoryAdapter | UnifiedMemoryAdapter;
   private initialized = false;
 
   constructor(memoryDir: string = './memory') {
-    this.adapter = new MCPOcsMemoryAdapter(memoryDir);
+    if (FEATURE_FLAGS.UNIFIED_MEMORY) {
+      this.adapter = new UnifiedMemoryAdapter({ memoryDir });
+    } else {
+      this.adapter = new MCPOcsMemoryAdapter(memoryDir);
+    }
   }
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
-    await this.adapter.initialize();
+    // @ts-ignore - both adapters expose initialize
+    await (this.adapter as any).initialize();
     this.initialized = true;
   }
 
@@ -43,7 +50,11 @@ export class ToolMemoryGateway {
       severity
     } as const;
 
-    return await this.adapter.storeIncidentMemory(memory as any);
+    if (this.adapter instanceof UnifiedMemoryAdapter) {
+      await this.adapter.storeToolExecution(toolName, args, result, sessionId, tags, domain, environment, severity);
+      return true;
+    }
+    return await (this.adapter as MCPOcsMemoryAdapter).storeIncidentMemory(memory as any);
   }
 
   async searchToolIncidents(
@@ -52,12 +63,21 @@ export class ToolMemoryGateway {
     limit: number = 5
   ): Promise<any[]> {
     await this.initialize();
-    return await this.adapter.searchIncidents(query, domainFilter, limit);
+    if (this.adapter instanceof UnifiedMemoryAdapter) {
+      const results = await this.adapter.searchOperational(query, limit);
+      if (domainFilter) {
+        return results.filter(r => (r?.memory?.domain || '').toLowerCase() === domainFilter.toLowerCase());
+      }
+      return results;
+    }
+    return await (this.adapter as MCPOcsMemoryAdapter).searchIncidents(query, domainFilter, limit);
   }
 
   async isMemoryAvailable(): Promise<boolean> {
     await this.initialize();
-    return await this.adapter.isMemoryAvailable();
+    if (this.adapter instanceof UnifiedMemoryAdapter) {
+      return !!(await this.adapter.isAvailable());
+    }
+    return await (this.adapter as MCPOcsMemoryAdapter).isMemoryAvailable();
   }
 }
-

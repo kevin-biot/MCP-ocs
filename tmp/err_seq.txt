@@ -1,0 +1,73 @@
+-    ...
+🧠    ...
+   ( )
+📦    -
+🔧    (-)
+🔧    (-)
+🔧    (-)
+🔧    (-)
+🔧    (-)
+  /   -
+📦    --
+🔧    (--)
+🔧    (--)
+🔧    (--)
+🔧    (--)
+  /   --
+📦    -
+🔧    (-)
+🔧    (-)
+🔧    (-)
+🔧    (-)
+🔧    (-)
+  /   -
+📦    -
+🔧    (--)
+🔧    (--)
+🔧    (-)
+  /   -
+    ( )
+📈   
+  "" ,
+  "" 
+    "" ,
+    "-" ,
+    "" 
+  ,
+  "" 
+    "" ,
+    "" 
+  ,
+  "" 
+    "-",
+    "--",
+    "-",
+    "-"
+  ,
+  "" 
+    "" ,
+    "" 
+  
+
+🔧    (-)
+🔧  -   () [
+  'oc_diagnostic_cluster_health',
+  'oc_diagnostic_triage',
+  'oc_diagnostic_namespace_health',
+  'oc_diagnostic_pod_health',
+  'oc_diagnostic_rca_checklist',
+  'oc_read_get_pods',
+  'oc_read_describe',
+  'oc_read_logs',
+  'memory_search_incidents',
+  'memory_store_operational',
+  'memory_search_operational',
+  'core_workflow_state',
+  'memory_get_stats',
+  'memory_search_conversations',
+  'oc_read_nodes',
+  'oc_read_machinesets',
+  'oc_analyze_zone_conflicts',
+  'sequential_thinking'
+]
+ -     !

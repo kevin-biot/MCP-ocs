@@ -1,0 +1,3 @@
+💾 Storing incident: demo-rca-1
+Stored operational via unified adapter
+Stored conversation via unified adapter

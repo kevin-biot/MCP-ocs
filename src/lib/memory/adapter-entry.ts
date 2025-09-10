@@ -1,4 +1,4 @@
-import { MCPOcsMemoryAdapter } from './mcp-ocs-memory-adapter';
+import { MCPOcsMemoryAdapter } from './mcp-ocs-memory-adapter.js';
 
 /**
  * Convenience helper to create and initialize the OCS memory adapter.
