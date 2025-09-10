@@ -1,0 +1,8 @@
+{
+  "planned": [
+    { "name": "oc_read_nodes", "category": "readOps" },
+    { "name": "oc_read_machinesets", "category": "readOps" },
+    { "name": "oc_analyze_zone_conflicts", "category": "diagnostics" }
+  ]
+}
+

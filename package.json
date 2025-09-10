@@ -168,7 +168,10 @@
     "ci:planning:check": "node scripts/ci/check-planning-location.mjs",
     "test:unit:esm": "npm run build && NODE_OPTIONS=--experimental-vm-modules jest tests/unit",
     "test:unit:dist": "npm run build && jest -c jest.dist.config.cjs tests/unit",
-    "test:unit:node": "npm run build && node --test tests/unit/**/*.node.test.js"
+    "test:unit:node": "npm run build && node --test tests/unit/**/*.node.test.js",
+    "sprint:status": "node scripts/sprint/generate-feature-status.mjs",
+    "sprint:tools": "node scripts/sprint/generate-tool-inventory.mjs",
+    "process:sync-docs": "npm run sprint:status && npm run sprint:tools && npm run archives:index"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.8",

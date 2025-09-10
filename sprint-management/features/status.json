@@ -1,0 +1,24 @@
+{
+  "epics": [
+    { "id": "F-001", "name": "Memory System", "status": "complete", "impl": 100, "priority": "high", "adrs": ["ADR-003-memory-patterns.md"], "archives": ["sprint-management/features/epics/f-001-core-platform/README.md"] },
+    { "id": "F-003", "name": "Template Engine", "status": "complete", "impl": 100, "priority": "high", "adrs": ["ADR-014-deterministic-template-engine.md"], "archives": ["sprint-management/features/epics/f-004-template-quality/README.md"] },
+    { "id": "F-006", "name": "Workflow State Management", "status": "complete", "impl": 100, "priority": "high", "adrs": ["ADR-005-workflow-state-machine.md"], "archives": [] },
+    { "id": "F-008", "name": "Modular Tool Architecture", "status": "in_progress", "impl": 45, "priority": "medium", "adrs": ["ADR-006-modular-tool-architecture.md"], "archives": ["sprint-management/features/epics/f-008-modular-tool-architecture/epic-specification.md"] },
+    { "id": "F-009", "name": "Fast RCA Framework", "status": "in_progress", "impl": 30, "priority": "high", "adrs": ["ADR-011-fast-rca-framework.md"], "archives": ["sprint-management/features/epics/f-009-fast-rca-framework/epic-specification.md"] },
+    { "id": "F-002", "name": "Production Operator Deployment", "status": "designed", "impl": 0, "priority": "medium", "adrs": ["ADR-008-production-operator-architecture.md"], "archives": [] }
+  ],
+  "coreSystems": [
+    { "component": "Memory System (ADR-003)", "status": "complete", "impl": 100, "quality": "Excellent", "adrs": ["ADR-003-memory-patterns.md"] },
+    { "component": "Template Engine (ADR-014)", "status": "complete", "impl": 100, "quality": "Excellent", "adrs": ["ADR-014-deterministic-template-engine.md"] },
+    { "component": "Workflow State (ADR-005)", "status": "complete", "impl": 85, "quality": "Good", "adrs": ["ADR-005-workflow-state-machine.md"] },
+    { "component": "Tool Memory Integration (ADR-007)", "status": "complete", "impl": 100, "quality": "Excellent", "adrs": ["ADR-007-automatic-tool-memory-integration.md"] },
+    { "component": "CLI Wrapper (ADR-001)", "status": "complete", "impl": 95, "quality": "High", "adrs": ["ADR-001-oc-vs-k8s-api.md"] }
+  ],
+  "betaFeatures": [
+    { "component": "Systemic Intelligence (ADR-010)", "status": "partial", "impl": 40, "priority": "High", "adrs": ["ADR-010-systemic-diagnostic-intelligence.md"] },
+    { "component": "Tool Namespace Management (ADR-004)", "status": "partial", "impl": 60, "priority": "Medium", "adrs": ["ADR-004-tool-namespace-management.md"] },
+    { "component": "GitOps Integration (ADR-002)", "status": "partial", "impl": 30, "priority": "Medium", "adrs": ["ADR-002-gitops-strategy.md"] },
+    { "component": "RBAC Framework (ADR-009)", "status": "partial", "impl": 20, "priority": "High", "adrs": ["ADR-009-rbac-emergency-change-management.md"] }
+  ]
+}
+
