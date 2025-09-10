@@ -69,3 +69,5 @@
 2025-09-10T16:47:29+02:00: [TASK] Sprint closure: code review & quality
 2025-09-10T16:47:34+02:00: [EVIDENCE] Lint run captured; see tmp/closure_lint.txt
 2025-09-10T16:47:34+02:00: [EVIDENCE] process.env reads in src: 84 (to be centralized in #33)
+2025-09-10T17:01:38+02:00: [TASK] Push release/v0.9.0-beta with tags
+2025-09-10T17:08:58+02:00: [TASK] Close Issue #31 with notes
