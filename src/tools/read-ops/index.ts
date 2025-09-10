@@ -397,9 +397,74 @@ export class ReadOpsTools implements ToolSuite {
 
   private async describeResource(resourceType: string, name: string, namespace?: string, sessionId?: string): Promise<any> {
     console.error(`🔍 Describing ${resourceType}/${name} in namespace: ${namespace}`);
-    
+
+    const lowerName = String(name || '').toLowerCase();
+    const lowerNs = typeof namespace === 'string' ? namespace.toLowerCase() : undefined;
+    const conc = Number(process.env.OC_READ_DESCRIBE_CONCURRENCY || process.env.OC_DIAG_CONCURRENCY || 8);
+    const timeoutMs = Number(process.env.OC_READ_DESCRIBE_TIMEOUT_MS || process.env.OC_DIAG_TIMEOUT_MS || 5000);
+
+    // Expansion logic for name='all' and/or namespace='all'
+    if (lowerName === 'all' || lowerNs === 'all') {
+      // List resources according to scope
+      const listNs = lowerNs === 'all' ? 'all' : (namespace || undefined);
+      let targets = await this.openshiftClient.listResources(resourceType, listNs);
+      if (lowerName !== 'all') {
+        targets = targets.filter(t => t.name === name);
+      }
+
+      const maxConcurrent = Math.max(1, conc);
+      const perTimeout = Math.max(1000, timeoutMs);
+      const results: Array<{ name: string; namespace?: string; ok: boolean; durationMs: number; error?: string; description?: string }>=[];
+      const startedAll = nowEpoch();
+      for (let i = 0; i < targets.length; i += maxConcurrent) {
+        const batch = targets.slice(i, i + maxConcurrent);
+        const promises = batch.map(async (t) => {
+          const t0 = nowEpoch();
+          try {
+            const desc = await Promise.race([
+              this.openshiftClient.describeResource(resourceType, t.name, t.namespace),
+              new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), perTimeout))
+            ]);
+            const dt = nowEpoch() - t0;
+            const item: { name: string; namespace?: string; ok: boolean; durationMs: number; description?: string } = { name: t.name, ok: true, durationMs: dt, description: desc };
+            if (t.namespace) item.namespace = t.namespace;
+            results.push(item);
+          } catch (e: any) {
+            const dt = nowEpoch() - t0;
+            const msg = e instanceof Error ? e.message : String(e);
+            const item: { name: string; namespace?: string; ok: boolean; durationMs: number; error?: string } = { name: t.name, ok: false, durationMs: dt, error: msg };
+            if (t.namespace) item.namespace = t.namespace;
+            results.push(item);
+          }
+        });
+        await Promise.allSettled(promises);
+      }
+      const aggregated = {
+        success: true,
+        mode: 'expanded',
+        resourceType,
+        input: { name, namespace: namespace || this.openshiftClient['config']?.namespace || 'default' },
+        count: results.length,
+        durationMs: nowEpoch() - startedAll,
+        results,
+        timestamp: new Date().toISOString()
+      };
+      // Store summary (avoid huge payloads)
+      await this.memoryGateway.storeToolExecution(
+        'oc_read_describe',
+        { resourceType, name, namespace: namespace || 'default', mode: 'expanded', concurrency: maxConcurrent },
+        { count: aggregated.count, durationMs: aggregated.durationMs },
+        sessionId || 'unknown',
+        ['read_operation', 'describe', resourceType, 'expanded'],
+        'openshift',
+        'prod',
+        'low'
+      );
+      return aggregated;
+    }
+
+    // Simple single describe
     const description = await this.openshiftClient.describeResource(resourceType, name, namespace);
-    
     const result = {
       resourceType,
       name,
@@ -407,8 +472,6 @@ export class ReadOpsTools implements ToolSuite {
       description,
       timestamp: new Date().toISOString()
     };
-    
-    // Store via adapter-backed gateway for Chroma v2 integration
     await this.memoryGateway.storeToolExecution(
       'oc_read_describe',
       { resourceType, name, namespace: namespace || 'default' },
@@ -419,7 +482,6 @@ export class ReadOpsTools implements ToolSuite {
       'prod',
       'low'
     );
-    
     return result;
   }
 
