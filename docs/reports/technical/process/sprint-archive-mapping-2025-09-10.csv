@@ -1,0 +1,15 @@
+old_path,detected_type,domain,sprint_id,normalized_name,suggested_new_path,notes
+sprint-management/archive/obsolete-templates,unknown,maintenance,,obsolete-templates-undated,sprint-management/maintenance/archives/obsolete-templates-undated,needs_review;missing_date
+sprint-management/archive/obsolete-templates/v3.2-era,unknown,maintenance,,v3.2-era-undated,sprint-management/maintenance/archives/v3.2-era-undated,needs_review;missing_date
+sprint-management/archive/completed-sprints,unknown,maintenance,,completed-sprints-undated,sprint-management/maintenance/archives/completed-sprints-undated,needs_review;missing_date
+sprint-management/archive/completed-sprints/d-002-epic-003-typescript-hardening,maintenance,maintenance,d-002,d-002-epic-003-typescript-hardening-undated,sprint-management/maintenance/archives/d-002-epic-003-typescript-hardening-undated,missing_date
+sprint-management/archive/d-005-d-006-quality-foundation,maintenance,maintenance,d-005,d-005-d-006-quality-foundation-undated,sprint-management/maintenance/archives/d-005-d-006-quality-foundation-undated,missing_date
+sprint-management/archive/d-002-epic-004,maintenance,maintenance,d-002,d-002-epic-004-undated,sprint-management/maintenance/archives/d-002-epic-004-undated,missing_date
+sprint-management/archive/orphaned-artifacts,unknown,maintenance,,orphaned-artifacts-undated,sprint-management/maintenance/archives/orphaned-artifacts-undated,needs_review;missing_date
+sprint-management/archive/sprint-2025-08-31,unknown,maintenance,,sprint-2025-08-31,sprint-management/maintenance/archives/sprint-2025-08-31,needs_review
+sprint-management/archive/legacy-v3.1,unknown,maintenance,,legacy-v3.1-undated,sprint-management/maintenance/archives/legacy-v3.1-undated,needs_review;missing_date
+sprint-management/archive/d-009-date-time-safety-2025-09-06,maintenance,maintenance,d-009,d-009-date-time-safety-2025-09-06,sprint-management/maintenance/archives/d-009-date-time-safety-2025-09-06,
+sprint-management/archive/process-evolution,unknown,maintenance,,process-evolution-undated,sprint-management/maintenance/archives/process-evolution-undated,needs_review;missing_date
+sprint-management/archive/process-evolution/v3.3.1,unknown,maintenance,,v3.3.1-undated,sprint-management/maintenance/archives/v3.3.1-undated,needs_review;missing_date
+sprint-management/archive/v3.1,unknown,maintenance,,v3.1-undated,sprint-management/maintenance/archives/v3.1-undated,needs_review;missing_date
+sprint-management/archive/v3.1/templates,unknown,maintenance,,templates-undated,sprint-management/maintenance/archives/templates-undated,needs_review;missing_date

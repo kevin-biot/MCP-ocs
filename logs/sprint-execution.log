@@ -71,3 +71,9 @@
 2025-09-10T16:47:34+02:00: [EVIDENCE] process.env reads in src: 84 (to be centralized in #33)
 2025-09-10T17:01:38+02:00: [TASK] Push release/v0.9.0-beta with tags
 2025-09-10T17:08:58+02:00: [TASK] Close Issue #31 with notes
+2025-09-10T17:14:04+02:00: [TASK] Close GitHub issue #31 via gh
+2025-09-10T17:14:07+02:00: [EVIDENCE] Closed GitHub issue #31 via gh
+2025-09-10T17:16:27+02:00: [TASK] Update GitHub issue #33 (configuration system)
+2025-09-10T17:16:29+02:00: [EVIDENCE] Updated GitHub issue #33 via gh with status and plan
+2025-09-10T17:31:12+02:00: [TASK] Phase 1: Inventory + migration mapping for sprint archives
+2025-09-10T17:31:12+02:00: [EVIDENCE] Generated migration mapping CSV and summary
