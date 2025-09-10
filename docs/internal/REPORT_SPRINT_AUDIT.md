@@ -9,7 +9,7 @@ Branch: release/v0.9.0-beta
 - Sprint ID occurrences in log: 1
 ### Fixes
 - ❌ **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+- ❌ `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
 - ❌ [ ] **Context Preservation**: Include sufficient debugging context
 - ❌ [ ] **Context Preservation**: Error messages include sufficient debugging context
 - ❌ Will errors provide sufficient debugging information?
@@ -58,7 +58,7 @@ Branch: release/v0.9.0-beta
 - ❌ TASK-005-D: Corrected Promise.all vs Promise.allSettled patterns
 - ❌ Rename with descriptive suffix indicating original context
 - ❌ **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+- ❌ `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
 - ❌ [ ] **Context Preservation**: Include sufficient debugging context
 - ❌ [ ] **Context Preservation**: Error messages include sufficient debugging context
 - ❌ Will errors provide sufficient debugging information?
@@ -71,7 +71,7 @@ Branch: release/v0.9.0-beta
 - Sprint ID occurrences in log: 0
 ### Fixes
 - ❌ **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+- ❌ `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
 - ❌ [ ] **Context Preservation**: Include sufficient debugging context
 - ❌ [ ] **Documentation Gaps**: Implementation correct but documentation incomplete
 
@@ -81,7 +81,7 @@ Branch: release/v0.9.0-beta
 - Sprint ID occurrences in log: 1
 ### Fixes
 - ❌ **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+- ❌ `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
 
 ## D-005
 - Files: sprint-management/archive/d-005-d-006-quality-foundation/README.md, sprint-management/archive/d-005-d-006-quality-foundation/codex-execution-log-2025-09-03.md, sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-developer-completion-v3.2.md, sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-process-calibration-v3.2.md, sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-reviewer-completion-v3.2.md, sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-tester-completion-v3.2.md, sprint-management/archive/d-005-d-006-quality-foundation/d-005-d-006-validation-evidence-v3.2.md, sprint-management/archive/d-005-d-006-quality-foundation/final-sprint-status.md, sprint-management/archive/d-005-d-006-quality-foundation/generated-prompt-with-calibration-analysis.md, sprint-management/archive/d-005-d-006-quality-foundation/reviewer-assessment.md, sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md, sprint-management/archive/process-evolution/DEVELOPER-GUARDRAILS.md, sprint-management/archive/process-evolution/PROCESS-V3.2-ENHANCED.md, sprint-management/archive/process-evolution/PROCESS-V3.2-UPDATE-SUMMARY.md, sprint-management/archive/process-evolution/REVIEWER-GUARDRAILS.md, sprint-management/archive/process-evolution/TESTER-GUARDRAILS.md, sprint-management/archive/v3.1/STANDUP-PROCESS-V3-MEMORY.md
@@ -101,7 +101,7 @@ Branch: release/v0.9.0-beta
 - ❌ TASK-005-D: Corrected Promise.all vs Promise.allSettled patterns
 - ❌ Async correctness foundations (timeouts, mutex) in place.
 - ❌ **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+- ❌ `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
 - ❌ [ ] **Context Preservation**: Include sufficient debugging context
 - ❌ **Time Loss Prevention**: Validated effective - prevented Jest/ESM debugging loops through strategic approach selection
 - ❌ Full debugging time justified
@@ -134,7 +134,7 @@ Branch: release/v0.9.0-beta
 - ❌ TASK-005-D: Corrected Promise.all vs Promise.allSettled patterns
 - ❌ Async correctness foundations (timeouts, mutex) in place.
 - ❌ **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+- ❌ `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
 - ❌ [ ] **Context Preservation**: Include sufficient debugging context
 - ❌ **Time Loss Prevention**: Validated effective - prevented Jest/ESM debugging loops through strategic approach selection
 - ❌ Full debugging time justified
@@ -153,7 +153,7 @@ Branch: release/v0.9.0-beta
 - Sprint ID occurrences in log: 0
 ### Fixes
 - ❌ **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+- ❌ `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
 
 ## D-008
 - Files: sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md
@@ -161,7 +161,7 @@ Branch: release/v0.9.0-beta
 - Sprint ID occurrences in log: 0
 ### Fixes
 - ❌ **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+- ❌ `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
 
 ## D-009
 - Files: sprint-management/archive/d-009-date-time-safety-2025-09-06/completion-developer-handoff.md, sprint-management/archive/d-009-date-time-safety-2025-09-06/completion-final-closure.md, sprint-management/archive/d-009-date-time-safety-2025-09-06/completion-tester-verification.md, sprint-management/archive/d-009-date-time-safety-2025-09-06/execution-log-developer.md, sprint-management/archive/d-009-date-time-safety-2025-09-06/execution-log-reviewer.md, sprint-management/archive/d-009-date-time-safety-2025-09-06/execution-log-tester.md, sprint-management/archive/d-009-date-time-safety-2025-09-06/execution-tester-verification-backup.md, sprint-management/archive/d-009-date-time-safety-2025-09-06/formal-closure-index.md, sprint-management/archive/d-009-date-time-safety-2025-09-06/original-execution-prompt.md, sprint-management/archive/d-009-date-time-safety-2025-09-06/prompt-archive.md, sprint-management/archive/d-009-date-time-safety-2025-09-06/reviewer-role-closure-prompt.md, sprint-management/archive/d-009-date-time-safety-2025-09-06/scrum-master-assessment.md, sprint-management/archive/d-009-date-time-safety-2025-09-06/session-report-codex.md, sprint-management/archive/d-009-date-time-safety-2025-09-06/tester-role-enhanced-prompt.md, sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md
@@ -202,7 +202,7 @@ Branch: release/v0.9.0-beta
 - ❌ ESM import nuances: Ensuring `.js` suffix imports when referencing TypeScript modules from ESM contexts.
 - ❌ Pattern-first repair: Addressed root causes (serialization/validation) rather than one-off fixes; produced consistent behavior across modules.
 - ❌ **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+- ❌ `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
 
 ## D-010
 - Files: sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md, sprint-management/archive/process-evolution/TESTER-GUARDRAILS.md
@@ -210,7 +210,7 @@ Branch: release/v0.9.0-beta
 - Sprint ID occurrences in log: 0
 ### Fixes
 - ❌ **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+- ❌ `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
 - ❌ [ ] **Documentation Gaps**: Implementation correct but documentation incomplete
 
 ## D-011
@@ -219,7 +219,7 @@ Branch: release/v0.9.0-beta
 - Sprint ID occurrences in log: 0
 ### Fixes
 - ❌ **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+- ❌ `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
 
 ## D-012
 - Files: sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md
@@ -227,7 +227,7 @@ Branch: release/v0.9.0-beta
 - Sprint ID occurrences in log: 0
 ### Fixes
 - ❌ **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+- ❌ `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
 
 ## D-013
 - Files: sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md
@@ -235,7 +235,7 @@ Branch: release/v0.9.0-beta
 - Sprint ID occurrences in log: 0
 ### Fixes
 - ❌ **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+- ❌ `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
 
 ## D-014
 - Files: sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md, sprint-management/archive/process-evolution/DEVELOPER-GUARDRAILS.md, sprint-management/archive/process-evolution/REVIEWER-GUARDRAILS.md, sprint-management/archive/process-evolution/TESTER-GUARDRAILS.md, sprint-management/archive/v3.1/STANDUP-PROCESS-V3-MEMORY.md
@@ -243,7 +243,7 @@ Branch: release/v0.9.0-beta
 - Sprint ID occurrences in log: 0
 ### Fixes
 - ❌ **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+- ❌ `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
 - ❌ [ ] **Context Preservation**: Include sufficient debugging context
 - ❌ [ ] **Context Preservation**: Error messages include sufficient debugging context
 - ❌ Will errors provide sufficient debugging information?
@@ -295,7 +295,7 @@ Branch: release/v0.9.0-beta
 ## Summary & Restoration Plan
 - Missing items detected: 168
   - [D-001] (fix) **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-  - [D-001] (fix) `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - [D-001] (fix) `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
   - [D-001] (fix) [ ] **Context Preservation**: Include sufficient debugging context
   - [D-001] (fix) [ ] **Context Preservation**: Error messages include sufficient debugging context
   - [D-001] (fix) Will errors provide sufficient debugging information?
@@ -333,16 +333,16 @@ Branch: release/v0.9.0-beta
   - [D-002] (fix) TASK-005-D: Corrected Promise.all vs Promise.allSettled patterns
   - [D-002] (fix) Rename with descriptive suffix indicating original context
   - [D-002] (fix) **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-  - [D-002] (fix) `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - [D-002] (fix) `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
   - [D-002] (fix) [ ] **Context Preservation**: Include sufficient debugging context
   - [D-002] (fix) [ ] **Context Preservation**: Error messages include sufficient debugging context
   - [D-002] (fix) Will errors provide sufficient debugging information?
   - [D-002] (fix) [ ] Includes appropriate logging for debugging
   - [D-003] (fix) **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-  - [D-003] (fix) `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - [D-003] (fix) `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
   - [D-003] (fix) [ ] **Context Preservation**: Include sufficient debugging context
   - [D-004] (fix) **D-005: Async Correctness** (6 tasks) - Race conditions, unawaited promises
-  - [D-004] (fix) `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - [D-004] (fix) `/sprint-management/maintenance/backlog/domains/d-005-async-correctness/README.md`
   - [D-005] (fix) Core async correctness and error taxonomy implementations
 
 Proposed restoration steps:
