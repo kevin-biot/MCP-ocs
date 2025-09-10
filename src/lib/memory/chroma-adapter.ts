@@ -10,7 +10,7 @@ import type { ConversationMemory, OperationalMemory } from './shared-memory';
 /**
  * Wrapper to adapt MCP-files ChromaMemoryManager to our interface
  */
-export class MCPFilesChromaAdapter {
+export class ChromaAdapter {
   private chromaManager: ChromaMemoryManager;
   private available = false;
   private convCollection: string;

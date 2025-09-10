@@ -1,4 +1,4 @@
-import type { OperationalMemory } from '@/lib/memory/shared-memory';
+import type { OperationalMemory } from '../memory/shared-memory.js';
 export declare function isRecord(value: unknown): value is Record<string, unknown>;
 export declare function isOperationalMemory(data: unknown): data is OperationalMemory;
 export declare function hasErrorCode(error: unknown): error is {

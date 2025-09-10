@@ -6,7 +6,7 @@
  */
 import fs from 'fs/promises';
 import path from 'path';
-import { MCPFilesChromaAdapter } from './mcp-files-adapter.js';
+import { ChromaAdapter } from './chroma-adapter.js';
 import { MemoryError } from '../errors/index.js';
 import { FEATURE_FLAGS } from '../config/feature-flags.js';
 import { UnifiedMemoryAdapter } from './unified-memory-adapter.js';
@@ -493,7 +493,7 @@ export class SharedMemoryManager {
         this.config = config;
         this.contextExtractor = new ContextExtractor();
         this.jsonStorage = new JsonFallbackStorage(config.memoryDir, config.namespace);
-        this.chromaClient = new MCPFilesChromaAdapter(config.chromaHost || '127.0.0.1', config.chromaPort || 8000, path.join(config.memoryDir, config.namespace));
+        this.chromaClient = new ChromaAdapter(config.chromaHost || '127.0.0.1', config.chromaPort || 8000, path.join(config.memoryDir, config.namespace));
         if (FEATURE_FLAGS.UNIFIED_MEMORY) {
             const uniCfg = { memoryDir: path.join(config.memoryDir, config.namespace) };
             if (typeof config.chromaHost === 'string')

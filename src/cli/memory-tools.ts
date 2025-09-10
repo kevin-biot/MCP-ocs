@@ -2,7 +2,7 @@
 
 import { ChromaMemoryManager } from '../lib/memory/chroma-memory-manager.js';
 import { nowEpoch } from '../utils/time.js';
-import { MCPFilesChromaAdapter } from '../lib/memory/mcp-files-adapter.js';
+import { ChromaAdapter } from '../lib/memory/chroma-adapter.js';
 
 function usage(): never {
   console.error(
@@ -62,7 +62,7 @@ async function main() {
     const memoryDir = defaultDir;
     const host = process.env.CHROMA_HOST || '127.0.0.1';
     const port = parseInt(String(process.env.CHROMA_PORT || '8000'), 10) || 8000;
-    const adapter = new MCPFilesChromaAdapter(String(host), Number(port), memoryDir);
+    const adapter = new ChromaAdapter(String(host), Number(port), memoryDir);
     await adapter.initialize();
     const results = await adapter.searchOperational(query, limit);
     console.log(JSON.stringify({ ok: true, count: results.length, results }, null, 2));

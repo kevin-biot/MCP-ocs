@@ -46,3 +46,4 @@
 2025-09-10T15:37:45+02:00: [TASK] Phase 6: Rename to neutral identifiers (chroma-memory-manager)
 2025-09-10T15:41:16+02:00: [EVIDENCE] Renamed to chroma-memory-manager; imports updated
 2025-09-10T15:46:10+02:00: [EVIDENCE] Docs updated to chroma-memory-manager references
+2025-09-10T15:51:52+02:00: [EVIDENCE] Renamed adapter to chroma-adapter (class ChromaAdapter); imports updated

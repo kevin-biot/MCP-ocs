@@ -1,5 +1,5 @@
 // Type Guard Library for Safe Type Narrowing
-import type { OperationalMemory } from '@/lib/memory/shared-memory';
+import type { OperationalMemory } from '../memory/shared-memory.js';
 
 export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -24,4 +24,3 @@ export function hasErrorCode(error: unknown): error is { code: string | number }
 export function hasErrorStderr(error: unknown): error is { stderr: string } {
   return isRecord(error) && typeof (error as any).stderr === 'string';
 }
-
