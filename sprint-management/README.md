@@ -1,203 +1,71 @@
-# Sprint Management Framework - Usage Guide
+# Sprint Management Framework — Process 3.3.x Usage Guide
 
 ## Overview
-This framework provides structured, role-based AI agent coordination for MCP-ocs development with daily task management, progress tracking, and quality assurance.
+Process 3.3.x runs file‑only sprints with Claude (AI Scrum Master) and Codex (coder). Beta is the live work branch; main is canonical for archives. The Sprint Kit provides a cockpit (CONTROL.md, sprint.json, prompts) so you never lose context.
 
-## Daily Workflow
+## Daily Flow (beta)
+1) Start a sprint with the Sprint Kit
+   - Copy `sprint-management/templates/sprint-kit-3.3.x/` to `sprint-management/active/<sprint-id>-<slug>/`
+   - Rename `sprint.json.template` → `sprint.json` and fill fields
+   - Save `CONTROL.md.template` → `CONTROL.md` and use it as the checklist
+   - Use prompts in `prompts/` (kickoff-claude.md, kickoff-codex.md, standup.md, eod.md)
 
-### 1. Morning Setup (Human + Claude)
-```bash
-# Validate framework readiness
-bash scripts/validate-sprint.sh
+2) Execute and log
+   - Claude/Codex update execution logs under `artifacts/`
+   - Keep CONTROL.md checkboxes current
+   - Codex runs protocol/memory smokes as needed
 
-# Create today's files
-bash scripts/setup-sprint-day.sh
-```
+3) End‑of‑Day (EOD)
+   - On beta: `npm run process:sync-docs` (syncs to main and auto‑refreshes archive indices + registry)
+   - On beta: `npm run archives:index:links` (refresh link indices to main archives)
 
-### 2. Development Execution (Agent Sessions)
+## Branch Discipline
+- `release/*` (beta): code + daily active docs/logs; EOD sync to main
+- `main`: documentation + sprint management; canonical home for archives
 
-#### DEVELOPER Session (Codex)
-```bash
-# Start with today's role context
-codex --context sprint-management/active-tasks/role-context-developer-$(date +%Y-%m-%d).md
-
-# Or manually reference:
-# Read: sprint-management/active-tasks/role-context-developer-YYYY-MM-DD.md
-# Update: sprint-management/active-tasks/task-status-YYYY-MM-DD.md
-# Create: sprint-management/completion-logs/dev-completion-log-YYYY-MM-DD.md
-```
-
-#### TESTER Session (Codex)
-```bash
-# Start after DEVELOPER completion
-codex --context sprint-management/active-tasks/role-context-tester-$(date +%Y-%m-%d).md
-
-# Or manually reference:
-# Read: sprint-management/completion-logs/dev-completion-log-YYYY-MM-DD.md
-# Update: sprint-management/active-tasks/task-status-YYYY-MM-DD.md  
-# Create: sprint-management/completion-logs/test-completion-log-YYYY-MM-DD.md
-```
-
-#### REVIEWER Session (Codex)
-```bash
-# Start after TESTER completion
-codex --context sprint-management/active-tasks/role-context-reviewer-$(date +%Y-%m-%d).md
-
-# Or manually reference:
-# Read: both dev and test completion logs
-# Update: sprint-management/active-tasks/task-status-YYYY-MM-DD.md
-# Create: sprint-management/completion-logs/review-completion-log-YYYY-MM-DD.md
-```
-
-### 3. Evening Review (Human + Claude)
-```bash
-# Review all completion logs
-ls sprint-management/completion-logs/*-$(date +%Y-%m-%d).md
-
-# Archive completed day (if sprint complete)
-mkdir sprint-management/archive/$(date +%Y-%m-%d)
-mv sprint-management/active-tasks/*-$(date +%Y-%m-%d).md sprint-management/archive/$(date +%Y-%m-%d)/
-```
-
-## File Structure
-
+## Directory Layout (high‑level)
 ```
 sprint-management/
-├── tasks-current.md                    # Master task definitions (human-owned)
-├── active-tasks/                       # Today's working files
-│   ├── task-status-YYYY-MM-DD.md      # Task progress tracking
-│   ├── task-changelog-YYYY-MM-DD.md   # Change log entries
-│   ├── role-context-developer-YYYY-MM-DD.md   # DEVELOPER daily assignment  
-│   ├── role-context-tester-YYYY-MM-DD.md      # TESTER daily assignment
-│   └── role-context-reviewer-YYYY-MM-DD.md    # REVIEWER daily assignment
-├── completion-logs/                    # Session output logs
-│   ├── dev-completion-log-YYYY-MM-DD.md       # DEVELOPER session results
-│   ├── test-completion-log-YYYY-MM-DD.md      # TESTER session results
-│   └── review-completion-log-YYYY-MM-DD.md    # REVIEWER session results
-├── archive/                           # Historical records
-│   └── YYYY-MM-DD/                   # Previous day's complete files
-├── templates/                         # File generation templates
-├── roles/                            # Role definition files
-└── scripts/                          # Automation scripts
+├── features/
+│   ├── backlog/   ├── active/   └── archives/
+├── maintenance/
+│   ├── backlog/   ├── active/   └── archives/
+├── templates/
+│   ├── current/           # curated role templates (v3.3.1)
+│   ├── sprint-kit-3.3.x/  # file‑only sprint cockpit (Claude‑friendly)
+│   └── archives/          # historical templates (date‑stamped)
+└── logs/sprint-execution.log
 ```
 
-## Role Responsibilities
+## Active Templates (use these)
+- `sprint-management/templates/current/`
+  - role-context-developer.md, role-context-reviewer.md, role-context-tester.md (v3.3.1)
+  - DAILY_STANDUP_CHECKLIST_V3.3.1-ENHANCED.md
+  - daily-repeatable-task-template-v3.3.2.md
+- `sprint-management/templates/sprint-kit-3.3.x/`
+  - CONTROL.md.template, sprint.json.template, ROLE-GUARDRAILS.md
+  - prompts/ (kickoff-claude, kickoff-codex, standup, eod)
+  - artifacts/ placeholders
 
-### DEVELOPER Role
-- **Focus**: Implement assigned tasks efficiently within sprint timeline
-- **Boundaries**: Use existing patterns, don't over-engineer, maintain test coverage
-- **Output**: Working implementations with tests and clear handoff notes
+## Quick Commands
+- EOD sync (beta → main): `npm run process:sync-docs`
+- Refresh link indices (beta): `npm run archives:index:links`
+- Refresh local archive indices (main): `npm run archives:index`
+- Generate consolidated registry (main): `node scripts/archives/generate-archive-registry.mjs`
+- Sprint status summary (writes STATUS.md): `npm run sprint:status`
+- Validate closure essentials: `npm run sprint:validate-closure`
 
-### TESTER Role  
-- **Focus**: Validate implementations meet acceptance criteria and quality standards
-- **Boundaries**: Test only what was implemented, identify issues clearly
-- **Output**: Pass/fail determinations with specific reproduction steps
+## Closure & Archives
+- Before archiving, ensure CONTROL.md is complete and the 20 artifacts are present (use `sprint:validate-closure`).
+- Archives live under domain folders on main:
+  - `sprint-management/features/archives/{sprint-id}-{name}-{YYYY-MM-DD}/`
+  - `sprint-management/maintenance/archives/{sprint-id}-{name}-{YYYY-MM-DD}/`
+- Indices and registry are auto‑refreshed at EOD via `process:sync-docs`.
 
-### REVIEWER Role
-- **Focus**: Assess code quality, architecture alignment, and release readiness  
-- **Boundaries**: Review only tested implementations, provide actionable feedback
-- **Output**: Approval decisions with rationale and improvement recommendations
+## Links
+- Template Guide (3.3.2): `sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.2.md`
+- Template Infra Index: `sprint-management/templates/TEMPLATE-INFRASTRUCTURE-INDEX.md`
+- Archives Indices: `sprint-management/features/archives/INDEX.md`, `sprint-management/maintenance/archives/INDEX.md`
+- Template Registry: `sprint-management/templates/registry.json`
 
-## Key Features
-
-### 1. Bounded Role Responsibility
-Each role has specific files to read/write, preventing scope creep and ensuring focus.
-
-### 2. Git Commit Traceability
-All completion logs must reference specific git commits for verification.
-
-### 3. Daily File Rotation
-Clean daily setup prevents file bloat and maintains clear session boundaries.
-
-### 4. Multi-LLM Review Pipeline
-Framework supports review by different AI models for comprehensive quality assessment.
-
-### 5. Human Oversight Gates
-Human review at sprint planning, daily wrap-up, and final approval stages.
-
-## Task Definition Format
-
-```markdown
-### TASK-XXX: [Task Name]
-**Priority**: HIGH/MEDIUM/LOW
-**Assigned Role**: DEVELOPER/TESTER/REVIEWER
-**Estimated Effort**: X hours
-**Status**: NOT_STARTED/IN_PROGRESS/COMPLETED/BLOCKED
-
-**Description**: [Clear description of what needs to be done]
-
-**Acceptance Criteria**:
-- [ ] Specific criterion 1
-- [ ] Specific criterion 2
-- [ ] Specific criterion 3
-
-**Technical Details**:
-- **Files to Modify**: [List of files]
-- **Dependencies**: [Any dependencies]
-- **ADR References**: [Relevant ADRs]
-
-**Definition of Done**:
-- [Clear completion criteria]
-```
-
-## Quality Gates
-
-### DEVELOPER Gates:
-- [ ] All assigned tasks implemented with working code
-- [ ] All commits include tests and pass existing test suite
-- [ ] Code follows existing patterns and conventions
-- [ ] Clear handoff information for TESTER
-
-### TESTER Gates:
-- [ ] All implemented features thoroughly tested
-- [ ] Clear pass/fail determination with evidence
-- [ ] Issues documented with reproduction steps
-- [ ] Handoff information complete for REVIEWER
-
-### REVIEWER Gates:  
-- [ ] Comprehensive quality assessment completed
-- [ ] Architecture alignment verified
-- [ ] Security implications assessed
-- [ ] Clear recommendation with rationale
-
-## Troubleshooting
-
-### Common Issues:
-
-**Daily files not created**:
-```bash
-bash scripts/setup-sprint-day.sh
-```
-
-**Validation failures**:
-```bash
-bash scripts/validate-sprint.sh
-# Fix any missing files or directories
-```
-
-**Git conflicts**:
-- Each role works on different files to minimize conflicts
-- Use frequent commits with clear messages
-- Reference commits in completion logs for traceability
-
-**Role confusion**:
-- Each role has a specific definition file in `sprint-management/roles/`
-- Daily context files provide specific assignments
-- Stick to assigned boundaries, escalate scope questions
-
-## Success Metrics
-
-### Daily Success:
-- All assigned tasks completed within role boundaries
-- Quality gates passed for each role
-- Clear handoff between roles achieved
-
-### Sprint Success:
-- Sprint objectives achieved (e.g., template hygiene completion)
-- Quality maintained throughout (all tests passing)
-- Technical debt reduced, not increased
-- Clear documentation and knowledge transfer
-
----
-
-*This framework transforms ad-hoc AI assistance into systematic, accountable development with clear roles, boundaries, and quality assurance.*
+This readme reflects the simplified 3.3.x process: one cockpit (Sprint Kit), clear branch roles, and automated EOD archival hygiene.
