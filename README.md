@@ -322,6 +322,7 @@ Built for OpenShift engineers who value systematic architectural development ove
 
 - Diagnostics:
   - `oc_analyze_namespace_storage_comprehensive` (beta)
+  - `oc_analyze_zone_conflicts` (planned)
   - `oc_diagnostic_cluster_health` (production)
   - `oc_diagnostic_events` (beta)
   - `oc_diagnostic_infrastructure_correlation` (beta)
@@ -336,6 +337,8 @@ Built for OpenShift engineers who value systematic architectural development ove
   - `oc_read_describe` (production)
   - `oc_read_get_pods` (production)
   - `oc_read_logs` (production)
+  - `oc_read_machinesets` (planned)
+  - `oc_read_nodes` (planned)
 
 - Memory:
   - `memory_get_stats` (production)

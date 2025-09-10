@@ -5,6 +5,7 @@ import path from 'path';
 const root = process.cwd();
 const readmePath = path.join(root, 'README.md');
 const srcDir = path.join(root, 'src');
+const plannedPath = path.join(root, 'sprint-management', 'features', 'planned-tools.json');
 
 function walk(dir, files = []) {
   for (const entry of fs.readdirSync(dir)) {
@@ -64,8 +65,12 @@ function loadValidated() {
   return map;
 }
 
-function renderTools(cats, validated) {
-  const tag = (n) => validated[n] ? (validated[n] === 'PRODUCTION' ? ' (production)' : ' (beta)') : ' (beta)';
+function renderTools(cats, validated, plannedFlags) {
+  const tag = (n) => plannedFlags[n]
+    ? ' (planned)'
+    : (validated[n]
+        ? (validated[n] === 'PRODUCTION' ? ' (production)' : ' (beta)')
+        : ' (beta)');
   const lines = ['<!-- BEGIN:TOOLS -->'];
   lines.push('\n### Available Tools (Auto-generated)');
   if (cats.diagnostics.length) {
@@ -101,9 +106,29 @@ function replaceBetweenMarkers(content, begin, end, replacement) {
 const names = extractTools();
 const cats = categorize(names);
 const validated = loadValidated();
+
+// Merge planned tools
+const plannedFlags = {};
+if (fs.existsSync(plannedPath)) {
+  try {
+    const planned = JSON.parse(fs.readFileSync(plannedPath, 'utf8'))?.planned || [];
+    for (const p of planned) {
+      const n = p.name;
+      if (!n) continue;
+      plannedFlags[n] = true;
+      if (names.includes(n)) continue; // already implemented
+      const cat = (p.category || '').toLowerCase();
+      if (cat === 'diagnostics') cats.diagnostics.push(n);
+      else if (cat === 'readops' || cat === 'read_ops' || cat === 'read') cats.readOps.push(n);
+      else if (cat === 'memory') cats.memory.push(n);
+      else if (cat === 'state') cats.state.push(n);
+      else cats.other.push(n);
+    }
+    cats.diagnostics.sort(); cats.readOps.sort(); cats.memory.sort(); cats.state.sort(); cats.other.sort();
+  } catch {}
+}
 let readme = fs.readFileSync(readmePath, 'utf8');
-const rendered = renderTools(cats, validated);
+const rendered = renderTools(cats, validated, plannedFlags);
 readme = replaceBetweenMarkers(readme, 'BEGIN:TOOLS', 'END:TOOLS', rendered);
 fs.writeFileSync(readmePath, readme, 'utf8');
 console.log('README tools section updated.');
-
