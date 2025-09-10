@@ -181,3 +181,50 @@ MCP-ocs can be packaged with:
 5. **LLM-safe architecture**
 
 This provides a complete, operator-ready system with clean separation between logic and data.
+
+<!-- BEGIN:TOOLS -->
+
+### Available Tools (Auto-generated)
+
+- Diagnostics:
+  - `oc_analyze_namespace_storage_comprehensive` (beta)
+  - `oc_analyze_zone_conflicts` (planned)
+  - `oc_diagnostic_cluster_health` (production)
+  - `oc_diagnostic_events` (beta)
+  - `oc_diagnostic_infrastructure_correlation` (beta)
+  - `oc_diagnostic_namespace_health` (beta)
+  - `oc_diagnostic_namespace_health_v2` (beta)
+  - `oc_diagnostic_pod_health` (beta)
+  - `oc_diagnostic_rca_checklist` (production)
+  - `oc_diagnostic_resource_usage` (beta)
+  - `oc_diagnostic_triage` (beta)
+  - `oc_diagnostic_zone_analysis` (beta)
+
+- Read Ops:
+  - `oc_read_describe` (production)
+  - `oc_read_get_pods` (production)
+  - `oc_read_logs` (production)
+  - `oc_read_machinesets` (planned)
+  - `oc_read_nodes` (planned)
+
+- Memory:
+  - `memory_get_stats` (production)
+  - `memory_search_conversations` (beta)
+  - `memory_search_incidents` (beta)
+  - `memory_search_operational` (production)
+  - `memory_stats` (beta)
+  - `memory_store_operational` (production)
+
+- State:
+  - `core_workflow_state` (beta)
+
+- Other:
+  - `knowledge_seed` (beta)
+  - `oc_rca_storage_pvc_pending` (beta)
+  - `oc_triage` (beta)
+  - `oc_write_apply` (beta)
+  - `oc_write_restart` (beta)
+  - `oc_write_scale` (beta)
+  - `sequential_thinking` (beta)
+
+<!-- END:TOOLS -->
