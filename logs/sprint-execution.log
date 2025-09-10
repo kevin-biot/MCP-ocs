@@ -53,3 +53,12 @@
 2025-09-10T16:08:55+02:00: [TASK] Transition to Test Phase role
 2025-09-10T16:08:55+02:00: [DECISION] Entering formal test context; UNIFIED_MEMORY via scripts; vector disabled (JSON-only)
 2025-09-10T16:08:55+02:00: [NEXT] Execute acceptance checklist and produce summary report
+2025-09-10T16:13:03+02:00: [TASK] Test Phase: Acceptance Checklist
+2025-09-10T16:13:04+02:00: [EVIDENCE] Protocol smoke (sequential unified JSON): stdout=0 stderr=    1000
+2025-09-10T16:13:04+02:00: [EVIDENCE] Protocol smoke (beta unified JSON): stdout=0 stderr=     252
+2025-09-10T16:13:04+02:00: [EVIDENCE] JSON-only operational search resultsFound=3
+2025-09-10T16:13:04+02:00: [EVIDENCE] JSON-only conversation search resultsFound=5
+2025-09-10T16:13:05+02:00: [EVIDENCE] Vector Safe Test ok=true
+2025-09-10T16:13:05+02:00: [EVIDENCE] Vector Safe Test cleanup verified
+2025-09-10T16:13:05+02:00: [EVIDENCE] Beta smoke: stdout=0
+2025-09-10T16:13:41+02:00: [EVIDENCE] Acceptance: Protocol smokes seq(beta) zero stdout; JSON-only searches op= conv=; Vector safe ok= clean=
