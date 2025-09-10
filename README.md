@@ -9,6 +9,25 @@
 
 MCP-OCS is a systematic approach to AI-powered OpenShift cluster diagnostics built on comprehensive architectural documentation. Rather than claiming production readiness, we've focused on creating a solid foundation with 22 Architecture Decision Records covering complete operational scenarios.
 
+## ⚡ Working Branches (Reality Alignment)
+
+- Main: documentation and archives; not the bleeding‑edge runnable code
+- Current code branch: `release/v0.9.0-beta` (aka “beta 9”)
+- Legacy beta: `release/v0.8.0-beta` (historic; do not use)
+
+Quick start on the current beta:
+
+```
+git clone https://github.com/kevin-biot/MCP-ocs.git
+cd MCP-ocs
+git checkout release/v0.9.0-beta
+npm ci
+npm run build     # or: npm run start:beta (live tsx entry)
+npm start         # runs dist/index.js
+```
+
+Sprint management docs live on main; if you’re running sprints, read `sprint-management/README.md` and use the Sprint Kit under `sprint-management/templates/sprint-kit-3.3.x/`.
+
 ## 🎯 **What MCP-ocs Actually Is**
 
 ### **Systematic Architectural Foundation** ✅
@@ -60,6 +79,11 @@ Our development follows the "slow is smooth, smooth is fast" principle. Instead 
 ```
 
 **See**: [`docs/architecture/`](docs/architecture/) for complete architectural documentation
+
+Key starting points:
+- ADR overview: `docs/architecture/ADR-OVERVIEW.md`
+- Architecture index: `docs/architecture/ARCHITECTURE.md`
+- Latest process evolution: `sprint-management/PROCESS-V3.3.2-EVOLUTION-SUMMARY.md`
 
 ### **Feature Epic Implementation Roadmap**
 Our development follows structured feature epics with clear dependencies:
