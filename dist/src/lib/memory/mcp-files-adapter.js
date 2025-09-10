@@ -3,7 +3,7 @@
  *
  * Smart approach: Use the proven working ChromaMemoryManager instead of reimplementing
  */
-import { ChromaMemoryManager } from './mcp-files-memory-extension.js';
+import { ChromaMemoryManager } from './chroma-memory-manager.js';
 /**
  * Wrapper to adapt MCP-files ChromaMemoryManager to our interface
  */

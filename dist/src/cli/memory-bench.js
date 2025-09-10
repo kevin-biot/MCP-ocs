@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-import { ChromaMemoryManager } from '../lib/memory/mcp-files-memory-extension.js';
+import { ChromaMemoryManager } from '../lib/memory/chroma-memory-manager.js';
 import { nowEpoch } from '../utils/time.js';
 function rndWord() {
     const a = 'abcdefghijklmnopqrstuvwxyz';

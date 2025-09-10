@@ -1,4 +1,4 @@
-import { ChromaMemoryManager } from './mcp-files-memory-extension.js';
+import { ChromaMemoryManager } from './chroma-memory-manager.js';
 
 export interface OCSIncidentMemory {
   sessionId: string;

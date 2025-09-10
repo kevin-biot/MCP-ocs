@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { ChromaMemoryManager } from '../src/lib/memory/mcp-files-memory-extension.js';
+import { ChromaMemoryManager } from '../src/lib/memory/chroma-memory-manager.js';
 
 const TEST_COLLECTION = 'mcp-ocs-test-vector-validation';
 
@@ -48,4 +48,3 @@ async function main() {
 }
 
 main().catch(err => { console.error({ subsystem: 'memory', event: 'vector_safe_test_error', message: String(err?.message||err) }); process.exit(1); });
-

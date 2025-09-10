@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { ChromaMemoryManager } from './mcp-files-memory-extension.js';
+import { ChromaMemoryManager } from './chroma-memory-manager.js';
 /**
  * UnifiedMemoryAdapter
  * Facade over ChromaMemoryManager so all code paths share one backend.

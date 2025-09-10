@@ -43,3 +43,5 @@
 2025-09-10T15:33:12+02:00: [TASK] Phase 6: Remove MCP-files dependency (files/refs)
 2025-09-10T15:33:54+02:00: [DECISION] Removing MCP-files directory (unused)
 2025-09-10T15:34:19+02:00: [EVIDENCE] MCP-files dependency removed (package.json dep + shim + dir)
+2025-09-10T15:37:45+02:00: [TASK] Phase 6: Rename to neutral identifiers (chroma-memory-manager)
+2025-09-10T15:41:16+02:00: [EVIDENCE] Renamed to chroma-memory-manager; imports updated

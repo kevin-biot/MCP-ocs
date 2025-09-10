@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-import { ChromaMemoryManager } from '../lib/memory/mcp-files-memory-extension.js';
+import { ChromaMemoryManager } from '../lib/memory/chroma-memory-manager.js';
 
 async function main() {
   const prefix = process.env.CHROMA_COLLECTION_PREFIX || 'mcp-ocs-';
@@ -17,4 +17,3 @@ async function main() {
 }
 
 main().catch(err => { console.error(String(err?.message || err)); process.exit(1); });
-
