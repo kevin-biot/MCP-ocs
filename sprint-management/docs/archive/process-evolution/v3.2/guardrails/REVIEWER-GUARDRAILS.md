@@ -1,4 +1,4 @@
-# REVIEWER Role Guardrails - Process v3.2 Enhanced Framework
+# [LEGACY — v3.2 Archived] REVIEWER Role Guardrails
 
 **Role**: REVIEWER  
 **Framework**: Process v3.2 Enhanced  

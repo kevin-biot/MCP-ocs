@@ -202,3 +202,8 @@
 **Storage Location**: `/sprint-management/WEEKLY-SCRUM-MASTER-PROCESS.md`  
 **Integration**: Standup Process v3, ADR-020, Backlog Management System  
 **Review Cycle**: Process effectiveness evaluated monthly, templates updated quarterly
+# [LEGACY — Archived]
+This weekly scrum master process is archived. The current 3.3.x flow uses the Sprint Kit cockpit and landing checklist:
+
+- Sprint Kit: `sprint-management/templates/sprint-kit-3.3.x/`
+- Landing checklist: `sprint-management/SPRINT-LANDING-CHECKLIST-V3.3-ENHANCED.md`

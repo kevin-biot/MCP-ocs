@@ -211,3 +211,8 @@ OPTIONAL ENHANCEMENT:
 **Status**: Field validated and ready for systematic daily operations
 **Next Action**: Apply enhanced framework to next sprint with validated prevention capabilities
 **Evolution**: Process v3.2 proven effective with time loss prevention integrated for operational excellence
+# [LEGACY — v3.2 Archived]
+This file documents the v3.2 process and is archived for historical reference. See current 3.3.x materials:
+
+- `sprint-management/docs/archive/process-evolution/PROCESS-V3.3-PROBLEM-RESOLUTION.md`
+- `sprint-management/PROCESS-V3.3.2-EVOLUTION-SUMMARY.md`

@@ -1,4 +1,4 @@
-# TESTER Role Guardrails - Process v3.2 Enhanced Framework
+# [LEGACY — v3.2 Archived] TESTER Role Guardrails
 
 **Role**: TESTER  
 **Framework**: Process v3.2 Enhanced  

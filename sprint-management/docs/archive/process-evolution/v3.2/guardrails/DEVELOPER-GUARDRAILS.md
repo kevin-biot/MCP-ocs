@@ -1,4 +1,4 @@
-# DEVELOPER Role Guardrails - Process v3.2 Enhanced Framework
+# [LEGACY — v3.2 Archived] DEVELOPER Role Guardrails
 
 **Role**: DEVELOPER  
 **Framework**: Process v3.2 Enhanced  

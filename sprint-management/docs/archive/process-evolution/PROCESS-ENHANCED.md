@@ -344,3 +344,8 @@ Estimation Accuracy → Time Loss Prevention → Operational Excellence
 **FRAMEWORK STATUS**: Production-ready combination of V3.3 problem-resolution paradigm with V3.2 operational excellence. Validated through field testing with systematic quality engineering approach.
 
 **READY FOR EXECUTION**: Complete problem-resolution framework with aviation model precision, evidence-based closure, and quality intelligence integration.
+# [DEPRECATED — Archived]
+This document is archived and superseded by the 3.3.x problem‑resolution framework.
+
+- Current framework: `sprint-management/docs/archive/process-evolution/PROCESS-V3.3-PROBLEM-RESOLUTION.md`
+- Evolution summary: `sprint-management/PROCESS-V3.3.2-EVOLUTION-SUMMARY.md`

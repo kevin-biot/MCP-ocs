@@ -60,3 +60,8 @@
 **Expected Improvements**: Better time management, configuration issue prevention, strategic decision making
 
 The framework evolution represents a significant maturation from purely execution-focused to include risk awareness, prevention capabilities, and strategic decision-making while maintaining the systematic excellence of the original v3.2 design.
+# [LEGACY — v3.2 Archived]
+This summary reflects the v3.2 framework evolution and is archived. For current process, see:
+
+- `sprint-management/docs/archive/process-evolution/PROCESS-V3.3-PROBLEM-RESOLUTION.md`
+- `sprint-management/PROCESS-V3.3.2-EVOLUTION-SUMMARY.md`

@@ -266,3 +266,5 @@ Process v3.3.1 template system transforms sprint closure from ad-hoc documentati
 **Gold Standard Reference**: D-009 Archive  
 **Next Validation Sprint**: F-010 ADR-023 Epic  
 **Status**: ACTIVE - Ready for immediate application
+# [SUPERSEDED] Template Usage Guide — Process v3.3.1
+This guide is superseded by `sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.2.md`. Kept for historical reference.

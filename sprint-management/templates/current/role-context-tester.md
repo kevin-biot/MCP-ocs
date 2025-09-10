@@ -4,6 +4,9 @@
 **Template Type**: Current/Active - Evidence Validation Framework  
 **Supersedes**: v3.3.0, v3.2.x, v3.1.x (archived to legacy/)
 
+## Guardrails
+See: `sprint-management/templates/current/guardrails/ROLE_GUARDRAILS_V3.3.1.md` (Tester section)
+
 ---
 
 **Date**: YYYY-MM-DD  
