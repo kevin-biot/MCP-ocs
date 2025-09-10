@@ -217,7 +217,7 @@ MCP_LOG_VERBOSE=false           # Logging verbosity control
 ```
 
 **Critical File Locations**:
-- **Protocol Crisis**: `src/lib/memory/mcp-files-memory-extension.ts` (ChromaMemoryManager.log method)
+- **Protocol Crisis**: `src/lib/memory/chroma-memory-manager.ts` (ChromaMemoryManager.log method)
 - **Import Crisis**: `src/lib/memory/shared-memory.ts` (MCPFilesChromaAdapter @/lib import)
 - **Entry Points**: `src/index.ts`, `src/index-sequential.ts`, `src/index.beta.ts`
 - **Memory Chain**: SharedMemoryManager → MCPFilesChromaAdapter → ChromaMemoryManager

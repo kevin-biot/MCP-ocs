@@ -37,10 +37,9 @@ Note: Metrics captured from current repository state and artifacts without execu
 
 ## Current Evidence Snapshots
 - JSON store scale (counts, sizes) captured above.
-- Bench JSON samples present for replay; use to seed Chroma when available via provided reload utility in `mcp-files-memory-extension.ts`.
+- Bench JSON samples present for replay; use to seed Chroma when available via provided reload utility in `chroma-memory-manager.ts`.
 
 ## Variance and Calibration (Process v3.2)
 - Complexity Tier: TIER 3 validated (architecture breadth and integration depth).
 - Calibration: Applied D-002 EPIC-003 0.17x for planning; documentation depth preserved.
 - Token usage: Est. < 10K for Developer documentation steps; within 450K budget.
-

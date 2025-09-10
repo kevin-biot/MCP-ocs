@@ -14,7 +14,7 @@ Status: Developer phase complete; artifacts ready for TESTER.
   - Operational: `memory/<namespace>/operational/*.json`
   - Provides simple similarity via token overlap for fallback search.
 - MCPFilesChromaAdapter: Bridges to the local `ChromaMemoryManager` implementation (REST v2, local embeddings with Xenova or simple hashing fallback). Accepts conversation/operational inputs and serializes metadata for Chroma compatibility.
-- ChromaMemoryManager (local file: `src/lib/memory/mcp-files-memory-extension.ts`):
+- ChromaMemoryManager (local file: `src/lib/memory/chroma-memory-manager.ts`):
   - REST v2 usage with client-side embeddings; ensures collection and can configure server-side embeddings.
   - Embedding: Xenova all-MiniLM-L6-v2 when available; else simple hash fallback. Dimensions 384.
   - JSON backup for every write; reload utility to bulk (re)index JSON into Chroma.
@@ -60,11 +60,10 @@ Status: Developer phase complete; artifacts ready for TESTER.
 ## Evidence (Repo References)
 - `src/lib/memory/shared-memory.ts`
 - `src/lib/memory/mcp-files-adapter.ts`
-- `src/lib/memory/mcp-files-memory-extension.ts`
+- `src/lib/memory/chroma-memory-manager.ts`
 - `src/tools/state-mgmt/index.ts`
 - `memory/` contents for JSON persistence and historical benches
 
 ## Timing and Calibration
 - Phase timestamps captured via CLI echoes and stored in `.process/*_epoch` files.
 - Historical D-002 EPIC-003 0.17x calibration noted; architectural depth retained at TIER 3.
-

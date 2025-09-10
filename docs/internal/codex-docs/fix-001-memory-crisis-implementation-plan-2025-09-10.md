@@ -94,7 +94,7 @@ cp src/index.beta.ts src/index.beta.ts.backup
 
 #### 1. Memory Manager Logging Fix
 ```typescript
-// src/lib/memory/mcp-files-memory-extension.ts
+// src/lib/memory/chroma-memory-manager.ts
 // BEFORE: protocol-unsafe logging
 console.log("✓ initialized");
 console.log("💾 Storing to ChromaDB"); 
@@ -176,7 +176,7 @@ import { ChromaMemoryManager } from './mcp-files-memory-extension';
 
 #### 2. Verify Internal ChromaMemoryManager
 ```typescript
-// Confirm src/lib/memory/mcp-files-memory-extension.ts exists and exports
+// Confirm src/lib/memory/chroma-memory-manager.ts exists and exports
 // ChromaMemoryManager with same interface as external version
 export class ChromaMemoryManager {
   async storeConversation(/* ... */): Promise<void>

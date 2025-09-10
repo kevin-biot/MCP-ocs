@@ -141,7 +141,7 @@ IMMEDIATE ACTIONS:
 ### Protocol Smoke Test
 **PROTOCOL VIOLATION EVIDENCE**:
 
-**Root Cause Confirmed**: ChromaMemoryManager logging patterns in `mcp-files-memory-extension.ts`
+**Root Cause Confirmed**: ChromaMemoryManager logging patterns in `chroma-memory-manager.ts`
 - Uses `console.log()` with emoji output during operations
 - Unicode characters in log output can break MCP JSON protocol
 - Both index.ts and index-sequential.ts inherit this risk via SharedMemoryManager

@@ -24,7 +24,7 @@ dist/src/lib/config/config-manager.js
 dist/src/lib/health/health-check.js
 dist/src/lib/logging/structured-logger.d.ts
 dist/src/lib/logging/structured-logger.js
-dist/src/lib/memory/mcp-files-memory-extension.js
+dist/src/lib/memory/chroma-memory-manager.js
 dist/src/lib/memory/mcp-ocs-memory-adapter.js
 dist/src/lib/openshift-client-enhanced.js
 dist/src/lib/rubrics/expr.js
@@ -49,7 +49,7 @@ src/index-sequential.ts
 src/lib/config/config-manager.ts
 src/lib/health/health-check.ts
 src/lib/logging/structured-logger.ts
-src/lib/memory/mcp-files-memory-extension.ts
+src/lib/memory/chroma-memory-manager.ts
 src/lib/memory/mcp-ocs-memory-adapter.ts
 src/lib/openshift-client-enhanced.ts
 src/lib/rubrics/expr.ts

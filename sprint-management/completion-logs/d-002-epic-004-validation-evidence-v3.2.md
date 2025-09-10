@@ -1,7 +1,7 @@
 # D-002 EPIC-004 — Validation Evidence (Process v3.2)
 
 ## Evidence Index
-- Files inspected: `src/lib/memory/` (shared-memory.ts, mcp-files-adapter.ts, mcp-files-memory-extension.ts, chromadb-client-fixed.ts)
+- Files inspected: `src/lib/memory/` (shared-memory.ts, mcp-files-adapter.ts, chroma-memory-manager.ts, chromadb-client-fixed.ts)
 - Tool registry: `src/tools/state-mgmt/index.ts`
 - Completion logs: developer, testing requirements, performance metrics
 - JSON persistence: `memory/` directory counts and sizes
@@ -28,4 +28,3 @@
   - `src/tools/state-mgmt/index.ts` uses `namespace: 'mcp-memory'` and `namespace: 'mcp-core'` per ADR-004 patterns.
 - Access patterns:
   - Adapter and manager operate within configured memoryDir/namespace; no cross-namespace writes detected in code paths.
-

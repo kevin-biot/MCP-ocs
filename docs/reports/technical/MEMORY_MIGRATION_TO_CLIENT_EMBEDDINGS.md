@@ -273,7 +273,7 @@ npm uninstall chromadb  # Remove incompatible client
 ```
 
 ### **Step 2: Replace Memory Manager**
-- **File to update**: `src/lib/memory/mcp-files-memory-extension.ts`
+- **File to update**: `src/lib/memory/chroma-memory-manager.ts`
 - **Replace**: `ChromaMemoryManager` class
 - **With**: `EnhancedMemoryManager` (using client-side embeddings)
 

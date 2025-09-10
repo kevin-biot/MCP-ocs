@@ -14,19 +14,19 @@ import { DefaultEmbeddingFunction } from '@chroma-core/default-embed';
 
 **REPLACE with:**
 ```typescript
-// Removed chromadb client - using direct REST API calls via mcp-files-memory-extension.ts
+// Removed chromadb client - using direct REST API calls via chroma-memory-manager.ts
 ```
 
 ### **Issue 2: Update Shared Memory to Use New Architecture**
 
-**The shared-memory.ts file needs to delegate to the working mcp-files-memory-extension.ts instead of using ChromaDB client directly.**
+**The shared-memory.ts file needs to delegate to the working chroma-memory-manager.ts instead of using ChromaDB client directly.**
 
 **Key Changes Needed:**
 
-1. **Remove ChromaClient usage** - use ChromaMemoryManager from mcp-files-memory-extension.ts
+1. **Remove ChromaClient usage** - use ChromaMemoryManager from chroma-memory-manager.ts
 2. **Update imports** - remove chromadb and @chroma-core/default-embed
 3. **Use shared memory paths** - point to /Users/kevinbrown/memory/consolidated
-4. **Delegate vector operations** - let mcp-files-memory-extension.ts handle ChromaDB REST calls
+4. **Delegate vector operations** - let chroma-memory-manager.ts handle ChromaDB REST calls
 
 ### **Example Fix:**
 
@@ -82,4 +82,4 @@ npm uninstall chromadb
 - `src/lib/memory/mcp-files-adapter.ts` (path updates)
 - Any other files importing 'chromadb' package
 
-**The working implementation is already in `mcp-files-memory-extension.ts` - just need to use it instead of the broken ChromaDB client approach!**
+**The working implementation is already in `chroma-memory-manager.ts` - just need to use it instead of the broken ChromaDB client approach!**
