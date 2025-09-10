@@ -1,3 +1,13 @@
+# [DEPRECATED] Legacy Backlog Overview
+
+This file is part of the legacy backlog and is retained for historical context only.
+The canonical maintenance backlog overview now lives at:
+
+- `sprint-management/maintenance/backlog/maintenance-backlog-overview.md`
+
+For new work, use the semantic domain locations under
+`sprint-management/maintenance/backlog/` and `sprint-management/features/backlog/`.
+
 # TypeScript Code Review Backlog - MCP-ocs
 
 ## Overview

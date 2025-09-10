@@ -1,0 +1,3 @@
+# Prevent adding files back into legacy backlog directory
+*
+!README.md

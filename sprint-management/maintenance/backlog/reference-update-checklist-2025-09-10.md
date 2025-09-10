@@ -1,0 +1,264 @@
+# Reference Update Checklist — 2025-09-10
+
+Goal: Update all references from legacy backlog paths to canonical semantic locations.
+
+## DOCS
+
+- [ ] Bulk update references in the following files (with counts):
+  - docs/internal/REPORT_SPRINT_AUDIT.md (18)
+
+- All Instances
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:104:- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:12:- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:137:- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:156:- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:164:- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:205:- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:213:- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:222:- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:230:- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:238:- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:246:- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:298:  - [D-001] (fix) `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:336:  - [D-002] (fix) `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:342:  - [D-003] (fix) `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:345:  - [D-004] (fix) `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:61:- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:74:- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - DOCS:docs/internal/REPORT_SPRINT_AUDIT.md:84:- ❌ `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+
+## SPRINT-MGMT
+
+- [ ] Bulk update references in the following files (with counts):
+  - sprint-management/SEMANTIC-DOMAIN-ORGANIZATION-COMPLETE.md (1)
+  - sprint-management/active-tasks/d-009-date-time-safety-execution-prompt.md (1)
+  - sprint-management/archive/legacy-v3.1/daily-standup-automated-legacy.md (1)
+  - sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md (14)
+  - sprint-management/archive/process-evolution/COMMIT_INTEGRATION_UPDATES.sh (2)
+  - sprint-management/archive/process-evolution/INTEGRATION_UPDATE_PATCH.md (1)
+  - sprint-management/archive/v3.1/STANDUP-PROCESS-V3-MEMORY.md (1)
+  - sprint-management/archive/v3.1/templates/CODEX_SYSTEMATIC_TEMPLATE.md (1)
+  - sprint-management/archive/v3.1/templates/DAILY_STANDUP_CHECKLIST.md (1)
+  - sprint-management/completion-logs/d-002-epic-003-developer-completion.md (1)
+  - sprint-management/maintenance/archives/d-002-epic-003-typescript-hardening-undated/sprint-definition.md (1)
+  - sprint-management/maintenance/archives/d-002-typescript-hardening-2025-09-01/sprint-definition.md (1)
+  - sprint-management/maintenance/archives/d-005-d-006-quality-foundation-2025-09-03/generated-prompt-with-calibration-analysis.md (2)
+  - sprint-management/maintenance/archives/d-005-d-006-quality-foundation-undated/generated-prompt-with-calibration-analysis.md (2)
+  - sprint-management/maintenance/archives/d-005-d-006-quality-foundation/generated-prompt-with-calibration-analysis.md (2)
+  - sprint-management/maintenance/archives/d-009-date-time-safety-2025-09-06/d-009-date-time-safety-2025-09-06/original-execution-prompt.md (1)
+  - sprint-management/maintenance/archives/d-009-date-time-safety-2025-09-06/original-execution-prompt.md (1)
+  - sprint-management/maintenance/backlog/content-parity-report-2025-09-10.md (1)
+  - sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md (70)
+  - sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md (74)
+  - sprint-management/maintenance/backlog/stage-2-rollback-plan-2025-09-10.md (1)
+  - sprint-management/templates/archives/2025-09-10/CODEX_SYSTEMATIC_TEMPLATE_V3.2.md (2)
+  - sprint-management/templates/archives/2025-09-10/DAILY_STANDUP_CHECKLIST_V3.2.md (1)
+  - sprint-management/templates/archives/2025-09-10/legacy/CODEX_SYSTEMATIC_TEMPLATE_V3.2.md (2)
+  - sprint-management/templates/archives/2025-09-10/legacy/DAILY_STANDUP_CHECKLIST_V3.2.md (1)
+
+- All Instances
+  - SPRINT-MGMT:sprint-management/SEMANTIC-DOMAIN-ORGANIZATION-COMPLETE.md:84:- Moved D-xxx domains to /maintenance/backlog/domains/
+  - SPRINT-MGMT:sprint-management/active-tasks/d-009-date-time-safety-execution-prompt.md:70:cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/d-009-date-time-safety/README.md
+  - SPRINT-MGMT:sprint-management/archive/legacy-v3.1/daily-standup-automated-legacy.md:16:- Read `sprint-management/backlog/backlog-overview.md` for domain status
+  - SPRINT-MGMT:sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md:78:- `/sprint-management/backlog/backlog-overview.md` - Master 14-domain status tracking
+  - SPRINT-MGMT:sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md:79:- `/sprint-management/backlog/domains/d-001-trust-boundaries/README.md`
+  - SPRINT-MGMT:sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md:80:- `/sprint-management/backlog/domains/d-002-repository-structure/README.md`
+  - SPRINT-MGMT:sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md:81:- `/sprint-management/backlog/domains/d-003-interface-hygiene/README.md`
+  - SPRINT-MGMT:sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md:82:- `/sprint-management/backlog/domains/d-004-api-contract-alignment/README.md`
+  - SPRINT-MGMT:sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md:83:- `/sprint-management/backlog/domains/d-005-async-correctness/README.md`
+  - SPRINT-MGMT:sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md:84:- `/sprint-management/backlog/domains/d-006-error-taxonomy/README.md`
+  - SPRINT-MGMT:sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md:85:- `/sprint-management/backlog/domains/d-007-module-tsconfig-hygiene/README.md`
+  - SPRINT-MGMT:sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md:86:- `/sprint-management/backlog/domains/d-008-dependency-types/README.md`
+  - SPRINT-MGMT:sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md:87:- `/sprint-management/backlog/domains/d-009-date-time-safety/README.md`
+  - SPRINT-MGMT:sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md:88:- `/sprint-management/backlog/domains/d-010-exhaustiveness/README.md`
+  - SPRINT-MGMT:sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md:89:- `/sprint-management/backlog/domains/d-011-observability/README.md`
+  - SPRINT-MGMT:sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md:90:- `/sprint-management/backlog/domains/d-012-testing-strategy/README.md`
+  - SPRINT-MGMT:sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md:91:- `/sprint-management/backlog/domains/d-014-regression-testing/README.md`
+  - SPRINT-MGMT:sprint-management/archive/process-evolution/COMMIT_INTEGRATION_UPDATES.sh:24:- sprint-management/backlog/backlog-overview.md (roadmap context)
+  - SPRINT-MGMT:sprint-management/archive/process-evolution/COMMIT_INTEGRATION_UPDATES.sh:5:git add sprint-management/backlog/backlog-overview.md
+  - SPRINT-MGMT:sprint-management/archive/process-evolution/INTEGRATION_UPDATE_PATCH.md:16:### 2. `sprint-management/backlog/backlog-overview.md`
+  - SPRINT-MGMT:sprint-management/archive/v3.1/STANDUP-PROCESS-V3-MEMORY.md:9:3. **READ BACKLOG STATUS**
+  - SPRINT-MGMT:sprint-management/archive/v3.1/templates/CODEX_SYSTEMATIC_TEMPLATE.md:16:cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/[SELECTED_DOMAIN]/README.md
+  - SPRINT-MGMT:sprint-management/archive/v3.1/templates/DAILY_STANDUP_CHECKLIST.md:17:  - [ ] Quality domain backlog accessible
+  - SPRINT-MGMT:sprint-management/completion-logs/d-002-epic-003-developer-completion.md:45:sprint-management/backlog/domains/d-002-repository-structure/README.md
+  - SPRINT-MGMT:sprint-management/maintenance/archives/d-002-epic-003-typescript-hardening-undated/sprint-definition.md:58:- Update `/sprint-management/backlog/domains/d-002-repository-structure/README.md`
+  - SPRINT-MGMT:sprint-management/maintenance/archives/d-002-typescript-hardening-2025-09-01/sprint-definition.md:58:- Update `/sprint-management/backlog/domains/d-002-repository-structure/README.md`
+  - SPRINT-MGMT:sprint-management/maintenance/archives/d-005-d-006-quality-foundation-2025-09-03/generated-prompt-with-calibration-analysis.md:78:cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/d-005-async-correctness/README.md
+  - SPRINT-MGMT:sprint-management/maintenance/archives/d-005-d-006-quality-foundation-2025-09-03/generated-prompt-with-calibration-analysis.md:79:cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/d-006-error-taxonomy/README.md
+  - SPRINT-MGMT:sprint-management/maintenance/archives/d-005-d-006-quality-foundation-undated/generated-prompt-with-calibration-analysis.md:78:cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/d-005-async-correctness/README.md
+  - SPRINT-MGMT:sprint-management/maintenance/archives/d-005-d-006-quality-foundation-undated/generated-prompt-with-calibration-analysis.md:79:cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/d-006-error-taxonomy/README.md
+  - SPRINT-MGMT:sprint-management/maintenance/archives/d-005-d-006-quality-foundation/generated-prompt-with-calibration-analysis.md:78:cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/d-005-async-correctness/README.md
+  - SPRINT-MGMT:sprint-management/maintenance/archives/d-005-d-006-quality-foundation/generated-prompt-with-calibration-analysis.md:79:cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/d-006-error-taxonomy/README.md
+  - SPRINT-MGMT:sprint-management/maintenance/archives/d-009-date-time-safety-2025-09-06/d-009-date-time-safety-2025-09-06/original-execution-prompt.md:70:cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/d-009-date-time-safety/README.md
+  - SPRINT-MGMT:sprint-management/maintenance/archives/d-009-date-time-safety-2025-09-06/original-execution-prompt.md:70:cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/d-009-date-time-safety/README.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/content-parity-report-2025-09-10.md:3:Compares items under sprint-management/backlog/domains to sprint-management/maintenance/backlog/domains.
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:16:| sprint-management/backlog/domains/d-001-trust-boundaries | dir | sprint-management/maintenance/backlog/domains/d-001-trust-boundaries | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:17:| sprint-management/backlog/domains/d-002-repository-structure | dir | sprint-management/maintenance/backlog/domains/d-002-repository-structure | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:18:| sprint-management/backlog/domains/d-003-interface-hygiene | dir | sprint-management/maintenance/backlog/domains/d-003-interface-hygiene | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:19:| sprint-management/backlog/domains/d-004-api-contract-alignment | dir | sprint-management/maintenance/backlog/domains/d-004-api-contract-alignment | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:20:| sprint-management/backlog/domains/d-005-async-correctness | dir | sprint-management/maintenance/backlog/domains/d-005-async-correctness | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:21:| sprint-management/backlog/domains/d-006-error-taxonomy | dir | sprint-management/maintenance/backlog/domains/d-006-error-taxonomy | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:22:| sprint-management/backlog/domains/d-007-module-tsconfig-hygiene | dir | sprint-management/maintenance/backlog/domains/d-007-module-tsconfig-hygiene | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:23:| sprint-management/backlog/domains/d-008-dependency-types | dir | sprint-management/maintenance/backlog/domains/d-008-dependency-types | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:24:| sprint-management/backlog/domains/d-009-date-time-safety | dir | sprint-management/maintenance/backlog/domains/d-009-date-time-safety | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:25:| sprint-management/backlog/domains/d-010-exhaustiveness | dir | sprint-management/maintenance/backlog/domains/d-010-exhaustiveness | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:26:| sprint-management/backlog/domains/d-011-observability | dir | sprint-management/maintenance/backlog/domains/d-011-observability | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:27:| sprint-management/backlog/domains/d-012-testing-strategy | dir | sprint-management/maintenance/backlog/domains/d-012-testing-strategy | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:28:| sprint-management/backlog/domains/d-013-public-types | dir | sprint-management/maintenance/backlog/domains/d-013-public-types | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:29:| sprint-management/backlog/domains/d-014-regression-testing | dir | sprint-management/maintenance/backlog/domains/d-014-regression-testing | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:30:| sprint-management/backlog/domains/d-015-ci-cd-evolution | dir | sprint-management/maintenance/backlog/domains/d-015-ci-cd-evolution | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:31:| sprint-management/backlog/domains/d-022-date-time-strategic-migration.md | file | sprint-management/maintenance/backlog/domains/d-022-date-time-strategic-migration.md | file |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:32:| sprint-management/backlog/domains/rfr-001-registry-infrastructure | dir | sprint-management/maintenance/backlog/domains/rfr-001-registry-infrastructure | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:33:| sprint-management/backlog/domains/rfr-002-versioning-evolution | dir | sprint-management/maintenance/backlog/domains/rfr-002-versioning-evolution | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:34:| sprint-management/backlog/domains/rfr-003-coverage-expansion | dir | sprint-management/maintenance/backlog/domains/rfr-003-coverage-expansion | dir |  |
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:3:Scope
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:44:- sprint-management/templates/archives/2025-09-10/CODEX_SYSTEMATIC_TEMPLATE_V3.2.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:45:- sprint-management/templates/archives/2025-09-10/CODEX_SYSTEMATIC_TEMPLATE_V3.2.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:46:- sprint-management/maintenance/archives/d-009-date-time-safety-2025-09-06/original-execution-prompt.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:47:- sprint-management/maintenance/archives/d-009-date-time-safety-2025-09-06/d-009-date-time-safety-2025-09-06/original-execution-prompt.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:48:- sprint-management/maintenance/archives/d-005-d-006-quality-foundation-2025-09-03/generated-prompt-with-calibration-analysis.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:49:- sprint-management/maintenance/archives/d-005-d-006-quality-foundation-2025-09-03/generated-prompt-with-calibration-analysis.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:50:- sprint-management/templates/archives/2025-09-10/DAILY_STANDUP_CHECKLIST_V3.2.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:51:- sprint-management/maintenance/archives/d-002-epic-003-typescript-hardening-undated/sprint-definition.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:52:- sprint-management/maintenance/archives/d-005-d-006-quality-foundation-undated/generated-prompt-with-calibration-analysis.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:53:- sprint-management/maintenance/archives/d-005-d-006-quality-foundation-undated/generated-prompt-with-calibration-analysis.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:54:- sprint-management/templates/archives/2025-09-10/legacy/CODEX_SYSTEMATIC_TEMPLATE_V3.2.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:55:- sprint-management/templates/archives/2025-09-10/legacy/CODEX_SYSTEMATIC_TEMPLATE_V3.2.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:56:- sprint-management/templates/archives/2025-09-10/legacy/DAILY_STANDUP_CHECKLIST_V3.2.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:57:- sprint-management/maintenance/archives/d-002-typescript-hardening-2025-09-01/sprint-definition.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:58:- sprint-management/maintenance/archives/d-005-d-006-quality-foundation/generated-prompt-with-calibration-analysis.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:59:- sprint-management/maintenance/archives/d-005-d-006-quality-foundation/generated-prompt-with-calibration-analysis.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:60:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:61:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:62:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:63:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:64:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:65:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:66:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:67:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:68:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:69:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:70:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:71:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:72:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:73:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:74:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:75:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:76:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:77:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:78:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:79:- sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:80:- sprint-management/completion-logs/d-002-epic-003-developer-completion.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:81:- sprint-management/active-tasks/d-009-date-time-safety-execution-prompt.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:82:- sprint-management/archive/v3.1/templates/CODEX_SYSTEMATIC_TEMPLATE.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:83:- sprint-management/archive/v3.1/templates/DAILY_STANDUP_CHECKLIST.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:84:- sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:85:- sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:86:- sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:87:- sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:88:- sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:89:- sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:90:- sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:91:- sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:92:- sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/mapping-index-legacy-to-semantic-2025-09-10.md:93:- sprint-management/archive/orphaned-artifacts/typescript-security-guardrails-memory-aug30.md
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:11:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:129:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:12:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:130:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:131:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:132:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:133:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:134:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:135:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:136:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:137:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:138:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:139:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:13:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:140:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:141:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:143:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:145:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:146:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:147:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:149:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:14:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:151:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:152:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:153:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:154:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:155:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:156:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:157:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:158:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:159:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:15:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:160:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:161:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:162:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:163:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:164:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:165:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:166:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:16:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:17:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:18:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:19:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:20:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:21:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:22:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:23:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:24:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:25:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:26:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:27:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:28:  - DOCS
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:3:Goal
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:57:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:58:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:60:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:61:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:62:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:63:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:64:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:65:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:66:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:67:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:68:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:69:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:70:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:71:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:72:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:73:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:74:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:75:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:76:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:77:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/reference-update-checklist-2025-09-10.md:78:  - SPRINT-MGMT
+  - SPRINT-MGMT:sprint-management/maintenance/backlog/stage-2-rollback-plan-2025-09-10.md:17:- Confirm legacy references resolve again ("sprint-management/backlog/").
+  - SPRINT-MGMT:sprint-management/templates/archives/2025-09-10/CODEX_SYSTEMATIC_TEMPLATE_V3.2.md:51:cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/[DOMAIN_1]/README.md
+  - SPRINT-MGMT:sprint-management/templates/archives/2025-09-10/CODEX_SYSTEMATIC_TEMPLATE_V3.2.md:52:cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/[DOMAIN_2]/README.md
+  - SPRINT-MGMT:sprint-management/templates/archives/2025-09-10/DAILY_STANDUP_CHECKLIST_V3.2.md:30:  - [ ] Quality domain backlog
+  - SPRINT-MGMT:sprint-management/templates/archives/2025-09-10/legacy/CODEX_SYSTEMATIC_TEMPLATE_V3.2.md:51:cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/[DOMAIN_1]/README.md
+  - SPRINT-MGMT:sprint-management/templates/archives/2025-09-10/legacy/CODEX_SYSTEMATIC_TEMPLATE_V3.2.md:52:cat /Users/kevinbrown/MCP-ocs/sprint-management/backlog/domains/[DOMAIN_2]/README.md
+  - SPRINT-MGMT:sprint-management/templates/archives/2025-09-10/legacy/DAILY_STANDUP_CHECKLIST_V3.2.md:30:  - [ ] Quality domain backlog
+
+## CI_OR_SCRIPTS
+
+- None found
+
+## OTHER
+
+- None found
+
+## Update Strategy
+- Archived templates/docs: add a legacy note and preserve links; no rewrite needed unless causing confusion.
+- Living docs/scripts: replace legacy paths with maintenance/features paths and validate.
+
+## Validation
+- Re-run search patterns to ensure zero remaining references:
+  - sprint-management/backlog/
+  - backlog/backlog-overview.md
+  - /backlog/domains
+  - Absolute paths: /Users/.../MCP-ocs/sprint-management/backlog/
