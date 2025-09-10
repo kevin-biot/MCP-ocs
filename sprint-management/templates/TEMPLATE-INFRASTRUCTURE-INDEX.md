@@ -5,18 +5,27 @@
 
 ---
 
-## CURRENT TEMPLATE INFRASTRUCTURE
+## CURRENT TEMPLATE INFRASTRUCTURE (Simplified)
 
 ### Active Templates (current/)
-All templates in `current/` directory are **Process v3.3.1-enhanced** with explicit version headers:
+Use only these for role contexts and daily operations:
 
-**Role Context Templates:**
-- `role-context-developer.md` - Problem-resolution framework with evidence standards
-- `role-context-tester.md` - Evidence validation with completeness scoring  
-- `role-context-reviewer.md` - Resolution verification with landing protocol
+**Role Context Templates (v3.3.1-enhanced):**
+- `role-context-developer.md`
+- `role-context-tester.md`
+- `role-context-reviewer.md`
 
-**Framework Templates:**
-- `SPRINT-LANDING-CHECKLIST-V3.3-ENHANCED.md` - Aviation safety protocol for sprint closure
+**Daily Operations:**
+- `DAILY_STANDUP_CHECKLIST_V3.3.1-ENHANCED.md`
+- `daily-repeatable-task-template-v3.3.2.md`
+
+### Sprint Kit (3.3.x)
+Use this file-only kit to start and run a sprint (Claude-friendly):
+- `sprint-kit-3.3.x/`
+  - CONTROL.md.template, sprint.json.template
+  - ROLE-GUARDRAILS.md
+  - prompts/ (kickoff-claude, kickoff-codex, standup, eod)
+  - artifacts/ placeholders (execution-logs/, completion-reports/, analytical-artifacts/)
 
 ### Template Version Headers (Standardized)
 Every current template includes explicit version tracking:
@@ -29,20 +38,9 @@ Every current template includes explicit version tracking:
 
 ---
 
-## LEGACY TEMPLATE ARCHIVE
+## ARCHIVED TEMPLATES
 
-### Archived Templates (legacy/)
-All superseded templates moved to `legacy/` with deprecation documentation:
-
-**v3.3.0 Templates (archived):**
-- `role-context-developer-v3.3-template.md` - Original problem-resolution paradigm
-- `role-context-tester-v3.3-template.md` - Original evidence validation framework
-- `role-context-reviewer-v3.3-template.md` - Original resolution verification
-
-**v3.2.x and Earlier Templates (archived):**
-- `role-context-developer-template.md` - Task-completion framework
-- `role-context-tester-template.md` - Feature validation framework  
-- `role-context-reviewer-template.md` - Quality assessment framework
+All superseded templates moved under `templates/archives/YYYY-MM-DD/` (history preserved). The old `legacy/` folder has been archived as well.
 
 ---
 

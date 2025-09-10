@@ -1,0 +1,13 @@
+{
+  "active": {
+    "current": [
+      "sprint-management/templates/current/role-context-developer.md",
+      "sprint-management/templates/current/role-context-reviewer.md",
+      "sprint-management/templates/current/role-context-tester.md",
+      "sprint-management/templates/current/DAILY_STANDUP_CHECKLIST_V3.3.1-ENHANCED.md",
+      "sprint-management/templates/current/daily-repeatable-task-template-v3.3.2.md"
+    ],
+    "sprintKit": "sprint-management/templates/sprint-kit-3.3.x/"
+  },
+  "updated": "2025-09-10T20:00:05.818919"
+}
