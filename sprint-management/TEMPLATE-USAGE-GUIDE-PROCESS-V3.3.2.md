@@ -260,6 +260,66 @@ Sprint Day N Standup:
 
 ---
 
+## End-of-Day (EOD) Pilot Checklist (Process v3.3.2)
+
+Daily actions to preserve live sprint context on beta and ensure archives remain canonical on main.
+
+### On beta (release/v0.9.0-beta)
+
+- Sync sprint docs/logs to main:
+
+```bash
+npm run process:sync-docs
+# Syncs sprint-management/active, logs/sprint-execution.log, and updated reports to main
+```
+
+- Refresh archive pointer indices (browse main archives from beta without switching):
+
+```bash
+npm run archives:index:links
+# Regenerates INDEX.LINKS.md with links to main archives
+```
+
+### On main (docs canonical)
+
+- Regenerate local archive indices:
+
+```bash
+npm run archives:index
+```
+
+- Generate consolidated archive registry (optional):
+
+```bash
+node scripts/archives/generate-archive-registry.mjs
+```
+
+---
+
+## Branch Discipline (Archives & Code)
+
+- `main`: documentation + sprint management (canonical home for sprint archives)
+- `release/*` (e.g., `release/v0.9.0-beta`): code + daily active docs; EOD sync to `main`
+
+Guidance:
+- Prefer documentation PRs to `main` for archive closure
+- Add CI guardrails to prevent archive writes on `release/*`
+
+---
+
+## Archive Folder Standard
+
+- Canonical paths by domain:
+  - `sprint-management/features/archives/{sprint-id}-{descriptive-name}-{YYYY-MM-DD}/`
+  - `sprint-management/maintenance/archives/{sprint-id}-{descriptive-name}-{YYYY-MM-DD}/`
+
+- Standard contents inside each sprint archive:
+  - `formal-closure-index.md` (landing)
+  - `completion-reports/` (developer, tester, reviewer)
+  - `execution-logs/` (AI, developer, reviewer, tester)
+  - `analytical-artifacts/` (metrics, ADR impacts, quality assessments)
+
+
 ## Quality Standards and Validation (Enhanced)
 
 ### **Template Completeness Criteria (Process v3.3.2)**
