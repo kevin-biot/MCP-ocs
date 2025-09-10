@@ -69,7 +69,7 @@
     "release:beta": "npm run beta:tools:generate && git add config/beta-tools.json && git commit -m 'chore: sync beta tools JSON' && git tag v0.8.0-beta",
     "archives:index": "node scripts/archives/generate-archives-index.mjs",
     "sprint:validate-closure": "node scripts/sprint/validate-closure.mjs",
-    "sprint:status": "node scripts/sprint/status.mjs"
+    "sprint:status": "node scripts/sprint/generate-feature-status.mjs"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.8",

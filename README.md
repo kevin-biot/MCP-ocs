@@ -86,16 +86,21 @@ Key starting points:
 - Latest process evolution: `sprint-management/PROCESS-V3.3.2-EVOLUTION-SUMMARY.md`
 
 ### **Feature Epic Implementation Roadmap**
+<!-- BEGIN:FEATURE_EPICS -->
 Our development follows structured feature epics with clear dependencies:
 
 - **F-001**: Memory System → **✅ COMPLETE**
-- **F-003**: Template Engine → **✅ COMPLETE** 
+- **F-002**: Production Operator Deployment → **📋 DESIGNED**
+- **F-003**: Template Engine → **✅ COMPLETE**
 - **F-006**: Workflow State Management → **✅ COMPLETE**
 - **F-008**: Modular Tool Architecture → **🚧 IN PROGRESS**
 - **F-009**: Fast RCA Framework → **🚧 IN PROGRESS**
-- **F-002**: Production Operator Deployment → **📋 DESIGNED**
+
+<!-- END:FEATURE_EPICS -->
 
 ## 🔧 **Current Implementation Status**
+
+<!-- BEGIN:CORE_STATUS -->
 
 ### **Core Systems (Production Ready)** ✅
 | Component | Status | Implementation | Quality |
@@ -113,6 +118,8 @@ Our development follows structured feature epics with clear dependencies:
 | Tool Namespace Management (ADR-004) | 🚧 Partial | 60% | Medium |
 | GitOps Integration (ADR-002) | 🚧 Partial | 30% | Medium |
 | RBAC Framework (ADR-009) | 🚧 Partial | 20% | High |
+
+<!-- END:CORE_STATUS -->
 
 ### **Designed but Not Implemented** 📋
 - **Production Operator Architecture (ADR-008)** - 4-6 weeks
