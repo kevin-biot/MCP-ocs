@@ -62,3 +62,10 @@
 2025-09-10T16:13:05+02:00: [EVIDENCE] Vector Safe Test cleanup verified
 2025-09-10T16:13:05+02:00: [EVIDENCE] Beta smoke: stdout=0
 2025-09-10T16:13:41+02:00: [EVIDENCE] Acceptance: Protocol smokes seq(beta) zero stdout; JSON-only searches op= conv=; Vector safe ok= clean=
+2025-09-10T16:18:06+02:00: [TASK] Tagging end-of-day: v0.9.0-beta-20250910-phase5
+2025-09-10T16:18:06+02:00: [EVIDENCE] Created tag v0.9.0-beta-20250910-phase5
+2025-09-10T16:22:01+02:00: [TASK] Ad-hoc unified testing (JSON-only)
+2025-09-10T16:22:02+02:00: [EVIDENCE] Unified adhoc: smoke_ok=1 op=3 conv=5 chroma=false
+2025-09-10T16:47:29+02:00: [TASK] Sprint closure: code review & quality
+2025-09-10T16:47:34+02:00: [EVIDENCE] Lint run captured; see tmp/closure_lint.txt
+2025-09-10T16:47:34+02:00: [EVIDENCE] process.env reads in src: 84 (to be centralized in #33)
