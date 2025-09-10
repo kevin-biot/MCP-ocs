@@ -218,3 +218,19 @@ Runtime failure: @/lib not resolved in compiled JavaScript
 **QUALITY STANDARD**: D-009 parity with systematic AI-human collaboration framework
 
 *[CODEX CLI DEPLOYMENT READY WITH COMPLETE PROCESS v3.3.2 COMPLIANCE]*
+
+---
+
+## PHASE TRANSITION: DEVELOPMENT → TEST
+
+**Decision**: Core development scope (Phases 1–5) complete; transitioning to formal Test Phase.
+
+**Runtime Posture for Tests**:
+- UNIFIED_MEMORY enabled via npm scripts (`start:*:unified*`)
+- Vector path disabled (`MCP_OCS_FORCE_JSON=true`) to ensure JSON-only fallback
+- Collection isolation enforced via `CHROMA_COLLECTION_PREFIX=mcp-ocs-`
+
+**Next Steps**:
+- Execute acceptance checklist (protocol smokes, memory flows, isolated vector safe test, beta checks)
+- Capture [EVIDENCE] entries in `logs/sprint-execution.log`
+- Produce concise summary report for sprint closure
