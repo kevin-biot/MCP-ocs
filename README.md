@@ -314,3 +314,44 @@ Built for OpenShift engineers who value systematic architectural development ove
 **MCP-ocs: Systematic Architecture, Honest Beta Status, Real Value** 
 
 *Ready to contribute to solid architectural foundation? Clone, explore our ADRs, and help build the future of AI-enhanced OpenShift operations.*
+
+
+<!-- BEGIN:TOOLS -->
+
+### Available Tools (Auto-generated)
+
+- Diagnostics:
+  - `oc_analyze_namespace_storage_comprehensive` (beta)
+  - `oc_diagnostic_cluster_health` (production)
+  - `oc_diagnostic_events` (beta)
+  - `oc_diagnostic_infrastructure_correlation` (beta)
+  - `oc_diagnostic_namespace_health` (beta)
+  - `oc_diagnostic_namespace_health_v2` (beta)
+  - `oc_diagnostic_pod_health` (beta)
+  - `oc_diagnostic_rca_checklist` (production)
+  - `oc_diagnostic_resource_usage` (beta)
+  - `oc_diagnostic_zone_analysis` (beta)
+
+- Read Ops:
+  - `oc_read_describe` (production)
+  - `oc_read_get_pods` (production)
+  - `oc_read_logs` (production)
+
+- Memory:
+  - `memory_get_stats` (production)
+  - `memory_search_conversations` (beta)
+  - `memory_search_incidents` (beta)
+  - `memory_search_operational` (production)
+  - `memory_stats` (beta)
+  - `memory_store_operational` (production)
+
+- State:
+  - `core_workflow_state` (beta)
+
+- Other:
+  - `oc_rca_storage_pvc_pending` (beta)
+  - `oc_write_apply` (beta)
+  - `oc_write_restart` (beta)
+  - `oc_write_scale` (beta)
+
+<!-- END:TOOLS -->
