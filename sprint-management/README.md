@@ -1,5 +1,67 @@
 # Sprint Management Framework — Process 3.3.x Usage Guide
 
+## Operator One‑Pager (Daily Memory Refresh)
+
+1) Working Truth vs Archives
+- Work on: `release/v0.9.0-beta`
+- Docs/archives: `main` (receive docs from beta at EOD)
+
+2) Daily Flow (beta)
+- Update status/tools if scope changed:
+  - Edit: `sprint-management/features/status.json`, `sprint-management/features/planned-tools.json`
+  - Generate tables: `npm run sprint:status` and `npm run sprint:tools`
+- EOD export (one shot): `npm run process:sync-docs`
+- Push beta: `git push origin release/v0.9.0-beta`
+- Manually update main: open a docs‑only PR from beta → main (your call)
+
+3) Sprint Close (3.3.2 standard = 20 artifacts)
+- Prepare archive dir under features/archives or maintenance/archives
+- Validate presence: `npm run sprint:validate-closure -- <archive-dir>`
+- Open PR to main: `docs(archives): <sprint-id> closure + daily sync`
+
+4) Quick Commands
+- Status tables → `npm run sprint:status`
+- Tool inventory → `npm run sprint:tools`
+- Indices/registry → `npm run archives:index`
+- All EOD docs → `npm run process:sync-docs`
+- Closure gate → `npm run sprint:validate-closure -- <archive-dir>`
+
+5) Version Standards (clarity)
+- v3.3.2: 20‑artifact closure is current (preferred)
+- v3.3.1: 11‑artifact minimum is legacy; upgrade when possible
+- See: `sprint-management/docs/VERSION-STANDARDS.md`
+
+6) Kick off Claude (AI Scrum Master)
+- Goal: start standup/kickoff with current context and files
+- Copy/paste this into Claude (adjust sprint id as needed):
+
+```
+You are the AI Scrum Master for Process v3.3.2. Help run a problem‑resolution sprint today.
+
+Working branch: release/v0.9.0-beta
+Repository root: /Users/kevinbrown/MCP-ocs
+
+Read these for process context:
+- sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.2.md
+- sprint-management/templates/current/role-context-developer.md
+- sprint-management/templates/current/role-context-tester.md
+- sprint-management/templates/current/role-context-reviewer.md
+
+Read current status sources and summarize plan of day:
+- sprint-management/features/status.json
+- sprint-management/features/planned-tools.json
+
+Constraints:
+- Keep changes on release/v0.9.0-beta; docs go to main via my manual PR at EOD
+- Use npm scripts for status/tools generation when proposing EOD actions
+
+Tasks now:
+1) Propose today’s sprint focus from status.json
+2) List the 2–3 highest‑value tools/workflows to exercise
+3) Confirm the minimal artifacts we’ll produce today toward 20‑artifact closure
+```
+
+
 ## Overview
 Process 3.3.x runs file‑only sprints with Claude (AI Scrum Master) and Codex (coder). Beta is the live work branch; main is canonical for archives. The Sprint Kit provides a cockpit (CONTROL.md, sprint.json, prompts) so you never lose context.
 
