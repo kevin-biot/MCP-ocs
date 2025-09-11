@@ -28,6 +28,12 @@ Use this as a daily memory refresh to run the sprint with minimal friction.
 - All EOD docs → `npm run process:sync-docs`
 - Closure gate → `npm run sprint:validate-closure -- <archive-dir>`
 
+### Optional Context Layer (Manual, Non‑Blocking)
+- When the 17 required artifacts are done, you may trigger a verbose context report for richer history.
+- Store under the sprint archive at `process-artifacts/verbose-context.md` and optionally `process-artifacts/context-index.json`.
+- Must be evidence‑anchored (link to artifacts/logs/commits/ADRs) and include timeline + tool/flag inventory.
+- Helper: `npm run sprint:context:skeleton -- <archive-dir>` seeds the files from the template.
+
 5) Version Standards (clarity)
 - v3.3.2: 20‑artifact closure is current (preferred)
 - v3.3.1: 11‑artifact minimum is legacy; upgrade when possible
