@@ -1,5 +1,58 @@
 # Sprint Management Framework - Usage Guide
 
+## Operator Quickstart (Copy/Paste)
+
+1) Start Sprint (Claude kickoff)
+```
+You are the AI Scrum Master for Process v3.3.2. Help run a problem‑resolution sprint today.
+
+Working branch: release/v0.9.0-beta
+Repository root: /Users/kevinbrown/MCP-ocs
+
+Read:
+- sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.2.md
+- sprint-management/templates/current/role-context-*.md
+- sprint-management/features/status.json and planned-tools.json
+
+Constraints:
+- Keep changes on beta; docs go to main via my manual PR at EOD
+- Use npm scripts for status/tools generation when proposing EOD actions
+
+Tasks now:
+1) Propose today’s sprint focus from status.json
+2) List the 2–3 highest‑value tools/workflows to exercise
+3) Confirm minimal artifacts we’ll produce toward 20‑artifact closure
+```
+
+2) Close Sprint (deterministic, v3.3.2)
+- Prepare archive dir under features/archives or maintenance/archives
+- Validate: `npm run sprint:validate-closure -- <archive-dir>`
+- Refresh indices: `npm run archives:index`
+- EOD export (one shot): `npm run process:sync-docs`
+- Open docs‑only PR (beta → main): title `docs(archives): <sprint-id> closure + daily sync`
+
+3) Optional Enrichment (v3.3.3 pilot)
+- Timebox 45–90 min total; edits inside ENRICHMENT zones only
+- Targets: 09‑outstanding‑work‑analysis.md, sprint‑retrospective.md (Context Abstract), 07‑key‑decisions‑log.md
+Claude prompt:
+```
+You are the AI Scrum Master (Selective Enrichment Pilot, v3.3.3 add‑on).
+Use vector memory first to gather context: search sprint memory/logs for relevant evidence before edits.
+
+Edit only within ENRICHMENT zones:
+- sprint‑retrospective.md → Add/enhance Context Abstract (≤10 bullets), with ≥1 evidence anchor.
+- analytical‑artifacts/07‑key‑decisions‑log.md → Add/enhance Why/Impact pairs, with ≥1 evidence anchor.
+- analytical‑artifacts/09‑outstanding‑work‑analysis.md → If needed, refine work packages (test paths/metrics schema), with ≥1 evidence anchor.
+
+Rules:
+- Edit only between <!-- ENRICHMENT: begin/end -->; do not change baseline outside zones.
+- Append: “Section updated by Claude (AI Scrum Master) based on baseline Codex findings and deterministic artifacts”.
+- Timebox: 45–90 minutes total; keep concise and evidence‑anchored.
+
+Write/update summary:
+- process‑artifacts/enrichment‑summary‑YYYY‑MM‑DD.md with: targets edited, anchors used, elapsed time (est), zone‑only confirmation.
+```
+
 ## Operator One‑Pager (Process 3.3.x)
 
 Use this as a daily memory refresh to run the sprint with minimal friction.
