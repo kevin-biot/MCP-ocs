@@ -1,0 +1,23 @@
+{
+  "sprintId": "FIX-001-memory-system-emergency-consolidation",
+  "start": "2025-09-10T15:14:58+02:00",
+  "end": "2025-09-10T21:05:03+02:00",
+  "keyDecisions": [
+    "Unify memory backend via UnifiedMemoryAdapter",
+    "Enforce isolation prefix CHROMA_COLLECTION_PREFIX",
+    "Enable JSON-only fallback via MCP_OCS_FORCE_JSON",
+    "Adopt stderr-only logging and zero-stdout protocol safety",
+    "Remove legacy MCP-files dependency, neutral naming (ChromaAdapter)"
+  ],
+  "adrImpacts": ["ADR-003", "ADR-014", "ADR-006", "ADR-010", "ADR-024"],
+  "risks": [
+    "Memory backend switch risk (data consistency)",
+    "ChromaDB availability/performance dependency",
+    "Feature flag configuration drift"
+  ],
+  "followUps": [
+    "Expand Vector Safe Test coverage",
+    "Automate structured metrics for memory ops",
+    "Verify unified adapter in mixed vector+JSON modes"
+  ]
+}
