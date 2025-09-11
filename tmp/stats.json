@@ -1,0 +1,22 @@
+{
+  "totalConversations": 899,
+  "totalOperational": 392,
+  "chromaAvailable": true,
+  "storageUsed": "1.04 MB",
+  "lastCleanup": null,
+  "namespace": "default",
+  "detailed": true,
+  "timestamp": "2025-09-11T18:53:13.199Z",
+  "details": {
+    "memoryBreakdown": {
+      "conversationMemory": "899 entries",
+      "operationalMemory": "392 incidents",
+      "storageBackend": "ChromaDB + JSON (tenant=mcp-ocs, db=prod, collections=mcp-ocs-conversations, mcp-ocs-operational, mcp-ocs-tool_exec)"
+    },
+    "systemHealth": {
+      "chromaStatus": "available",
+      "storageLocation": "default",
+      "lastCleanup": null
+    }
+  }
+}
