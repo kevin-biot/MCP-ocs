@@ -9,28 +9,42 @@ if (!dir) {
   process.exit(1);
 }
 
-const required = [
+// Process v3.3.2 required artifacts (17 total)
+const requiredTop = [
   'formal-closure-index.md',
+  'prompt-archive.md',
   'session-report-codex.md',
   'scrum-master-assessment.md',
-  'sprint-retrospective.md',
-  'prompt-archive.md',
-  'reviewer-role-closure-prompt.md',
-  'completion-developer-handoff.md',
-  'completion-final-closure.md',
-  'completion-tester-verification.md',
-  'execution-log-developer.md',
-  'execution-log-reviewer.md',
-  'execution-log-tester.md',
-  '04-quality-assessment-report.md',
-  '05-adr-impact-analysis.md',
-  '06-memory-extract-report.md',
-  '07-key-decisions-log.md',
-  '08-technical-metrics-data.json'
+  'sprint-retrospective.md'
+];
+const requiredExec = [
+  'execution-logs/execution-log-developer.md',
+  'execution-logs/execution-log-codex.md',
+  'execution-logs/execution-log-tester.md',
+  'execution-logs/execution-log-reviewer.md'
+];
+const requiredCompletion = [
+  'completion-reports/completion-developer-handoff.md',
+  'completion-reports/completion-tester-verification.md',
+  'completion-reports/completion-final-closure.md'
+];
+const requiredAnalytical = [
+  'analytical-artifacts/04-quality-assessment-report.md',
+  'analytical-artifacts/05-adr-impact-analysis.md',
+  'analytical-artifacts/06-memory-extract-report.md',
+  'analytical-artifacts/07-key-decisions-log.md',
+  'analytical-artifacts/08-technical-metrics-data.json',
+  'analytical-artifacts/09-outstanding-work-analysis.md'
+];
+const required = [
+  ...requiredTop,
+  ...requiredExec,
+  ...requiredCompletion,
+  ...requiredAnalytical
 ];
 
 const optional = [
-  'execution-tester-verification-backup.md'
+  'execution-logs/execution-tester-verification-backup.md'
 ];
 
 function exists(p) { return fs.existsSync(path.join(dir, p)); }
@@ -48,4 +62,3 @@ if (missingOptional.length) {
   console.warn('[WARN] Optional artifacts missing:', missingOptional);
 }
 process.exit(0);
-
