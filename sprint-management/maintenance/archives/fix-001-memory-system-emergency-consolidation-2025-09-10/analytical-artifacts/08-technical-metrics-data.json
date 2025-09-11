@@ -1,0 +1,13 @@
+{
+  "vectorSafeTest": {
+    "date": "2025-09-10",
+    "ok": true,
+    "elapsedMs": [110, 84],
+    "source": "logs/sprint-execution.log"
+  },
+  "fallback": {
+    "jsonOnly": true,
+    "flag": "MCP_OCS_FORCE_JSON"
+  }
+}
+
