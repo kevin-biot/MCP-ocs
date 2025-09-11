@@ -285,6 +285,16 @@ Decision Point 1: Middleware-first sequencing
   - Env: UNIFIED_MEMORY=true; CHROMA_COLLECTION=ocs_memory_v2; ENABLE_PRESEARCH=true
   - Evidence: metrics entries contain presearch anchors and flags snapshot
 
+---
+
+## Phase 3 Closure Summary
+
+- Bounded pre-search enrichment active for allowlisted tools.
+- Performance within bounds: sample anchors show presearch ms in ~250–320ms.
+- No protocol leakage; zero-stdout preserved; fallback paths intact.
+- Unified and separate collection strategies validated with pilots.
+- Ready for broader allowlist expansion in future sprints.
+
 ### Mid-Flight Safety Correction Applied
 **Issue**: Missing MCP protocol safety constraints in original kickoff
 **Actions Taken**:
