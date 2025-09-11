@@ -12,7 +12,7 @@ process.env.CHROMA_PORT = process.env.CHROMA_PORT || '8000';
 process.env.CHROMA_TENANT = process.env.CHROMA_TENANT || 'mcp-ocs';
 process.env.CHROMA_DATABASE = process.env.CHROMA_DATABASE || 'prod';
 process.env.CHROMA_COLLECTION = process.env.CHROMA_COLLECTION || 'ocs_memory_v2';
-process.env.INSTRUMENT_ALLOWLIST = process.env.INSTRUMENT_ALLOWLIST || 'oc_read_get_pods,oc_diagnostic_cluster_health';
+process.env.INSTRUMENT_ALLOWLIST = process.env.INSTRUMENT_ALLOWLIST || 'oc_read_get_pods,oc_diagnostic_cluster_health,oc_diagnostic_namespace_health,oc_diagnostic_rca_checklist';
 process.env.ENABLE_INSTRUMENTATION = 'true';
 process.env.ENABLE_VECTOR_WRITES = 'true';
 process.env.STRICT_STDIO_LOGS = 'true';
@@ -41,6 +41,15 @@ const session = `unified-${Date.now()}`;
 // Writes (instrumented)
 try { await registry.executeTool('oc_read_get_pods', { sessionId: session, namespace: 'openshift-ingress' }); } catch {}
 try { await registry.executeTool('oc_diagnostic_cluster_health', { sessionId: session, bounded: true }); } catch {}
+try { await registry.executeTool('oc_diagnostic_namespace_health', { sessionId: session, namespace: 'openshift-ingress', includeIngressTest: false }); } catch {}
+try { await registry.executeTool('oc_diagnostic_rca_checklist', { sessionId: session, outputFormat: 'json', includeDeepAnalysis: false, maxCheckTime: 20000 }); } catch {}
+
+// Students namespaces batch
+const studentNamespaces = ['student01','student02','student03','student04'];
+for (const ns of studentNamespaces) {
+  try { await registry.executeTool('oc_read_get_pods', { sessionId: session, namespace: ns }); } catch {}
+  try { await registry.executeTool('oc_diagnostic_namespace_health', { sessionId: session, namespace: ns, includeIngressTest: false }); } catch {}
+}
 
 // Searches
 const opSearch = await registry.executeTool('memory_search_operational', { sessionId: session, query: 'ingress or router or pods', limit: 5 });
@@ -58,4 +67,3 @@ const out = {
 
 // Print a single JSON object to stdout per process discipline
 process.stdout.write(JSON.stringify(out, null, 2));
-
