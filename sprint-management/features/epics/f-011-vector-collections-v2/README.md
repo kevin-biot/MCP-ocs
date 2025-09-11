@@ -51,6 +51,7 @@ Build on the MCP-OCS foundation refactor (post FIX-001 resolution) to introduce 
 - UnifiedMemoryAdapter.initialize(): Eager collection ensuring for `conversations/operational/tool_exec` to eliminate first-write races.
 - Health Check CLI: `memory:collections:audit` to verify tenant/database/collections health before runs.
 - Collection Strategy Decision: finalize separate vs unified collections based on pilot metrics and operational needs.
+ - Collection Strategy Toggle: Use `CHROMA_COLLECTION` for unified mode; otherwise `CHROMA_COLLECTION_PREFIX` for separate per-kind collections.
 
 ### Phase 3: Validation + Documentation (30-60min)
 **Core Deliverables**:

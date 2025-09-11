@@ -54,6 +54,8 @@ export class UnifiedMemoryAdapter {
   private convCollection: string;
   private opCollection: string;
   private toolExecCollection: string;
+  private strategyUnified = false;
+  private unifiedCollection: string | null = null;
 
   constructor(config: MemoryConfig) {
     this.memoryDir = config.memoryDir;
@@ -62,10 +64,19 @@ export class UnifiedMemoryAdapter {
       if (config.chromaHost) process.env.CHROMA_HOST = String(config.chromaHost);
       if (typeof config.chromaPort === 'number') process.env.CHROMA_PORT = String(config.chromaPort);
     } catch {}
+    const unified = process.env.CHROMA_COLLECTION ? String(process.env.CHROMA_COLLECTION) : '';
     const prefix = process.env.CHROMA_COLLECTION_PREFIX || 'mcp-ocs-';
-    this.convCollection = `${prefix}conversations`;
-    this.opCollection = `${prefix}operational`;
-    this.toolExecCollection = `${prefix}tool_exec`;
+    this.strategyUnified = !!unified;
+    if (this.strategyUnified) {
+      this.unifiedCollection = unified;
+      this.convCollection = unified;
+      this.opCollection = unified;
+      this.toolExecCollection = unified;
+    } else {
+      this.convCollection = `${prefix}conversations`;
+      this.opCollection = `${prefix}operational`;
+      this.toolExecCollection = `${prefix}tool_exec`;
+    }
     this.chroma = new ChromaMemoryManager(config.memoryDir);
   }
 
@@ -77,9 +88,13 @@ export class UnifiedMemoryAdapter {
       this.available = !!av;
       // Phase 2: eagerly ensure collections exist to avoid first-write races
       if (this.available) {
-        try { await this.chroma.createCollection(this.convCollection); } catch {}
-        try { await this.chroma.createCollection(this.opCollection); } catch {}
-        try { await this.chroma.createCollection(this.toolExecCollection); } catch {}
+        if (this.strategyUnified && this.unifiedCollection) {
+          try { await this.chroma.createCollection(this.unifiedCollection); } catch {}
+        } else {
+          try { await this.chroma.createCollection(this.convCollection); } catch {}
+          try { await this.chroma.createCollection(this.opCollection); } catch {}
+          try { await this.chroma.createCollection(this.toolExecCollection); } catch {}
+        }
       }
     } catch { this.available = false; }
   }
@@ -134,7 +149,7 @@ export class UnifiedMemoryAdapter {
         `severity:${severity}`,
         'tool_execution'
       ]
-    }, this.convCollection);
+    }, this.toolExecCollection);
   }
 
   async searchRelevantMemories(query: string, options: SearchOptions = {}): Promise<MemoryResult[]> {

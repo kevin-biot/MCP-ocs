@@ -52,6 +52,8 @@ export declare class UnifiedMemoryAdapter {
     private convCollection;
     private opCollection;
     private toolExecCollection;
+    private strategyUnified;
+    private unifiedCollection;
     constructor(config: MemoryConfig);
     initialize(): Promise<void>;
     isAvailable(): boolean;

@@ -133,19 +133,21 @@ Phase Strategy for Collections
 Defaults (configurable)
 - `CHROMA_TENANT=mcp-ocs`
 - `CHROMA_DATABASE=prod`
-- Phase 1 unified collection name logical target: `ocs_memory_v2`
-  - Current code uses `CHROMA_COLLECTION_PREFIX` (default `mcp-ocs-`) and maps to logical collections:
+- Strategy toggle (Phase 2 ready):
+  - Separate collections (default): `CHROMA_COLLECTION_PREFIX=mcp-ocs-`
     - conversations → `${prefix}conversations`
     - operational → `${prefix}operational`
-  - For Phase 1, we keep existing mapping but ensure tags carry `kind:` and schema v2 fields.
-  - In Phase 2, we add an explicit `tool_exec` mapping and/or switchable unified collection via env (`CHROMA_COLLECTION`).
+    - tool_exec → `${prefix}tool_exec`
+  - Unified collection: set `CHROMA_COLLECTION=<name>` to store/search all kinds in a single collection (tags carry `kind:`)
 
 Isolation Rules
 - No mixing with MCP‑files by default; vector paths are tenant/database isolated.
-- Readers are tolerant of v1/v2; writers enforce v2 tags and redaction.
+- Separate strategy keeps `mcp-ocs-` prefix guard; audit CLI checks for unprefixed collections.
+- Unified strategy uses a single `CHROMA_COLLECTION` with strict `kind:` tagging.
 
 Stats & Visibility
-- `memory_get_stats?detailed=true` to return totals by kind/collection and current tenant/database/collection identifiers.
+- `memory_get_stats?detailed=true` returns totals and includes tenant/database/collections identifiers.
+- `memory:collections:audit` CLI reports strategy, expected/present/missing and isolation status.
 
 ---
 
@@ -283,4 +285,3 @@ References
 - Epic: f-011 Vector Collections v2 (this directory)
 - Readiness report: docs/reports/technical/mcp-ocs-memory-system-consolidation-report-2025-09-10.md
 - Enrichment pilot design: docs/reports/technical/memory-enrichment-pilot-design-2025-09-10.md
-
