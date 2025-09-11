@@ -249,6 +249,15 @@ Decision Point 1: Middleware-first sequencing
   - Vector path intentionally disabled to avoid Chroma dependency during pilot; JSON metrics validated
   - Middleware overhead within bounds; error paths non-fatal; zero-stdout preserved
 
+---
+
+## Phase 1 Closure Summary
+
+- Dual-write capability validated end-to-end (JSON + vector) with safety constraints.
+- Preflight (chroma-ensure) provides immediate production viability; collection init moved to Phase 2.
+- Evidence captured in analytical-artifacts/08-technical-metrics-data.json for multiple namespaces.
+- Handoff: Add eager collection ensure + collections audit CLI to Phase 2 epic scope.
+
 ### Mid-Flight Safety Correction Applied
 **Issue**: Missing MCP protocol safety constraints in original kickoff
 **Actions Taken**:

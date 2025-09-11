@@ -33,11 +33,12 @@ const read = new ReadOpsTools(oc, sharedMemory);
 registry.registerSuite(diag);
 registry.registerSuite(read);
 
-// Pilot executions
+// Pilot executions (expanded namespaces)
 const session = `pilot-${Date.now()}`;
-try { await registry.executeTool('oc_read_get_pods', { sessionId: session, namespace: 'default' }); } catch {}
-try { await registry.executeTool('oc_read_get_pods', { sessionId: session, namespace: 'kube-system' }); } catch {}
+const namespaces = ['default','kube-system','openshift-ingress','openshift-monitoring','student01'];
+for (const ns of namespaces) {
+  try { await registry.executeTool('oc_read_get_pods', { sessionId: session, namespace: ns }); } catch {}
+}
 try { await registry.executeTool('oc_diagnostic_cluster_health', { sessionId: session, bounded: true }); } catch {}
 
 // No stdout output; metrics file can be inspected separately
-

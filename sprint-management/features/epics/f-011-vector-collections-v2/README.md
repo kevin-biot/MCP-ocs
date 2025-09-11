@@ -47,6 +47,11 @@ Build on the MCP-OCS foundation refactor (post FIX-001 resolution) to introduce 
 - Diagnostic read-ops evidence capture with dedup hash
 - Expand pilot coverage
 
+**Enhancements (added from Phase 1 evidence):**
+- UnifiedMemoryAdapter.initialize(): Eager collection ensuring for `conversations/operational/tool_exec` to eliminate first-write races.
+- Health Check CLI: `memory:collections:audit` to verify tenant/database/collections health before runs.
+- Collection Strategy Decision: finalize separate vs unified collections based on pilot metrics and operational needs.
+
 ### Phase 3: Validation + Documentation (30-60min)
 **Core Deliverables**:
 - Integration testing across pilot tools
