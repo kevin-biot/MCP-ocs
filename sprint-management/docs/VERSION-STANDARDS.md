@@ -12,3 +12,8 @@ Notes
   - `npm run sprint:status` (feature epics + status)
   - `npm run sprint:tools` (tool inventory; planned + validated)
 - Validation (optional gate): `npm run sprint:validate-closure -- <archive-dir>`
+
+Optional Context Layer (Addendum)
+- Non-blocking, human-triggered narrative report for richer history.
+- Location: `process-artifacts/verbose-context.md` (+ optional `process-artifacts/context-index.json`).
+- Must remain evidence-anchored (link to artifacts, logs, commits, ADRs) and include a short abstract and deterministic anchors (timeline, tool/flag inventory).

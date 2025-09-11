@@ -222,3 +222,7 @@ Process v3.3.2 includes systematic documentation of:
 **EVOLUTION COMPLETE**: v3.3.1 + CODEX documentation gap closure  
 **ORGANIZATIONAL ADVANCEMENT**: Systematic AI executor methodology established  
 **QUALITY MAINTAINED**: D-009 parity standard preserved with enhanced AI integration
+### Optional Context Layer (Manual, Non-Blocking)
+- After the required artifacts are complete, a human may trigger an evidence-anchored verbose context report for richer historical memory.
+- Store as `process-artifacts/verbose-context.md` and optionally `process-artifacts/context-index.json` (sprintId, start/end, key decisions, ADR impacts, risks, follow-ups).
+- This addendum must not replace or delay the 17 required artifacts.
