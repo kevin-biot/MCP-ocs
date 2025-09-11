@@ -8,6 +8,8 @@ import { ToolMaturity } from '../../types/tool-maturity.js';
 import { VALIDATED_TOOLS } from '../../registry/validated-tools.js';
 import { ValidationError, NotFoundError, ToolExecutionError, serializeError } from '../errors/index.js';
 import { withTimeout } from '../../utils/async-timeout.js';
+import { nowIso } from '../../utils/time.js';
+import { preInstrument, postInstrument, postInstrumentError } from './instrumentation-middleware.js';
 /**
  * Unified Tool Registry
  *
@@ -113,6 +115,8 @@ export class UnifiedToolRegistry {
             throw new NotFoundError(`Tool not found: ${name}`, { details: { requested: name, availableTools } });
         }
         console.error(`⚡ Executing ${tool.category}-${tool.version} tool: ${name}`);
+        // Instrumentation pre-hook (best effort, non-fatal)
+        const preCtx = envEnable('ENABLE_INSTRUMENTATION', true) ? preInstrument(tool.fullName, tool.category, args) : null;
         try {
             const timeoutMs = Number((args?.timeoutMs ?? process.env.TOOL_TIMEOUT_MS) || 0) || 0;
             const result = await withTimeout(async () => tool.execute(args), timeoutMs, `tool:${name}`);
@@ -120,16 +124,26 @@ export class UnifiedToolRegistry {
             if (typeof result !== 'string') {
                 throw new ToolExecutionError(`Tool ${name} returned non-string result. Tools must return JSON strings.`);
             }
+            // Instrumentation post-hook (non-blocking best effort)
+            try {
+                await postInstrument(preCtx, result);
+            }
+            catch { }
             return result;
         }
         catch (error) {
             console.error(`❌ Tool execution failed for ${name}:`, error);
             const err = error instanceof ToolExecutionError ? error : new ToolExecutionError(`Execution failed for ${name}`, { cause: error });
+            // Instrumentation error post-hook (non-fatal)
+            try {
+                await postInstrumentError(preCtx, error);
+            }
+            catch { }
             const payload = {
                 success: false,
                 tool: name,
                 error: serializeError(err),
-                timestamp: new Date().toISOString(),
+                timestamp: nowIso(),
             };
             return JSON.stringify(payload, null, 2);
         }
@@ -224,4 +238,12 @@ export function getGlobalToolRegistry() {
  */
 export function resetGlobalToolRegistry() {
     globalRegistry = null;
+}
+function envEnable(name, defaultOn = true) {
+    const v = String(process.env[name] || '').toLowerCase();
+    if (v === 'false' || v === '0' || v === 'off' || v === 'no')
+        return false;
+    if (v === 'true' || v === '1' || v === 'on' || v === 'yes')
+        return true;
+    return defaultOn;
 }

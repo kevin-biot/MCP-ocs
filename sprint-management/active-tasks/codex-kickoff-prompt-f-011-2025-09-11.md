@@ -1,0 +1,151 @@
+# CODEX Kickoff Prompt - f-011-vector-collections-v2
+
+```
+You are the AI Primary Executor (CODEX role) for Process v3.3.2 sprint execution.
+
+**SPRINT**: f-011-vector-collections-v2  
+**DATE**: 2025-09-11  
+**WORKING BRANCH**: release/v0.9.0-beta  
+**REPOSITORY**: /Users/kevinbrown/MCP-ocs  
+**PROCESS**: v3.3.2 (17 artifacts, AI-executor documentation)  
+
+## PROCESS v3.3.2 CONTEXT (Read First)
+
+**Process Framework**: `/sprint-management/TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.2.md`
+
+**Role Context** (CODEX = Primary Executor):
+- `/sprint-management/templates/current/role-context-developer.md`
+- `/sprint-management/templates/current/role-context-tester.md`  
+- `/sprint-management/templates/current/role-context-reviewer.md`
+
+**Guardrails**:
+- `/sprint-management/DEVELOPER-GUARDRAILS.md`
+- `/sprint-management/TESTER-GUARDRAILS.md`
+- `/sprint-management/REVIEWER-GUARDRAILS.md`
+
+## DESIGN AUTHORITY (Read After Process Context)
+
+**Epic Bundle**: `/sprint-management/features/epics/f-011-vector-collections-v2/`
+- README.md: Complete epic specification with 3-phase structure
+- technical-design.md: Comprehensive technical architecture and implementation plan
+
+**Current Task Status**: `/sprint-management/active-tasks/task-status-f-011-2025-09-11.md`
+
+**Infrastructure Ready**: 
+- `/analytical-artifacts/08-technical-metrics-data.json` (initialized, Process v3.3.2 Artifact #15)
+- Vector memory contains complete design session context (session: f-011-vector-collections-v2)
+
+## PHASE 1 OBJECTIVES (2-2.5 hours)
+
+### PRIMARY TASKS:
+1. **Instrumentation Middleware**: `src/lib/tools/instrumentation-middleware.ts`
+   - Pre/post hooks around tool execution
+   - Evidence anchors collection (logs, artifacts 04-09)
+   - Safety: input redaction, zero-stdout discipline
+
+2. **JSON Metrics Writer**: `src/lib/tools/metrics-writer.ts`  
+   - Schema v2 append to `analytical-artifacts/08-technical-metrics-data.json`
+   - Atomic writes, error handling
+
+3. **Vector Writer Integration**: `src/lib/tools/vector-writer.ts`
+   - ChromaDB integration via UnifiedMemoryAdapter
+   - Schema v2 tags: `kind:tool_exec`, required metadata
+
+4. **Tool Gateway Integration**: 
+   - Hook `UnifiedToolRegistry.executeTool()` with middleware
+   - Dual-write capability (JSON + vector)
+
+5. **Pilot Tool Implementation**:
+   - Allowlist: `oc_read_pods`, `oc_read_nodes`, `cluster_health`
+   - Evidence capture and redaction
+
+## TECHNICAL CONSTRAINTS
+
+**Safety Requirements**:
+- Preserve zero-stdout discipline (logs to stderr only)
+- Input redaction (no PII in stored metadata)
+- Performance bounds: <400ms overhead, ≤1.5KB summaries
+- Fallback: JSON-only if vector operations fail
+
+**Integration Points** (from technical-design.md):
+- `src/lib/tools/tool-registry.ts` → `UnifiedToolRegistry.executeTool()`
+- `src/lib/memory/unified-memory-adapter.ts` → vector writes
+- `src/lib/memory/chroma-memory-manager.ts` → ChromaDB client
+- `src/lib/config/feature-flags.ts` → feature flag integration
+
+**Schema v2 Requirements**:
+- JSON metrics: `toolId, opType, mode, elapsedMs, errorSummary, cleanupCheck, anchors[], timestamp, sessionId`
+- Vector metadata: required tags `kind:, domain:, environment:`, optional `tool:, severity:`
+- IDs: `<kind>_<sessionOrIncident>_<timestamp>`
+
+## PROCESS v3.3.2 DOCUMENTATION
+
+**CODEX EXECUTION LOG** (NEW in v3.3.2):
+- **Template**: `/sprint-management/templates/execution-log-codex-v3.3.2-template.md`
+- **Create**: `/sprint-management/execution-logs/execution-log-codex-2025-09-11.md`
+- **Content**: Use template for kickoff approach, session management, implementation decisions
+- **Include**: Cross-session continuity, performance optimization decisions, evidence chains
+- **Quality**: D-009 parity for AI execution audit trail with systematic documentation
+
+**UPDATE REQUIREMENTS**:
+- Update task status: `/sprint-management/active-tasks/task-status-f-011-2025-09-11.md`
+- Create completion log: `/sprint-management/completion-logs/dev-completion-log-2025-09-11.md`
+
+## SUCCESS CRITERIA (Phase 1)
+
+**Must Complete**:
+- ✅ Middleware emits schema-valid v2 JSON metrics for allowlisted tools
+- ✅ Vector writes to ChromaDB with correct v2 tags and bounded content
+- ✅ Evidence anchors present (logs + artifact refs), redaction applied  
+- ✅ Error paths covered by unit tests
+- ✅ Zero-stdout discipline maintained
+- ✅ Integration with existing tool gateway successful
+
+**Handoff Ready**:
+- Complete CODEX execution log with implementation decisions
+- Task status updated with Phase 1 completion evidence
+- Clear handoff notes for Phase 2 or TESTER role
+
+## DEVELOPMENT APPROACH
+
+**Pattern**: Follow existing MCP-OCS patterns and integrate cleanly
+**Safety First**: Feature flags for rollback, bounded operations, error handling
+**Evidence-Based**: All decisions documented with references to epic bundle
+**Systematic**: Complete one module before moving to next
+
+## START HERE (Process v3.3.2 Methodology)
+
+1. **Read Process Context**: Review TEMPLATE-USAGE-GUIDE-PROCESS-V3.3.2.md for framework understanding
+2. **Read Role Guardrails**: Understand DEVELOPER, TESTER, REVIEWER boundaries and responsibilities
+3. **Read Epic Bundle**: Complete technical design and acceptance criteria
+4. **Examine Existing Code**: Tool registry and memory adapter patterns
+5. **Create CODEX Execution Log**: `/sprint-management/execution-logs/execution-log-codex-2025-09-11.md`
+6. **Begin Implementation**: Systematic development following guardrails and technical design
+7. **Update Task Status**: Progress tracking as per Process v3.3.2 requirements
+
+**Process v3.3.2 Compliance**: All implementation decisions must be evidence-anchored and follow established guardrails for quality, safety, and architectural consistency.
+
+**Ready to execute Phase 1. Begin systematic implementation following the technical design authority.**
+```
+
+## GIT WORKFLOW (Feature Branch for Sprint)
+
+1. Pull latest beta
+```
+git checkout release/v0.9.0-beta
+git pull origin release/v0.9.0-beta
+```
+
+2. Create feature branch for sprint
+```
+git checkout -b f-011-vector-collections-v2
+```
+
+3. CODEX works on feature branch
+- Implementation occurs on `f-011-vector-collections-v2`.
+
+4. End-of-day merge back to beta
+```
+git checkout release/v0.9.0-beta
+git merge f-011-vector-collections-v2
+```

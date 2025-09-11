@@ -57,6 +57,14 @@ export declare class OpenShiftClient {
      */
     describeResource(resourceType: string, name: string, namespace?: string): Promise<string>;
     /**
+     * List resources of a given type and return names (+namespaces when present)
+     * Supports namespace === 'all' (-A) for multi-namespace expansion.
+     */
+    listResources(resourceType: string, namespace?: string): Promise<Array<{
+        name: string;
+        namespace?: string;
+    }>>;
+    /**
      * Get logs from a pod
      */
     getLogs(podName: string, namespace?: string, options?: {

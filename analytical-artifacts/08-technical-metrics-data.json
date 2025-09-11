@@ -1,0 +1,198 @@
+[
+  {
+    "toolId": "quick_check_tool",
+    "opType": "read",
+    "mode": "json",
+    "elapsedMs": 0,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T14%3A49%3A39.327Z&end=2025-09-11T14%3A49%3A39.327Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T14:49:39.327Z",
+    "sessionId": "qc-iso-1",
+    "flags": {
+      "UNIFIED_MEMORY": false,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": false,
+      "ENABLE_PRESEARCH": false
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "mcp-ocs-"
+    }
+  },
+  {
+    "toolId": "oc_read_get_pods",
+    "opType": "read",
+    "mode": "json",
+    "elapsedMs": 364,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T14%3A58%3A30.198Z&end=2025-09-11T14%3A58%3A30.562Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T14:58:30.562Z",
+    "sessionId": "pilot-1757602710198",
+    "flags": {
+      "UNIFIED_MEMORY": false,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": false,
+      "ENABLE_PRESEARCH": false
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "mcp-ocs-"
+    }
+  },
+  {
+    "toolId": "oc_read_get_pods",
+    "opType": "read",
+    "mode": "json",
+    "elapsedMs": 78,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T14%3A58%3A30.563Z&end=2025-09-11T14%3A58%3A30.641Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T14:58:30.641Z",
+    "sessionId": "pilot-1757602710198",
+    "flags": {
+      "UNIFIED_MEMORY": false,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": false,
+      "ENABLE_PRESEARCH": false
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "mcp-ocs-"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_cluster_health",
+    "opType": "diagnostic",
+    "mode": "json",
+    "elapsedMs": 715,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T14%3A58%3A30.641Z&end=2025-09-11T14%3A58%3A31.356Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T14:58:31.356Z",
+    "sessionId": "pilot-1757602710198",
+    "flags": {
+      "UNIFIED_MEMORY": false,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": false,
+      "ENABLE_PRESEARCH": false
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "mcp-ocs-"
+    }
+  },
+  {
+    "toolId": "oc_read_get_pods",
+    "opType": "read",
+    "mode": "vector",
+    "elapsedMs": 339,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T15%3A02%3A07.447Z&end=2025-09-11T15%3A02%3A07.786Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T15:02:07.842Z",
+    "sessionId": "pilot-1757602927447",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": false
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "mcp-ocs-"
+    }
+  },
+  {
+    "toolId": "oc_read_get_pods",
+    "opType": "read",
+    "mode": "vector",
+    "elapsedMs": 75,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T15%3A02%3A07.843Z&end=2025-09-11T15%3A02%3A07.918Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T15:02:07.971Z",
+    "sessionId": "pilot-1757602927447",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": false
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "mcp-ocs-"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_cluster_health",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 821,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T15%3A02%3A07.971Z&end=2025-09-11T15%3A02%3A08.792Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T15:02:08.867Z",
+    "sessionId": "pilot-1757602927447",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": false
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "mcp-ocs-"
+    }
+  }
+]

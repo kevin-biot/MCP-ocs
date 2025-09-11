@@ -103,6 +103,31 @@ export class OpenShiftClient {
         return await this.executeOcCommand(args);
     }
     /**
+     * List resources of a given type and return names (+namespaces when present)
+     * Supports namespace === 'all' (-A) for multi-namespace expansion.
+     */
+    async listResources(resourceType, namespace) {
+        const args = ['get', resourceType];
+        if (namespace === 'all') {
+            args.push('-A');
+        }
+        else if (namespace) {
+            args.push('-n', namespace);
+        }
+        else if (this.config.namespace) {
+            args.push('-n', this.config.namespace);
+        }
+        args.push('-o', 'json');
+        const output = await this.executeOcCommand(args);
+        let data = {};
+        try {
+            data = JSON.parse(output);
+        }
+        catch { }
+        const items = Array.isArray(data?.items) ? data.items : [];
+        return items.map((it) => ({ name: it?.metadata?.name, namespace: it?.metadata?.namespace })).filter(r => typeof r.name === 'string');
+    }
+    /**
      * Get logs from a pod
      */
     async getLogs(podName, namespace, options = {}) {
