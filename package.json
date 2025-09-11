@@ -171,9 +171,14 @@
     "test:unit:node": "npm run build && node --test tests/unit/**/*.node.test.js",
     "sprint:status": "node scripts/sprint/generate-feature-status.mjs",
     "sprint:tools": "node scripts/sprint/generate-tool-inventory.mjs",
-    "process:sync-docs": "npm run sprint:status && npm run sprint:tools && npm run archives:index",
+    "process:sync-docs": "npm run sprint:status && npm run sprint:tools && npm run archives:index && npm run sprint:extract:last5h",
     "archives:index": "node scripts/archives/generate-archives-link-index.mjs && node scripts/archives/generate-archive-registry.mjs",
-    "sprint:validate-closure": "node scripts/sprint/validate-closure.mjs"
+    "sprint:validate-closure": "node scripts/sprint/validate-closure.mjs",
+    "sprint:extract": "node sprint-management/scripts/extract-sprint.cjs",
+    "sprint:extract:last2h": "node sprint-management/scripts/extract-sprint.cjs --last 2h",
+    "sprint:extract:last5h": "node sprint-management/scripts/extract-sprint.cjs --last 5h --claude-log \"$HOME/Library/Logs/Claude/mcp-server-files-advanced.log\"",
+    "sprint:correlate": "node sprint-management/scripts/correlate-sprint.cjs --last 5h --window 3m --claude-log \"$HOME/Library/Logs/Claude/mcp-server-files-advanced.log\"",
+    "sprint:extract:today": "bash -lc 'node sprint-management/scripts/extract-sprint.cjs --on \"$(date +%F)\"'"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.8",
