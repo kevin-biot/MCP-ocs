@@ -295,6 +295,18 @@ Decision Point 1: Middleware-first sequencing
 - Unified and separate collection strategies validated with pilots.
 - Ready for broader allowlist expansion in future sprints.
 
+---
+
+## Cross-Session Continuity (Update)
+
+- Human Pause: 19:00 CET (~17:00Z) for dinner; TESTER role restarted after pause (no artifacts created during pause window).
+- Active Work Time (excluding pause): ≈ 3h 45m ± 15m
+  - Block A (Dev + Pilot): 14:26:47Z → ~16:05Z (≈ 1h 40m)
+    - Evidence: first metrics at ~14:49Z; unified pilot/searches ~15:37Z; metrics snapshot at 16:02:26Z.
+  - Block B (TESTER + REVIEWER + Merge/Smoke): ≈ 1h 50m–2h 10m
+    - Evidence: TESTER/REVIEWER logs created; audit/stats outputs; merge to beta; final smoke summaries.
+  - Files: analytical-artifacts/08-technical-metrics-data.json, sprint-management/process/metrics-snapshot-*.json, TESTER/REVIEWER completion logs.
+
 ### Mid-Flight Safety Correction Applied
 **Issue**: Missing MCP protocol safety constraints in original kickoff
 **Actions Taken**:

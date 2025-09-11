@@ -1,0 +1,148 @@
+{
+  "mode": "unified",
+  "collection": "ocs_memory_v2",
+  "session": "unified-1757618138271",
+  "operational": {
+    "query": "ingress or router or pods",
+    "limit": 5,
+    "resultsFound": 0,
+    "results": [],
+    "timestamp": "2025-09-11T19:15:42.483Z"
+  },
+  "conversations": {
+    "query": "Tool oc_read_get_pods",
+    "limit": 5,
+    "resultsFound": 5,
+    "results": [
+      {
+        "similarity": 0.5,
+        "relevance": 50,
+        "sessionId": "unified-1757605019407",
+        "domain": "mcp-ocs",
+        "userMessage": "User: Search conversations for: Tool oc_read_get_pods",
+        "assistantResponse": "User: Search conversations for: Tool oc_read_get_pods\nAssistant: Found 0 relevant conversations",
+        "timestamp": 1757605020839,
+        "tags": [
+          "memory_operation",
+          "conversation_search",
+          "domain:knowledge"
+        ]
+      },
+      {
+        "similarity": 0.5,
+        "relevance": 50,
+        "sessionId": "unified-1757605224586",
+        "domain": "mcp-ocs",
+        "userMessage": "User: Search conversations for: Tool oc_read_get_pods",
+        "assistantResponse": "User: Search conversations for: Tool oc_read_get_pods\nAssistant: Found 1 relevant conversations",
+        "timestamp": 1757605225850,
+        "tags": [
+          "memory_operation",
+          "conversation_search",
+          "domain:knowledge"
+        ]
+      },
+      {
+        "similarity": 0.5,
+        "relevance": 50,
+        "sessionId": "unified-1757605379695",
+        "domain": "mcp-ocs",
+        "userMessage": "User: Search conversations for: Tool oc_read_get_pods",
+        "assistantResponse": "User: Search conversations for: Tool oc_read_get_pods\nAssistant: Found 2 relevant conversations",
+        "timestamp": 1757605389667,
+        "tags": [
+          "memory_operation",
+          "conversation_search",
+          "domain:knowledge"
+        ]
+      },
+      {
+        "similarity": 0.5,
+        "relevance": 50,
+        "sessionId": "unified-1757605416139",
+        "domain": "mcp-ocs",
+        "userMessage": "User: Search conversations for: Tool oc_read_get_pods",
+        "assistantResponse": "User: Search conversations for: Tool oc_read_get_pods\nAssistant: Found 3 relevant conversations",
+        "timestamp": 1757605425952,
+        "tags": [
+          "memory_operation",
+          "conversation_search",
+          "domain:knowledge"
+        ]
+      },
+      {
+        "similarity": 0.5,
+        "relevance": 50,
+        "sessionId": "unified-1757606140954",
+        "domain": "mcp-ocs",
+        "userMessage": "User: Search conversations for: Tool oc_read_get_pods",
+        "assistantResponse": "User: Search conversations for: Tool oc_read_get_pods\nAssistant: Found 4 relevant conversations",
+        "timestamp": 1757606143575,
+        "tags": [
+          "memory_operation",
+          "conversation_search",
+          "domain:knowledge"
+        ]
+      }
+    ],
+    "timestamp": "2025-09-11T19:15:42.505Z"
+  },
+  "incidents": {
+    "query": "cluster health",
+    "limit": 5,
+    "resultsFound": 5,
+    "results": [
+      {
+        "similarity": 0.5,
+        "relevance": 50,
+        "incidentId": "unified-1757605019407",
+        "symptoms": [
+          "Search memory for: cluster health"
+        ],
+        "resolution": "Pending",
+        "timestamp": 1757605020889
+      },
+      {
+        "similarity": 0.5,
+        "relevance": 50,
+        "incidentId": "unified-1757605224586",
+        "symptoms": [
+          "Search memory for: cluster health"
+        ],
+        "resolution": "Pending",
+        "timestamp": 1757605225877
+      },
+      {
+        "similarity": 0.5,
+        "relevance": 50,
+        "incidentId": "unified-1757605379695",
+        "symptoms": [
+          "Search memory for: cluster health"
+        ],
+        "resolution": "Pending",
+        "timestamp": 1757605389687
+      },
+      {
+        "similarity": 0.5,
+        "relevance": 50,
+        "incidentId": "unified-1757605416139",
+        "symptoms": [
+          "Search memory for: cluster health"
+        ],
+        "resolution": "Pending",
+        "timestamp": 1757605425973
+      },
+      {
+        "similarity": 0.5,
+        "relevance": 50,
+        "incidentId": "unified-1757606140954",
+        "symptoms": [
+          "Search memory for: cluster health"
+        ],
+        "resolution": "Pending",
+        "timestamp": 1757606143600
+      }
+    ],
+    "timestamp": "2025-09-11T19:15:42.531Z"
+  }
+}

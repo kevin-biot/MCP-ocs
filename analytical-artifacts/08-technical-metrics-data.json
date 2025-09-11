@@ -1546,5 +1546,850 @@
       "database": "prod",
       "collection": "ocs_memory_v2"
     }
+  },
+  {
+    "toolId": "oc_read_get_pods",
+    "opType": "read",
+    "mode": "vector",
+    "elapsedMs": 368,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A28.305Z&end=2025-09-11T19%3A13%3A28.673Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:28.734Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_cluster_health",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 717,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "presearch:hits=0;ms=368",
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A28.735Z&end=2025-09-11T19%3A13%3A29.452Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:29.528Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_namespace_health",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 146,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A29.529Z&end=2025-09-11T19%3A13%3A29.675Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:29.675Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_rca_checklist",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 738,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A29.676Z&end=2025-09-11T19%3A13%3A30.414Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:30.414Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_read_get_pods",
+    "opType": "read",
+    "mode": "vector",
+    "elapsedMs": 86,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A30.415Z&end=2025-09-11T19%3A13%3A30.501Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:30.581Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_namespace_health",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 147,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A30.582Z&end=2025-09-11T19%3A13%3A30.729Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:30.729Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_read_get_pods",
+    "opType": "read",
+    "mode": "vector",
+    "elapsedMs": 84,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A30.731Z&end=2025-09-11T19%3A13%3A30.815Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:30.891Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_namespace_health",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 154,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A30.891Z&end=2025-09-11T19%3A13%3A31.045Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:31.045Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_read_get_pods",
+    "opType": "read",
+    "mode": "vector",
+    "elapsedMs": 101,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A31.046Z&end=2025-09-11T19%3A13%3A31.147Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:31.238Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_namespace_health",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 177,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A31.239Z&end=2025-09-11T19%3A13%3A31.416Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:31.417Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_read_get_pods",
+    "opType": "read",
+    "mode": "vector",
+    "elapsedMs": 124,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A31.418Z&end=2025-09-11T19%3A13%3A31.542Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:31.641Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_namespace_health",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 164,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A31.642Z&end=2025-09-11T19%3A13%3A31.806Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:31.806Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "memory_search_operational",
+    "opType": "workflow",
+    "mode": "vector",
+    "elapsedMs": 46,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A31.807Z&end=2025-09-11T19%3A13%3A31.853Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:31.853Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "memory_search_conversations",
+    "opType": "workflow",
+    "mode": "vector",
+    "elapsedMs": 27,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A31.854Z&end=2025-09-11T19%3A13%3A31.881Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:31.881Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "memory_search_incidents",
+    "opType": "read",
+    "mode": "vector",
+    "elapsedMs": 26,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A13%3A31.882Z&end=2025-09-11T19%3A13%3A31.908Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:13:31.908Z",
+    "sessionId": "unified-1757618008305",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_read_get_pods",
+    "opType": "read",
+    "mode": "vector",
+    "elapsedMs": 464,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "presearch:hits=0;ms=440",
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A38.271Z&end=2025-09-11T19%3A15%3A38.735Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:38.819Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_cluster_health",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 799,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "presearch:hits=0;ms=395",
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A38.820Z&end=2025-09-11T19%3A15%3A39.619Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:39.697Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_namespace_health",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 152,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A39.698Z&end=2025-09-11T19%3A15%3A39.850Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:39.922Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_rca_checklist",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 773,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "presearch:hits=0;ms=98",
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A39.924Z&end=2025-09-11T19%3A15%3A40.697Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:40.770Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_read_get_pods",
+    "opType": "read",
+    "mode": "vector",
+    "elapsedMs": 88,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A40.771Z&end=2025-09-11T19%3A15%3A40.859Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:40.939Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_namespace_health",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 151,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A40.940Z&end=2025-09-11T19%3A15%3A41.091Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:41.163Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_read_get_pods",
+    "opType": "read",
+    "mode": "vector",
+    "elapsedMs": 81,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A41.164Z&end=2025-09-11T19%3A15%3A41.245Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:41.331Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_namespace_health",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 152,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A41.332Z&end=2025-09-11T19%3A15%3A41.484Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:41.559Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_read_get_pods",
+    "opType": "read",
+    "mode": "vector",
+    "elapsedMs": 94,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A41.560Z&end=2025-09-11T19%3A15%3A41.654Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:41.749Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_namespace_health",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 166,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A41.750Z&end=2025-09-11T19%3A15%3A41.916Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:41.986Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_read_get_pods",
+    "opType": "read",
+    "mode": "vector",
+    "elapsedMs": 124,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A41.986Z&end=2025-09-11T19%3A15%3A42.110Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:42.207Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "oc_diagnostic_namespace_health",
+    "opType": "diagnostic",
+    "mode": "vector",
+    "elapsedMs": 158,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "presearch:hits=0;ms=134",
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A42.207Z&end=2025-09-11T19%3A15%3A42.365Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:42.435Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "memory_search_operational",
+    "opType": "workflow",
+    "mode": "vector",
+    "elapsedMs": 47,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A42.436Z&end=2025-09-11T19%3A15%3A42.483Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:42.483Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "memory_search_conversations",
+    "opType": "workflow",
+    "mode": "vector",
+    "elapsedMs": 25,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A42.484Z&end=2025-09-11T19%3A15%3A42.509Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:42.509Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
+  },
+  {
+    "toolId": "memory_search_incidents",
+    "opType": "read",
+    "mode": "vector",
+    "elapsedMs": 25,
+    "outcome": "ok",
+    "errorSummary": null,
+    "cleanupCheck": true,
+    "anchors": [
+      "logs/sprint-execution.log#start=2025-09-11T19%3A15%3A42.510Z&end=2025-09-11T19%3A15%3A42.535Z",
+      "epic:f-011:technical-design",
+      "artifact:08-technical-metrics-data.json"
+    ],
+    "timestamp": "2025-09-11T19:15:42.535Z",
+    "sessionId": "unified-1757618138271",
+    "flags": {
+      "UNIFIED_MEMORY": true,
+      "MCP_LOG_VERBOSE": false,
+      "ENABLE_INSTRUMENTATION": true,
+      "ENABLE_VECTOR_WRITES": true,
+      "ENABLE_PRESEARCH": true
+    },
+    "vector": {
+      "tenant": "mcp-ocs",
+      "database": "prod",
+      "collection": "ocs_memory_v2"
+    }
   }
 ]

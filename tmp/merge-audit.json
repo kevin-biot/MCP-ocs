@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "chroma": {
+    "host": "127.0.0.1",
+    "port": 8000,
+    "tenant": "mcp-ocs",
+    "database": "prod",
+    "available": true
+  },
+  "strategy": "unified",
+  "expected": [
+    "ocs_memory_v2"
+  ],
+  "present": [],
+  "missing": [
+    "ocs_memory_v2"
+  ],
+  "isolation": {
+    "prefix": "",
+    "isolated": true,
+    "unprefixed": []
+  }
+}
