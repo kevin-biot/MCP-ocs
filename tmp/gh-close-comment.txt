@@ -1,0 +1,9 @@
+Review completed for Issue #32 — Post-fix: Vector collections v2, incident lifecycle, and enrichment rollout.
+
+Outcome:
+- MET: Vector collections v2 (strategy toggle + eager ensure + audit CLI)
+- MET: Allowlisted pre-search enrichment (bounded, no leakage)
+- PARTIAL: Schema v2 enforcement (kind: tags everywhere) + reindex + by-kind stats
+- PARTIAL: Incident lifecycle tools (begin/append/hypothesis/publish/close)
+
+Follow-ups filed in new issues.

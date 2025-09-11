@@ -305,7 +305,18 @@ Decision Point 1: Middleware-first sequencing
     - Evidence: first metrics at ~14:49Z; unified pilot/searches ~15:37Z; metrics snapshot at 16:02:26Z.
   - Block B (TESTER + REVIEWER + Merge/Smoke): ≈ 1h 50m–2h 10m
     - Evidence: TESTER/REVIEWER logs created; audit/stats outputs; merge to beta; final smoke summaries.
-  - Files: analytical-artifacts/08-technical-metrics-data.json, sprint-management/process/metrics-snapshot-*.json, TESTER/REVIEWER completion logs.
+- Files: analytical-artifacts/08-technical-metrics-data.json, sprint-management/process/metrics-snapshot-*.json, TESTER/REVIEWER completion logs.
+
+---
+
+## GitHub Issue Transitions
+
+- Closed: #32 — Post-fix: Vector collections v2, incident lifecycle, and enrichment rollout (MET/PARTIAL summary posted).
+- Opened follow-ups:
+  - #37 — Incident lifecycle tools (begin/append/hypothesis/publish/close)
+  - #38 — Schema v2 enforcement + reindex + per-collection stats
+  - #39 — B-012: 100% coverage sprint (existing tools + middleware)
+
 
 ### Mid-Flight Safety Correction Applied
 **Issue**: Missing MCP protocol safety constraints in original kickoff
