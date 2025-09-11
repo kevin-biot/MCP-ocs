@@ -258,6 +258,21 @@ Decision Point 1: Middleware-first sequencing
 - Evidence captured in analytical-artifacts/08-technical-metrics-data.json for multiple namespaces.
 - Handoff: Add eager collection ensure + collections audit CLI to Phase 2 epic scope.
 
+---
+
+## Phase 2 Kickoff (Planning)
+
+- Objectives
+  - Collections isolation readiness (env toggles; strict kind: filters preserved)
+  - Eager collection initialization in UnifiedMemoryAdapter.initialize()
+  - Stats and visibility (memory_get_stats?detailed=true)
+  - Health check CLI for collections audit
+- Tasks (tracked in task-status)
+  - TASK-005: Eager collection ensure at init
+  - TASK-006: memory_get_stats tool (detailed mode)
+  - TASK-007: memory:collections:audit CLI
+  - TASK-008: Collection strategy toggle + docs
+
 ### Mid-Flight Safety Correction Applied
 **Issue**: Missing MCP protocol safety constraints in original kickoff
 **Actions Taken**:
