@@ -11,6 +11,7 @@ export class UnifiedMemoryAdapter {
     available = false;
     convCollection;
     opCollection;
+    toolExecCollection;
     constructor(config) {
         this.memoryDir = config.memoryDir;
         // Pass through optional host/port via env for Chroma manager
@@ -24,6 +25,7 @@ export class UnifiedMemoryAdapter {
         const prefix = process.env.CHROMA_COLLECTION_PREFIX || 'mcp-ocs-';
         this.convCollection = `${prefix}conversations`;
         this.opCollection = `${prefix}operational`;
+        this.toolExecCollection = `${prefix}tool_exec`;
         this.chroma = new ChromaMemoryManager(config.memoryDir);
     }
     async initialize() {
@@ -32,6 +34,21 @@ export class UnifiedMemoryAdapter {
             // Chroma manager exposes availability synchronously after init
             const av = await this.chroma.isAvailable();
             this.available = !!av;
+            // Phase 2: eagerly ensure collections exist to avoid first-write races
+            if (this.available) {
+                try {
+                    await this.chroma.createCollection(this.convCollection);
+                }
+                catch { }
+                try {
+                    await this.chroma.createCollection(this.opCollection);
+                }
+                catch { }
+                try {
+                    await this.chroma.createCollection(this.toolExecCollection);
+                }
+                catch { }
+            }
         }
         catch {
             this.available = false;
