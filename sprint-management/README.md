@@ -1,6 +1,3 @@
-# Sprint Management Framework — Process 3.3.x Usage Guide
-
-## Operator One‑Pager (Daily Memory Refresh)
 
 1) Working Truth vs Archives
 - Work on: `release/v0.9.0-beta`
