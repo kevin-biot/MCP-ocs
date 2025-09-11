@@ -67,3 +67,18 @@ Commands executed:
 - Improvements: Consider adding a repository-wide D-009 lint to surface legacy Date API usage in a future maintenance sprint.
 
 *** End of REVIEWER Completion Log ***
+
+---
+
+## Merge Recommendation & Transition (Reviewer Addendum)
+
+- Final Recommendation: Proceed with manual merge — comprehensive TESTER validation and REVIEWER inspection indicate production readiness.
+- Minimal Post‑Merge Smoke (optional):
+  - `tsx src/cli/memory-audit.ts` (unified and separate configs)
+  - `node tmp/memory-stats.mjs` (detailed)
+  - Quick pilot: `node tmp/unified-pilot.mjs` (allowlisted tools)
+- Merge Steps:
+  - `git checkout release/v0.9.0-beta`
+  - `git pull origin release/v0.9.0-beta`
+  - `git merge f-011-vector-collections-v2`
+- Rationale: Process v3.3.2 produced a strong evidence chain; added smoke is optional, not required.
