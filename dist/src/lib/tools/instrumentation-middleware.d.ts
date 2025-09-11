@@ -8,6 +8,10 @@ export interface PreContext {
     flags: Record<string, string | number | boolean>;
     allowlisted: boolean;
     redactedArgs: Record<string, unknown>;
+    presearch?: {
+        hits: number;
+        elapsedMs: number;
+    };
 }
 export declare function inferOpType(category: string): string;
 export declare function isAllowlisted(toolId: string): boolean;

@@ -273,6 +273,18 @@ Decision Point 1: Middleware-first sequencing
   - TASK-007: memory:collections:audit CLI
   - TASK-008: Collection strategy toggle + docs
 
+---
+
+## Phase 3 Enrichment (Pilot)
+
+- Pre-search enrichment implemented in middleware (allowlisted tools)
+  - Bounds: topK=3, timeout=400ms, result ≤1.5KB summary unaffected
+  - Anchors: `presearch:hits=<n>;ms=<ms>` added to metrics
+  - Flags: `ENABLE_PRESEARCH=true`
+- Unified-mode pilot executed
+  - Env: UNIFIED_MEMORY=true; CHROMA_COLLECTION=ocs_memory_v2; ENABLE_PRESEARCH=true
+  - Evidence: metrics entries contain presearch anchors and flags snapshot
+
 ### Mid-Flight Safety Correction Applied
 **Issue**: Missing MCP protocol safety constraints in original kickoff
 **Actions Taken**:

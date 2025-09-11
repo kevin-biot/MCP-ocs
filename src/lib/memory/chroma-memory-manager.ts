@@ -380,7 +380,7 @@ export class ChromaMemoryManager {
           this.collectionIdCache.set(name, id);
           return;
         }
-        // If no id in response, attempt to resolve via list
+        // If no id in response, attempt to resolve via tenant list, then root-level list
         let postList = await fetch(listUrl, { method: 'GET' });
         if (postList.ok) {
           const pdata: any = await postList.json().catch(() => ({}));
@@ -390,6 +390,17 @@ export class ChromaMemoryManager {
             return;
           }
         }
+        // Root-level list attempt
+        try {
+          const rlist = await fetch(`http://${this.host}:${this.port}/api/v2/collections`, { method: 'GET' });
+          if (rlist.ok) {
+            const rdata: any = await rlist.json().catch(() => ({}));
+            const arr: any[] = Array.isArray(rdata) ? rdata : (rdata.collections || []);
+            const ff = arr.find((c: any) => c?.name === name);
+            const rid = ff?.id || ff?.uuid;
+            if (rid) { this.collectionIdCache.set(name, rid); return; }
+          }
+        } catch {}
         // fall through to root-level attempt
       }
 
@@ -398,13 +409,23 @@ export class ChromaMemoryManager {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name })
       });
       if (res.ok || res.status === 409) {
-        // Try to resolve id again via list
+        // Try to resolve id via tenant list, then root-level list
         listRes = await fetch(listUrl, { method: 'GET' });
         if (listRes.ok) {
           const data: any = await listRes.json().catch(() => ({}));
           const found = (data.collections || data || []).find((c: any) => c?.name === name);
-          if (found?.id) this.collectionIdCache.set(name, found.id);
+          if (found?.id) { this.collectionIdCache.set(name, found.id); return; }
         }
+        try {
+          const rlist = await fetch(`http://${this.host}:${this.port}/api/v2/collections`, { method: 'GET' });
+          if (rlist.ok) {
+            const rdata: any = await rlist.json().catch(() => ({}));
+            const arr: any[] = Array.isArray(rdata) ? rdata : (rdata.collections || []);
+            const ff = arr.find((c: any) => c?.name === name);
+            const rid = ff?.id || ff?.uuid;
+            if (rid) this.collectionIdCache.set(name, rid);
+        }
+        } catch {}
         return;
       } else {
         const txt = await res.text().catch(() => '');

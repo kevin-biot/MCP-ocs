@@ -2,6 +2,7 @@ import { appendMetricsV2, metricsVectorIdentifiers } from './metrics-writer.js';
 import { collectAnchors } from './evidence-anchors.js';
 import { writeVectorToolExec } from './vector-writer.js';
 import { nowEpoch, nowIso } from '../../utils/time.js';
+import { SharedMemoryManager } from '../memory/shared-memory.js';
 export function inferOpType(category) {
     if (category === 'read-ops')
         return 'read';
@@ -64,6 +65,11 @@ export function preInstrument(toolId, category, args) {
         allowlisted: allowed,
         redactedArgs: redactArgs(args)
     };
+    // Optional Phase 3 pre-search enrichment (bounded)
+    if (allowed && envEnable('ENABLE_PRESEARCH', false)) {
+        // fire-and-forget; result captured later via closure update
+        doPresearchSafe(pre, toolId, args).catch(() => { });
+    }
     return pre;
 }
 export async function postInstrument(pre, resultJson) {
@@ -73,6 +79,8 @@ export async function postInstrument(pre, resultJson) {
         const endMs = nowEpoch();
         const elapsedMs = Math.max(0, endMs - pre.startMs);
         const anchors = await collectAnchors({ startIso: pre.startIso, endIso: nowIso(), toolId: pre.toolId });
+        if (pre.presearch)
+            anchors.unshift(`presearch:hits=${pre.presearch.hits};ms=${pre.presearch.elapsedMs}`);
         const mode = modeVectorActive() ? 'vector' : 'json';
         // Vector write (best effort)
         if (pre.allowlisted && envEnable('ENABLE_VECTOR_WRITES', true) && mode === 'vector') {
@@ -118,6 +126,8 @@ export async function postInstrumentError(pre, error) {
         const endMs = nowEpoch();
         const elapsedMs = Math.max(0, endMs - pre.startMs);
         const anchors = await collectAnchors({ startIso: pre.startIso, endIso: nowIso(), toolId: pre.toolId });
+        if (pre.presearch)
+            anchors.unshift(`presearch:hits=${pre.presearch.hits};ms=${pre.presearch.elapsedMs}`);
         const mode = modeVectorActive() ? 'vector' : 'json';
         const errMsg = summarizeError(error);
         // Metrics write only (vector optional skip on error)
@@ -200,4 +210,52 @@ function envEnable(name, defaultOn = true) {
     if (v === 'true' || v === '1' || v === 'on' || v === 'yes')
         return true;
     return defaultOn;
+}
+async function doPresearchSafe(pre, toolId, args) {
+    // Build a lightweight query from tool + args
+    const q = buildQuery(toolId, args);
+    const t0 = nowEpoch();
+    try {
+        const hits = await presearchOperational(q, 3, 400);
+        pre.presearch = { hits, elapsedMs: Math.max(0, nowEpoch() - t0) };
+    }
+    catch {
+        pre.presearch = { hits: 0, elapsedMs: Math.max(0, nowEpoch() - t0) };
+    }
+}
+function buildQuery(toolId, args) {
+    const base = toolId.replace(/^.*:/, '').replace(/^oc_/, '').replace(/_/g, ' ');
+    let extras = '';
+    try {
+        const a = (args && typeof args === 'object') ? args : {};
+        const ns = typeof a.namespace === 'string' ? a.namespace : '';
+        const selector = typeof a.selector === 'string' ? a.selector : '';
+        extras = [ns, selector].filter(Boolean).join(' ');
+    }
+    catch { }
+    return [base, extras].filter(Boolean).join(' ').trim() || base;
+}
+async function presearchOperational(query, topK, timeoutMs) {
+    // Use shared memory with JSON-friendly fallback and bounded time
+    const memory = new SharedMemoryManager({
+        domain: 'mcp-ocs', namespace: 'default', memoryDir: './memory',
+        enableCompression: true, retentionDays: 7,
+        chromaHost: process.env.CHROMA_HOST || '127.0.0.1',
+        chromaPort: process.env.CHROMA_PORT ? Number(process.env.CHROMA_PORT) : 8000
+    });
+    const p = (async () => {
+        try {
+            await memory.initialize();
+        }
+        catch { }
+        try {
+            const results = await memory.searchOperational(query, topK);
+            return Array.isArray(results) ? results.length : (Array.isArray(results?.results) ? results.results.length : 0);
+        }
+        catch {
+            return 0;
+        }
+    })();
+    const timeout = new Promise((resolve) => setTimeout(() => resolve(0), Math.max(50, timeoutMs)));
+    return await Promise.race([p, timeout]);
 }

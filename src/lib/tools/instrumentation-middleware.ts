@@ -2,6 +2,7 @@ import { appendMetricsV2, metricsVectorIdentifiers, MetricsRecordV2 } from './me
 import { collectAnchors } from './evidence-anchors.js';
 import { writeVectorToolExec } from './vector-writer.js';
 import { nowEpoch, nowIso } from '../../utils/time.js';
+import { SharedMemoryManager } from '../memory/shared-memory.js';
 
 export interface PreContext {
   toolId: string; // full name
@@ -13,6 +14,7 @@ export interface PreContext {
   flags: Record<string, string | number | boolean>;
   allowlisted: boolean;
   redactedArgs: Record<string, unknown>;
+  presearch?: { hits: number; elapsedMs: number };
 }
 
 export function inferOpType(category: string): string {
@@ -68,6 +70,11 @@ export function preInstrument(toolId: string, category: string, args: unknown): 
     allowlisted: allowed,
     redactedArgs: redactArgs(args)
   };
+  // Optional Phase 3 pre-search enrichment (bounded)
+  if (allowed && envEnable('ENABLE_PRESEARCH', false)) {
+    // fire-and-forget; result captured later via closure update
+    doPresearchSafe(pre, toolId, args).catch(() => {});
+  }
   return pre;
 }
 
@@ -77,6 +84,7 @@ export async function postInstrument(pre: PreContext | null, resultJson: string)
     const endMs = nowEpoch();
     const elapsedMs = Math.max(0, endMs - pre.startMs);
     const anchors = await collectAnchors({ startIso: pre.startIso, endIso: nowIso(), toolId: pre.toolId });
+    if (pre.presearch) anchors.unshift(`presearch:hits=${pre.presearch.hits};ms=${pre.presearch.elapsedMs}`);
     const mode: 'json' | 'vector' = modeVectorActive() ? 'vector' : 'json';
 
     // Vector write (best effort)
@@ -120,6 +128,7 @@ export async function postInstrumentError(pre: PreContext | null, error: unknown
     const endMs = nowEpoch();
     const elapsedMs = Math.max(0, endMs - pre.startMs);
     const anchors = await collectAnchors({ startIso: pre.startIso, endIso: nowIso(), toolId: pre.toolId });
+    if (pre.presearch) anchors.unshift(`presearch:hits=${pre.presearch.hits};ms=${pre.presearch.elapsedMs}`);
     const mode: 'json' | 'vector' = modeVectorActive() ? 'vector' : 'json';
     const errMsg = summarizeError(error);
 
@@ -195,4 +204,49 @@ function envEnable(name: string, defaultOn = true): boolean {
   if (v === 'false' || v === '0' || v === 'off' || v === 'no') return false;
   if (v === 'true' || v === '1' || v === 'on' || v === 'yes') return true;
   return defaultOn;
+}
+
+async function doPresearchSafe(pre: PreContext, toolId: string, args: unknown): Promise<void> {
+  // Build a lightweight query from tool + args
+  const q = buildQuery(toolId, args);
+  const t0 = nowEpoch();
+  try {
+    const hits = await presearchOperational(q, 3, 400);
+    pre.presearch = { hits, elapsedMs: Math.max(0, nowEpoch() - t0) };
+  } catch {
+    pre.presearch = { hits: 0, elapsedMs: Math.max(0, nowEpoch() - t0) };
+  }
+}
+
+function buildQuery(toolId: string, args: unknown): string {
+  const base = toolId.replace(/^.*:/, '').replace(/^oc_/, '').replace(/_/g, ' ');
+  let extras = '';
+  try {
+    const a = (args && typeof args === 'object') ? (args as any) : {};
+    const ns = typeof a.namespace === 'string' ? a.namespace : '';
+    const selector = typeof a.selector === 'string' ? a.selector : '';
+    extras = [ns, selector].filter(Boolean).join(' ');
+  } catch {}
+  return [base, extras].filter(Boolean).join(' ').trim() || base;
+}
+
+async function presearchOperational(query: string, topK: number, timeoutMs: number): Promise<number> {
+  // Use shared memory with JSON-friendly fallback and bounded time
+  const memory = new SharedMemoryManager({
+    domain: 'mcp-ocs', namespace: 'default', memoryDir: './memory',
+    enableCompression: true, retentionDays: 7,
+    chromaHost: process.env.CHROMA_HOST || '127.0.0.1',
+    chromaPort: process.env.CHROMA_PORT ? Number(process.env.CHROMA_PORT) : 8000
+  });
+  const p = (async () => {
+    try { await memory.initialize(); } catch {}
+    try {
+      const results = await memory.searchOperational(query, topK);
+      return Array.isArray(results) ? results.length : (Array.isArray((results as any)?.results) ? (results as any).results.length : 0);
+    } catch {
+      return 0;
+    }
+  })();
+  const timeout = new Promise<number>((resolve) => setTimeout(() => resolve(0), Math.max(50, timeoutMs)));
+  return await Promise.race([p, timeout]);
 }
