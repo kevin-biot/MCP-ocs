@@ -195,6 +195,12 @@ Process v3.3.2 includes systematic documentation of:
 - [ ] Strategic intelligence accessible to PM without technical deep-dive
 - [ ] Archive structure compliant with enhanced v3.3.2 standards
 
+### Selective Enrichment Pilot (Optional, v3.3.3 Add‑On)
+- After deterministic closure (17 artifacts validated), an optional enrichment step may be triggered by the Operator.
+- Phase‑1 targets: 09‑outstanding‑work‑analysis.md, sprint‑retrospective.md (Context Abstract), 07‑key‑decisions‑log.md.
+- Edits must be confined to <!-- ENRICHMENT: begin/end --> zones and remain evidence‑anchored (artifacts/logs/ADRs/commits/code paths).
+- See `sprint-management/process/ENRICHMENT-PILOT-V3.3.3.md` for roles, steps, guardrails, and acceptance criteria.
+
 ### Should-Have (P1)  
 - [ ] Cross-session AI continuity methodology proven effective
 - [ ] Performance optimization patterns documented for replication

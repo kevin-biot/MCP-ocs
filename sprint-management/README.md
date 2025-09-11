@@ -34,6 +34,34 @@ Use this as a daily memory refresh to run the sprint with minimal friction.
 - Must be evidence‑anchored (link to artifacts/logs/commits/ADRs) and include timeline + tool/flag inventory.
 - Helper: `npm run sprint:context:skeleton -- <archive-dir>` seeds the files from the template.
 
+### Selective Enrichment Pilot (Optional, v3.3.3)
+- After deterministic closure (17 artifacts validated), a selective enrichment step can be run (timebox 45–90 min total).
+- Targets: 09‑outstanding‑work‑analysis.md (actionable packages), sprint‑retrospective.md (Context Abstract), 07‑key‑decisions‑log.md (Why/Impact).
+- Edits must be confined to <!-- ENRICHMENT: begin/end --> zones and remain evidence‑anchored (artifacts/logs/ADRs/commits/code).
+- Guide: `sprint-management/process/ENRICHMENT-PILOT-V3.3.3.md`.
+
+Claude Prompt (copy/paste)
+```
+You are the AI Scrum Master (Selective Enrichment Pilot, v3.3.3 add‑on).
+Use vector memory first to gather added context: search sprint memory/logs for relevant evidence before edits.
+
+Targets (Phase‑1), edit only within ENRICHMENT zones:
+- sprint‑retrospective.md → Add/enhance Context Abstract (≤10 bullets), with ≥1 evidence anchor.
+- analytical‑artifacts/07‑key‑decisions‑log.md → Add/enhance Why/Impact pairs, with ≥1 evidence anchor.
+- analytical‑artifacts/09‑outstanding‑work‑analysis.md → If needed, refine work packages (test paths/metrics schema), with ≥1 evidence anchor.
+
+Rules:
+- Edit only between <!-- ENRICHMENT: begin/end --> markers; do not change baseline outside zones.
+- Append at end of each zone: “Section updated by Claude (AI Scrum Master) based on baseline Codex findings and deterministic artifacts”.
+- Timebox: 45–90 minutes total; keep concise and evidence‑anchored.
+
+Evidence anchors to use:
+- logs/sprint‑execution.log; docs/reports/technical/mcp‑ocs‑memory‑acceptance‑<date>.md; docs/ops/memory‑ops‑guide.md; ADR‑003/014/006/010/024; relevant code/commit refs.
+
+Summary:
+- Update or create process‑artifacts/enrichment‑summary‑YYYY‑MM‑DD.md with: targets edited, anchors used, elapsed time (est), and zone‑only confirmation.
+```
+
 5) Version Standards (clarity)
 - v3.3.2: 20‑artifact closure is current (preferred)
 - v3.3.1: 11‑artifact minimum is legacy; upgrade when possible

@@ -7,6 +7,13 @@
 ## Guardrails
 See: `sprint-management/templates/current/guardrails/ROLE_GUARDRAILS_V3.3.1.md` (Developer section)
 
+## Baseline Archive Scaffold (v3.3.3 Pilot Note)
+- When scaffolding a new sprint archive (post‑closure), insert empty ENRICHMENT zones in these Phase‑1 targets to prepare for optional enrichment:
+  - sprint‑retrospective.md (Context Abstract)
+  - analytical‑artifacts/07‑key‑decisions‑log.md (Why/Impact)
+  - analytical‑artifacts/09‑outstanding‑work‑analysis.md (Actionable packages)
+- Strictly avoid populating beyond zone markers; enrichment is human‑triggered and performed by the AI Scrum Master.
+
 ---
 
 **Date**: YYYY-MM-DD  
