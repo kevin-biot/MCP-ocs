@@ -291,11 +291,22 @@ export class StateMgmtTools {
             timestamp: new Date().toISOString()
         };
         if (detailed) {
+            const tenant = process.env.CHROMA_TENANT || 'mcp-ocs';
+            const database = process.env.CHROMA_DATABASE || 'prod';
+            const prefix = process.env.CHROMA_COLLECTION_PREFIX || (process.env.CHROMA_COLLECTION ? String(process.env.CHROMA_COLLECTION) : 'mcp-ocs-');
+            const collections = [
+                `${prefix}conversations`,
+                `${prefix}operational`,
+                `${prefix}tool_exec`
+            ].join(', ');
+            const backendStr = stats.chromaAvailable
+                ? `ChromaDB + JSON (tenant=${tenant}, db=${database}, collections=${collections})`
+                : 'JSON only';
             result.details = {
                 memoryBreakdown: {
                     conversationMemory: `${stats.totalConversations} entries`,
                     operationalMemory: `${stats.totalOperational} incidents`,
-                    storageBackend: stats.chromaAvailable ? 'ChromaDB + JSON' : 'JSON only'
+                    storageBackend: backendStr
                 },
                 systemHealth: {
                     chromaStatus: stats.chromaAvailable ? 'available' : 'unavailable',
