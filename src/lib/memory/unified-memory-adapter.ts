@@ -121,7 +121,7 @@ export class UnifiedMemoryAdapter {
       userMessage: `Incident: ${data.symptoms.join(', ')}`,
       assistantResponse: assistant,
       context: data.affectedResources,
-      tags: [...data.tags, `domain:${data.domain}`, `environment:${data.environment}`, 'operational']
+      tags: [...data.tags, `kind:operational`, `domain:${data.domain}`, `environment:${data.environment}`, 'operational']
     }, this.opCollection);
   }
 
@@ -147,6 +147,7 @@ export class UnifiedMemoryAdapter {
         `domain:${domain}`,
         `environment:${environment}`,
         `severity:${severity}`,
+        'kind:tool_exec',
         'tool_execution'
       ]
     }, this.toolExecCollection);

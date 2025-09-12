@@ -1,4 +1,5 @@
 import { ToolMemoryGateway } from './tool-memory-gateway.js';
+import { tagEnforcer } from '../memory/utils/tag-enforcer.js';
 
 export interface VectorWriteInput {
   toolId: string; // full name
@@ -27,11 +28,11 @@ export async function writeVectorToolExec(input: VectorWriteInput): Promise<bool
       input.argsSummary,
       safeResult(input.resultSummary),
       input.sessionId,
-      [
+      tagEnforcer([
         'tool_execution',
         'instrumented',
         ...(Array.isArray(input.extraTags) ? input.extraTags : [])
-      ],
+      ], { kind: 'tool_exec', domain: input.domain || 'mcp-ocs', environment: input.environment || 'prod', severity: input.severity || 'medium' }),
       coerceDomain(input.domain),
       coerceEnvironment(input.environment),
       input.severity || 'medium'
