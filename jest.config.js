@@ -20,8 +20,11 @@ export default {
     '^\./evidence-anchors\\.js$': '<rootDir>/src/lib/tools/evidence-anchors.ts',
     '^\./vector-writer\\.js$': '<rootDir>/src/lib/tools/vector-writer.ts',
     '^\./instrumentation-middleware\\.js$': '<rootDir>/src/lib/tools/instrumentation-middleware.ts',
+    '^\./tool-args-validator\\.js$': '<rootDir>/src/lib/tools/tool-args-validator.ts',
     '^\./tool-memory-gateway\\.js$': '<rootDir>/src/lib/tools/tool-memory-gateway.ts',
     '^\.\./memory/shared-memory\\.js$': '<rootDir>/src/lib/memory/shared-memory.ts',
+    '^\.\./memory/mcp-ocs-memory-adapter\\.js$': '<rootDir>/src/lib/memory/mcp-ocs-memory-adapter.ts',
+    '^\.\./memory/unified-memory-adapter\\.js$': '<rootDir>/src/lib/memory/unified-memory-adapter.ts',
     '^\.\./memory/utils/tag-enforcer\\.js$': '<rootDir>/src/lib/memory/utils/tag-enforcer.ts',
     // Memory adapters / CLI mappings for Phase 2 tests
     '^\./chroma-memory-manager\\.js$': '<rootDir>/src/lib/memory/chroma-memory-manager.ts',
@@ -70,8 +73,11 @@ export default {
     '^.*/utils/(.*)\\.js$': '<rootDir>/src/utils/$1.ts',
     '^.*/lib/errors/(.*)\\.js$': '<rootDir>/src/lib/errors/$1.ts',
     '^.*/lib/rubrics/(.*)\\.js$': '<rootDir>/src/lib/rubrics/$1.ts',
-    '^.*/lib/templates/(.*)\\.js$': '<rootDir>/src/lib/templates/$1.ts'
+    '^.*/lib/templates/(.*)\\.js$': '<rootDir>/src/lib/templates/$1.ts',
+    '^\./time\\.js$': '<rootDir>/src/utils/time.ts'
   },
+  // Resolve local ESM-style relative imports inside src/utils
+  resolver: undefined,
   extensionsToTreatAsEsm: ['.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
