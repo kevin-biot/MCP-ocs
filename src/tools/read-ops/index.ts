@@ -7,6 +7,7 @@
 
 import { ToolDefinition } from '../../lib/tools/namespace-manager.js';
 import { nowIso, nowEpoch } from '../../utils/time.js';
+import { createSessionId } from '../../utils/session.js';
 import { ToolSuite, StandardTool } from '../../lib/tools/tool-registry.js';
 import { OpenShiftClient } from '../../lib/openshift-client.js';
 import { SharedMemoryManager } from '../../lib/memory/shared-memory.js';
@@ -202,7 +203,7 @@ export class ReadOpsTools implements ToolSuite {
   async executeTool(toolName: string, args: unknown): Promise<string> {
     const asRecord = (v: unknown): Record<string, unknown> => (v && typeof v === 'object') ? (v as Record<string, unknown>) : {};
     const raw = asRecord(args);
-    const sessionId = typeof raw.sessionId === 'string' ? raw.sessionId : `read-${Date.now()}`;
+    const sessionId = typeof raw.sessionId === 'string' ? raw.sessionId : createSessionId('read');
     
     try {
       let result: unknown;
@@ -275,7 +276,7 @@ export class ReadOpsTools implements ToolSuite {
         success: false,
         tool: toolName,
         error: this.sanitizeError(error),
-        timestamp: new Date().toISOString(),
+        timestamp: nowIso(),
         args: this.sanitizeArgs(args)
       };
       
@@ -447,7 +448,7 @@ export class ReadOpsTools implements ToolSuite {
         count: results.length,
         durationMs: nowEpoch() - startedAll,
         results,
-        timestamp: new Date().toISOString()
+        timestamp: nowIso()
       };
       // Store summary (avoid huge payloads)
       await this.memoryGateway.storeToolExecution(
@@ -470,7 +471,7 @@ export class ReadOpsTools implements ToolSuite {
       name,
       namespace: namespace || 'default',
       description,
-      timestamp: new Date().toISOString()
+      timestamp: nowIso()
     };
     await this.memoryGateway.storeToolExecution(
       'oc_read_describe',
@@ -501,7 +502,7 @@ export class ReadOpsTools implements ToolSuite {
       since,
       logs,
       logLines: logs.split('\\n').length,
-      timestamp: new Date().toISOString()
+      timestamp: nowIso()
     };
     
     // Store via adapter-backed gateway for Chroma v2 integration
@@ -611,7 +612,7 @@ export class ReadOpsTools implements ToolSuite {
         success: false,
         error: 'Failed to serialize response',
         message: 'Response contained non-serializable data',
-        timestamp: new Date().toISOString()
+        timestamp: nowIso()
       }, null, 2);
     }
   }

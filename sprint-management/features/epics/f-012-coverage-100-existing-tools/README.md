@@ -18,6 +18,7 @@ Achieve near-100% test coverage for existing tool surfaces and new middleware/co
 - ✅ **f-011-vector-collections-v2**: Instrumentation middleware foundation complete
 - ✅ **Operational Validation**: Proven patterns with 4-tool pilot coverage
 - ✅ **Safety Standards**: MCP protocol + D-009 compliance established
+ - ✅ **Vector Patterns v2**: Baseline spec and helpers available (docs/architecture/vector-patterns.v2.md; tag enforcer + dedup utils)
 
 **Downstream Impact**:
 - Enables confident production deployment across all diagnostic tools

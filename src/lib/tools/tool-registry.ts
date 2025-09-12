@@ -11,6 +11,8 @@ import { ValidationError, NotFoundError, ToolExecutionError, serializeError } fr
 import { withTimeout } from '../../utils/async-timeout.js';
 import { nowIso } from '../../utils/time.js';
 import { preInstrument, postInstrument, postInstrumentError } from './instrumentation-middleware.js';
+import { createSessionId } from '../../utils/session.js';
+import { findUnresolvedPlaceholdersShallow } from './tool-args-validator.js';
 
 export interface StandardTool {
   /** Unique tool identifier */
@@ -82,6 +84,7 @@ export class UnifiedToolRegistry {
   private tools: Map<string, StandardTool> = new Map();
   private suites: ToolSuite[] = [];
   private maturityIndex: Map<string, ToolMaturity> = new Map();
+  private execCountBySession: Map<string, number> = new Map();
   
   /**
    * Register an entire tool suite
@@ -194,13 +197,47 @@ export class UnifiedToolRegistry {
     
     console.error(`⚡ Executing ${tool.category}-${tool.version} tool: ${name}`);
 
+    // Normalize args and ensure sessionId exists
+    const raw = (args && typeof args === 'object') ? { ...(args as any) } : {} as any;
+    if (typeof raw.sessionId !== 'string' || raw.sessionId.length === 0) {
+      raw.sessionId = createSessionId();
+    }
+    const sessionId: string = raw.sessionId;
+
+    // Global execution cap per session
+    const cap = Number(process.env.TOOL_MAX_EXEC_PER_REQUEST || 10);
+    const used = this.execCountBySession.get(sessionId) || 0;
+    if (used >= cap) {
+      const err = new ToolExecutionError(`Global tool execution cap exceeded`, { details: { sessionId, cap, used, reason: 'global_cap_exceeded' } });
+      // Instrumentation error post-hook (non-fatal)
+      try { await postInstrumentError(null as any, err); } catch {}
+      const payload = { success: false, tool: name, error: serializeError(err), timestamp: nowIso() };
+      return JSON.stringify(payload, null, 2);
+    }
+    this.execCountBySession.set(sessionId, used + 1);
+
+    // Universal placeholder validation (shallow)
+    const ph = findUnresolvedPlaceholdersShallow(raw);
+    if (ph.length > 0) {
+      const err = new ToolExecutionError(`Unresolved placeholders in input`, { details: { sessionId, placeholders: ph, reason: 'unresolved_placeholder' } });
+      try { await postInstrumentError(null as any, err); } catch {}
+      const payload = {
+        success: false,
+        tool: name,
+        error: serializeError(err),
+        guidance: 'Replace placeholders like <pod> or <name> with real values before running this tool.',
+        timestamp: nowIso(),
+      };
+      return JSON.stringify(payload, null, 2);
+    }
+
     // Instrumentation pre-hook (best effort, non-fatal)
-    const preCtx = envEnable('ENABLE_INSTRUMENTATION', true) ? preInstrument(tool.fullName, tool.category, args) : null;
+    const preCtx = envEnable('ENABLE_INSTRUMENTATION', true) ? preInstrument(tool.fullName, tool.category, raw) : null;
 
     try {
 
-      const timeoutMs = Number((args?.timeoutMs ?? process.env.TOOL_TIMEOUT_MS) || 0) || 0;
-      const result = await withTimeout(async () => tool.execute(args), timeoutMs, `tool:${name}`);
+      const timeoutMs = Number((raw?.timeoutMs ?? process.env.TOOL_TIMEOUT_MS) || 0) || 0;
+      const result = await withTimeout(async () => tool.execute(raw), timeoutMs, `tool:${name}`);
 
       // Validate result is string (MCP requirement)
       if (typeof result !== 'string') {

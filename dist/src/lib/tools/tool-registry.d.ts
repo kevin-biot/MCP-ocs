@@ -62,6 +62,7 @@ export declare class UnifiedToolRegistry {
     private tools;
     private suites;
     private maturityIndex;
+    private execCountBySession;
     /**
      * Register an entire tool suite
      */

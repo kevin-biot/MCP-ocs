@@ -5,6 +5,7 @@
  * Read-only operations for information gathering
  */
 import { nowIso, nowEpoch } from '../../utils/time.js';
+import { createSessionId } from '../../utils/session.js';
 import { ToolMemoryGateway } from '../../lib/tools/tool-memory-gateway.js';
 export class ReadOpsTools {
     openshiftClient;
@@ -192,7 +193,7 @@ export class ReadOpsTools {
     async executeTool(toolName, args) {
         const asRecord = (v) => (v && typeof v === 'object') ? v : {};
         const raw = asRecord(args);
-        const sessionId = typeof raw.sessionId === 'string' ? raw.sessionId : `read-${Date.now()}`;
+        const sessionId = typeof raw.sessionId === 'string' ? raw.sessionId : createSessionId('read');
         try {
             let result;
             switch (toolName) {
@@ -235,7 +236,7 @@ export class ReadOpsTools {
                 success: false,
                 tool: toolName,
                 error: this.sanitizeError(error),
-                timestamp: new Date().toISOString(),
+                timestamp: nowIso(),
                 args: this.sanitizeArgs(args)
             };
             return this.safeJsonStringify(errorResult);
@@ -380,7 +381,7 @@ export class ReadOpsTools {
                 count: results.length,
                 durationMs: nowEpoch() - startedAll,
                 results,
-                timestamp: new Date().toISOString()
+                timestamp: nowIso()
             };
             // Store summary (avoid huge payloads)
             await this.memoryGateway.storeToolExecution('oc_read_describe', { resourceType, name, namespace: namespace || 'default', mode: 'expanded', concurrency: maxConcurrent }, { count: aggregated.count, durationMs: aggregated.durationMs }, sessionId || 'unknown', ['read_operation', 'describe', resourceType, 'expanded'], 'openshift', 'prod', 'low');
@@ -393,7 +394,7 @@ export class ReadOpsTools {
             name,
             namespace: namespace || 'default',
             description,
-            timestamp: new Date().toISOString()
+            timestamp: nowIso()
         };
         await this.memoryGateway.storeToolExecution('oc_read_describe', { resourceType, name, namespace: namespace || 'default' }, result, sessionId || 'unknown', ['read_operation', 'describe', resourceType], 'openshift', 'prod', 'low');
         return result;
@@ -414,7 +415,7 @@ export class ReadOpsTools {
             since,
             logs,
             logLines: logs.split('\\n').length,
-            timestamp: new Date().toISOString()
+            timestamp: nowIso()
         };
         // Store via adapter-backed gateway for Chroma v2 integration
         await this.memoryGateway.storeToolExecution('oc_read_logs', { podName, namespace: namespace || 'default', container: container || 'default', lines: lines || 100, since }, result, sessionId || 'unknown', ['read_operation', 'logs', 'troubleshooting'], 'openshift', 'prod', 'low');
@@ -502,7 +503,7 @@ export class ReadOpsTools {
                 success: false,
                 error: 'Failed to serialize response',
                 message: 'Response contained non-serializable data',
-                timestamp: new Date().toISOString()
+                timestamp: nowIso()
             }, null, 2);
         }
     }
