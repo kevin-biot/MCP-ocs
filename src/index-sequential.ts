@@ -29,6 +29,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { evaluateRubrics } from './lib/rubrics/rubric-evaluator.js';
 import { nowEpoch } from './utils/time.js';
+import { createSessionId } from './utils/session.js';
 import { TRIAGE_PRIORITY_V1 } from './lib/rubrics/core/triage-priority.v1.js';
 import { EVIDENCE_CONFIDENCE_V1 } from './lib/rubrics/core/evidence-confidence.v1.js';
 import { REMEDIATION_SAFETY_V1 } from './lib/rubrics/core/remediation-safety.v1.js';
@@ -135,22 +136,18 @@ toolRegistry.registerTool({
   },
   async execute(args: any): Promise<string> {
     const userInput = String(args?.thought ?? args?.userInput ?? '');
-    const session = String(args?.sessionId || `session-${nowEpoch()}`);
+    const session = String(args?.sessionId || createSessionId('session'));
     const coerceBool = (v: any) => typeof v === 'string' ? ['true','1','yes','on','false','0','no','off'].includes(v.toLowerCase()) ? ['true','1','yes','on'].includes(v.toLowerCase()) : Boolean(v) : Boolean(v);
     const coerceNum = (v: any, d?: number) => typeof v === 'string' ? (Number(v) || d || 0) : (typeof v === 'number' ? v : (d || 0));
     const bounded = coerceBool(args?.bounded);
     const triageTarget = typeof args?.triageTarget === 'string' ? args.triageTarget : undefined;
-    const firstStepOnly = 'firstStepOnly' in (args||{}) ? coerceBool(args?.firstStepOnly) : (bounded ? true : false);
+    const firstStepOnly = 'firstStepOnly' in (args||{}) ? coerceBool(args?.firstStepOnly) : false;
     const nextThoughtNeeded = 'nextThoughtNeeded' in (args||{}) ? coerceBool(args?.nextThoughtNeeded) : true;
     const timeoutMs = coerceNum(args?.timeoutMs ?? process.env.SEQ_TIMEOUT_MS ?? (bounded ? 12000 : 0), bounded ? 12000 : 0);
     const reflectOnly = nextThoughtNeeded === false;
-    let mode = typeof args?.mode === 'string' ? args.mode : (firstStepOnly ? 'firstStepOnly' : (bounded ? 'firstStepOnly' : 'planOnly'));
-    // Aggressive default for ingress triage: boundedMultiStep with stepBudget=2
-    if (!args?.mode && bounded && triageTarget && triageTarget.toLowerCase().includes('ingress')) {
-      mode = 'boundedMultiStep';
-    }
+    let mode = typeof args?.mode === 'string' ? args.mode : 'boundedMultiStep';
     const continuePlan = coerceBool(args?.continuePlan);
-    const stepBudget = coerceNum(args?.stepBudget ?? (mode === 'boundedMultiStep' ? 2 : 2), 2);
+    const stepBudget = coerceNum(args?.stepBudget ?? 2, 2);
     const result = await sequentialThinkingOrchestrator.handleUserRequest(userInput, session, { bounded, firstStepOnly, reflectOnly, timeoutMs, nextThoughtNeeded, mode, continuePlan, triageTarget, stepBudget });
     return JSON.stringify(result, null, 2);
   },
@@ -196,7 +193,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const tStart = nowEpoch();
       const stepBudget = Number(targs.stepBudget || 2);
       const bounded = !!targs.bounded;
-      const sessionId = String(targs.sessionId || `session-${nowEpoch()}`);
+      const sessionId = String(targs.sessionId || createSessionId('session'));
       const plan = templateEngine.buildPlan(sel.template, { sessionId, bounded, stepBudget, vars: (args as any)?.vars || {} });
       const enforcerConfig = { maxSteps: plan.boundaries.maxSteps, timeoutMs: plan.boundaries.timeoutMs } as { maxSteps: number; timeoutMs: number; allowedNamespaces?: string[] };
       if (targs.allowedNamespaces) enforcerConfig.allowedNamespaces = targs.allowedNamespaces;

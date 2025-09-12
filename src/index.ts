@@ -30,6 +30,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { evaluateRubrics } from './lib/rubrics/rubric-evaluator.js';
 import { nowEpoch } from './utils/time.js';
+import { createSessionId } from './utils/session.js';
 import { TRIAGE_PRIORITY_V1 } from './lib/rubrics/core/triage-priority.v1.js';
 import { EVIDENCE_CONFIDENCE_V1 } from './lib/rubrics/core/evidence-confidence.v1.js';
 import { REMEDIATION_SAFETY_V1 } from './lib/rubrics/core/remediation-safety.v1.js';
@@ -146,21 +147,18 @@ toolRegistry.registerTool({
     const rec = (v: unknown): Record<string, unknown> => (v && typeof v === 'object') ? (v as Record<string, unknown>) : {};
     const raw = rec(args);
     const userInput = String((raw.thought ?? raw.userInput) ?? '');
-    const session = String((raw.sessionId ?? `session-${nowEpoch()}`));
+    const session = String((raw.sessionId ?? createSessionId('session')));
     const coerceBool = (v: unknown) => typeof v === 'string' ? ['true','1','yes','on','false','0','no','off'].includes(v.toLowerCase()) ? ['true','1','yes','on'].includes(v.toLowerCase()) : Boolean(v) : Boolean(v);
     const coerceNum = (v: unknown, d?: number) => typeof v === 'string' ? (Number(v) || d || 0) : (typeof v === 'number' ? v : (d || 0));
     const bounded = coerceBool(raw.bounded);
     const triageTarget = typeof raw.triageTarget === 'string' ? raw.triageTarget as string : undefined;
-    const firstStepOnly = Object.prototype.hasOwnProperty.call(raw, 'firstStepOnly') ? coerceBool(raw.firstStepOnly) : (bounded ? true : false);
+    const firstStepOnly = Object.prototype.hasOwnProperty.call(raw, 'firstStepOnly') ? coerceBool(raw.firstStepOnly) : false;
     const nextThoughtNeeded = Object.prototype.hasOwnProperty.call(raw, 'nextThoughtNeeded') ? coerceBool(raw.nextThoughtNeeded) : true;
     const timeoutMs = coerceNum(raw.timeoutMs ?? process.env.SEQ_TIMEOUT_MS ?? (bounded ? 12000 : 0), bounded ? 12000 : 0);
     const reflectOnly = nextThoughtNeeded === false;
-    let mode = typeof raw.mode === 'string' ? raw.mode as string : (firstStepOnly ? 'firstStepOnly' : (bounded ? 'firstStepOnly' : 'planOnly'));
-    if (!raw.mode && bounded && triageTarget && triageTarget.toLowerCase().includes('ingress')) {
-      mode = 'boundedMultiStep';
-    }
+    let mode = typeof raw.mode === 'string' ? raw.mode as string : 'boundedMultiStep';
     const continuePlan = coerceBool(raw.continuePlan);
-    const stepBudget = coerceNum(raw.stepBudget ?? (mode === 'boundedMultiStep' ? 2 : 2), 2);
+    const stepBudget = coerceNum(raw.stepBudget ?? 2, 2);
     const result = await sequentialThinkingOrchestrator.handleUserRequest(userInput, session, { bounded, firstStepOnly, reflectOnly, timeoutMs, nextThoughtNeeded, mode, continuePlan, triageTarget, stepBudget });
     return JSON.stringify(result, null, 2);
   },

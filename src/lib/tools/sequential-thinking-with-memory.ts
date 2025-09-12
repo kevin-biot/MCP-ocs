@@ -16,6 +16,7 @@ import type {
   ThoughtProcess,
 } from './sequential-thinking-types.js';
 import { logger } from '../../lib/logging/structured-logger.js';
+import { nowIso } from '../../utils/time.js';
 
 export class EnhancedSequentialThinkingOrchestrator {
   private toolRegistry: UnifiedToolRegistry;
@@ -64,7 +65,7 @@ export class EnhancedSequentialThinkingOrchestrator {
 
     const work = (async () => {
       const mode: 'planOnly' | 'firstStepOnly' | 'boundedMultiStep' | 'unbounded' =
-        (opts?.mode as any) || (context.firstStepOnly ? 'firstStepOnly' : (context.bounded ? 'firstStepOnly' : 'planOnly'));
+        (opts?.mode as any) || 'boundedMultiStep';
 
       // Continuation path: execute next planned steps without re-planning
       if (opts?.continuePlan) {
@@ -546,7 +547,7 @@ export class EnhancedSequentialThinkingOrchestrator {
       steps: results,
       summary: `Executed ${results.length} tools with memory-aware reasoning`,
       networkResetDetected,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date(),
     };
   }
 
