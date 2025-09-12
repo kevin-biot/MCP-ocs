@@ -7,3 +7,5 @@ memory/**
 tmp/startup.*
 memory/real-*.json
 tests/tmp/
+coverage/
+tmp/session*
