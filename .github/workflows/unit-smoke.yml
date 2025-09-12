@@ -1,0 +1,29 @@
+name: beta-unit-smoke
+
+on:
+  push:
+    branches:
+      - release/v0.9.0-beta
+
+jobs:
+  unit-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Run tool-registry tests
+        run: ./node_modules/.bin/jest tests/unit/tools/tool-registry.test.ts -i --colors --config=jest.config.js
+
+      - name: Run read-ops tests
+        run: ./node_modules/.bin/jest "tests/unit/tools/read-ops-*.spec.ts" -i --colors --config=jest.config.js
+
