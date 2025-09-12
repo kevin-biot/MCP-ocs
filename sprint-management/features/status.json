@@ -5,7 +5,13 @@
     { "id": "F-006", "name": "Workflow State Management", "status": "complete", "impl": 100, "priority": "high", "adrs": ["ADR-005-workflow-state-machine.md"], "archives": [] },
     { "id": "F-008", "name": "Modular Tool Architecture", "status": "in_progress", "impl": 45, "priority": "medium", "adrs": ["ADR-006-modular-tool-architecture.md"], "archives": ["sprint-management/features/epics/f-008-modular-tool-architecture/epic-specification.md"] },
     { "id": "F-009", "name": "Fast RCA Framework", "status": "in_progress", "impl": 30, "priority": "high", "adrs": ["ADR-011-fast-rca-framework.md"], "archives": ["sprint-management/features/epics/f-009-fast-rca-framework/epic-specification.md"] },
-    { "id": "F-002", "name": "Production Operator Deployment", "status": "designed", "impl": 0, "priority": "medium", "adrs": ["ADR-008-production-operator-architecture.md"], "archives": [] }
+    { "id": "F-002", "name": "Production Operator Deployment", "status": "designed", "impl": 0, "priority": "medium", "adrs": ["ADR-008-production-operator-architecture.md"], "archives": [] },
+    { "id": "F-010", "name": "oc_triage Entry Tool", "status": "ready", "impl": 0, "priority": "high", "adrs": ["ADR-023-oc-triage-entry-tool.md"], "archives": ["sprint-management/features/epics/f-010-oc-triage-entry-tool/README.md"] },
+    { "id": "F-013", "name": "Platform Contracts", "status": "ready", "impl": 0, "priority": "critical", "adrs": [], "archives": ["sprint-management/features/epics/f-013-platform-contracts/README.md"] },
+    { "id": "F-014", "name": "Read/Discovery Tools", "status": "ready", "impl": 0, "priority": "critical", "adrs": [], "archives": ["sprint-management/features/epics/f-014-read-discovery-tools/README.md"] },
+    { "id": "F-015", "name": "Diagnostics Upgrades", "status": "ready", "impl": 0, "priority": "critical", "adrs": [], "archives": ["sprint-management/features/epics/f-015-diagnostics-upgrades/README.md"] },
+    { "id": "F-016", "name": "LLM Policy & Prompts", "status": "ready", "impl": 0, "priority": "high", "adrs": [], "archives": ["sprint-management/features/epics/f-016-llm-policy-prompts/README.md"] },
+    { "id": "F-017", "name": "Orchestration Efficiency", "status": "ready", "impl": 0, "priority": "high", "adrs": [], "archives": ["sprint-management/features/epics/f-017-orchestration-efficiency/README.md"] }
   ],
   "coreSystems": [
     { "component": "Memory System (ADR-003)", "status": "complete", "impl": 100, "quality": "Excellent", "adrs": ["ADR-003-memory-patterns.md"] },
@@ -21,4 +27,3 @@
     { "component": "RBAC Framework (ADR-009)", "status": "partial", "impl": 20, "priority": "High", "adrs": ["ADR-009-rbac-emergency-change-management.md"] }
   ]
 }
-

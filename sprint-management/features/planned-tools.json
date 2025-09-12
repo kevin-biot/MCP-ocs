@@ -2,7 +2,12 @@
   "planned": [
     { "name": "oc_read_nodes", "category": "readOps" },
     { "name": "oc_read_machinesets", "category": "readOps" },
-    { "name": "oc_analyze_zone_conflicts", "category": "diagnostics" }
+    { "name": "oc_analyze_zone_conflicts", "category": "diagnostics" },
+    { "name": "oc_read_list_namespaces", "category": "readOps" },
+    { "name": "mcp_capabilities", "category": "platform" },
+    { "name": "mcp_batch", "category": "platform" },
+    { "name": "oc_diagnostic_triage_v2", "category": "diagnostics" },
+    { "name": "oc_diagnostic_cluster_health_budget", "category": "diagnostics" },
+    { "name": "oc_diagnostic_namespace_health_target", "category": "diagnostics" }
   ]
 }
-

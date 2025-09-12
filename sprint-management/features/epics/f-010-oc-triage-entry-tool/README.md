@@ -349,6 +349,9 @@ F-002: enhanced_by: [F-010]  # Operational intelligence benefits from natural en
 - **CODEX Assessment**: `./codex-docs/adr-023-assessment/` (Technical validation and implementation plan)
 - **Template Engine**: `src/lib/templates/template-engine.ts` (Integration target)
 - **Tool Registry**: `src/lib/tools/tool-registry.ts` (Registration pattern)
+ - **LLM Policy**: `/docs/llm/policy.md`
+ - **LLM Prompts**: `/docs/llm/prompts.md`
+ - **PVC Playbook**: `/docs/llm/playbooks/pvc-triage.md`
 
 ### **Related Features**
 - **F-001**: Core Platform Foundation (dependency - template engine stability)

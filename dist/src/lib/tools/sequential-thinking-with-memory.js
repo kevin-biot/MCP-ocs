@@ -33,7 +33,7 @@ export class EnhancedSequentialThinkingOrchestrator {
             ? opts.timeoutMs
             : (context.bounded ? 12000 : 0);
         const work = (async () => {
-            const mode = opts?.mode || (context.firstStepOnly ? 'firstStepOnly' : (context.bounded ? 'firstStepOnly' : 'planOnly'));
+            const mode = opts?.mode || 'boundedMultiStep';
             // Continuation path: execute next planned steps without re-planning
             if (opts?.continuePlan) {
                 return await this.resumePlannedSteps(sessionId, opts?.stepBudget || (context.firstStepOnly ? 1 : 2));
@@ -516,7 +516,7 @@ export class EnhancedSequentialThinkingOrchestrator {
             steps: results,
             summary: `Executed ${results.length} tools with memory-aware reasoning`,
             networkResetDetected,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date(),
         };
     }
     async executeToolWithNetworkHandling(toolName, parameters) {

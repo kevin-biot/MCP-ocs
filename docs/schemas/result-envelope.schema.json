@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mcp-ocs/docs/schemas/result-envelope.schema.json",
+  "title": "ResultEnvelope",
+  "$ref": "./components.json#/definitions/ResultEnvelope"
+}
+

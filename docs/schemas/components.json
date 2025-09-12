@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mcp-ocs/docs/schemas/components.json",
+  "title": "MCP-ocs Shared Components",
+  "type": "object",
+  "definitions": {
+    "Target": {
+      "type": "object",
+      "properties": {
+        "scope": { "type": "string", "enum": ["cluster", "namespaces"] },
+        "selector": {
+          "oneOf": [
+            { "type": "string", "enum": ["all", "system", "user"] },
+            {
+              "type": "object",
+              "properties": {
+                "names": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+                "labelSelector": { "type": "string" },
+                "regex": { "type": "string" },
+                "sample": {
+                  "type": "object",
+                  "properties": {
+                    "size": { "type": "integer", "minimum": 1 },
+                    "seed": { "type": ["integer", "string"] }
+                  },
+                  "required": ["size"],
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["scope", "selector"],
+      "additionalProperties": false
+    },
+    "Budget": {
+      "type": "object",
+      "properties": {
+        "timeMs": { "type": "integer", "minimum": 1000 },
+        "namespaceLimit": { "type": "integer", "minimum": 1 },
+        "concurrency": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false,
+      "examples": [
+        { "timeMs": 60000, "namespaceLimit": 200, "concurrency": 6 }
+      ]
+    },
+    "ResultEnvelope": {
+      "type": "object",
+      "properties": {
+        "data": {},
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "partial": { "type": "boolean", "default": false },
+            "exhaustedBudget": { "type": "boolean", "default": false },
+            "namespaceErrors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "namespace": { "type": "string" },
+                  "error": { "type": "string" }
+                },
+                "required": ["namespace", "error"],
+                "additionalProperties": false
+              },
+              "default": []
+            },
+            "signals": { "type": "object", "default": {} },
+            "summary": { "type": "string", "default": "" },
+            "executionTimeMs": { "type": "integer", "minimum": 0, "default": 0 }
+          },
+          "required": ["partial", "exhaustedBudget"],
+          "additionalProperties": true
+        }
+      },
+      "required": ["metadata"],
+      "additionalProperties": true
+    }
+  }
+}
+

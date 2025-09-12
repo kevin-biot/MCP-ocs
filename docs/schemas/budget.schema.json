@@ -1,0 +1,7 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mcp-ocs/docs/schemas/budget.schema.json",
+  "title": "Budget",
+  "$ref": "./components.json#/definitions/Budget"
+}
+
