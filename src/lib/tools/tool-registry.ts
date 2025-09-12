@@ -86,6 +86,15 @@ export class UnifiedToolRegistry {
   private suites: ToolSuite[] = [];
   private maturityIndex: Map<string, ToolMaturity> = new Map();
   private execCountBySession: Map<string, number> = new Map();
+
+  // Session policy state
+  private sessionState: {
+    currentId: string | null;
+    lastOpTs: number;
+    startedAt: number;
+    clientFingerprint: string;
+  } = { currentId: null, lastOpTs: 0, startedAt: 0, clientFingerprint: String(process.env.CLIENT_FINGERPRINT || 'default') };
+  private admission: { lockedUntil: number; lockId: string } = { lockedUntil: 0, lockId: '' };
   
   /**
    * Register an entire tool suite
@@ -198,22 +207,16 @@ export class UnifiedToolRegistry {
     
     console.error(`⚡ Executing ${tool.category}-${tool.version} tool: ${name}`);
 
-    // Normalize args and ensure sessionId exists
+    // Normalize args and resolve authoritative session per policy
     const raw = (args && typeof args === 'object') ? { ...(args as any) } : {} as any;
-    const forceNew = String(process.env.FORCE_NEW_SESSION_ID || '').toLowerCase() === 'true';
-    if (forceNew) {
-      const seed = process.env.SESSION_ID_SEED || undefined;
-      raw.sessionId = createSessionId(seed);
-    } else if (typeof raw.sessionId !== 'string' || raw.sessionId.length === 0) {
-      raw.sessionId = createSessionId();
-    }
-    const sessionId: string = raw.sessionId;
+    const sessionId: string = this.resolveAuthoritativeSessionId(raw?.sessionId);
+    raw.sessionId = sessionId;
 
     // NDJSON probe: request payload snapshot
     try { emitNdjsonProbe('tools/call:request', 'call', { name, ...raw }, null, null, []); } catch {}
 
     // Global execution cap per session
-    const cap = Number(process.env.TOOL_MAX_EXEC_PER_REQUEST || 10);
+    const cap = Number(process.env.TOOL_MAX_EXEC_PER_REQUEST || 20);
     const used = this.execCountBySession.get(sessionId) || 0;
     if (used >= cap) {
       const err = new ToolExecutionError(`Global tool execution cap exceeded`, { details: { sessionId, cap, used, reason: 'global_cap_exceeded' } });
@@ -276,6 +279,114 @@ export class UnifiedToolRegistry {
       return JSON.stringify(payload, null, 2);
     }
 }
+
+  private resolveAuthoritativeSessionId(clientProvided?: unknown): string {
+    const forceNew = String(process.env.FORCE_NEW_SESSION_ID || '').toLowerCase() === 'true';
+    const respectClient = String(process.env.RESPECT_CLIENT_SESSION_ID || 'false').toLowerCase() === 'true';
+    const policy = String(process.env.SESSION_POLICY || 'idleGap');
+    const softMs = Number(process.env.SESSION_IDLE_SOFT_MS || 120000);
+    const hardMs = Number(process.env.SESSION_IDLE_HARD_MS || 900000);
+    const maxLife = Number(process.env.SESSION_MAX_LIFETIME_MS || 7200000);
+    const admissionMs = Number(process.env.ADMISSION_LOCK_MS || 400);
+    const seed = process.env.SESSION_ID_SEED || undefined;
+    const t = Date.now();
+    const fp = this.sessionState.clientFingerprint;
+
+    // Forced new (probe)
+    if (forceNew) {
+      const id = createSessionId(seed);
+      this.startNewSession(id, t, 'force_new');
+      return id;
+    }
+    const clientToken = typeof clientProvided === 'string' && clientProvided.length > 0 ? clientProvided : undefined;
+
+    // Respect client (opt-in)
+    if (respectClient && clientToken) {
+      if (this.sessionState.currentId !== clientToken) {
+        this.startNewSession(clientToken, t, 'respect_client');
+      } else {
+        this.sessionState.lastOpTs = t;
+      }
+      return this.sessionState.currentId as string;
+    }
+
+    // Disabled policy (reuse forever, with max life)
+    if (policy === 'disabled') {
+      if (!this.sessionState.currentId) {
+        const id = createSessionId(seed);
+        this.startNewSession(id, t, 'policy_disabled_start');
+        return id;
+      }
+      if (maxLife > 0 && t - this.sessionState.startedAt >= maxLife) {
+        const id = createSessionId(seed);
+        this.startNewSession(id, t, 'max_lifetime');
+        return id;
+      }
+      this.sessionState.lastOpTs = t;
+      return this.sessionState.currentId as string;
+    }
+
+    // Idle-gap policy
+    const last = this.sessionState.lastOpTs || 0;
+    const age = last ? (t - last) : Number.POSITIVE_INFINITY;
+
+    // Hard rotate if aged or exceeded max life
+    const hardDue = hardMs > 0 && age >= hardMs;
+    const lifeDue = maxLife > 0 && this.sessionState.startedAt > 0 && (t - this.sessionState.startedAt) >= maxLife;
+    if (!this.sessionState.currentId || hardDue || lifeDue) {
+      const reason = !this.sessionState.currentId ? 'no_current' : (hardDue ? 'hard_gap' : 'max_lifetime');
+      const id = createSessionId(seed);
+      this.startNewSession(id, t, reason);
+      return id;
+    }
+
+    // Soft window reuse
+    if (age <= Math.max(0, softMs)) {
+      this.sessionState.lastOpTs = t;
+      return this.sessionState.currentId as string;
+    }
+
+    // Admission lock for first caller after idle
+    if (t <= this.admission.lockedUntil && this.admission.lockId) {
+      this.sessionState.lastOpTs = t;
+      return this.admission.lockId;
+    }
+
+    // Middle band: allow reuse only for same client fingerprint; otherwise rotate
+    const sameProcess = true; // default heuristic: single client; can refine with env/client signals
+    if (age < hardMs && sameProcess) {
+      // Reuse current session
+      this.sessionState.lastOpTs = t;
+      // Lock briefly so concurrent calls attach to same session
+      this.admission.lockId = this.sessionState.currentId as string;
+      this.admission.lockedUntil = t + Math.max(50, admissionMs);
+      return this.sessionState.currentId as string;
+    }
+
+    // Rotate new session in middle band when not same process
+    const id = createSessionId(seed);
+    this.startNewSession(id, t, 'middle_rotate');
+    // Admission lock to group follow-ups
+    this.admission.lockId = id;
+    this.admission.lockedUntil = t + Math.max(50, admissionMs);
+    return id;
+  }
+
+  private startNewSession(id: string, t: number, reason: string): void {
+    const prev = this.sessionState.currentId;
+    this.sessionState.currentId = id;
+    this.sessionState.lastOpTs = t;
+    this.sessionState.startedAt = t;
+    // clear per-session exec counter on rotate
+    this.execCountBySession.set(id, 0);
+    // Admission lock brief window for parallel attach
+    const admissionMs = Number(process.env.ADMISSION_LOCK_MS || 400);
+    this.admission.lockId = id;
+    this.admission.lockedUntil = t + Math.max(50, admissionMs);
+    // Emit NDJSON
+    const ev = prev ? 'session_rotated' : 'session_started';
+    try { emitNdjsonProbe(ev, 'policy', { prev, next: id, reason }, null, null, []); } catch {}
+  }
   
   /**
    * Check if a tool exists

@@ -11,6 +11,7 @@ import { withTimeout } from '../../utils/async-timeout.js';
 import { nowIso } from '../../utils/time.js';
 import { preInstrument, postInstrument, postInstrumentError } from './instrumentation-middleware.js';
 import { createSessionId } from '../../utils/session.js';
+import { emitNdjsonProbe } from '../../utils/ndjson-logger.js';
 import { findUnresolvedPlaceholdersShallow } from './tool-args-validator.js';
 /**
  * Unified Tool Registry
@@ -120,10 +121,20 @@ export class UnifiedToolRegistry {
         console.error(`⚡ Executing ${tool.category}-${tool.version} tool: ${name}`);
         // Normalize args and ensure sessionId exists
         const raw = (args && typeof args === 'object') ? { ...args } : {};
-        if (typeof raw.sessionId !== 'string' || raw.sessionId.length === 0) {
+        const forceNew = String(process.env.FORCE_NEW_SESSION_ID || '').toLowerCase() === 'true';
+        if (forceNew) {
+            const seed = process.env.SESSION_ID_SEED || undefined;
+            raw.sessionId = createSessionId(seed);
+        }
+        else if (typeof raw.sessionId !== 'string' || raw.sessionId.length === 0) {
             raw.sessionId = createSessionId();
         }
         const sessionId = raw.sessionId;
+        // NDJSON probe: request payload snapshot
+        try {
+            emitNdjsonProbe('tools/call:request', 'call', { name, ...raw }, null, null, []);
+        }
+        catch { }
         // Global execution cap per session
         const cap = Number(process.env.TOOL_MAX_EXEC_PER_REQUEST || 10);
         const used = this.execCountBySession.get(sessionId) || 0;
@@ -169,6 +180,11 @@ export class UnifiedToolRegistry {
                 await postInstrument(preCtx, result);
             }
             catch { }
+            // NDJSON probe: response snapshot (truncated)
+            try {
+                emitNdjsonProbe('tools/call:response', 'call', { name, ...raw }, typeof result === 'string' ? result : String(result), null, []);
+            }
+            catch { }
             return result;
         }
         catch (error) {
@@ -185,6 +201,11 @@ export class UnifiedToolRegistry {
                 error: serializeError(err),
                 timestamp: nowIso(),
             };
+            // NDJSON probe: error snapshot
+            try {
+                emitNdjsonProbe('tools/call:error', 'call', { name, ...raw }, JSON.stringify(payload), null, []);
+            }
+            catch { }
             return JSON.stringify(payload, null, 2);
         }
     }
