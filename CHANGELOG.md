@@ -5,6 +5,22 @@ All notable changes to the MCP-ocs project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0-beta] - 2025-09-12 - Quick Reliability Fixes
+
+### Fixed (P0)
+- Centralized Session ID management with registry injection (#40)
+- Global tool execution cap per session with structured error and instrumentation (#41)
+- Universal placeholder validation across string args to block unresolved placeholders (#42)
+
+### Changed (P1)
+- Default sequential mode set to `boundedMultiStep` with `stepBudget=2` (#43)
+- Targeted D-009 time hygiene in touched code paths (#44)
+
+### Validation
+- Targeted Jest suites passed for registry and read-ops tools
+- Sequential defaults smoke confirms boundedMultiStep with stepBudget=2
+
+
 ## [0.5.0] - 2025-08-13 - Testing Foundation & Operational Intelligence Architecture
 
 ### 🧪 Complete Testing Infrastructure Transformation
